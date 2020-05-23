@@ -1,0 +1,14 @@
+[Unit]
+Description=coolq
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=wangqian
+Group=users
+ExecStart=/usr/local/bin/run_coolq.sh
+ExecStop=/bin/kill -9 $MAINPID
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

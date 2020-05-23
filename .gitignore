@@ -1,0 +1,17 @@
+# python cache
+*__pycache__/
+*.pyc
+
+# PyCharm
+.idea/
+
+# data
+my/data/
+
+# log
+my/log/
+*.log
+
+# secret
+config.py
+send_msg/friend_list.json

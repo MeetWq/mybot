@@ -1,0 +1,14 @@
+[Unit]
+Description=nonebot
+After=coolq.service
+Wants=coolq.service
+
+[Service]
+User=wangqian
+Group=users
+ExecStart=/usr/local/bin/run_nonebot.sh
+ExecStop=/bin/kill -9 $MAINPID
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

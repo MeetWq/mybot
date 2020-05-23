@@ -1,0 +1,3 @@
+[submodule "my/plugins/cc98/cc98api"]
+	path = my/plugins/cc98/cc98api
+	url = https://github.com/zjuchenyuan/cc98api
