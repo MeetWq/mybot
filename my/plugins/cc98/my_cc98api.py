@@ -5,7 +5,7 @@ from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 from nonebot.log import logger
 
-from my.plugins.cc98.cc98api.cc98api_base import CC98_API_V2, auth
+from .cc98api.cc98api_base import CC98_API_V2, auth
 from .qcloud_client import *
 from .xiaomark import get_short_url
 

@@ -60,7 +60,7 @@ async def call_tuling_api(session: CommandSession, text: str) -> Optional[str]:
             }
         },
         'userInfo': {
-            'apiKey': session.bot.config.TULING_API_KEY,
+            'apiKey': session.bot.config.tuling_api_key,
             'userId': context_id(session.ctx, use_hash=True)
         }
     }
