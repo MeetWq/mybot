@@ -1,156 +1,162 @@
-from nonebot import on_command, CommandSession
-from nonebot import on_natural_language, NLPSession, IntentCommand
+import re
+import traceback
+from nonebot import on_command, on_regex
+from nonebot.rule import to_me
+from nonebot.typing import T_State
+from nonebot.adapters.cqhttp import Bot, Event, Message
 from nonebot.log import logger
 
-from .users import *
-from .auto_signin import *
-from .notice import *
-from .my_cc98api import CC98Error
+from .user import cc98_api
+from .data_source import CC98Error
+from .word_filter import DFAFilter
 
-__plugin_name__ = 'CC98快速看帖'
+cc98_pattern = r'^([cC]{2})?98(.*)'
+cc98 = on_regex(cc98_pattern, rule=to_me(), priority=13)
+show = on_command('看帖', aliases={'打开帖子', '快速看帖'}, rule=to_me(), priority=14)
+
+dfa_filter = DFAFilter()
 
 
-@on_command('cc98', aliases=('98', 'CC98'))
-async def cc98(session: CommandSession):
-    if 'key_word' not in session.state.keys() or not session.state['key_word']:
-        await session.send('目前可以查看cc98十大、新帖以及各版面的帖子，请输入 98 + 关键词 查看帖子')
-        session.finish()
-        return
-    else:
-        key_word = session.state.get('key_word')
+@cc98.handle()
+async def _(bot: Bot, event: Event, state: T_State):
+    msg = str(event.get_message()).strip()
+    key_word = re.match(cc98_pattern, msg).group(2)
+    if key_word:
+        state['key_word'] = key_word
+
+
+@cc98.got('key_word', prompt='请输入关键词（如：十大，新帖，心灵）查看帖子列表')
+async def _(bot: Bot, event: Event, state: T_State):
     try:
-        while 'topics' not in session.state.keys():
-            board_name, topics, score = default_user.api.get_topics(key_word)
-            if score > 50:
-                session.state['topics'] = topics
-                msgs = default_user.api.print_topics(topics)
-                for msg in msgs:
-                    await session.send(msg)
-            else:
-                answer = session.get('answer', prompt='你要看的是不是[' + board_name + ']?\n' +
-                                                      '[y]是 [n]结束 [其他]重新输入')
-                if answer in ['y', 'Y', 'yes', 'Yes', '是']:
-                    session.state['topics'] = topics
-                    msgs = default_user.api.print_topics(topics)
-                    for msg in msgs:
-                        await session.send(msg)
-                elif answer in ['n', 'N', 'no', 'No', '否']:
-                    session.finish('会话结束')
-                else:
-                    session.switch(answer)
-        await show_topic(session)
+        board_name, score = cc98_api.get_board_name(state['key_word'])
+        if score >= 70:
+            state['board_name_get'] = board_name
+            state['confirm'] = 'y'
+        else:
+            state['board_name_get'] = board_name
+            await cc98.send(message='你要看的是不是[{}]?\n[y]是 [其他]结束'.format(board_name))
     except CC98Error:
-        await session.send('出现错误，请稍后重试')
-        session.finish()
+        logger.warning("Error in cc98: {}".format(traceback.format_exc()))
+        await cc98.finish('出现错误，请稍后重试')
 
 
-@on_command('看帖', aliases=('打开帖子', '快速看帖'))
-async def show_posts(session: CommandSession):
-    if 'topic_id' not in session.state.keys() or not session.state['topic_id']:
-        await session.send('请输入 看帖 + id 查看帖子')
-        session.finish()
-        return
+@cc98.got('confirm')
+async def _(bot: Bot, event: Event, state: T_State):
     try:
-        while 'topic' not in session.state.keys():
-            topic_id = session.state.get('topic_id')
-            if topic_id.isdigit():
-                topic_id = int(topic_id)
-                topic = default_user.api.topic(topic_id)
-                msgs = default_user.api.print_posts(topic, 1)
-                session.state['topic'] = topic
-                session.state['page'] = 1
-                for msg in msgs:
-                    await session.send(msg)
-            else:
-                session.state.pop('topic_id')
-                await session.send('请输入正确的编号')
-        await show_topic(session)
+        if state['confirm'] in ['y', 'Y', 'yes', 'Yes', '是']:
+            state['board_name'] = state['board_name_get']
+        else:
+            await cc98.finish('会话结束')
+        state['topics'] = cc98_api.get_topics(state['board_name'])
+        msg = cc98_api.print_topics(state['topics'])
+        msg = dfa_filter.word_replace(msg)
+        await cc98.send(message=msg)
     except CC98Error:
-        await session.send('出现错误，请稍后重试')
-        session.finish()
+        logger.warning("Error in cc98: {}".format(traceback.format_exc()))
+        await cc98.finish('出现错误，请稍后重试')
 
 
-async def show_topic(session: CommandSession):
-    topics = session.state['topics']
-    while True:
-        reply = session.get('reply')
-        session.state.pop('reply')
+@cc98.got('reply')
+async def show_post(bot: Bot, event: Event, state: T_State):
+    try:
+        topics = state['topics']
+        reply = state['reply']
         if reply.isdigit():
             num = int(reply)
             if len(topics) >= num >= 1:
-                session.state['num'] = num
-                session.state['page'] = 1
+                state['num'] = num
+                state['page'] = 1
                 topic = topics[num - 1]
-                msgs = default_user.api.print_posts(topic, 1)
-                for msg in msgs:
-                    await session.send(msg)
+                await cc98.send(message="加载中，请稍候...")
+                await cc98.send(message=Message(str_to_message(cc98_api.print_posts(topic, 1))))
+                await cc98.reject()
             else:
-                await session.send('请输入正确的编号')
+                await cc98.reject('请输入正确的编号')
         elif reply == '+' or reply == '-':
-            if 'num' not in session.state.keys():
-                continue
-            num = session.state['num']
-            page = session.state['page']
+            if 'num' not in state.keys():
+                await cc98.reject()
+            num = state['num']
+            page = state['page']
             topic = topics[num - 1]
             reply_num = topic["replyCount"] + 1
             if page == 1 and reply == '-':
-                await session.send('当前已是第一页')
+                await cc98.reject('当前已是第一页')
             elif reply_num - page * 10 <= 0 and reply == '+':
-                await session.send('当前已是最后一页')
+                await cc98.reject('当前已是最后一页')
             else:
                 if reply == '+':
                     page += 1
                 elif reply == '-':
                     page -= 1
-                session.state['page'] = page
-                msgs = default_user.api.print_posts(topic, page)
-                for msg in msgs:
-                    await session.send(msg)
+                state['page'] = page
+                await cc98.send(message="加载中，请稍候...")
+                await cc98.send(message=Message(str_to_message(cc98_api.print_posts(topic, page))))
+                await cc98.reject()
         else:
-            session.switch(session.ctx['message'])
+            await cc98.finish('会话结束')
+    except CC98Error:
+        logger.warning("Error in cc98: {}".format(traceback.format_exc()))
+        await cc98.finish('出现错误，请稍后重试')
 
 
-@cc98.args_parser
-async def _(session: CommandSession):
-    stripped_arg = session.current_arg_text.strip()
-
-    if session.is_first_run:
-        if stripped_arg:
-            session.state['key_word'] = stripped_arg
-        return
-
-    if not stripped_arg:
-        session.finish('会话结束')
-
-    session.state[session.current_key] = stripped_arg
-
-
-@show_posts.args_parser
-async def _(session: CommandSession):
-    stripped_arg = session.current_arg_text.strip()
-
-    if session.is_first_run:
-        if stripped_arg:
-            session.state['topic_id'] = stripped_arg
-        return
-
-    if not stripped_arg:
-        session.finish('会话结束')
-
-    session.state[session.current_key] = stripped_arg
+def str_to_message(text: str):
+    if len(text) > 2000:
+        return [{"type": "text", "data": {"text": "帖子内容过长，请移步98查看"}}]
+    split_pattern = r'(##file##.*?##/file##)'
+    img_pattern = r'##file##(.*?)##/file##'
+    texts = re.split(split_pattern, text)
+    msgs = []
+    for t in texts:
+        match = re.match(img_pattern, t)
+        if match:
+            msgs.append({"type": "image", "data": {"file": "file://" + match.group(1)}})
+        else:
+            msgs.append({"type": "text", "data": {"text": dfa_filter.word_replace(t)}})
+    return msgs
 
 
-@on_natural_language(keywords=('98', 'cc98', 'CC98'), only_to_me=False)
-async def _(session: NLPSession):
-    stripped_msg = session.msg_text.strip()
-    for words in ['98', 'cc98', 'CC98']:
-        stripped_msg = stripped_msg.replace(words, '')
-    return IntentCommand(90.0, 'cc98', current_arg=stripped_msg or '')
+@show.handle()
+async def _(bot: Bot, event: Event, state: T_State):
+    msg = str(event.get_message()).strip()
+    if msg and msg.isdigit():
+        state['topic_id'] = msg
 
 
-@on_natural_language(keywords=('看帖', '快速看帖'), only_to_me=False)
-async def _(session: NLPSession):
-    stripped_msg = session.msg_text.strip()
-    for words in ['看帖', '快速看帖']:
-        stripped_msg = stripped_msg.replace(words, '')
-    return IntentCommand(90.0, 'show_posts', current_arg=stripped_msg or '')
+@show.got('topic_id', prompt='请输入帖子id')
+async def _(bot: Bot, event: Event, state: T_State):
+    try:
+        state['topic'] = cc98_api.topic(int(state['topic_id']))
+        state['page'] = 1
+        await cc98.send(message="加载中，请稍候...")
+        await cc98.send(message=Message(str_to_message(cc98_api.print_posts(state['topic'], 1))))
+    except CC98Error:
+        logger.warning("Error in cc98: {}".format(traceback.format_exc()))
+        await cc98.finish('出现错误，请稍后重试')
+
+
+@show.got('reply')
+async def _(bot: Bot, event: Event, state: T_State):
+    try:
+        reply = state['reply']
+        if reply == '+' or reply == '-':
+            topic = state['topic']
+            page = state['page']
+            reply_num = topic["replyCount"] + 1
+            if page == 1 and reply == '-':
+                await cc98.reject('当前已是第一页')
+            elif reply_num - page * 10 <= 0 and reply == '+':
+                await cc98.reject('当前已是最后一页')
+            else:
+                if reply == '+':
+                    page += 1
+                elif reply == '-':
+                    page -= 1
+                state['page'] = page
+                await cc98.send(message="加载中，请稍候...")
+                await cc98.send(message=Message(str_to_message(cc98_api.print_posts(topic, page))))
+                await cc98.reject()
+        else:
+            await cc98.finish('会话结束')
+    except CC98Error:
+        logger.warning("Error in cc98: {}".format(traceback.format_exc()))
+        await cc98.finish('出现错误，请稍后重试')

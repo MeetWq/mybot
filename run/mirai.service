@@ -1,12 +1,13 @@
 [Unit]
-Description=coolq
+Description=mirai
 After=network-online.target
 Wants=network-online.target
 
 [Service]
 User=wangqian
 Group=users
-ExecStart=/usr/local/bin/run_coolq.sh
+WorkingDirectory=/home/wangqian/Mirai/mirai-console-loader
+ExecStart=/home/wangqian/Mirai/mirai-console-loader/mcl
 ExecStop=/bin/kill -9 $MAINPID
 Restart=on-failure
 
