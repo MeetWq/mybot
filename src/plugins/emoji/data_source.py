@@ -25,6 +25,7 @@ def get_emoji_path(name: str):
 
 def get_random_pic(name: str):
     dirs = {'cherry': 'cherry',
+            'cherry_words': 'cherry_words',
             'rabbit': 'rabbit',
             'ria': 'ria'}
     dir_name = dirs[name]

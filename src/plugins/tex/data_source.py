@@ -3,8 +3,10 @@ import shutil
 import tempfile
 import subprocess
 
+dir_path = os.path.split(os.path.realpath(__file__))[0]
 
-def tex2pic(equation, output, border=2, resolution=1000):
+
+def tex2pic(equation, fmt='png', border=2, resolution=1000):
     packages = r"""
 \usepackage{amsmath}
 \usepackage{mathtools}
@@ -38,8 +40,6 @@ def tex2pic(equation, output, border=2, resolution=1000):
 \end{{document}}
     """.format(border, packages, equation)
 
-    fmt = os.path.splitext(output)[-1][1:]
-
     # create temporary directory and filenames
     tmp_dir = tempfile.mkdtemp()
     tmp_tex = os.path.join(tmp_dir, "tmp.tex")
@@ -62,7 +62,7 @@ def tex2pic(equation, output, border=2, resolution=1000):
 
     # return if not compiled
     if p_open.returncode != 0:
-        return False
+        return ''
 
     # convert in tmp_dir
     formats = {'jpg': 'jpg', 'jpeg': 'jpg', 'png': 'png', 'tiff': 'tiff', 'ppm': ''}
@@ -70,15 +70,8 @@ def tex2pic(equation, output, border=2, resolution=1000):
         convert_cmd = "pdftoppm -r %d -%s %s > %s" % (resolution, formats[fmt], tmp_pdf, tmp_out)
         subprocess.check_call(convert_cmd, shell=True)
 
-    # return the actual output
-    if output:
-        shutil.copy(tmp_out, output)
-
-    # remove tmp files
+    output = os.path.join(dir_path, 'images', 'tmp.' + fmt)
+    shutil.copy(tmp_out, output)
     shutil.rmtree(tmp_dir)
 
-    return True
-
-
-if __name__ == '__main__':
-    tex2pic(r'\tan90^\circ=\infty', 'test.png')
+    return output

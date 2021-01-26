@@ -11,6 +11,7 @@ mahjong = on_regex(r'^[acf]:?\d{3}', rule=to_me(), priority=15)
 ms = on_regex(r'^ms\d{2}', rule=to_me(), priority=15)
 tb = on_regex(r'^tb\d{2}', rule=to_me(), priority=15)
 cherry = on_keyword({'樱桃', '嗯桃', '林雪樱'}, rule=to_me(), priority=15)
+cherry_words = on_keyword({'樱桃语录', '嗯桃语录', '樱语'}, rule=to_me(), priority=14)
 rabbit = on_keyword({'兔兔', '小夏', '夏珺'}, rule=to_me(), priority=15)
 ria = on_keyword({'ria', 'Ria', '璃亚'}, rule=to_me(), priority=15)
 
@@ -32,6 +33,14 @@ async def _(bot: Bot, event: Event, state: T_State):
 @cherry.handle()
 async def _(bot: Bot, event: Event, state: T_State):
     file_path = get_random_pic(name='cherry')
+    if file_path:
+        await ac.send(message=MessageSegment("image", {"file": "file://" + file_path}))
+        await ac.finish()
+
+
+@cherry_words.handle()
+async def _(bot: Bot, event: Event, state: T_State):
+    file_path = get_random_pic(name='cherry_words')
     if file_path:
         await ac.send(message=MessageSegment("image", {"file": "file://" + file_path}))
         await ac.finish()
