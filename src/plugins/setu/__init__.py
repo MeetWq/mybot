@@ -20,9 +20,11 @@ async def _(bot: Bot, event: Event, state: T_State):
         key_word = key_word.replace(word, '')
     await setu.send('请稍候...')
     img_url = await get_pic_url(key_word=key_word)
-    if img_url:
-        img_path = os.path.join(dir_path, 'images', os.path.basename(img_url))
-        if await download_image(img_url, img_path):
-            await setu.send(message=MessageSegment("image", {"file": "file://" + img_path}))
-            await setu.finish()
-    await setu.finish('出错了，请稍后再试')
+    if not img_url:
+        await setu.finish('找不到相关的涩图')
+    img_path = os.path.join(dir_path, 'images', os.path.basename(img_url))
+    if not await download_image(img_url, img_path):
+        await setu.finish('下载出错，请稍后再试')
+    await setu.send(message=MessageSegment("image", {"file": "file://" + img_path}))
+    await setu.finish()
+

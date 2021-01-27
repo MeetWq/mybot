@@ -1,6 +1,7 @@
 import os
 import requests
 import traceback
+import subprocess
 from nonebot import get_driver
 from nonebot.log import logger
 
@@ -23,7 +24,9 @@ async def get_pic_url(key_word=None) -> str:
         if response['code'] != 0:
             logger.warning('Error getting setu! ' + traceback.format_exc())
             return ''
-        return response['data'][0]['url']
+        url = response['data'][0]['url']
+        logger.info('Get setu url: ' + url)
+        return url
     except requests.exceptions.RequestException:
         logger.warning('Error getting setu! ' + traceback.format_exc())
         return ''
@@ -31,16 +34,19 @@ async def get_pic_url(key_word=None) -> str:
 
 async def download_image(img_url: str, img_path: str):
     try:
-        if not os.path.exists(img_path):
-            r = requests.get(img_url, timeout=5)
-            with open(img_path, 'wb') as f:
-                f.write(r.content)
-            if os.path.getsize(img_path) >= 10240:
-                return True
-            else:
-                if os.path.exists(img_path):
-                    os.remove(img_path)
-                return False
-    except requests.exceptions.RequestException:
+        if os.path.exists(img_path):
+            return True
+        download_cmd = 'wget -4 {} -O {}'.format(img_url, img_path)
+        logger.debug(download_cmd)
+        status = subprocess.check_call(download_cmd, shell=True, timeout=30)
+        if status == 0:
+            logger.info('Image {} download successfully!'.format(img_path))
+            return True
+        else:
+            logger.warning('Image {} download failed!'.format(img_path))
+            if os.path.exists(img_path):
+                os.remove(img_path)
+            return False
+    except:
         logger.warning('Error downloading image! ' + traceback.format_exc())
         return False
