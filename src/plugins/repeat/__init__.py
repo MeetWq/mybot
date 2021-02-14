@@ -9,7 +9,7 @@ async def repeat_rule(bot: Bot, event: Event, state: T_State) -> bool:
     return isinstance(event, GroupMessageEvent) and not event.to_me
 
 
-repeat = on_message(rule=repeat_rule, priority=10, block=False)
+repeat = on_message(rule=repeat_rule, priority=21, block=False)
 
 msgs = {}
 

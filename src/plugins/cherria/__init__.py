@@ -1,14 +1,24 @@
 import os
 
-from nonebot import on_command, on_endswith
+from nonebot import get_driver, on_command, on_endswith
 from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, Event, MessageSegment
+from nonebot.adapters.cqhttp import Bot, Event, MessageSegment, GroupMessageEvent
 
 from .data_source import get_image, get_record, get_words
+from .config import Config
 
-get_jpg = on_endswith('.jpg', priority=11)
-get_mp3 = on_endswith('.mp3', priority=11)
-cherry_words = on_command('cherry words', aliases={'樱桃语录', '樱语'}, priority=12)
+global_config = get_driver().config
+cherria_config = Config(**global_config.dict())
+
+
+async def cherria_rule(bot: Bot, event: Event, state: T_State) -> bool:
+    return str(event.get_user_id()) in global_config.superusers or \
+           (isinstance(event, GroupMessageEvent) and str(event.group_id) in cherria_config.cherria_group)
+
+
+get_jpg = on_endswith('.jpg', rule=cherria_rule, priority=11)
+get_mp3 = on_endswith('.mp3', rule=cherria_rule, priority=11)
+cherry_words = on_command('cherry words', rule=cherria_rule, aliases={'樱桃语录', '樱语'}, priority=12)
 
 
 @get_jpg.handle()
