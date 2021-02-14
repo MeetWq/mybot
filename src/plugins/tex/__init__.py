@@ -20,7 +20,7 @@ async def _(bot: Bot, event: Event, state: T_State):
 async def _(bot: Bot, event: Event, state: T_State):
     equation = state['equation']
     await tex.send(message='请稍候...')
-    file_path = tex2pic(equation)
+    file_path = await tex2pic(equation)
     if file_path:
         await tex.send(message=MessageSegment("image", {"file": "file://" + file_path}))
         await tex.finish()

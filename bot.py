@@ -4,10 +4,10 @@
 import nonebot
 from nonebot.adapters.cqhttp import Bot as CQHTTPBot
 
-
 # Custom your logger
 # 
 from nonebot.log import logger, default_format
+
 logger.add("nonebot.log",
            diagnose=False,
            level="DEBUG",
@@ -22,7 +22,6 @@ driver.register_adapter("cqhttp", CQHTTPBot)
 
 nonebot.load_builtin_plugins()
 nonebot.load_plugins("src/plugins")
-nonebot.load_plugin("nonebot_plugin_status")
 nonebot.load_plugin("nonebot_plugin_apscheduler")
 
 # Modify some config / config depends on loaded configs

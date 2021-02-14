@@ -144,6 +144,6 @@ dmypy.json
 # pycharm
 .idea/
 
-# images
-*images/
+# tmp files
+*cache/
 

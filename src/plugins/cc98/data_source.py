@@ -9,6 +9,10 @@ from .cc98api_base import CC98_API_V2, auth
 
 dir_path = os.path.split(os.path.realpath(__file__))[0]
 
+cache_path = os.path.join(dir_path, 'cache')
+if not os.path.exists(cache_path):
+    os.makedirs(cache_path)
+
 patterns = [(r'ac\d{2,4}', 'ac-mini'),
             (r'em\d{2}', 'em-mini'),
             (r'[acf]:?\d{3}', 'mahjong-mini'),
@@ -108,7 +112,7 @@ class MyCC98Api(CC98_API_V2):
         if os.path.splitext(url)[-1] not in image_ext:
             return url
         file_name = os.path.basename(url)
-        file_path = os.path.join(dir_path, 'images', file_name)
+        file_path = os.path.join(cache_path, file_name)
         if not os.path.exists(file_path):
             if not self.download(url, file_path):
                 return url

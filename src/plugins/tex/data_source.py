@@ -5,8 +5,12 @@ import subprocess
 
 dir_path = os.path.split(os.path.realpath(__file__))[0]
 
+cache_path = os.path.join(dir_path, 'cache')
+if not os.path.exists(cache_path):
+    os.makedirs(cache_path)
 
-def tex2pic(equation, fmt='png', border=2, resolution=1000):
+
+async def tex2pic(equation, fmt='png', border=2, resolution=1000):
     packages = r"""
 \usepackage{amsmath}
 \usepackage{mathtools}
@@ -70,7 +74,7 @@ def tex2pic(equation, fmt='png', border=2, resolution=1000):
         convert_cmd = "pdftoppm -r %d -%s %s > %s" % (resolution, formats[fmt], tmp_pdf, tmp_out)
         subprocess.check_call(convert_cmd, shell=True)
 
-    output = os.path.join(dir_path, 'images', 'tmp.' + fmt)
+    output = os.path.join(cache_path, 'tmp.' + fmt)
     shutil.copy(tmp_out, output)
     shutil.rmtree(tmp_dir)
 

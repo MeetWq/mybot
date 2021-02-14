@@ -9,6 +9,11 @@ from .config import Config
 
 global_config = get_driver().config
 setu_config = Config(**global_config.dict())
+dir_path = os.path.split(os.path.realpath(__file__))[0]
+
+cache_path = os.path.join(dir_path, 'cache')
+if not os.path.exists(cache_path):
+    os.makedirs(cache_path)
 
 
 async def get_pic_url(key_word=None) -> str:
@@ -32,21 +37,20 @@ async def get_pic_url(key_word=None) -> str:
         return ''
 
 
-async def download_image(img_url: str, img_path: str):
+async def download_image(img_url: str):
+    img_path = os.path.join(cache_path, os.path.basename(img_url))
     try:
-        if os.path.exists(img_path):
-            return True
-        download_cmd = 'wget -4 {} -O {}'.format(img_url, img_path)
-        logger.debug(download_cmd)
-        status = subprocess.check_call(download_cmd, shell=True, timeout=30)
-        if status == 0:
+        if not os.path.exists(img_path):
+            download_cmd = 'wget -4 {} -O {}'.format(img_url, img_path)
+            logger.debug(download_cmd)
+            status = subprocess.check_call(download_cmd, shell=True, timeout=30)
+            if status != 0:
+                logger.warning('Image {} download failed!'.format(img_path))
+                if os.path.exists(img_path):
+                    os.remove(img_path)
+                return ''
             logger.info('Image {} download successfully!'.format(img_path))
-            return True
-        else:
-            logger.warning('Image {} download failed!'.format(img_path))
-            if os.path.exists(img_path):
-                os.remove(img_path)
-            return False
+        return img_path
     except:
         logger.warning('Error downloading image! ' + traceback.format_exc())
-        return False
+        return ''
