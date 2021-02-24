@@ -5,7 +5,7 @@ Wants=network-online.target
 
 [Service]
 User=wangqian
-Group=users
+Group=wangqian
 WorkingDirectory=/home/wangqian/Mirai/mirai-console-loader
 ExecStart=/home/wangqian/Mirai/mirai-console-loader/mcl
 ExecStop=/bin/kill -9 $MAINPID

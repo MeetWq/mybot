@@ -50,8 +50,8 @@ async def get_image(keyword):
         if image_num <= 0:
             logger.warning('Can not find corresponding image! : ' + keyword)
             return ''
-        if image_num >= 5:
-            images = images[:5]
+        if image_num >= 3:
+            images = images[:3]
         random.shuffle(images)
         return images[0].img['data-original']
     except requests.exceptions.RequestException:

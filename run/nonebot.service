@@ -5,7 +5,7 @@ Wants=network-online.target
 
 [Service]
 User=wangqian
-Group=users
+Group=wangqian
 WorkingDirectory=/home/wangqian/Mirai/mybot
 ExecStart=/usr/bin/python /home/wangqian/Mirai/mybot/bot.py
 ExecStop=/bin/kill -9 $MAINPID
