@@ -17,18 +17,20 @@ if not os.path.exists(cache_path):
 
 
 def get_emoji_path(name: str):
-    patterns = [(r'ac\d{2,4}', 'ac'),
-                (r'em\d{2}', 'em'),
-                (r'[acf]:?\d{3}', 'mahjong'),
-                (r'ms\d{2}', 'ms'),
-                (r'tb\d{2}', 'tb'),
-                (r'[Cc][Cc]98\d{2}', 'cc98')]
+    patterns = [(r'(ac\d{2,4})', 'ac'),
+                (r'(em\d{2})', 'em'),
+                (r'emm(\d{1,3})', 'em_nhd'),
+                (r'([acf]:?\d{3})', 'mahjong'),
+                (r'(ms\d{2})', 'ms'),
+                (r'(tb\d{2})', 'tb'),
+                (r'([Cc][Cc]98\d{2})', 'cc98')]
 
     name = name.strip().split('.')[0].replace(':', '').lower()
     file_ext = ['.jpg', '.png', '.gif']
     for pattern, dir_name in patterns:
-        if re.match(pattern, name):
-            file_full_name = os.path.join(dir_path, 'images', dir_name, name)
+        match_obj = re.match(pattern, name)
+        if match_obj:
+            file_full_name = os.path.join(dir_path, 'images', dir_name, match_obj.group(1))
             for ext in file_ext:
                 file_path = file_full_name + ext
                 if os.path.exists(file_path):
