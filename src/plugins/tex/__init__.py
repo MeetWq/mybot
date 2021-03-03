@@ -5,7 +5,7 @@ from nonebot.adapters.cqhttp import Bot, unescape, Event, MessageSegment
 
 from .data_source import tex2pic
 
-tex = on_command('tex', aliases={'latex', 'TeX', 'LaTeX'}, rule=to_me(), priority=14)
+tex = on_command('tex', aliases={'latex', 'TeX', 'LaTeX'}, priority=14)
 
 
 @tex.handle()

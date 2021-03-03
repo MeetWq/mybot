@@ -40,7 +40,7 @@ async def get_content(keyword):
 
         card_result = BeautifulSoup(card_resp.content, 'lxml')
         card_section = card_result.find('div', {'class': 'section card-middle'})
-        title = card_section.find('div', {'class': 'title-container'}).text
+        title = card_section.find('div', {'class': 'title-container'}).find('span', {'class': 'title'}).text
         content = card_section.find('div', {'class': 'content'}).text
         images = card_section.find_all('div', {'class': 'show-images'})
         image_urls = []
