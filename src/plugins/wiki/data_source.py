@@ -1,5 +1,6 @@
 import wikipedia
 from wikipedia import WikipediaException
+from fuzzywuzzy import fuzz
 import traceback
 from nonebot.log import logger
 
@@ -12,7 +13,11 @@ async def get_content(keyword):
         if len(entries) < 1:
             return '', ''
         title = entries[0]
-        return title, wikipedia.summary(title)
+        score = fuzz.ratio(title, keyword)
+        if score > 80:
+            return title, wikipedia.summary(title)
+        else:
+            return '', ''
     except WikipediaException:
         logger.warning('Error in get content: ' + traceback.format_exc())
         return '', ''
