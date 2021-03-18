@@ -14,12 +14,13 @@ async def get_reply(msg, event):
         return '你是个好人，这张好人卡请收下吧~'
     if '你好' in msg:
         return np.random.choice(['你好~今天NHD娘也是活力满满地在工作着呢！',
+                                 '你好~这里是最勤劳最可爱的NHD娘~',
                                  '你……你好！呜！被看到没睡醒的样子了>_<'],
-                                p=np.array([0.6, 0.4]).ravel())
+                                p=np.array([0.4, 0.3, 0.3]).ravel())
     if '求约会' in msg:
         return np.random.choice(['才不要呢！约会什么的最讨厌了！',
                                  '好的{}，三分钟后来八舍楼下等我哦！'.format(nickname)],
-                                p=np.array([0.6, 0.4]).ravel())
+                                p=np.array([0.5, 0.5]).ravel())
     if '我要米' in msg or '求米' in msg:
         return np.random.choice(['哼！人家才不知道什么叫米呢！',
                                  '求米什么的最讨厌了！烦死了烦死了烦死了！',
