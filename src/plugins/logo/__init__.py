@@ -12,7 +12,7 @@ logo = on_command('logo', priority=18)
 @logo.args_parser
 async def _(bot: Bot, event: Event, state: T_State):
     text = event.get_plaintext().strip()
-    texts = re.split(r'[,.\-_ ]', text)
+    texts = re.split(r' +', text)
     texts = [t for t in texts if t]
     if len(texts) == 2:
         state['left_text'] = texts[0]
