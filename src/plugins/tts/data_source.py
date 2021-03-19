@@ -7,7 +7,7 @@ import requests
 import traceback
 import subprocess
 
-from langdetect import detect
+import langid
 from pydub import AudioSegment
 from pydub.silence import detect_silence
 
@@ -32,10 +32,13 @@ if not os.path.exists(cache_path):
 
 
 async def get_voice(text):
-    if detect(text) == 'ja':
-        return get_ai_voice(text)
-    else:
-        return get_tx_voice(text)
+    try:
+        if langid.classify(text)[0] == 'ja':
+            return get_ai_voice(text)
+        else:
+            return get_tx_voice(text)
+    except:
+        return ''
 
 
 def get_tx_voice(text):

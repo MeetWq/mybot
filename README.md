@@ -18,7 +18,7 @@ sudo apt install texlive-full poppler-utils
 - For plugin tts
 
 ```bash
-pip install pydub langdetect tencentcloud-sdk-python
+pip install pydub langid tencentcloud-sdk-python
 
 sudo apt install ffmpeg nodejs npm
 
@@ -27,3 +27,8 @@ sudo npm install wx-voice -g
 sudo wx-voice compile
 ```
 
+- For plugin pixiv
+
+```bash
+pip install pixivpy-async aiohttp_socks
+```
