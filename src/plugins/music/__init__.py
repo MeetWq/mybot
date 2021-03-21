@@ -1,25 +1,49 @@
-from nonebot import on_command
+from nonebot import export, on_shell_command
+from nonebot.rule import ArgumentParser
 from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, Event, MessageSegment
+from nonebot.adapters.cqhttp import Bot, Event
 
-from .data_source import search_song_id
+from .data_source import search_song
 
-music = on_command('music', aliases={'点歌', '来一首', '点一首'}, priority=15)
+export = export()
+export.description = '点歌'
+export.usage = 'Usage:\n  music/点歌 [options] {song}'
+export.options = 'Options:\n  -s, --source 音乐来源，目前支持QQ音乐(qq)、网易云音乐(netease)、酷狗音乐(kugou)'
+export.help = export.description + '\n' + export.usage + '\n' + export.options
+
+music_parser = ArgumentParser()
+music_parser.add_argument('-s', '--source', default='all')
+music_parser.add_argument('song', nargs='+')
+
+music = on_shell_command('music', aliases={'点歌'}, parser=music_parser, priority=11)
+
+sources = ['qq', 'netease', 'kugou']
 
 
 @music.handle()
-@music.args_parser
 async def _(bot: Bot, event: Event, state: T_State):
-    keyword = str(event.get_message()).strip()
-    if keyword:
-        state['keyword'] = keyword
+    args = state['args']
+    if not hasattr(args, 'song'):
+        await music.finish(export.usage)
 
+    song = args.song
+    song = ' '.join(song)
+    if not song:
+        await music.finish(export.usage)
 
-@music.got('keyword', prompt='你想听什么歌呢？')
-async def _(bot: Bot, event: Event, state: T_State):
-    keyword = state['keyword']
-    song_id = await search_song_id(keyword)
-    if song_id:
-        await music.send(message=MessageSegment("music", {"type": "qq", "id": str(song_id)}))
+    source = args.source
+    if source == 'all':
+        for s in sources:
+            msg = await search_song(song, s)
+            if msg:
+                await music.send(message=msg)
+                await music.finish()
+        await music.finish('没有找到这首歌')
+    elif source not in sources:
+        await music.finish(export.options)
     else:
-        await music.finish('没有找到这首歌呢')
+        msg = await search_song(song, source)
+        if msg:
+            await music.send(message=msg)
+            await music.finish()
+        await music.finish(source + '中没有找到这首歌')

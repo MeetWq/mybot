@@ -1,11 +1,17 @@
-from nonebot import on_message
+from nonebot import export, on_message
 from nonebot.rule import to_me
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, Event
 
 from .data_source import call_tuling_api
 
-tuling = on_message(rule=to_me(), priority=20)
+export = export()
+export.description = '图灵机器人'
+export.usage = 'Usage:\n  智障对话'
+export.notice = 'Notice:\n  需要@我；图灵优先级为最低'
+export.help = export.description + '\n' + export.usage + '\n' + export.notice
+
+tuling = on_message(rule=to_me(), priority=40)
 
 
 @tuling.handle()

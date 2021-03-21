@@ -32,3 +32,11 @@ sudo wx-voice compile
 ```bash
 pip install pixivpy-async aiohttp_socks
 ```
+
+- For plugin logo
+
+```bash
+pip install pillow pyppeteer
+
+sudo apt install imagemagick
+```

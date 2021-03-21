@@ -132,4 +132,4 @@ async def replace_r18(path):
 
     except TencentCloudSDKException as err:
         logger.debug(err)
-        return r18_img
+        return path

@@ -16,10 +16,10 @@ if not os.path.exists(cache_path):
     os.makedirs(cache_path)
 
 
-async def get_pic_url(key_word=None) -> str:
+async def get_pic_url(key_word=None, r18=False) -> str:
     data = {
         'apikey': setu_config.setu_apikey,
-        'r18': 0,
+        'r18': 1 if r18 else 0,
         'num': 1,
         'size1200': 1,
         'keyword': key_word

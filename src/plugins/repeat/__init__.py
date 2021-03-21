@@ -1,15 +1,21 @@
 import re
-from nonebot import on_message
+from nonebot import export, on_message
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, Event, GroupMessageEvent, MessageSegment
 from nonebot.log import logger
+
+export = export()
+export.description = '复读机'
+export.usage = 'Usage:\n  重复两次的内容会被复读'
+export.notice = 'Notice:\n  只能复读文本和图片；指令不会被复读'
+export.help = export.description + '\n' + export.usage + '\n' + export.notice
 
 
 async def repeat_rule(bot: Bot, event: Event, state: T_State) -> bool:
     return isinstance(event, GroupMessageEvent) and not event.to_me
 
 
-repeat = on_message(rule=repeat_rule, priority=21, block=False)
+repeat = on_message(rule=repeat_rule, priority=41, block=False)
 
 msgs = {}
 
