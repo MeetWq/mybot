@@ -57,10 +57,10 @@ class Counter:
             m = msg[0]
             logger.debug(m.type)
             if m.type == 'image':
-                self.msg = MessageSegment("image", {"file": m.data['url']})
+                self.msg = MessageSegment.image(file=m.data['url'])
                 return True
             elif m.type == 'record':
-                self.msg = MessageSegment("record", {"file": m.data['url']})
+                self.msg = MessageSegment.record(file=m.data['url'])
                 return True
         self.msg = None
         return False

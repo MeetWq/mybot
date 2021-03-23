@@ -1,10 +1,10 @@
-from nonebot import export, get_driver, on_keyword, on_command
+from nonebot import export, on_keyword, on_command
 from nonebot.rule import to_me
 from nonebot.typing import T_State
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.cqhttp import Bot, Event, MessageSegment
 
-from .data_source import get_pic_url, download_image
+from .data_source import get_pic_url
 
 export = export()
 export.description = '随机涩图'
@@ -26,11 +26,9 @@ async def _(bot: Bot, event: Event, state: T_State):
     img_url = await get_pic_url(key_word=key_word)
     if not img_url:
         await setu.finish('找不到相关的涩图')
-    img_path = await download_image(img_url)
-    if not img_path:
-        await setu.finish('下载出错，请稍后再试')
-    await setu.send(message=MessageSegment.image(file=img_path))
+    await setu.send(message=MessageSegment.image(file=img_url))
     await setu.finish()
+
 
 @setu_.handle()
 async def _(bot: Bot, event: Event, state: T_State):
@@ -39,8 +37,5 @@ async def _(bot: Bot, event: Event, state: T_State):
     img_url = await get_pic_url(key_word=key_word, r18=True)
     if not img_url:
         await setu_.finish('找不到相关的涩图')
-    img_path = await download_image(img_url)
-    if not img_path:
-        await setu_.finish('下载出错，请稍后再试')
-    await setu_.send(message=MessageSegment.image(file=img_path))
+    await setu_.send(message=MessageSegment.image(file=img_url))
     await setu_.finish()

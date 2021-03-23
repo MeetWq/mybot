@@ -3,17 +3,12 @@ import re
 import random
 import requests
 import traceback
-import subprocess
 from bs4 import BeautifulSoup
 from urllib.parse import quote
 
 from nonebot.log import logger
 
 dir_path = os.path.split(os.path.realpath(__file__))[0]
-
-cache_path = os.path.join(dir_path, 'cache')
-if not os.path.exists(cache_path):
-    os.makedirs(cache_path)
 
 
 def get_emoji_path(name: str):
@@ -58,23 +53,4 @@ async def get_image(keyword):
         return images[0].img['data-original']
     except requests.exceptions.RequestException:
         logger.warning('Error getting image! ' + traceback.format_exc())
-        return ''
-
-
-async def download_image(img_url: str):
-    img_path = os.path.join(cache_path, os.path.basename(img_url))
-    try:
-        if not os.path.exists(img_path):
-            download_cmd = 'wget -4 {} -O {}'.format(img_url, img_path)
-            logger.debug(download_cmd)
-            status = subprocess.check_call(download_cmd, shell=True, timeout=30)
-            if status != 0:
-                logger.warning('Image {} download failed!'.format(img_path))
-                if os.path.exists(img_path):
-                    os.remove(img_path)
-                return ''
-            logger.info('Image {} download successfully!'.format(img_path))
-        return img_path
-    except:
-        logger.warning('Error downloading image! ' + traceback.format_exc())
         return ''

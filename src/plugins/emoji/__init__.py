@@ -3,7 +3,7 @@ from nonebot import export, on_regex, on_endswith
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, Event, MessageSegment
 
-from .data_source import get_emoji_path, get_image, download_image
+from .data_source import get_emoji_path, get_image
 
 export = export()
 export.description = '表情包'
@@ -34,7 +34,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     file_name = str(event.get_message()).strip()
     file_path = get_emoji_path(file_name)
     if file_path:
-        await bot.send(event=event, message=MessageSegment.image(file=file_path))
+        await bot.send(event=event, message=MessageSegment.image(file='file://' + file_path))
     else:
         await bot.send(event=event, message="找不到该表情")
 
@@ -46,8 +46,5 @@ async def _(bot: Bot, event: Event, state: T_State):
     img_url = await get_image(keyword)
     if not img_url:
         await get_jpg.finish(message="找不到相关的图片")
-    img_path = await download_image(img_url)
-    if not img_path:
-        await get_jpg.finish("下载出错，请稍后再试")
-    await get_jpg.send(message=MessageSegment.image(file=img_path))
+    await get_jpg.send(message=MessageSegment.image(file=img_url))
     await get_jpg.finish()

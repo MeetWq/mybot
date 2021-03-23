@@ -1,6 +1,4 @@
 import os
-import shutil
-import tempfile
 import subprocess
 
 dir_path = os.path.split(os.path.realpath(__file__))[0]
@@ -44,11 +42,9 @@ async def tex2pic(equation, fmt='png', border=2, resolution=1000):
 \end{{document}}
     """.format(border, packages, equation)
 
-    # create temporary directory and filenames
-    tmp_dir = tempfile.mkdtemp()
-    tmp_tex = os.path.join(tmp_dir, "tmp.tex")
-    tmp_pdf = os.path.join(tmp_dir, "tmp.pdf")
-    tmp_out = os.path.join(tmp_dir, "tmp." + fmt)
+    tmp_tex = os.path.join(cache_path, "tmp.tex")
+    tmp_pdf = os.path.join(cache_path, "tmp.pdf")
+    tmp_out = os.path.join(cache_path, "tmp." + fmt)
 
     # write the tmp tex file
     with open(tmp_tex, 'w') as f:
@@ -60,7 +56,7 @@ async def tex2pic(equation, fmt='png', border=2, resolution=1000):
     # compile the tex file in tmp_dir
     stdout = open(os.devnull, 'w')
     p_open = subprocess.Popen("pdflatex -interaction=nonstopmode -pdf %s" % tmp_tex,
-                              shell=True, cwd=tmp_dir, stdout=stdout, stderr=stdout)
+                              shell=True, cwd=cache_path, stdout=stdout, stderr=stdout)
     p_open.wait()
     stdout.close()
 
@@ -68,14 +64,9 @@ async def tex2pic(equation, fmt='png', border=2, resolution=1000):
     if p_open.returncode != 0:
         return ''
 
-    # convert in tmp_dir
     formats = {'jpg': 'jpg', 'jpeg': 'jpg', 'png': 'png', 'tiff': 'tiff', 'ppm': ''}
     if fmt in formats.keys():
         convert_cmd = "pdftoppm -r %d -%s %s > %s" % (resolution, formats[fmt], tmp_pdf, tmp_out)
         subprocess.check_call(convert_cmd, shell=True)
 
-    output = os.path.join(cache_path, 'tmp.' + fmt)
-    shutil.copy(tmp_out, output)
-    shutil.rmtree(tmp_dir)
-
-    return output
+    return tmp_out

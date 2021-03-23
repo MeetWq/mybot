@@ -39,7 +39,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     await speak.send(message='请稍候...')
     file_path = await get_voice(words, type)
     if file_path:
-        await speak.send(message=MessageSegment.record(file=file_path))
+        await speak.send(message=MessageSegment.record(file='file://' + file_path))
     else:
         await speak.send(message='出错了，请稍后重试')
 
@@ -54,6 +54,6 @@ async def _(bot: Bot, event: Event, state: T_State):
     await speak_at.send(message='请稍候...')
     file_path = await get_voice(msg)
     if file_path:
-        await speak_at.send(message=MessageSegment.record(file=file_path))
+        await speak_at.send(message=MessageSegment.record(file='file://' + file_path))
     else:
         await speak_at.send(message='出错了，请稍后重试')

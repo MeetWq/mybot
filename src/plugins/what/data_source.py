@@ -1,9 +1,6 @@
-import os
 import re
-import shutil
 import requests
 import traceback
-import subprocess
 from fuzzywuzzy import fuzz
 from bs4 import BeautifulSoup
 from urllib.parse import quote
@@ -13,12 +10,6 @@ from nonebot.adapters.cqhttp import Message, MessageSegment
 import wikipedia
 from wikipedia import WikipediaException
 from baike import getBaike
-
-dir_path = os.path.split(os.path.realpath(__file__))[0]
-
-cache_path = os.path.join(dir_path, 'cache')
-if not os.path.exists(cache_path):
-    os.makedirs(cache_path)
 
 wikipedia.set_lang("zh")
 
@@ -74,9 +65,7 @@ async def get_jiki_content(keyword, force=False):
         msg.append(title + ':\n---------------\n')
         msg.append(content)
         for img_url in img_urls:
-            img_path = await download_image(img_url)
-            if img_path:
-                msg.append(MessageSegment.image(file=img_path))
+            msg.append(MessageSegment.image(file=img_url))
         return msg
 
     except (requests.exceptions.RequestException, AttributeError):
@@ -86,7 +75,7 @@ async def get_jiki_content(keyword, force=False):
 
 async def get_baidu_content(keyword, force=False):
     try:
-        content = getBaike(keyword, pic=True)
+        content = getBaike(keyword)
         if not content.strip():
             return ''
         match_obj = re.match(r'(.*?)(（.*?）)?\n(.*)', content)
@@ -99,19 +88,10 @@ async def get_baidu_content(keyword, force=False):
             if fuzz.ratio(title, keyword) < 90:
                 return ''
 
-        msg = Message()
-        msg.append(title)
+        msg = title
         if subtitle:
-            msg.append(subtitle)
-        msg.append(':\n---------------\n' + text)
-        img_ext = ['.jpg', '.png', '.gif']
-        for ext in img_ext:
-            file_name = title + '_1' + ext
-            if os.path.exists(file_name):
-                file_path = os.path.join(cache_path, file_name)
-                shutil.move(file_name, file_path)
-                msg.append(MessageSegment.image(file=file_path))
-                break
+            msg += subtitle
+        msg += ':\n---------------\n' + text
         return msg
     except (requests.exceptions.RequestException, AttributeError):
         logger.warning('Error in get content: ' + traceback.format_exc())
@@ -132,24 +112,4 @@ async def get_wiki_content(keyword, force=False):
         return title + ':\n---------------\n' + content
     except WikipediaException:
         logger.warning('Error in get content: ' + traceback.format_exc())
-        return ''
-
-
-async def download_image(img_url: str):
-    img_path = os.path.join(cache_path, os.path.basename(img_url))
-    try:
-        if not os.path.exists(img_path):
-            download_cmd = 'wget -4 {} -O {}'.format(img_url, img_path)
-            logger.debug(download_cmd)
-            status = subprocess.check_call(
-                download_cmd, shell=True, timeout=30)
-            if status != 0:
-                logger.warning('Image {} download failed!'.format(img_path))
-                if os.path.exists(img_path):
-                    os.remove(img_path)
-                return ''
-            logger.info('Image {} download successfully!'.format(img_path))
-        return img_path
-    except:
-        logger.warning('Error downloading image! ' + traceback.format_exc())
         return ''

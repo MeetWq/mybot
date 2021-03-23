@@ -38,7 +38,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     await logo.send(message='请稍候...')
     file_path = await create_logo(left_text, right_text, style)
     if file_path:
-        await logo.send(message=MessageSegment.image(file=file_path))
+        await logo.send(message=MessageSegment.image(file='file://' + file_path))
         await logo.finish()
     else:
         await logo.finish('出错了，请稍后重试')

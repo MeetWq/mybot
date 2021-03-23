@@ -2,19 +2,7 @@ import requests
 import traceback
 from http.cookies import SimpleCookie
 from nonebot.log import logger
-from nonebot.adapters.cqhttp import escape, MessageSegment
-
-
-xml_card = '''<?xml version="1.0" encoding="utf-8"?>
-<msg serviceID="2" templateID="1" action="web" brief="[音乐] {title}" sourceMsgId="0" url="{jump_url}" flag="0" adverSign="0" multiMsgFlag="0">
-    <item layout="2">
-        <audio cover="{cover_url}" src="{music_url}"/>
-        <title>{title}</title>
-        <summary>{author}</summary>
-    </item>
-    <source name="{source}" icon="{icon}"/>
-</msg>
-'''
+from nonebot.adapters.cqhttp import MessageSegment
 
 
 async def search_song(keyword, source='qq'):
@@ -26,6 +14,8 @@ async def search_song(keyword, source='qq'):
             msg = await search_netease(keyword)
         elif source == 'kugou':
             msg = await search_kugou(keyword)
+        elif source == 'bilibili':
+            msg = await search_bilibili(keyword)
         return msg
     except (TypeError, KeyError, IndexError, requests.exceptions.RequestException):
         logger.debug(traceback.format_exc())
@@ -86,18 +76,30 @@ async def search_kugou(keyword, page=1, pagesize=1, number=1):
     result = requests.get(song_url, params=params,
                           cookies=parse_cookies(cookies)).json()
     info = result['data']
+    url = 'https://www.kugou.com/song/#hash={}&album_id={}'.format(hash, album_id)
+    audio = info['play_url']
     title = info['song_name']
-    author = info['author_name']
-    cover_url = info['img']
-    music_url = info['play_url']
-    jump_url = 'https://www.kugou.com/song/#hash={}&album_id={}'.format(
-        hash, album_id)
-    source = '酷狗音乐'
-    icon = 'https://img.imgdb.cn/item/605614e1524f85ce29fa0c11.png'
-    xml_str = xml_card.format(title=title, author=author,
-                              cover_url=cover_url, music_url=music_url, jump_url=jump_url,
-                              source=source, icon=icon)
-    return MessageSegment.xml(escape(xml_str))
+    content = info['author_name']
+    img_url = info['img']
+    return MessageSegment.music_custom(url=url, audio=audio, title=title, content=content, img_url=img_url)
+
+
+async def search_bilibili(keyword, page=1, pagesize=1, number=1):
+    search_url = 'https://api.bilibili.com/audio/music-service-c/s'
+    params = {
+        'page': page,
+        'pagesize': pagesize,
+        'search_type': 'music',
+        'keyword': keyword
+    }
+    result = requests.get(search_url, params=params).json()
+    info = result['data']['result'][number - 1]
+    url = 'https://www.bilibili.com/audio/au{}'.format(info['id'])
+    audio = info['play_url_list'][0]['url']
+    title = info['title']
+    content = info['author']
+    img_url = info['cover']
+    return MessageSegment.music_custom(url=url, audio=audio, title=title, content=content, img_url=img_url)
 
 
 def parse_cookies(cookies_raw: str) -> dict:

@@ -1,15 +1,16 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
+import os
+import time
 import nonebot
 from nonebot.adapters.cqhttp import Bot as CQHTTPBot
 
-# Custom your logger
-# 
 from nonebot.log import logger, default_format
 
-logger.add("nonebot.log",
-           diagnose=False,
+if not os.path.exists('log'):
+    os.makedirs('log')
+
+log_name = 'log/' + time.strftime('nonebot_%Y%m%d', time.localtime()) + '.log'
+
+logger.add(log_name,
            level="DEBUG",
            format=default_format)
 
