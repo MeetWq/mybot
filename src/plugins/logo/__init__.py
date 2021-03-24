@@ -8,9 +8,10 @@ from .data_source import create_logo
 
 export = export()
 export.description = 'logo生成'
-export.usage = 'Usage:\n  logo [options] {left} {right}'
-export.options = 'Options:\n  -s, --style logo风格，目前支持：pornhub(默认)、youtube'
-export.help = export.description + '\n' + export.usage + '\n' + export.options
+export.usage = 'Usage:\n  logo [options] {text}'
+export.options = 'Options:\n  -s, --style logo风格，目前支持：pornhub(默认)、youtube、抖音(douyin)'
+export.notice = 'Notice:\n  pornhub和youtube需输入2段文字并用空格分开'
+export.help = export.description + '\n' + export.usage + '\n' + export.options + '\n' + export.notice
 
 logo_parser = ArgumentParser()
 logo_parser.add_argument('-s', '--style', default='pornhub')
@@ -25,18 +26,16 @@ async def _(bot: Bot, event: Event, state: T_State):
     if not hasattr(args, 'text'):
         await logo.finish(export.usage)
 
-    texts = args.text
-    if len(texts) != 2:
-        await logo.finish('参数数量不符\n' + export.usage)
-
     style = args.style
-    if style not in ['pornhub', 'youtube']:
+    if style not in ['pornhub', 'youtube', 'douyin']:
         await logo.finish(export.options)
 
-    left_text = texts[0]
-    right_text = texts[1]
+    texts = args.text
+    if style in ['pornhub', 'youtube'] and len(texts) != 2:
+        await logo.finish('参数数量不符\n' + export.usage + '\n' + export.notice)
+
     await logo.send(message='请稍候...')
-    file_path = await create_logo(left_text, right_text, style)
+    file_path = await create_logo(texts, style)
     if file_path:
         await logo.send(message=MessageSegment.image(file='file://' + file_path))
         await logo.finish()

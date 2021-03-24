@@ -10,7 +10,7 @@ export = export()
 export.description = '语音合成'
 export.usage = 'Usage:\n  1. speak [options] {words}\n  2. @我，说{words}'
 export.options = 'Options:\n  -t, --type 语音类型，目前支持女声(0)和男声(1)'
-export.notice = 'Notice:\n  支持中文和日文'
+export.notice = 'Notice:\n  支持中文和日文，但不支持混合'
 export.help = export.description + '\n' + export.usage + '\n' + export.options + '\n' + export.notice
 
 speak_parser = ArgumentParser()
