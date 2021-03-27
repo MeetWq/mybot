@@ -42,6 +42,8 @@ async def get_help_msg(group_id='', plugin_name=''):
     if not plugins:
         return '暂时没有可用的功能'
 
+    plugins.sort(key=lambda p: p.name)
+
     if not plugin_name:
         plugins_list = '\n'.join(p.name + ': ' + p.export.description for p in plugins)
         msg = '我现在的功能有: \n\n' + plugins_list + '\n\n发送"help [名称]"查看详情'

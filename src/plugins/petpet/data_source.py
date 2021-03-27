@@ -37,8 +37,7 @@ async def get_petpet(user_id):
 
     with open(avatar_path, 'wb') as f:
         f.write(resp.content)
-        
-    print(file_md5)
+
     status = await create_petpet(avatar_path, petpet_path)
     if status:
         return petpet_path

@@ -1,8 +1,10 @@
 import os
 import asyncio
+import requests
 import traceback
 import subprocess
 from PIL import ImageFont
+from bs4 import BeautifulSoup
 from pyppeteer import launch
 from pyppeteer.chromium_downloader import check_chromium, download_chromium
 from pyppeteer.errors import NetworkError
@@ -27,6 +29,8 @@ async def create_logo(texts, style='pornhub'):
         img_path = await create_youtube_logo(texts[0], texts[1])
     elif style == 'douyin':
         img_path = await create_douyin_logo(' '.join(texts))
+    elif style in ['cocacola', 'harrypotter']:
+        img_path = await create_logomaker_logo(' '.join(texts), style)
     return img_path
 
 
@@ -117,6 +121,38 @@ async def create_douyin_logo(text):
             f.write(content)
         await browser.close()
         return douyin_path
+    except (AttributeError, TypeError, OSError, NetworkError):
+        logger.debug(traceback.format_exc())
+        return ''
+
+
+async def create_logomaker_logo(text, style='cocacola'):
+    logomaker_path = os.path.join(cache_path, 'logo.png')
+
+    try:
+        url = 'https://logomaker.herokuapp.com/proc.php'
+        params = {
+            'type': '@' + style,
+            'title': text,
+            'scale': 200,
+            'spaceheight': 0,
+            'widthplus': 0,
+            'heightplus': 0,
+            'fontcolor': '#000000',
+        }
+        resp = requests.get(url, params=params)
+        if resp.status_code == 200:
+            resp_bs4 = BeautifulSoup(resp.content, 'lxml')
+            href = resp_bs4.find('a', {'id': 'gdownlink'})
+            if href:
+                link = 'https://logomaker.herokuapp.com/' + href['href']
+                headers = {
+                    'Referer': 'https://logomaker.herokuapp.com/gstyle.php'
+                }
+                resp = requests.get(link, headers=headers)
+                with open(logomaker_path, 'wb') as f:
+                    f.write(resp.content)
+                return logomaker_path
     except (AttributeError, TypeError, OSError, NetworkError):
         logger.debug(traceback.format_exc())
         return ''
