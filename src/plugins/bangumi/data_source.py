@@ -1,3 +1,4 @@
+import os
 import aiohttp
 import datetime
 from urllib.parse import quote
@@ -8,8 +9,7 @@ async def get_bangumi_info(keyword):
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36'
     }
-    url = 'https://api.bgm.tv/search/subject/{}?type=2&responseGroup=Large&max_results=1'.format(
-        quote(keyword))
+    url = f'https://api.bgm.tv/search/subject/{quote(keyword)}?type=2&responseGroup=Large&max_results=1'
 
     async with aiohttp.ClientSession() as session:
         async with session.post(url=url, headers=headers) as resp:
@@ -19,13 +19,12 @@ async def get_bangumi_info(keyword):
         return f'番剧 {keyword} 未搜索到结果！'
 
     bangumi_id = data['list'][0]['id']
-    url = 'https://api.bgm.tv/subject/{}?responseGroup=medium'.format(
-        bangumi_id)
+    url = f'https://api.bgm.tv/subject/{bangumi_id}?responseGroup=medium'
 
     async with aiohttp.ClientSession() as session:
         async with session.post(url=url, headers=headers) as resp:
             data = await resp.json()
-    print(data)
+
     name = data['name']
     cn_name = data['name_cn']
     summary = data['summary']
@@ -34,14 +33,15 @@ async def get_bangumi_info(keyword):
     rating_total = data['rating']['total']
     air_date = data['air_date']
     air_weekday = data['air_weekday']
-    week = ['一', '二', '三', '四', '五', '六', '日']
+    weeks = ['一', '二', '三', '四', '五', '六', '日']
+    week = weeks[int(air_weekday) - 1]
 
     message = Message()
     message.append(MessageSegment.image(file=img_url))
     info = f'\n{cn_name}\n{name}\n\n'
     info += f'{summary}\n\n' if summary else ''
     info += f'放送开始: {air_date}\n'
-    info += f'放送星期: 周{week[int(air_weekday) - 1]}\n'
+    info += f'放送星期: 周{week}\n'
     info += f'bangumi评分: {score} ({rating_total}人投票)'
     message.append(info)
     return message

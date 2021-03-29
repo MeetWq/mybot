@@ -1,4 +1,5 @@
 import re
+import aiohttp
 import requests
 import traceback
 from fuzzywuzzy import fuzz
@@ -11,18 +12,42 @@ import wikipedia
 from wikipedia import WikipediaException
 from baike import getBaike
 
-wikipedia.set_lang("zh")
+wikipedia.set_lang('zh')
 
 
 async def get_content(keyword, source, force=False):
     msg = ''
-    if source == 'jiki':
+    if source == 'nbnhhsh':
+        msg = await get_nbnhhsh_content(keyword)
+    elif source == 'jiki':
         msg = await get_jiki_content(keyword, force)
     elif source == 'baidu':
         msg = await get_baidu_content(keyword, force)
     elif source == 'wiki':
         msg = await get_wiki_content(keyword, force)
     return msg
+
+
+async def get_nbnhhsh_content(keyword, force=False):
+    url = 'https://lab.magiconch.com/api/nbnhhsh/guess'
+    headers = {
+        'referer': 'https://lab.magiconch.com/nbnhhsh/'
+    }
+    data = {
+        'text': keyword
+    }
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url=url, headers=headers, data=data) as resp:
+            res = await resp.json()
+    result = ''
+    for i in res:
+        if 'trans' in i:
+            if i['trans']:
+                result += f"{i['name']} => {'，'.join(i['trans'])}"
+        elif force:
+            if i['inputting']:
+                result += f"{i['name']} => {'，'.join(i['inputting'])}"
+    return result
 
 
 async def get_jiki_content(keyword, force=False):

@@ -9,7 +9,7 @@ from .data_source import get_content
 export = export()
 export.description = '百科'
 export.usage = 'Usage:\n  1. what [options] {keyword}\n  2. {keyword}是啥/是什么'
-export.options = 'Options:\n  -s, --source 百科来源，目前支持：小鸡词典(jiki)、百度百科(baidu)、维基百科(wiki)'
+export.options = 'Options:\n  -s, --source 百科来源，目前支持：nbnhhsh、小鸡词典(jiki)、百度百科(baidu)、维基百科(wiki)'
 export.notice = 'Notice:\n  为避免影响正常聊天，“是啥”仅当词条完全匹配时才会响应。若要返回相近的结果请用“what”命令'
 export.help = export.description + '\n' + export.usage + '\n' + export.options + '\n' + export.notice
 
@@ -21,7 +21,7 @@ commands = {'是啥', '是什么', '是谁'}
 what = on_keyword(commands, priority=25)
 what_command = on_shell_command('what', parser=what_parser, priority=17)
 
-sources = ['jiki', 'baidu', 'wiki']
+sources = ['nbnhhsh', 'jiki', 'baidu', 'wiki']
 
 
 def split_command(msg):
