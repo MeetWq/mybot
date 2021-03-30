@@ -67,7 +67,6 @@ async def _(bot: Bot, event: Event, state: T_State):
     if not keyword:
         await what_command.finish(export.usage)
 
-    await what_command.send(message='请稍候...')
     source = args.source
     if source == 'all':
         for s in sources:

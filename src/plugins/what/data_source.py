@@ -18,7 +18,7 @@ wikipedia.set_lang('zh')
 async def get_content(keyword, source, force=False):
     msg = ''
     if source == 'nbnhhsh':
-        msg = await get_nbnhhsh_content(keyword)
+        msg = await get_nbnhhsh_content(keyword, force)
     elif source == 'jiki':
         msg = await get_jiki_content(keyword, force)
     elif source == 'baidu':
