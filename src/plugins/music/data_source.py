@@ -1,4 +1,5 @@
-import requests
+import json
+import aiohttp
 import traceback
 from http.cookies import SimpleCookie
 from nonebot.log import logger
@@ -17,7 +18,7 @@ async def search_song(keyword, source='qq'):
         elif source == 'bilibili':
             msg = await search_bilibili(keyword)
         return msg
-    except (TypeError, KeyError, IndexError, requests.exceptions.RequestException):
+    except (TypeError, KeyError, IndexError):
         logger.debug(traceback.format_exc())
         return None
 
@@ -30,7 +31,10 @@ async def search_qq(keyword, page=1, pagesize=1, number=1):
         'w': keyword,
         'format': 'json'
     }
-    result = requests.get(url, params=params).json()
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, params=params) as resp:
+            data = await resp.read()
+    result = json.loads(data)
     songid = result['data']['song']['list'][number - 1]['songid']
     return MessageSegment.music('qq', songid)
 
@@ -43,7 +47,10 @@ async def search_netease(keyword, page=1, pagesize=1, number=1):
         'offset': page * pagesize - 1,
         'limit': pagesize
     }
-    result = requests.post(url, params=params).json()
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url, params=params) as resp:
+            data = await resp.read()
+    result = json.loads(data)
     songid = result['result']['songs'][number - 1]['id']
     return MessageSegment.music('163', songid)
 
@@ -57,7 +64,10 @@ async def search_kugou(keyword, page=1, pagesize=1, number=1):
         'page': page,
         'pagesize': pagesize
     }
-    result = requests.get(search_url, params=params).json()
+    async with aiohttp.ClientSession() as session:
+        async with session.get(search_url, params=params) as resp:
+            data = await resp.read()
+    result = json.loads(data)
     hash = result['data']['info'][number - 1]['hash']
     album_id = result['data']['info'][number - 1]['album_id']
     song_url = 'https://wwwapi.kugou.com/yy/index.php'
@@ -73,8 +83,11 @@ async def search_kugou(keyword, page=1, pagesize=1, number=1):
         'Hm_lvt_aedee6983d4cfc62f509129360d6bb3d=1598198881; kg_dfid=1HZmYL0ngIYp0uu93N2m4s5P; ' \
         'kg_dfid_collect=d41d8cd98f00b204e9800998ecf8427e; ' \
         'Hm_lpvt_aedee6983d4cfc62f509129360d6bb3d=1598199021'
-    result = requests.get(song_url, params=params,
-                          cookies=parse_cookies(cookies)).json()
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(song_url, params=params, cookies=parse_cookies(cookies)) as resp:
+            data = await resp.read()
+    result = json.loads(data)
     info = result['data']
     url = 'https://www.kugou.com/song/#hash={}&album_id={}'.format(hash, album_id)
     audio = info['play_url']
@@ -92,7 +105,10 @@ async def search_bilibili(keyword, page=1, pagesize=1, number=1):
         'search_type': 'music',
         'keyword': keyword
     }
-    result = requests.get(search_url, params=params).json()
+    async with aiohttp.ClientSession() as session:
+        async with session.get(search_url, params=params) as resp:
+            data = await resp.read()
+    result = json.loads(data)
     info = result['data']['result'][number - 1]
     url = 'https://www.bilibili.com/audio/au{}'.format(info['id'])
     audio = info['play_url_list'][0]['url']

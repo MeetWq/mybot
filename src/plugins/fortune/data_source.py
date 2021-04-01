@@ -1,26 +1,22 @@
-import os
 import json
 import random
+from pathlib import Path
 from datetime import datetime
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
-dir_path = os.path.split(os.path.realpath(__file__))[0]
-
-cache_path = os.path.join(dir_path, 'cache')
-if not os.path.exists(cache_path):
-    os.makedirs(cache_path)
+dir_path = Path(__file__).parent
+cache_path = Path('cache/fortune')
+if not cache_path.exists():
+    cache_path.mkdir(parents=True)
 
 
 async def get_response(group_id, user_id):
     date = datetime.now().strftime('%Y%m%d')
-    log_path = os.path.join(cache_path, date + '_' + str(group_id) + '.log')
-    if not os.path.exists(log_path):
-        with open(log_path, 'w') as f:
-            pass
-    with open(log_path, 'r+') as f:
+    log_path = cache_path / (date + '_' + str(group_id) + '.log')
+    log_path.touch()
+    with log_path.open('r+') as f:
         logs = f.readlines()
         logs = [l.strip() for l in logs]
-        print(logs)
         if str(user_id) not in logs:
             f.write(str(user_id) + '\n')
             copywriting = get_copywriting()
@@ -37,14 +33,14 @@ async def get_response(group_id, user_id):
 
 
 def get_copywriting():
-    path = os.path.join(dir_path, 'copywriting.json')
-    with open(path, 'r', encoding='utf-8') as json_file:
+    path = dir_path / 'copywriting.json'
+    with path.open('r', encoding='utf-8') as json_file:
         data = json.load(json_file)
     return random.choice(data['copywriting'])
 
 
 def get_type(luck):
-    path = os.path.join(dir_path, 'types.json')
+    path = dir_path / 'types.json'
     with open(path, 'r', encoding='utf-8') as json_file:
         data = json.load(json_file)
     types = data['types']
@@ -54,7 +50,7 @@ def get_type(luck):
 
 
 def get_face(luck):
-    path = os.path.join(dir_path, 'face')
+    image_path = Path('src/data/images/cc98')
     if luck in [10, 26]:
         face_id = '04'
     elif luck in [9, 20]:
@@ -79,4 +75,4 @@ def get_face(luck):
         face_id = '08'
     elif luck in [-10]:
         face_id = '12'
-    return os.path.join(path, face_id + '.png')
+    return str((image_path / f'cc98{face_id}.png').absolute())

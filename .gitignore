@@ -147,5 +147,5 @@ dmypy.json
 *cache/
 
 # data
-data/
+/data
 

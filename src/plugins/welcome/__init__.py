@@ -1,10 +1,9 @@
-import os
+from pathlib import Path
 from nonebot import on_notice
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, Event, MessageSegment, GroupIncreaseNoticeEvent
 
-dir_path = os.path.split(os.path.realpath(__file__))[0]
-welcome_path = os.path.join(dir_path, 'welcome.jpg')
+welcome_path = str(Path(__file__).parent.absolute() / 'welcome.jpg')
 
 async def welcome_rule(bot: Bot, event: Event, state: T_State) -> bool:
     return isinstance(event, GroupIncreaseNoticeEvent)
