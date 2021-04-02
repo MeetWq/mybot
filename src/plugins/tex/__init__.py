@@ -44,4 +44,4 @@ async def _(bot: Bot, event: Event, state: T_State):
         await tex.send(message=MessageSegment.image(file='file://' + file_path))
         await tex.finish()
     else:
-        await tex.finish('出错了，请检查公式或稍后重试')
+        await tex.finish('出错了，请检查公式或稍后再试')

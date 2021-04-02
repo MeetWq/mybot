@@ -24,7 +24,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     await bangumi.send('请稍候...')
     msg = await get_bangumi_info(keyword)
     if not msg:
-        await bangumi.finish('出错了，请稍后重试')
+        await bangumi.finish('出错了，请稍后再试')
 
     await bangumi.send(message=msg)
     await bangumi.finish()
@@ -64,7 +64,7 @@ async def _(bot: Bot, event: Event, state: T_State):
 
     new_bangumi_list = await get_new_bangumi()
     if not new_bangumi_list:
-        await bangumi_new.finish('出错了，请稍后重试')
+        await bangumi_new.finish('出错了，请稍后再试')
 
     msg = new_bangumi_list[day - 1]
     await bangumi_new.send(message=msg)

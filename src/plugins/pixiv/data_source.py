@@ -5,20 +5,13 @@ from nonebot import get_driver
 from nonebot.adapters.cqhttp import MessageSegment, Message
 from nonebot.log import logger
 
-import json
-from tencentcloud.common import credential
-from tencentcloud.common.profile.client_profile import ClientProfile
-from tencentcloud.common.profile.http_profile import HttpProfile
-from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
-from tencentcloud.ims.v20201229 import ims_client, models
-
 from .config import Config
 
 global_config = get_driver().config
 pixiv_config = Config(**global_config.dict())
 
 
-async def get_pixiv(keyword: str, r18=False):
+async def get_pixiv(keyword: str):
     try:
         if keyword.isdigit():
             illust = await get_by_id(int(keyword))
@@ -36,16 +29,16 @@ async def get_pixiv(keyword: str, r18=False):
             if not illusts:
                 return '找不到相关的作品'
         if not illusts:
-            return '出错了，请稍后重试'
+            return '出错了，请稍后再试'
         logger.debug(illusts)
-        msg = await to_msg(illusts, r18)
+        msg = await to_msg(illusts)
         return msg
     except (KeyError, TypeError):
         logger.debug(traceback.format_exc())
-        return '出错了，请稍后重试'
+        return '出错了，请稍后再试'
 
 
-async def to_msg(illusts, r18=False):
+async def to_msg(illusts):
     msg = Message()
     async with PixivClient() as client:
         aapi = AppPixivAPI(client=client)
@@ -54,8 +47,6 @@ async def to_msg(illusts, r18=False):
             msg.append('{} ({})'.format(illust['title'], illust['id']))
             url = illust['image_urls']['large']
             url = url.replace('_webp', '').replace('i.pximg.net', 'i.pixiv.cat')
-            if not r18:
-                url = await replace_r18(url)
             msg.append(MessageSegment.image(file=url))
         return msg
 
@@ -86,30 +77,3 @@ async def get_by_id(work_id):
         await aapi.login(refresh_token=pixiv_config.pixiv_token)
         illust = await aapi.illust_detail(work_id)
         return illust
-
-
-async def replace_r18(url):
-    try:
-        r18_url = 'https://img.imgdb.cn/item/605899428322e6675ca64459.png'
-
-        cred = credential.Credential(pixiv_config.tencent_secret_id, pixiv_config.tencent_secret_key)
-        httpProfile = HttpProfile()
-        httpProfile.endpoint = 'ims.tencentcloudapi.com'
-
-        clientProfile = ClientProfile()
-        clientProfile.httpProfile = httpProfile
-        client = ims_client.ImsClient(cred, 'ap-shanghai', clientProfile)
-
-        req = models.ImageModerationRequest()
-        params = {
-            'FileUrl': url
-        }
-        req.from_json_string(json.dumps(params))
-
-        resp = client.ImageModeration(req)
-        if resp.Suggestion == 'Block':
-            return r18_url
-        return url
-    except TencentCloudSDKException as err:
-        logger.debug(err)
-        return url

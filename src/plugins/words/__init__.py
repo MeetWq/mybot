@@ -32,7 +32,7 @@ async def _(bot: Bot, event: Event, state: T_State):
         await ussrjoke.send(message=joke)
         await ussrjoke.finish()
     else:
-        await ussrjoke.finish('出错了，请稍后重试')
+        await ussrjoke.finish('出错了，请稍后再试')
 
 
 @cpstory.handle()
@@ -47,7 +47,7 @@ async def _(bot: Bot, event: Event, state: T_State):
         await cpstory.send(message=story)
         await cpstory.finish()
     else:
-        await cpstory.finish('出错了，请稍后重试')
+        await cpstory.finish('出错了，请稍后再试')
 
 
 @marketing.handle()
@@ -62,4 +62,4 @@ async def _(bot: Bot, event: Event, state: T_State):
         await marketing.send(message=article)
         await marketing.finish()
     else:
-        await marketing.finish('出错了，请稍后重试')
+        await marketing.finish('出错了，请稍后再试')

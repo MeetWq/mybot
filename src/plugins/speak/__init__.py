@@ -41,7 +41,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     if file_path:
         await speak.send(message=MessageSegment.record(file='file://' + file_path))
     else:
-        await speak.send(message='出错了，请稍后重试')
+        await speak.send(message='出错了，请稍后再试')
 
 
 @speak_at.handle()
@@ -56,4 +56,4 @@ async def _(bot: Bot, event: Event, state: T_State):
     if file_path:
         await speak_at.send(message=MessageSegment.record(file='file://' + file_path))
     else:
-        await speak_at.send(message='出错了，请稍后重试')
+        await speak_at.send(message='出错了，请稍后再试')

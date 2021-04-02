@@ -21,7 +21,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     await steam.send('请稍候...')
     msg = await get_steam_game(keyword)
     if not msg:
-        await steam.finish('出错了，请稍后重试')
+        await steam.finish('出错了，请稍后再试')
 
     await steam.send(message=msg)
     await steam.finish()

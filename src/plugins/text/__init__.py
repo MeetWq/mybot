@@ -37,4 +37,4 @@ async def _(bot: Bot, event: Event, state: T_State):
         await text.send(message=result)
         await text.finish()
     else:
-        await text.finish('出错了，请稍后重试')
+        await text.finish('出错了，请稍后再试')

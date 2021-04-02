@@ -27,4 +27,4 @@ async def _(bot: Bot, event: Event, state: T_State):
         await petpet.send(message=MessageSegment.image(file='file://' + file_path))
         await petpet.finish()
     else:
-        await petpet.finish('出错了，请稍后重试')
+        await petpet.finish('出错了，请稍后再试')
