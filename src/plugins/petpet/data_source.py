@@ -1,3 +1,4 @@
+import uuid
 import aiohttp
 import asyncio
 import hashlib
@@ -13,8 +14,9 @@ cache_path = Path('cache/petpet')
 if not cache_path.exists():
     cache_path.mkdir(parents=True)
 
-avatar_path = cache_path / 'avatar.jpg'
-petpet_path = cache_path / 'petpet.gif'
+file_name = uuid.uuid1().hex
+avatar_path = cache_path / (file_name + '.jpg')
+petpet_path = cache_path / (file_name + '.gif')
 
 if not check_chromium():
     download_chromium()

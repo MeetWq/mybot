@@ -1,7 +1,10 @@
 import os
+import uuid
 import traceback
 import subprocess
 from pathlib import Path
+
+from nonebot.log import logger
 
 cache_path = Path('cache/tex').absolute()
 if not cache_path.exists():
@@ -42,9 +45,10 @@ async def tex2pic(equation, fmt='png', border=2, resolution=1000):
         \end{{document}}
     '''.format(border, packages, equation)
 
-    tmp_tex = cache_path / 'tmp.tex'
-    tmp_pdf = cache_path / 'tmp.pdf'
-    tmp_out = cache_path / ('tmp.' + fmt)
+    file_name = uuid.uuid1().hex
+    tmp_tex = cache_path / (file_name + '.tex')
+    tmp_pdf = cache_path / (file_name + '.pdf')
+    tmp_out = cache_path / (file_name + '.' + fmt)
 
     try:
         with tmp_tex.open('w') as f:

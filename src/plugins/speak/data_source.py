@@ -69,8 +69,9 @@ async def get_tx_voice(text, type=0):
     req.from_json_string(json.dumps(params))
     resp = client.TextToVoice(req)
 
-    wav_path = cache_path / 'tmp.wav'
-    silk_path = cache_path / 'tmp.silk'
+    file_name = uuid.uuid1().hex
+    wav_path = cache_path / (file_name + '.wav')
+    silk_path = cache_path / (file_name + '.silk')
     with wav_path.open('wb') as f:
         f.write(base64.b64decode(resp.Audio))
 
@@ -81,9 +82,9 @@ async def get_tx_voice(text, type=0):
 
 
 async def get_ai_voice(text, type=0):
-    raw_path = cache_path / 'raw.mp3'
-    mp3_path = cache_path / 'tmp.mp3'
-    silk_path = cache_path / 'tmp.silk'
+    file_name = uuid.uuid1().hex
+    mp3_path = cache_path / (file_name + '.mp3')
+    silk_path = cache_path / (file_name + '.silk')
 
     mp3_url = await get_ai_voice_url(text, type)
     if not mp3_url:
@@ -92,10 +93,10 @@ async def get_ai_voice(text, type=0):
     async with aiohttp.ClientSession() as session:
         async with session.get(mp3_url) as resp:
             result = await resp.read()
-    with raw_path.open('wb') as f:
+    with mp3_path.open('wb') as f:
         f.write(result)
 
-    if split_voice(raw_path, mp3_path):
+    if split_voice(mp3_path, mp3_path):
         if to_silk(mp3_path, silk_path):
             return silk_path
     return None
