@@ -23,6 +23,7 @@ driver.register_adapter("cqhttp", CQHTTPBot)
 
 nonebot.load_plugins("src/plugins")
 nonebot.load_plugin("nonebot_plugin_manager")
+nonebot.load_plugin("nonebot_plugin_test")
 
 # Modify some config / config depends on loaded configs
 # 

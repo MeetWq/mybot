@@ -16,7 +16,7 @@ text_parser = ArgumentParser()
 text_parser.add_argument('-t', '--type', type=int, default=0)
 text_parser.add_argument('text', nargs='+')
 
-text = on_shell_command('text', parser=text_parser, priority=22)
+text = on_shell_command('text', parser=text_parser, priority=19)
 
 
 @text.handle()

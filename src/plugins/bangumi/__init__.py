@@ -11,8 +11,8 @@ export.description = '番剧查询'
 export.usage = 'Usage:\n  1. 番剧查询: 番剧 {keyword}\n  2. 新番查询: 今日新番、明日新番、周几新番'
 export.help = export.description + '\n' + export.usage
 
-bangumi = on_command('番剧', priority=34)
-bangumi_new = on_endswith('新番', priority=36)
+bangumi = on_command('番剧', priority=21)
+bangumi_new = on_endswith('新番', priority=21)
 
 
 @bangumi.handle()

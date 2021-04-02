@@ -15,7 +15,7 @@ music_parser = ArgumentParser()
 music_parser.add_argument('-s', '--source', default='all')
 music_parser.add_argument('song', nargs='+')
 
-music = on_shell_command('music', aliases={'点歌'}, parser=music_parser, priority=11)
+music = on_shell_command('music', aliases={'点歌'}, parser=music_parser, priority=29)
 
 sources = ['qq', 'netease', 'kugou', 'bilibili']
 

@@ -10,7 +10,7 @@ export.usage = 'Usage:\n  摸摸 [@user]'
 export.notice = 'Notice:\n  没有@人则使用发送者的头像'
 export.help = export.description + '\n' + export.usage + '\n' + export.notice
 
-petpet = on_command('petpet', aliases={'摸摸'}, priority=24)
+petpet = on_command('petpet', aliases={'摸摸'}, priority=26)
 
 
 @petpet.handle()

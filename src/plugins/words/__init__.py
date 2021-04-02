@@ -15,9 +15,9 @@ export.help = export.description + '\n' + export.usage
 
 words_parser = ArgumentParser()
 words_parser.add_argument('keyword', nargs='+')
-ussrjoke = on_shell_command('ussrjoke', aliases={'苏联笑话生成'}, parser=words_parser, priority=32)
-cpstory = on_shell_command('cpstory', aliases={'cp文生成', 'CP文生成'}, parser=words_parser, priority=32)
-marketing = on_shell_command('marketing', aliases={'营销号生成'}, parser=words_parser, priority=32)
+ussrjoke = on_shell_command('ussrjoke', aliases={'苏联笑话生成'}, parser=words_parser, priority=28)
+cpstory = on_shell_command('cpstory', aliases={'cp文生成', 'CP文生成'}, parser=words_parser, priority=28)
+marketing = on_shell_command('marketing', aliases={'营销号生成'}, parser=words_parser, priority=28)
 
 
 @ussrjoke.handle()

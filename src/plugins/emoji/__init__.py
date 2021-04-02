@@ -16,15 +16,15 @@ export.usage = 'Usage:\n  1、98表情包，包含"cc98xx"、"acxx"、"tbxx"、"
 export.notice = 'Notice:\n  由于NHD表情"emxx"与98冲突，用"emmxx"代替'
 export.help = export.description + '\n' + export.usage + '\n' + export.notice
 
-ac = on_regex(r'^ac\d{2,4}$', priority=19)
-em = on_regex(r'^em\d{2}$', priority=19)
-em_nhd = on_regex(r'^emm\d{1,3}$', priority=19)
-mahjong = on_regex(r'^[acf]:?\d{3}$', priority=19)
-ms = on_regex(r'^ms\d{2}$', priority=19)
-tb = on_regex(r'^tb\d{2}$', priority=19)
-cc98 = on_regex(r'^[Cc][Cc]98\d{2}$', priority=19)
+ac = on_regex(r'^ac\d{2,4}$', priority=14)
+em = on_regex(r'^em\d{2}$', priority=14)
+em_nhd = on_regex(r'^emm\d{1,3}$', priority=14)
+mahjong = on_regex(r'^[acf]:?\d{3}$', priority=14)
+ms = on_regex(r'^ms\d{2}$', priority=14)
+tb = on_regex(r'^tb\d{2}$', priority=14)
+cc98 = on_regex(r'^[Cc][Cc]98\d{2}$', priority=14)
 
-get_jpg = on_endswith('.jpg', priority=23)
+get_jpg = on_endswith('.jpg', priority=30)
 
 
 @ac.handle()
@@ -58,7 +58,7 @@ emoji_parser = ArgumentParser()
 emoji_parser.add_argument('-t', '--type', type=str)
 emoji_parser.add_argument('text', nargs='+')
 
-emoji = on_shell_command('emoji', aliases={'表情包'}, parser=emoji_parser, priority=28)
+emoji = on_shell_command('emoji', aliases={'表情包'}, parser=emoji_parser, priority=31)
 
 
 @emoji.handle()

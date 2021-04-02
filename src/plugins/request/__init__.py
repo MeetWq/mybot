@@ -7,7 +7,7 @@ async def friend_add_rule(bot: Bot, event: Event, state: T_State) -> bool:
     return isinstance(event, FriendRequestEvent)
 
 
-friend_add = on_notice(rule=friend_add_rule, priority=14)
+friend_add = on_notice(rule=friend_add_rule, priority=13)
 
 
 @friend_add.handle()
@@ -22,7 +22,7 @@ async def group_add_rule(bot: Bot, event: Event, state: T_State) -> bool:
     return isinstance(event, GroupRequestEvent)
 
 
-group_add = on_notice(rule=group_add_rule, priority=14)
+group_add = on_notice(rule=group_add_rule, priority=13)
 
 
 @group_add.handle()

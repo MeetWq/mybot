@@ -9,7 +9,7 @@ export.description = 'NHD娘'
 export.usage = 'Usage:\n  NHD娘，{xxx}'
 export.help = export.description + '\n' + export.usage
 
-nhdgirl = on_regex(r'^[Nn][Hh][Dd]娘', priority=27)
+nhdgirl = on_regex(r'^[Nn][Hh][Dd]娘', priority=33)
 
 
 @nhdgirl.handle()

@@ -4,8 +4,8 @@ from nonebot.rule import to_me
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, Event, GroupMessageEvent
 
-help_command = on_command('help', aliases={'帮助'}, priority=18)
-help_at = on_message(rule=to_me(), priority=16, block=False)
+help_command = on_command('help', aliases={'帮助'}, priority=11)
+help_at = on_message(rule=to_me(), priority=11, block=False)
 
 
 @help_command.handle()

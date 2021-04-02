@@ -18,7 +18,7 @@ what_parser.add_argument('-s', '--source', default='all')
 what_parser.add_argument('keyword', nargs='+')
 
 commands = {'是啥', '是什么', '是谁'}
-what = on_keyword(commands, priority=25)
+what = on_keyword(commands, priority=27)
 what_command = on_shell_command('what', parser=what_parser, priority=17)
 
 sources = ['nbnhhsh', 'jiki', 'baidu', 'wiki']

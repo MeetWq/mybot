@@ -13,7 +13,7 @@ export.options = 'Options:\n  ' + f"支持的语言：{', '.join(list(legal_lang
 export.notice = 'Notice:\n  来源为菜鸟教程的网络编译器'
 export.help = export.description + '\n' + export.usage + '\n' + export.options + '\n' + export.notice
 
-compiler = on_command('lang', priority=26)
+compiler = on_command('lang', priority=20)
 
 
 @compiler.handle()

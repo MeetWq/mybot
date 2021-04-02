@@ -9,7 +9,7 @@ export.description = 'Steam游戏查询'
 export.usage = 'Usage:\n  steam {keyword}'
 export.help = export.description + '\n' + export.usage
 
-steam = on_command('steam', priority=38)
+steam = on_command('steam', priority=22)
 
 
 @steam.handle()

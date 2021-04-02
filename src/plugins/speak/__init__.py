@@ -17,8 +17,8 @@ speak_parser = ArgumentParser()
 speak_parser.add_argument('-t', '--type', type=int, default=0)
 speak_parser.add_argument('words', nargs='+')
 
-speak = on_shell_command('speak', parser=speak_parser, priority=14)
-speak_at = on_command('说', rule=to_me(), priority=26)
+speak = on_shell_command('speak', parser=speak_parser, priority=18)
+speak_at = on_command('说', rule=to_me(), priority=18)
 
 
 @speak.handle()

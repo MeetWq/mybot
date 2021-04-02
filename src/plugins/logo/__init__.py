@@ -17,7 +17,7 @@ logo_parser = ArgumentParser()
 logo_parser.add_argument('-s', '--style', default='pornhub')
 logo_parser.add_argument('text', nargs='+')
 
-logo = on_shell_command('logo', parser=logo_parser, priority=17)
+logo = on_shell_command('logo', parser=logo_parser, priority=16)
 
 
 @logo.handle()

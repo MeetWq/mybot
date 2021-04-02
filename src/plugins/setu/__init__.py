@@ -12,8 +12,8 @@ export.usage = 'Usage:\n  setu/涩图 [keyword]'
 export.notice = 'Notice:\n  需要@我'
 export.help = export.description + '\n' + export.usage + '\n' + export.notice
 
-setu = on_keyword({'setu', '涩图', '色图'}, rule=to_me(), priority=29)
-setu_ = on_command('setu_', rule=to_me(), permission=SUPERUSER, priority=28)
+setu = on_keyword({'setu', '涩图', '色图'}, rule=to_me(), priority=24)
+setu_ = on_command('setu_', rule=to_me(), permission=SUPERUSER, priority=23)
 
 
 @setu.handle()
