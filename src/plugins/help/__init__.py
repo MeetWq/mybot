@@ -12,7 +12,7 @@ help_at = on_message(rule=to_me(), priority=11, block=False)
 async def _(bot: Bot, event: Event, state: T_State):
     plugin_name = str(event.get_message()).strip()
     if plugin_name:
-        group_id = str(event.group_id) if isinstance(event, GroupMessageEvent) else ''
+        group_id = str(event.group_id) if isinstance(event, GroupMessageEvent) else '0'
         help_msg = await get_help_msg(group_id, plugin_name)
         if help_msg:
             await help_command.finish(help_msg)
@@ -24,7 +24,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     msg = str(event.get_message()).strip()
     if not msg or msg == 'help':
         help_at.block = True
-        group_id = str(event.group_id) if isinstance(event, GroupMessageEvent) else ''
+        group_id = str(event.group_id) if isinstance(event, GroupMessageEvent) else '0'
         help_msg = await get_help_msg(group_id)
         await help_at.finish(help_msg)
 
@@ -34,10 +34,9 @@ async def get_help_msg(group_id='', plugin_name=''):
         lambda p: set(p.export.keys()).issuperset({'description', 'help'}), get_loaded_plugins()
     ))
 
-    if group_id:
-        npm = require('nonebot_plugin_manager')
-        group_plugin_list = npm.get_group_plugin_list(group_id)
-        plugins = [p for p in plugins if group_plugin_list[p.name]]
+    npm = require('nonebot_plugin_manager')
+    group_plugin_list = npm.get_group_plugin_list(group_id)
+    plugins = [p for p in plugins if group_plugin_list[p.name]]
 
     if not plugins:
         return '暂时没有可用的功能'

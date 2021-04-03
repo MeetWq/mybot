@@ -4,7 +4,7 @@ from nonebot.rule import ArgumentParser
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, Event, Message
 
-from .data_source import get_content
+from .data_source import get_content, sources
 
 export = export()
 export.description = '百科'
@@ -20,8 +20,6 @@ what_parser.add_argument('keyword', nargs='+')
 commands = {'是啥', '是什么', '是谁'}
 what = on_keyword(commands, priority=27)
 what_command = on_shell_command('what', parser=what_parser, priority=17)
-
-sources = ['nbnhhsh', 'jiki', 'baidu', 'wiki']
 
 
 def split_command(msg):
@@ -46,12 +44,11 @@ async def _(bot: Bot, event: Event, state: T_State):
         return
     keyword = prefix
 
-    for source in sources:
-        msg = await get_content(keyword, source)
-        if msg:
-            what.block = True
-            await what.send(message=msg)
-            await what.finish()
+    msg = await get_content(keyword)
+    if msg:
+        what.block = True
+        await what.send(message=msg)
+        await what.finish()
     what.block = False
     return
 
@@ -68,18 +65,15 @@ async def _(bot: Bot, event: Event, state: T_State):
         await what_command.finish(export.usage)
 
     source = args.source
-    if source == 'all':
-        for s in sources:
-            msg = await get_content(keyword, s, force=True)
-            if msg:
-                await what_command.send(message=msg)
-                await what_command.finish()
-        await what_command.finish('找不到相关的条目')
-    elif source not in sources:
+    if source != 'all' and source not in sources:
         await what_command.finish(export.options)
+
+    msg = await get_content(keyword, source, force=True)
+    if msg:
+        await what_command.send(message=msg)
+        await what_command.finish()
     else:
-        msg = await get_content(keyword, source, force=True)
-        if msg:
-            await what_command.send(message=msg)
-            await what_command.finish()
-        await what_command.finish(source + '中找不到相关的条目')
+        if source == 'all':
+            await what_command.finish('找不到相关的条目')
+        else:
+            await what_command.finish(source + '中找不到相关的条目')
