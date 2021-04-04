@@ -45,7 +45,7 @@ async def get_help_msg(group_id='', plugin_name=''):
 
     if not plugin_name:
         plugins_list = '\n'.join(p.name + ': ' + p.export.description for p in plugins)
-        msg = '我现在的功能有: \n\n' + plugins_list + '\n\n发送"help [名称]"查看详情'
+        msg = '我现在的功能有: \n\n' + plugins_list + '\n\n发送 "help [名称]" 查看详情\n管理员可以通过 "npm block/unblock {名称}" 管理插件'
         return msg
     else:
         for p in plugins:

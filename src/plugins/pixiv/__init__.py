@@ -8,7 +8,7 @@ from .data_source import get_pixiv
 
 export = export()
 export.description = 'Pixiv图片'
-export.usage = 'Usage:\n  pixiv {日榜/周榜/年榜/id/关键词}'
+export.usage = 'Usage:\n  pixiv {日榜/周榜/月榜/id/关键词}'
 export.help = export.description + '\n' + export.usage
 
 pixiv = on_command('pixiv', priority=25)

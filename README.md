@@ -40,3 +40,15 @@ pip install pillow pyppeteer
 
 sudo apt install imagemagick
 ```
+
+- For plugin what
+
+```bash
+pip install baike wikipedia
+```
+
+- For plugin bilibili_live
+
+```bash
+pip install bilibili_api
+```
