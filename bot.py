@@ -7,7 +7,7 @@ from nonebot.adapters.cqhttp import Bot as CQHTTPBot
 
 from nonebot.log import logger, default_format
 
-log_name = f"nonebot_{datetime.today().strftime('%Y%m%d')}.log"
+log_name = 'nonebot.log'
 log_dir = Path('log')
 if not log_dir.exists():
     log_dir.mkdir()

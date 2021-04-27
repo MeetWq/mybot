@@ -20,7 +20,7 @@ compiler = on_command('lang', priority=20)
 async def _(bot: Bot, event: Event, state: T_State):
     msg = str(event.get_message()).strip()
 
-    match_obj = re.match(r'(.*?);\n(.*)', msg, re.S)
+    match_obj = re.match(r'(.*?)[;\n]+(.*)', msg, re.S)
     if not match_obj:
         await compiler.finish(export.usage + '\n' + export.options)
 
