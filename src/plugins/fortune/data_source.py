@@ -50,7 +50,7 @@ def get_type(luck):
 
 
 def get_face(luck):
-    image_path = Path('src/data/images/cc98')
+    image_path = Path('src/data/images/cc98-mini')
     if luck in [10, 26]:
         face_id = '04'
     elif luck in [9, 20]:

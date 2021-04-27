@@ -57,6 +57,9 @@ async def get_nbnhhsh(keyword, force=False):
             if i['inputting']:
                 title = i['name']
                 result += f"{i['name']} => {'，'.join(i['inputting'])}"
+    if not force:
+        if fuzz.ratio(title, keyword) < 90:
+            return '', ''
     return title, result
 
 

@@ -15,8 +15,8 @@ B站直播间 订阅 {房间号/用户名}
 B站直播间 取消订阅 {房间号/用户名}
 B站直播间 清空订阅
 B站直播间 订阅列表'''
-export.notice = 'Notice:\n管理订阅需要群管理员权限'
-export.help = export.description + '\n' + export.usage + '\n' + export.notice
+# export.notice = 'Notice:\n管理订阅需要群管理员权限'
+export.help = export.description + '\n' + export.usage # + '\n' + export.notice
 
 bilibili_live = on_command('bilibili_live', aliases={'B站直播间', 'b站直播间'}, priority=35)
 
@@ -59,14 +59,14 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
         await bilibili_live.send(message=msg)
         await bilibili_live.finish()
     elif command in ['清空订阅', 'clear']:
-        if not check_permission(bot, event):
-            await bilibili_live.finish('管理订阅需要群管理员权限')
+        # if not check_permission(bot, event):
+        #     await bilibili_live.finish('管理订阅需要群管理员权限')
         clear_sub_list(group_id)
         await update_status_list()
         await bilibili_live.finish('本群订阅列表已清空')
-    else:
-        if not check_permission(bot, event):
-            await bilibili_live.finish('管理订阅需要群管理员权限')
+    # else:
+    #     if not check_permission(bot, event):
+    #         await bilibili_live.finish('管理订阅需要群管理员权限')
 
 
 @bilibili_live.got('room_id', prompt='请输入房间号或主播名称')
@@ -108,5 +108,5 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
             await bilibili_live.finish('出错了，请稍后再试')
 
 
-def check_permission(bot: Bot, event: GroupMessageEvent):
-    return event.sender.role in ['admin', 'owner'] or event.get_user_id() in bot.config.superusers
+# def check_permission(bot: Bot, event: GroupMessageEvent):
+#     return event.sender.role in ['admin', 'owner'] or event.get_user_id() in bot.config.superusers
