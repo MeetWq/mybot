@@ -15,9 +15,10 @@ jrrp = on_command('jrrp', aliases={'今日运势', '今日人品', '抽签'}, pr
 @jrrp.handle()
 async def _(bot: Bot, event: Event, state: T_State):
     user_id = event.user_id
+    username = event.sender.nickname
     group_id = 0
     if isinstance(event, GroupMessageEvent):
         group_id = event.group_id
-    reponse = await get_response(group_id, user_id)
-    await jrrp.send(message=reponse, at_sender=True)
+    reponse = await get_response(group_id, user_id, username)
+    await jrrp.send(message=reponse)
     await jrrp.finish()

@@ -22,7 +22,7 @@ async def get_content(keyword, source='all', force=False):
         elif source == 'all':
             titles = []
             msgs = []
-            for s in sources:
+            for s in list(sources.keys())[:-1]:
                 t, m = await sources[s](keyword, force)
                 titles.append(t)
                 msgs.append(m)
