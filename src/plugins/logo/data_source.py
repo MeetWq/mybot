@@ -1,5 +1,6 @@
 import os
 import uuid
+import base64
 import aiohttp
 import asyncio
 import traceback
@@ -74,16 +75,39 @@ async def create_youtube_logo(left_text, right_text):
     font = ImageFont.truetype(str(font_path), 100)
     font_width, font_height = font.getsize(left_text + right_text)
 
+    gfont1_path = dir_path / 'TK3iWkUHHAIjg752HT8Ghe4.woff2'
+    gfont2_path = dir_path / 'TK3iWkUHHAIjg752Fj8Ghe4.woff2'
+    gfont3_path = dir_path / 'TK3iWkUHHAIjg752Fz8Ghe4.woff2'
+    gfont4_path = dir_path / 'TK3iWkUHHAIjg752GT8G.woff2'
+    corner_path = dir_path / 'corner.png'
+
+    with gfont1_path.open('rb') as f:
+        gfont1_b64 = 'data:application/x-font-woff;charset=utf-8;base64,' + str(base64.b64encode(f.read()), 'utf-8')
+
+    with gfont2_path.open('rb') as f:
+        gfont2_b64 = 'data:application/x-font-woff;charset=utf-8;base64,' + str(base64.b64encode(f.read()), 'utf-8')
+
+    with gfont3_path.open('rb') as f:
+        gfont3_b64 = 'data:application/x-font-woff;charset=utf-8;base64,' + str(base64.b64encode(f.read()), 'utf-8')
+
+    with gfont4_path.open('rb') as f:
+        gfont4_b64 = 'data:application/x-font-woff;charset=utf-8;base64,' + str(base64.b64encode(f.read()), 'utf-8')
+
+    with corner_path.open('rb') as f:
+        corner_b64 = 'data:image/png;base64,' + str(base64.b64encode(f.read()), 'utf-8')
+
     with html_path.open('r', encoding='utf-8') as f:
         content = f.read()
-        content = content.replace('You', left_text).replace('Tube', right_text)
+        content = content.replace('You', left_text).replace('Tube', right_text) \
+                         .replace('FONT1', gfont1_b64).replace('FONT2', gfont2_b64) \
+                         .replace('FONT3', gfont3_b64).replace('FONT4', gfont4_b64) \
+                         .replace('CORNER', corner_b64)
 
     browser = await launch({'args': ['--no-sandbox']}, headless=True)
     page = await browser.newPage()
     await page.setViewport(viewport={'width': font_width * 3, 'height': 300})
     await page.setJavaScriptEnabled(enabled=True)
     await page.setContent(content)
-    await asyncio.sleep(3)
     await page.screenshot({'path': str(img_path)})
     await browser.close()
 
