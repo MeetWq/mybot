@@ -5,7 +5,6 @@ import hashlib
 import traceback
 from pathlib import Path
 from pyppeteer import launch
-from pyppeteer.chromium_downloader import check_chromium, download_chromium
 from pyppeteer.errors import NetworkError
 
 from nonebot.log import logger
@@ -17,9 +16,6 @@ if not cache_path.exists():
 file_name = uuid.uuid1().hex
 avatar_path = cache_path / (file_name + '.jpg')
 petpet_path = cache_path / (file_name + '.gif')
-
-if not check_chromium():
-    download_chromium()
 
 
 async def get_petpet(user_id):
@@ -45,7 +41,7 @@ async def get_petpet(user_id):
 
 async def create_petpet(input_path, output_path):
     try:
-        browser = await launch({'args': ['--no-sandbox']}, headless=True)
+        browser = await launch({'executablePath': '/usr/bin/chromium-browser', 'args': ['--no-sandbox']}, headless=True)
         page = await browser.newPage()
         await page.goto('https://benisland.neocities.org/petpet/')
         upload_file = await page.querySelector('input[type=file]')

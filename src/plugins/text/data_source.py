@@ -1,11 +1,7 @@
 import traceback
 from pyppeteer import launch
-from pyppeteer.chromium_downloader import check_chromium, download_chromium
 from pyppeteer.errors import NetworkError
 from nonebot.log import logger
-
-if not check_chromium():
-    download_chromium()
 
 
 async def get_text(text, type=0):
@@ -24,7 +20,7 @@ async def get_text(text, type=0):
 
 async def get_cxh_text(text):
     try:
-        browser = await launch({'args': ['--no-sandbox']}, headless=True)
+        browser = await launch({'executablePath': '/usr/bin/chromium-browser', 'args': ['--no-sandbox']}, headless=True)
         page = await browser.newPage()
         await page.goto('http://www.atoolbox.net/Tool.php?Id=864')
         await page.evaluate(f'function() {{document.querySelector("input[type=text][id=rawText]").value = "{text}"}}')
@@ -40,7 +36,7 @@ async def get_cxh_text(text):
 
 async def get_mars_text(text):
     try:
-        browser = await launch({'args': ['--no-sandbox']}, headless=True)
+        browser = await launch({'executablePath': '/usr/bin/chromium-browser', 'args': ['--no-sandbox']}, headless=True)
         page = await browser.newPage()
         await page.goto('http://www.atoolbox.net/Tool.php?Id=820')
         await page.evaluate(f'function() {{document.querySelector("textarea[id=en-message]").value = "{text}"}}')
@@ -56,7 +52,7 @@ async def get_mars_text(text):
 
 async def get_ant_text(text):
     try:
-        browser = await launch({'args': ['--no-sandbox']}, headless=True)
+        browser = await launch({'executablePath': '/usr/bin/chromium-browser', 'args': ['--no-sandbox']}, headless=True)
         page = await browser.newPage()
         await page.goto('http://www.atoolbox.net/Tool.php?Id=822')
         await page.evaluate(f'function() {{document.querySelector("textarea[id=en-message]").value = "{text}"}}')
@@ -72,7 +68,7 @@ async def get_ant_text(text):
 
 async def get_invert_text(text):
     try:
-        browser = await launch({'args': ['--no-sandbox']}, headless=True)
+        browser = await launch({'executablePath': '/usr/bin/chromium-browser', 'args': ['--no-sandbox']}, headless=True)
         page = await browser.newPage()
         await page.goto('http://www.atoolbox.net/Tool.php?Id=759')
         await page.evaluate(f'function() {{document.querySelector("textarea[id=txtTitle]").value = "{text}"}}')
@@ -88,7 +84,7 @@ async def get_invert_text(text):
 
 async def get_bug_text(text):
     try:
-        browser = await launch({'args': ['--no-sandbox']}, headless=True)
+        browser = await launch({'executablePath': '/usr/bin/chromium-browser', 'args': ['--no-sandbox']}, headless=True)
         page = await browser.newPage()
         await page.goto('http://www.atoolbox.net/Tool.php?Id=896')
         await page.evaluate(f'function() {{document.querySelector("textarea[id=input]").value = "{text}"}}')

@@ -8,15 +8,11 @@ from pathlib import Path
 from datetime import datetime
 from nonebot.adapters.cqhttp import Message, MessageSegment
 from pyppeteer import launch
-from pyppeteer.chromium_downloader import check_chromium, download_chromium
 
 dir_path = Path(__file__).parent
 cache_path = Path('cache/fortune')
 if not cache_path.exists():
     cache_path.mkdir(parents=True)
-
-if not check_chromium():
-    download_chromium()
 
 
 async def get_response(group_id, user_id, username):
@@ -106,7 +102,7 @@ async def create_image(username, fortune, content, face_path):
         html = html.replace('USERNAME', username).replace('FORTUNE', fortune) \
                    .replace('CONTENT', content).replace('FACE', face_b64).replace('BACKGROUND', bg_b64)
 
-    browser = await launch({'args': ['--no-sandbox']}, headless=True)
+    browser = await launch({'executablePath': '/usr/bin/chromium-browser', 'args': ['--no-sandbox']}, headless=True)
     page = await browser.newPage()
     await page.setViewport(viewport={'width': 2000, 'height': 500})
     await page.setJavaScriptEnabled(enabled=True)

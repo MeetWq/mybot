@@ -38,7 +38,7 @@ pip install pixivpy-async aiohttp_socks
 ```bash
 pip install pillow pyppeteer
 
-sudo apt install imagemagick
+sudo apt install chromium-browser imagemagick
 ```
 
 - For plugin what

@@ -9,7 +9,6 @@ from pathlib import Path
 from PIL import ImageFont
 from bs4 import BeautifulSoup
 from pyppeteer import launch
-from pyppeteer.chromium_downloader import check_chromium, download_chromium
 from pyppeteer.errors import NetworkError
 
 from nonebot.log import logger
@@ -18,9 +17,6 @@ dir_path = Path(__file__).parent
 cache_path = Path('cache/logo')
 if not cache_path.exists():
     cache_path.mkdir(parents=True)
-
-if not check_chromium():
-    download_chromium()
 
 
 async def create_logo(texts, style='pornhub'):
@@ -55,7 +51,7 @@ async def create_pornhub_logo(left_text, right_text):
         content = f.read()
         content = content.replace('Porn', left_text).replace('Hub', right_text)
 
-    browser = await launch({'args': ['--no-sandbox']}, headless=True)
+    browser = await launch({'executablePath': '/usr/bin/chromium-browser', 'args': ['--no-sandbox']}, headless=True)
     page = await browser.newPage()
     await page.setViewport(viewport={'width': font_width * 2, 'height': 300})
     await page.setJavaScriptEnabled(enabled=True)
@@ -103,7 +99,7 @@ async def create_youtube_logo(left_text, right_text):
                          .replace('FONT3', gfont3_b64).replace('FONT4', gfont4_b64) \
                          .replace('CORNER', corner_b64)
 
-    browser = await launch({'args': ['--no-sandbox']}, headless=True)
+    browser = await launch({'executablePath': '/usr/bin/chromium-browser', 'args': ['--no-sandbox']}, headless=True)
     page = await browser.newPage()
     await page.setViewport(viewport={'width': font_width * 3, 'height': 300})
     await page.setJavaScriptEnabled(enabled=True)
@@ -119,7 +115,7 @@ async def create_youtube_logo(left_text, right_text):
 async def create_douyin_logo(text):
     img_path = cache_path / (uuid.uuid1().hex + '.gif')
 
-    browser = await launch({'args': ['--no-sandbox']}, headless=True)
+    browser = await launch({'executablePath': '/usr/bin/chromium-browser', 'args': ['--no-sandbox']}, headless=True)
     page = await browser.newPage()
     await page.goto('https://tools.miku.ac/douyin_text/')
     await page.evaluate('function() {document.querySelector("input[type=checkbox]").click()}')
