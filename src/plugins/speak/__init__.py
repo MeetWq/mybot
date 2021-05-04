@@ -36,7 +36,6 @@ async def _(bot: Bot, event: Event, state: T_State):
     if type not in [0, 1]:
         await speak.finish(export.options)
 
-    await speak.send(message='请稍候...')
     file_path = await get_voice(words, type)
     if file_path:
         await speak.send(message=MessageSegment.record(file='file://' + file_path))
@@ -51,7 +50,6 @@ async def _(bot: Bot, event: Event, state: T_State):
         await speak_at.send(message=export.usage)
         return
 
-    await speak_at.send(message='请稍候...')
     file_path = await get_voice(msg)
     if file_path:
         await speak_at.send(message=MessageSegment.record(file='file://' + file_path))

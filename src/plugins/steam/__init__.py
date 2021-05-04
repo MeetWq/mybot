@@ -18,7 +18,6 @@ async def _(bot: Bot, event: Event, state: T_State):
     if not keyword:
         await steam.finish(export.usage)
 
-    await steam.send('请稍候...')
     msg = await get_steam_game(keyword)
     if not msg:
         await steam.finish('出错了，请稍后再试')

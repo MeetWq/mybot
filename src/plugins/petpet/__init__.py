@@ -15,7 +15,6 @@ petpet = on_command('petpet', aliases={'摸摸'}, priority=26)
 
 @petpet.handle()
 async def _(bot: Bot, event: Event, state: T_State):
-    await petpet.send(message='请稍候...')
     qq = event.user_id
     msg = event.get_message()
     for msg_seg in msg:

@@ -93,7 +93,6 @@ async def _(bot: Bot, event: Event, state: T_State):
     if len(texts) != emojis[num]['input_num']:
         await emoji.finish(f"该表情包需要 {emojis[num]['input_num']} 个输入")
 
-    await emoji.send(message='请稍候...')
     msg = await make_emoji(num, texts)
     await emoji.send(message=msg)
     await emoji.finish()

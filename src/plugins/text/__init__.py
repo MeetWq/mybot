@@ -31,7 +31,6 @@ async def _(bot: Bot, event: Event, state: T_State):
 
     texts = args.text
     texts = ' '.join(texts)
-    await text.send(message='请稍候...')
     result = await get_text(texts, type)
     if result:
         await text.send(message=result)

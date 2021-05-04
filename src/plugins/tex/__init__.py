@@ -38,7 +38,6 @@ async def _(bot: Bot, event: Event, state: T_State):
     if not equation:
         await tex.finish(export.usage)
 
-    await tex.send(message='请稍候...')
     file_path = await tex2pic(equation, border=args.border, resolution=args.resolution)
     if file_path:
         await tex.send(message=MessageSegment.image(file='file://' + file_path))

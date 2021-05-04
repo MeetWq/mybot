@@ -21,7 +21,6 @@ async def _(bot: Bot, event: Event, state: T_State):
     if not keyword:
         await bangumi.finish(export.usage)
 
-    await bangumi.send('请稍候...')
     msg = await get_bangumi_info(keyword)
     if not msg:
         await bangumi.finish('出错了，请稍后再试')

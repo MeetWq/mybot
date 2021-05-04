@@ -20,11 +20,6 @@ async def _(bot: Bot, event: Event, state: T_State):
     if not keyword:
         pixiv.finish(export.usage)
 
-    if keyword in ['日榜', 'day', '周榜', 'week', '月榜', 'month']:
-        await pixiv.send('请稍候，将随机发送3张图片')
-    else:
-        await pixiv.send('请稍候...')
-
     msg = await get_pixiv(keyword)
     if not str(msg):
         await pixiv.finish('出错了，请稍后再试')
