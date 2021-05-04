@@ -36,9 +36,10 @@ pip install pixivpy-async aiohttp_socks
 - For plugin logo
 
 ```bash
-pip install pillow pyppeteer
-
-sudo apt install chromium-browser imagemagick
+pip install pillow playwright
+pip install playwright
+python -m playwright install
+sudo apt install imagemagick
 ```
 
 - For plugin what

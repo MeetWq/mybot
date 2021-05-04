@@ -8,8 +8,7 @@ import subprocess
 from pathlib import Path
 from PIL import ImageFont
 from bs4 import BeautifulSoup
-from pyppeteer import launch
-from pyppeteer.errors import NetworkError
+from src.libs.playwright import get_new_page
 
 from nonebot.log import logger
 
@@ -34,61 +33,50 @@ async def create_logo(texts, style='pornhub'):
         if img_path:
             return str(img_path.absolute())
         return ''
-    except (AttributeError, TypeError, OSError, NetworkError):
+    except (AttributeError, TypeError, OSError):
         logger.debug(traceback.format_exc())
         return ''
 
 
 async def create_pornhub_logo(left_text, right_text):
-    font_path = Path('src/data/fonts/arial.ttf')
     html_path = dir_path / 'pornhub.html'
     img_path = cache_path / (uuid.uuid1().hex + '.png')
 
-    font = ImageFont.truetype(str(font_path), 100)
-    font_width, font_height = font.getsize(left_text + right_text)
+    font = ImageFont.truetype('msyh.ttc', 100)
+    font_width, _ = font.getsize(left_text + right_text)
+    img_width = font_width + 200
 
     with html_path.open('r', encoding='utf-8') as f:
         content = f.read()
         content = content.replace('Porn', left_text).replace('Hub', right_text)
 
-    browser = await launch({'executablePath': '/usr/bin/chromium-browser', 'args': ['--no-sandbox']}, headless=True)
-    page = await browser.newPage()
-    await page.setViewport(viewport={'width': font_width * 2, 'height': 300})
-    await page.setJavaScriptEnabled(enabled=True)
-    await page.setContent(content)
-    await page.screenshot({'path': str(img_path)})
-    await browser.close()
+    async with get_new_page(viewport={"width": img_width,"height": 250}) as page:
+        await page.set_content(content)
+        await page.screenshot(path=str(img_path))
 
     if trim_image(img_path, img_path):
         return img_path
 
 
 async def create_youtube_logo(left_text, right_text):
-    font_path = Path('src/data/fonts/arial.ttf')
     html_path = dir_path / 'youtube.html'
     img_path = cache_path / (uuid.uuid1().hex + '.png')
 
-    font = ImageFont.truetype(str(font_path), 100)
-    font_width, font_height = font.getsize(left_text + right_text)
+    font = ImageFont.truetype('msyh.ttc', 100)
+    font_width, _ = font.getsize(left_text + right_text)
+    img_width = font_width + 300
 
-    gfont1_path = dir_path / 'TK3iWkUHHAIjg752HT8Ghe4.woff2'
-    gfont2_path = dir_path / 'TK3iWkUHHAIjg752Fj8Ghe4.woff2'
-    gfont3_path = dir_path / 'TK3iWkUHHAIjg752Fz8Ghe4.woff2'
-    gfont4_path = dir_path / 'TK3iWkUHHAIjg752GT8G.woff2'
+    def load_gfont(path):
+        with open(path, 'rb') as f:
+            return 'data:application/x-font-woff;charset=utf-8;base64,' + \
+                str(base64.b64encode(f.read()), 'utf-8')
+
+    gfont1_b64 = load_gfont('src/data/fonts/TK3iWkUHHAIjg752HT8Ghe4.woff2')
+    gfont2_b64 = load_gfont('src/data/fonts/TK3iWkUHHAIjg752Fj8Ghe4.woff2')
+    gfont3_b64 = load_gfont('src/data/fonts/TK3iWkUHHAIjg752Fz8Ghe4.woff2')
+    gfont4_b64 = load_gfont('src/data/fonts/TK3iWkUHHAIjg752GT8G.woff2')
+
     corner_path = dir_path / 'corner.png'
-
-    with gfont1_path.open('rb') as f:
-        gfont1_b64 = 'data:application/x-font-woff;charset=utf-8;base64,' + str(base64.b64encode(f.read()), 'utf-8')
-
-    with gfont2_path.open('rb') as f:
-        gfont2_b64 = 'data:application/x-font-woff;charset=utf-8;base64,' + str(base64.b64encode(f.read()), 'utf-8')
-
-    with gfont3_path.open('rb') as f:
-        gfont3_b64 = 'data:application/x-font-woff;charset=utf-8;base64,' + str(base64.b64encode(f.read()), 'utf-8')
-
-    with gfont4_path.open('rb') as f:
-        gfont4_b64 = 'data:application/x-font-woff;charset=utf-8;base64,' + str(base64.b64encode(f.read()), 'utf-8')
-
     with corner_path.open('rb') as f:
         corner_b64 = 'data:image/png;base64,' + str(base64.b64encode(f.read()), 'utf-8')
 
@@ -99,13 +87,9 @@ async def create_youtube_logo(left_text, right_text):
                          .replace('FONT3', gfont3_b64).replace('FONT4', gfont4_b64) \
                          .replace('CORNER', corner_b64)
 
-    browser = await launch({'executablePath': '/usr/bin/chromium-browser', 'args': ['--no-sandbox']}, headless=True)
-    page = await browser.newPage()
-    await page.setViewport(viewport={'width': font_width * 3, 'height': 300})
-    await page.setJavaScriptEnabled(enabled=True)
-    await page.setContent(content)
-    await page.screenshot({'path': str(img_path)})
-    await browser.close()
+    async with get_new_page(viewport={"width": img_width,"height": 250}) as page:
+        await page.set_content(content)
+        await page.screenshot(path=str(img_path))
 
     if trim_image(img_path, img_path):
         if trim_image(img_path, img_path):
@@ -115,26 +99,27 @@ async def create_youtube_logo(left_text, right_text):
 async def create_douyin_logo(text):
     img_path = cache_path / (uuid.uuid1().hex + '.gif')
 
-    browser = await launch({'executablePath': '/usr/bin/chromium-browser', 'args': ['--no-sandbox']}, headless=True)
-    page = await browser.newPage()
-    await page.goto('https://tools.miku.ac/douyin_text/')
-    await page.evaluate('function() {document.querySelector("input[type=checkbox]").click()}')
-    await asyncio.sleep(2)
-    await page.evaluate('function() {document.querySelector("input[type=text]").value = ""}')
-    await page.focus('input[type=text]')
-    await page.keyboard.type(text)
-    el_btn = await page.querySelector('button[class="el-button el-button--default"]')
-    await el_btn.click()
-    await asyncio.sleep(1)
-    preview = await page.querySelector('div[class="nya-container preview pt"]')
-    img = await preview.querySelector('img')
-    url = await (await img.getProperty('src')).jsonValue()
-    resp = await page.goto(url)
-    content = await resp.buffer()
-    with img_path.open('wb') as f:
-        f.write(content)
-    await browser.close()
-    return img_path
+    async with get_new_page() as page:
+        await page.goto('https://tools.miku.ac/douyin_text/')
+        try:
+            await page.click('button[class="el-button el-button--default el-button--small el-button--primary "]')
+            await asyncio.sleep(1)
+        except:
+            pass
+        await page.evaluate('function() {document.querySelector("input[type=checkbox]").click()}')
+        await page.click('input[type=text]')
+        await page.fill('input[type=text]', text)
+        await page.click('button[class="el-button el-button--default"]')
+        await asyncio.sleep(2)
+        preview = await page.query_selector('div[class="nya-container preview pt"]')
+        img = await preview.query_selector('img')
+        url = await (await img.get_property('src')).json_value()
+        resp = await page.goto(url)
+        content = await resp.body()
+        
+        with img_path.open('wb') as f:
+            f.write(content)
+        return img_path
 
 
 async def create_logomaker_logo(text, style='cocacola'):

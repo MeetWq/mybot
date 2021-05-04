@@ -6,8 +6,8 @@ import random
 import subprocess
 from pathlib import Path
 from datetime import datetime
-from nonebot.adapters.cqhttp import Message, MessageSegment
-from pyppeteer import launch
+from nonebot.adapters.cqhttp import MessageSegment
+from src.libs.playwright import get_new_page
 
 dir_path = Path(__file__).parent
 cache_path = Path('cache/fortune')
@@ -102,13 +102,9 @@ async def create_image(username, fortune, content, face_path):
         html = html.replace('USERNAME', username).replace('FORTUNE', fortune) \
                    .replace('CONTENT', content).replace('FACE', face_b64).replace('BACKGROUND', bg_b64)
 
-    browser = await launch({'executablePath': '/usr/bin/chromium-browser', 'args': ['--no-sandbox']}, headless=True)
-    page = await browser.newPage()
-    await page.setViewport(viewport={'width': 2000, 'height': 500})
-    await page.setJavaScriptEnabled(enabled=True)
-    await page.setContent(html)
-    await page.screenshot({'path': str(img_path)})
-    await browser.close()
+    async with get_new_page(viewport={"width": 2000,"height": 500}) as page:
+        await page.set_content(html)
+        await page.screenshot(path=str(img_path))
 
     if trim_image(img_path, out_path):
         return out_path

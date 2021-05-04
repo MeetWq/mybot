@@ -4,10 +4,8 @@ import asyncio
 import hashlib
 import traceback
 from pathlib import Path
-from pyppeteer import launch
-from pyppeteer.errors import NetworkError
-
 from nonebot.log import logger
+from src.libs.playwright import get_new_page
 
 cache_path = Path('cache/petpet')
 if not cache_path.exists():
@@ -41,23 +39,19 @@ async def get_petpet(user_id):
 
 async def create_petpet(input_path, output_path):
     try:
-        browser = await launch({'executablePath': '/usr/bin/chromium-browser', 'args': ['--no-sandbox']}, headless=True)
-        page = await browser.newPage()
-        await page.goto('https://benisland.neocities.org/petpet/')
-        upload_file = await page.querySelector('input[type=file]')
-        await upload_file.uploadFile(input_path)
-        export_btn = await page.querySelector('button[id=export]')
-        await export_btn.click()
-        await asyncio.sleep(2)
-        preview = await page.querySelector('figure[class=preview-image-container]')
-        img = await preview.querySelector('img')
-        url = await (await img.getProperty('src')).jsonValue()
-        resp = await page.goto(url)
-        content = await resp.buffer()
-        with output_path.open('wb') as f:
-            f.write(content)
-        await browser.close()
-        return True
-    except (AttributeError, TypeError, OSError, NetworkError):
+        async with get_new_page() as page:
+            await page.goto('https://benisland.neocities.org/petpet/')
+            await page.set_input_files('input[type=file]', input_path)
+            await page.click('button[id=export]')
+            await asyncio.sleep(1)
+            preview = await page.query_selector('figure[class=preview-image-container]')
+            img = await preview.query_selector('img')
+            url = await (await img.get_property('src')).json_value()
+            resp = await page.goto(url)
+            content = await resp.body()
+            with output_path.open('wb') as f:
+                f.write(content)
+            return True
+    except (AttributeError, TypeError, OSError):
         logger.debug(traceback.format_exc())
         return False

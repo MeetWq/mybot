@@ -1,4 +1,3 @@
-import re
 from nonebot import export, on_shell_command
 from nonebot.rule import ArgumentParser
 from nonebot.typing import T_State
@@ -34,7 +33,6 @@ async def _(bot: Bot, event: Event, state: T_State):
     if style in ['pornhub', 'youtube'] and len(texts) != 2:
         await logo.finish('参数数量不符\n' + export.usage + '\n' + export.notice)
 
-    await logo.send(message='请稍候...')
     file_path = await create_logo(texts, style)
     if file_path:
         await logo.send(message=MessageSegment.image(file='file://' + file_path))
