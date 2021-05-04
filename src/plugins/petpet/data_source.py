@@ -1,22 +1,23 @@
 import uuid
 import aiohttp
-import asyncio
 import hashlib
+import imageio
 import traceback
 from pathlib import Path
+from PIL import Image as IMG
 from nonebot.log import logger
-from src.libs.playwright import get_new_page
 
+dir_path = Path(__file__).parent
 cache_path = Path('cache/petpet')
 if not cache_path.exists():
     cache_path.mkdir(parents=True)
 
-file_name = uuid.uuid1().hex
-avatar_path = cache_path / (file_name + '.jpg')
-petpet_path = cache_path / (file_name + '.gif')
-
 
 async def get_petpet(user_id):
+    file_name = uuid.uuid1().hex
+    avatar_path = cache_path / (file_name + '.jpg')
+    petpet_path = cache_path / (file_name + '.gif')
+
     avatar_url = 'http://q1.qlogo.cn/g?b=qq&nk={}&s=640'.format(user_id)
     async with aiohttp.ClientSession() as session:
         async with session.get(avatar_url) as resp:
@@ -39,19 +40,21 @@ async def get_petpet(user_id):
 
 async def create_petpet(input_path, output_path):
     try:
-        async with get_new_page() as page:
-            await page.goto('https://benisland.neocities.org/petpet/')
-            await page.set_input_files('input[type=file]', input_path)
-            await page.click('button[id=export]')
-            await asyncio.sleep(1)
-            preview = await page.query_selector('figure[class=preview-image-container]')
-            img = await preview.query_selector('img')
-            url = await (await img.get_property('src')).json_value()
-            resp = await page.goto(url)
-            content = await resp.body()
-            with output_path.open('wb') as f:
-                f.write(content)
-            return True
+        avatar = IMG.open(input_path)
+        hand_frames = [dir_path / f'frames/frame{i}.png' for i in range(5)]
+        hand_frames = [IMG.open(i) for i in hand_frames]
+        frame_locs = [(14, 20, 98, 98), (12, 33, 101, 85), (8, 40, 110, 76), (10, 33, 102, 84), (12, 20, 98, 98)]
+        frames = []
+        for i in range(5):
+            frame = IMG.new('RGBA', (112, 112), (255, 255, 255, 0))
+            x, y, l, w = frame_locs[i]
+            avatar_resized = avatar.resize((l, w), IMG.ANTIALIAS)
+            frame.paste(avatar_resized, (x, y))
+            hand = hand_frames[i]
+            frame.paste(hand, mask=hand)
+            frames.append(frame)
+        imageio.mimsave(output_path, frames, duration=0.06)
+        return True
     except (AttributeError, TypeError, OSError):
         logger.debug(traceback.format_exc())
         return False
