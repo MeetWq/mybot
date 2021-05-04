@@ -41,6 +41,10 @@ async def _(bot: Bot, event: Event, state: T_State):
         command = msg_text[0]
         types = {'摸': 'petpet', '撕': 'tear', '丢': 'throw', '爬': 'crawl'}
         if command in types:
+            petpet.block = True
+            tear.block = True
+            throw.block = True
+            crawl.block = True
             type = types[command]
             logger.debug(type)
             img_path = await get_image(qq, type)
@@ -48,3 +52,9 @@ async def _(bot: Bot, event: Event, state: T_State):
                 await bot.send(event=event, message=MessageSegment.image(file='file://' + img_path))
             else:
                 await bot.send(event=event, message='出错了，请稍后再试')
+            return
+    petpet.block = False
+    tear.block = False
+    throw.block = False
+    crawl.block = False
+    return
