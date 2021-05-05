@@ -1,30 +1,62 @@
 ### 简介
 
-基于 [Mirai](https://github.com/mamoe/mirai) 和 [Nonebot](https://github.com/nonebot/nonebot2) 实现的QQ机器人
+基于 [Mirai](https://github.com/mamoe/mirai) 和 [NoneBot](https://github.com/nonebot/nonebot2) 实现的QQ机器人
 
-#### install
+### install
+
+#### Mirai
+
+- 安装 [MCL](https://github.com/iTXTech/mirai-console-loader) (Mirai Console Loader)
+
+- 安装 [onebot-mirai](https://github.com/yyuueexxiinngg/onebot-kotlin) 插件，并配置账号、端口
+
+- 启动 MCL，若需要滑块验证可用 [此处](https://github.com/project-mirai/mirai-login-solver-selenium) 的解决方案
+
+- 配置自动登录、登录协议等，具体参考 [mirai-console](https://github.com/mamoe/mirai-console) 的文档
+
+#### NoneBot
 
 ```bash
 pip install nb-cli nonebot-adapter-cqhttp nonebot-adapter-mirai
-pip bs4 lxml aiohttp fuzzywuzzy python-Levenshtein
 ```
 
-- For plugin tex
+#### Plugins
 
+##### NoneBot 商店插件
 ```bash
-sudo apt install texlive-full poppler-utils
+nb plugin install nonebot_plugin_test
+nb plugin install nonebot_plugin_apscheduler
+nb plugin install nonebot_plugin_manager
 ```
 
-- For plugin tts
+##### 其他插件
+
+- Commonly used
 
 ```bash
-pip install pydub langid tencentcloud-sdk-python
+pip bs4 lxml aiohttp
+pip install fuzzywuzzy python-Levenshtein
+pip install pillow
+sudo apt install imagemagick
+```
 
-sudo apt install ffmpeg nodejs npm
+- For plugin avatar
 
-sudo npm install wx-voice --save
-sudo npm install wx-voice -g
-sudo wx-voice compile
+```bash
+pip install imageio
+```
+
+- For plugin bilibili_live
+
+```bash
+pip install bilibili_api
+```
+
+- For plugin fortune, logo, text
+
+```bash
+pip install playwright
+python -m playwright install
 ```
 
 - For plugin pixiv
@@ -33,23 +65,26 @@ sudo wx-voice compile
 pip install pixivpy-async aiohttp_socks
 ```
 
-- For plugin logo
+- For plugin tts
 
 ```bash
-pip install pillow playwright
-pip install playwright
-python -m playwright install
-sudo apt install imagemagick
+pip install pydub langid
+pip install tencentcloud-sdk-python
+
+sudo apt install ffmpeg nodejs npm
+sudo npm install wx-voice --save
+sudo npm install wx-voice -g
+sudo wx-voice compile
+```
+
+- For plugin tex
+
+```bash
+sudo apt install texlive-full poppler-utils
 ```
 
 - For plugin what
 
 ```bash
 pip install baike wikipedia
-```
-
-- For plugin bilibili_live
-
-```bash
-pip install bilibili_api
 ```
