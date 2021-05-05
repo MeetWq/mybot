@@ -63,8 +63,6 @@ async def create_tear(input_path, output_path):
 
 async def create_throw(input_path, output_path):
     avatar = Image.open(input_path).convert('RGBA')
-    throw = Image.open(data_path / 'throw.png')
-    avatar = avatar.resize((143, 143), Image.ANTIALIAS)
     mask = Image.new('L', avatar.size, 0)
     draw = ImageDraw.Draw(mask)
     offset = 1
@@ -72,6 +70,8 @@ async def create_throw(input_path, output_path):
     mask = mask.filter(ImageFilter.GaussianBlur(0))
     avatar.putalpha(mask)
     avatar = avatar.rotate(random.randint(1, 360), Image.BICUBIC)
+    avatar = avatar.resize((143, 143), Image.ANTIALIAS)
+    throw = Image.open(data_path / 'throw.png')
     throw.paste(avatar, (15, 178), mask=avatar)
     throw.save(output_path)
     return True
@@ -79,15 +79,15 @@ async def create_throw(input_path, output_path):
 
 async def create_crawl(input_path, output_path):
     avatar = Image.open(input_path).convert('RGBA')
-    images = [i for i in (data_path / 'crawl').iterdir() if i.is_file()]
-    crawl = Image.open(random.choice(images)).resize((500, 500), Image.ANTIALIAS)
-    avatar = avatar.resize((100, 100), Image.ANTIALIAS)
     mask = Image.new('L', avatar.size, 0)
     draw = ImageDraw.Draw(mask)
     offset = 1
     draw.ellipse((offset, offset, avatar.size[0] - offset, avatar.size[1] - offset), fill=255)
     mask = mask.filter(ImageFilter.GaussianBlur(0))
     avatar.putalpha(mask)
+    images = [i for i in (data_path / 'crawl').iterdir() if i.is_file()]
+    crawl = Image.open(random.choice(images)).resize((500, 500), Image.ANTIALIAS)
+    avatar = avatar.resize((100, 100), Image.ANTIALIAS)
     crawl.paste(avatar, (0, 400), mask=avatar)
     crawl.save(output_path)
     return True
