@@ -57,6 +57,7 @@ async def create_tear(input_path, output_path):
     frame.paste(left, (-5, 355))
     frame.paste(right, (649, 310))
     frame.paste(tear, mask=tear)
+    frame = frame.convert('RGB')
     frame.save(output_path)
     return True
 
@@ -73,6 +74,7 @@ async def create_throw(input_path, output_path):
     avatar = avatar.resize((143, 143), Image.ANTIALIAS)
     throw = Image.open(data_path / 'throw.png')
     throw.paste(avatar, (15, 178), mask=avatar)
+    throw = throw.convert('RGB')
     throw.save(output_path)
     return True
 
@@ -89,15 +91,29 @@ async def create_crawl(input_path, output_path):
     crawl = Image.open(random.choice(images)).resize((500, 500), Image.ANTIALIAS)
     avatar = avatar.resize((100, 100), Image.ANTIALIAS)
     crawl.paste(avatar, (0, 400), mask=avatar)
+    crawl = crawl.convert('RGB')
     crawl.save(output_path)
+    return True
+
+
+async def create_support(input_path, output_path):
+    avatar = Image.open(input_path).convert('RGBA')
+    support = Image.open(data_path / 'support.png')
+    frame = Image.new('RGBA', (1293, 1164), (255, 255, 255, 0))
+    avatar = avatar.resize((815, 815), Image.ANTIALIAS).rotate(23, expand=True)
+    frame.paste(avatar, (-172, -17))
+    frame.paste(support, mask=support)
+    frame = frame.convert('RGB')
+    frame.save(output_path)
     return True
 
 
 types = {
     'petpet': (create_petpet, '.gif'),
-    'tear': (create_tear, '.png'),
-    'throw': (create_throw, '.png'),
-    'crawl': (create_crawl, '.png')
+    'tear': (create_tear, '.jpg'),
+    'throw': (create_throw, '.jpg'),
+    'crawl': (create_crawl, '.jpg'),
+    'support': (create_support, '.jpg')
 }
 
 
