@@ -1,6 +1,6 @@
 import traceback
 from nonebot.log import logger
-from src.libs.playwright import get_new_page
+from src.utils.playwright import get_new_page
 
 
 async def get_text(text, type=0):

@@ -1,13 +1,12 @@
-import os
 import uuid
 import json
 import base64
 import random
-import subprocess
 from pathlib import Path
 from datetime import datetime
+from src.utils.functions import trim_image
+from src.utils.playwright import get_new_page
 from nonebot.adapters.cqhttp import MessageSegment
-from src.libs.playwright import get_new_page
 
 dir_path = Path(__file__).parent
 cache_path = Path('cache/fortune')
@@ -106,17 +105,6 @@ async def create_image(username, fortune, content, face_path):
         await page.set_content(html)
         await page.screenshot(path=str(img_path))
 
-    if trim_image(img_path, out_path):
+    if await trim_image(img_path, out_path):
         return out_path
-
-
-def trim_image(input_path, output_path):
-    stdout = open(os.devnull, 'w')
-    p_open = subprocess.Popen('convert {} -trim -resize x150 {}'.format(input_path, output_path),
-                              shell=True, stdout=stdout, stderr=stdout)
-    p_open.wait()
-    stdout.close()
-
-    if p_open.returncode != 0:
-        return False
-    return True
+    return None

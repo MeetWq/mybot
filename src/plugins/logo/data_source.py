@@ -1,16 +1,14 @@
-import os
 import uuid
 import base64
 import aiohttp
 import asyncio
 import traceback
-import subprocess
 from pathlib import Path
 from PIL import ImageFont
 from bs4 import BeautifulSoup
-from src.libs.playwright import get_new_page
-
 from nonebot.log import logger
+from src.utils.playwright import get_new_page
+from src.utils.functions import download, trim_image
 
 dir_path = Path(__file__).parent
 cache_path = Path('cache/logo')
@@ -54,8 +52,9 @@ async def create_pornhub_logo(left_text, right_text):
         await page.set_content(content)
         await page.screenshot(path=str(img_path))
 
-    if trim_image(img_path, img_path):
+    if await trim_image(img_path, img_path):
         return img_path
+    return None
 
 
 async def create_youtube_logo(left_text, right_text):
@@ -91,9 +90,10 @@ async def create_youtube_logo(left_text, right_text):
         await page.set_content(content)
         await page.screenshot(path=str(img_path))
 
-    if trim_image(img_path, img_path):
-        if trim_image(img_path, img_path):
+    if await trim_image(img_path, img_path):
+        if await trim_image(img_path, img_path):
             return img_path
+    return None
 
 
 async def create_douyin_logo(text):
@@ -147,21 +147,5 @@ async def create_logomaker_logo(text, style='cocacola'):
     headers = {
         'Referer': 'https://logomaker.herokuapp.com/gstyle.php'
     }
-    async with aiohttp.ClientSession() as session:
-        async with session.get(link, headers=headers) as resp:
-            result = await resp.read()
-    with img_path.open('wb') as f:
-        f.write(result)
+    await download(link, img_path, headers=headers)
     return img_path
-
-
-def trim_image(input_path, output_path):
-    stdout = open(os.devnull, 'w')
-    p_open = subprocess.Popen('convert {} -trim {}'.format(input_path, output_path),
-                              shell=True, stdout=stdout, stderr=stdout)
-    p_open.wait()
-    stdout.close()
-
-    if p_open.returncode != 0:
-        return False
-    return True

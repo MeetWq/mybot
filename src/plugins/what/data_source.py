@@ -8,7 +8,6 @@ from nonebot.log import logger
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
 import wikipedia
-from wikipedia import WikipediaException
 from baike import getBaike
 
 wikipedia.set_lang('zh')

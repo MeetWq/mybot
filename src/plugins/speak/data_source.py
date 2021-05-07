@@ -22,6 +22,7 @@ from nonebot import get_driver
 from nonebot.log import logger
 
 from .config import Config
+from src.utils.functions import download
 
 global_config = get_driver().config
 tts_config = Config(**global_config.dict())
@@ -90,12 +91,7 @@ async def get_ai_voice(text, type=0):
     if not mp3_url:
         return None
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(mp3_url) as resp:
-            result = await resp.read()
-    with mp3_path.open('wb') as f:
-        f.write(result)
-
+    await download(mp3_url, mp3_path)
     if split_voice(mp3_path, mp3_path):
         if to_silk(mp3_path, silk_path):
             return silk_path

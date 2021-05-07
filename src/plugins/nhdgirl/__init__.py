@@ -17,5 +17,9 @@ async def _(bot: Bot, event: Event, state: T_State):
     msg = str(event.get_message()).strip().lower().replace('nhd娘', '')
     reply = await get_reply(msg, event)
     if reply:
+        nhdgirl.block = True
         await nhdgirl.send(message=reply)
+        await nhdgirl.finish()
+    else:
+        nhdgirl.block = False
         await nhdgirl.finish()
