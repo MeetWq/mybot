@@ -28,7 +28,7 @@ async def get_response(group_id, user_id, username):
             content = copywriting['content']
             type = get_type(luck)
             face = get_face(luck)
-            img_path = await create_image(username, type, content, face)
+            img_path = await create_image(username, luck, type, content, face)
             if img_path:
                 return MessageSegment.image(file='file://' + str(img_path))
             else:
@@ -56,39 +56,40 @@ def get_type(luck):
 
 def get_face(luck):
     image_path = Path('src/data/images/cc98')
-    if luck in [10, 26]:
+    if luck in [10]:
         face_id = '04'
     elif luck in [9, 20]:
         face_id = '05'
-    elif luck in [8, 21, 22]:
-        face_id = '02'
-    elif luck in [7, 27]:
+    elif luck in [8, 26]:
         face_id = '09'
-    elif luck in [6, 24]:
-        face_id = '06'
-    elif luck in [5, 25]:
+    elif luck in [7, 27]:
         face_id = '07'
-    elif luck in [4, 23]:
+    elif luck in [6, 25]:
         face_id = '10'
-    elif luck in [-6]:
+    elif luck in [5]:
         face_id = '03'
-    elif luck in [-7]:
+    elif luck in [4]:
         face_id = '01'
-    elif luck in [-8]:
-        face_id = '11'
-    elif luck in [-9]:
+    elif luck in [21, 22]:
+        face_id = '02'
+    elif luck in [23, 24]:
+        face_id = '06'
+    elif luck in [-6]:
         face_id = '08'
-    elif luck in [-10]:
+    elif luck in [-7]:
+        face_id = '11'
+    elif luck in [-8, -9, -10]:
         face_id = '12'
     return image_path / f'cc98{face_id}.png'
 
 
-async def create_image(username, fortune, content, face_path):
+async def create_image(username, luck, fortune, content, face_path):
     html_path = dir_path / 'fortune.html'
-    bg_path = dir_path / 'summer.png'
+    bg_path = dir_path / 'summer.jpg'
     img_name = uuid.uuid1().hex
     img_path = (cache_path / (img_name + '.png')).absolute()
     out_path = (cache_path / (img_name + '.jpg')).absolute()
+    color = 'Pink' if luck > 0 else 'LightGreen'
 
     with bg_path.open('rb') as f:
         bg_b64 = 'data:image/png;base64,' + str(base64.b64encode(f.read()), 'utf-8')
@@ -98,7 +99,7 @@ async def create_image(username, fortune, content, face_path):
 
     with html_path.open('r', encoding='utf-8') as f:
         html = f.read()
-        html = html.replace('USERNAME', username).replace('FORTUNE', fortune) \
+        html = html.replace('USERNAME', username).replace('FORTUNE', fortune).replace('COLOR', color) \
                    .replace('CONTENT', content).replace('FACE', face_b64).replace('BACKGROUND', bg_b64)
 
     async with get_new_page(viewport={"width": 2000,"height": 500}) as page:
