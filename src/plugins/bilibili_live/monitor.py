@@ -17,7 +17,8 @@ async def bilibili_live_monitor():
         if info['status'] != status:
             msg_dict[room_id] = format_msg(info)
             update_status(room_id, info['status'])
-
+    if not msg_dict:
+        return
     bots = list(get_bots().values())
     for bot in bots:
         noitce_groups = []
@@ -59,7 +60,7 @@ scheduler.add_job(
     bilibili_live_monitor,
     'cron',
     hour='9-23',
-    minute='*/5',
+    minute='*/2',
     id='bilibili_live_monitor_in_day',
     coalesce=True,
     misfire_grace_time=30
@@ -69,7 +70,7 @@ scheduler.add_job(
     bilibili_live_monitor,
     'cron',
     hour='0-8',
-    minute='*/15',
+    minute='*/10',
     id='bilibili_live_monitor_in_night',
     coalesce=True,
     misfire_grace_time=30

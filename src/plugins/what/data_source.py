@@ -4,13 +4,18 @@ import traceback
 from fuzzywuzzy import fuzz, process
 from bs4 import BeautifulSoup
 from urllib.parse import quote
+from nonebot import get_driver
 from nonebot.log import logger
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
-import wikipedia
-from baike import getBaike
+from .config import Config
+global_config = get_driver().config
+what_config = Config(**global_config.dict())
 
-wikipedia.set_lang('zh')
+from src.libs.mediawiki.mediawiki import MediaWiki, DisambiguationError
+wikipedia = MediaWiki(lang='zh', proxies={'http': 'http://' + what_config.proxy, 'https': 'http://' + what_config.proxy})
+
+from baike import getBaike
 
 
 async def get_content(keyword, source='all', force=False):
@@ -21,7 +26,7 @@ async def get_content(keyword, source='all', force=False):
         elif source == 'all':
             titles = []
             msgs = []
-            for s in list(sources.keys())[:-1]:
+            for s in sources.keys():
                 t, m = await sources[s](keyword, force)
                 titles.append(t)
                 msgs.append(m)
@@ -128,11 +133,19 @@ async def get_wiki(keyword, force=False):
     if len(entries) < 1:
         return '', ''
     title = entries[0]
+
+    try:
+        content = wikipedia.summary(title)
+    except DisambiguationError:
+        if len(entries) < 2:
+            return '', ''
+        title = entries[1]
+        content = wikipedia.summary(title)
+
     if not force:
         if fuzz.ratio(title, keyword) < 90:
             return '', ''
 
-    content = wikipedia.summary(title)
     msg = title + ':\n---------------\n' + content
     return title, msg
 

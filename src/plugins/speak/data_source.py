@@ -1,11 +1,9 @@
-import os
 import re
 import json
 import uuid
 import base64
 import aiohttp
 import traceback
-import subprocess
 from pathlib import Path
 
 import langid
@@ -72,20 +70,20 @@ async def get_tx_voice(text, type=0):
 
     file_name = uuid.uuid1().hex
     wav_path = cache_path / (file_name + '.wav')
-    silk_path = cache_path / (file_name + '.silk')
+    # silk_path = cache_path / (file_name + '.silk')
     with wav_path.open('wb') as f:
         f.write(base64.b64decode(resp.Audio))
-
-    if to_silk(wav_path, silk_path):
-        return silk_path
-    else:
-        return None
+    return wav_path
+    # if to_silk(wav_path, silk_path):
+    #     return silk_path
+    # else:
+    #     return None
 
 
 async def get_ai_voice(text, type=0):
     file_name = uuid.uuid1().hex
     mp3_path = cache_path / (file_name + '.mp3')
-    silk_path = cache_path / (file_name + '.silk')
+    # silk_path = cache_path / (file_name + '.silk')
 
     mp3_url = await get_ai_voice_url(text, type)
     if not mp3_url:
@@ -93,8 +91,9 @@ async def get_ai_voice(text, type=0):
 
     await download(mp3_url, mp3_path)
     if split_voice(mp3_path, mp3_path):
-        if to_silk(mp3_path, silk_path):
-            return silk_path
+        return mp3_path
+        # if to_silk(mp3_path, silk_path):
+        #     return silk_path
     return None
 
 
@@ -148,13 +147,13 @@ def split_voice(input_path, output_path):
     return False
 
 
-def to_silk(input_path, output_path):
-    stdout = open(os.devnull, 'w')
-    p_open = subprocess.Popen('wx-voice encode -i {} -o {} -f silk'.format(input_path, output_path),
-                              shell=True, stdout=stdout, stderr=stdout)
-    p_open.wait()
-    stdout.close()
+# def to_silk(input_path, output_path):
+#     stdout = open(os.devnull, 'w')
+#     p_open = subprocess.Popen('wx-voice encode -i {} -o {} -f silk'.format(input_path, output_path),
+#                               shell=True, stdout=stdout, stderr=stdout)
+#     p_open.wait()
+#     stdout.close()
 
-    if p_open.returncode != 0:
-        return False
-    return True
+#     if p_open.returncode != 0:
+#         return False
+#     return True

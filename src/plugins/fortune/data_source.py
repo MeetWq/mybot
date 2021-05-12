@@ -89,7 +89,7 @@ async def create_image(username, luck, fortune, content, face_path):
     img_name = uuid.uuid1().hex
     img_path = (cache_path / (img_name + '.png')).absolute()
     out_path = (cache_path / (img_name + '.jpg')).absolute()
-    color = 'Pink' if luck > 0 else 'LightGreen'
+    color = 'VioletRed' if luck > 0 else 'ForestGreen'
 
     with bg_path.open('rb') as f:
         bg_b64 = 'data:image/png;base64,' + str(base64.b64encode(f.read()), 'utf-8')

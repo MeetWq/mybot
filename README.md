@@ -1,18 +1,12 @@
 ### 简介
 
-基于 [Mirai](https://github.com/mamoe/mirai) 和 [NoneBot](https://github.com/nonebot/nonebot2) 实现的QQ机器人
+基于 [NoneBot](https://github.com/nonebot/nonebot2) 和 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp) 实现的QQ机器人
 
 ### install
 
-#### Mirai
+#### go-cqhttp
 
-- 安装 [MCL](https://github.com/iTXTech/mirai-console-loader) (Mirai Console Loader)
-
-- 安装 [onebot-mirai](https://github.com/yyuueexxiinngg/onebot-kotlin) 插件，并配置账号、端口
-
-- 启动 MCL，若需要滑块验证可用 [此处](https://github.com/project-mirai/mirai-login-solver-selenium) 的解决方案
-
-- 配置自动登录、登录协议等，具体参考 [mirai-console](https://github.com/mamoe/mirai-console) 的文档
+从 [release](https://github.com/Mrs4s/go-cqhttp/releases) 界面下载可执行文件，初次运行后生成 `config.hjson` 配置文件，修改相关配置
 
 #### NoneBot
 
@@ -37,7 +31,7 @@ nb plugin install nonebot_plugin_manager
 pip bs4 lxml aiohttp
 pip install fuzzywuzzy python-Levenshtein
 pip install pillow
-sudo apt install imagemagick
+sudo apt install ffmpeg imagemagick
 ```
 
 - For plugin avatar
@@ -70,12 +64,11 @@ pip install pixivpy-async aiohttp_socks
 ```bash
 pip install pydub langid
 pip install tencentcloud-sdk-python
-
-sudo apt install ffmpeg nodejs npm
+```
+<!-- sudo apt install nodejs npm
 sudo npm install wx-voice --save
 sudo npm install wx-voice -g
-sudo wx-voice compile
-```
+sudo wx-voice compile -->
 
 - For plugin tex
 
@@ -86,5 +79,5 @@ sudo apt install texlive-full poppler-utils
 - For plugin what
 
 ```bash
-pip install baike wikipedia
+pip install baike
 ```
