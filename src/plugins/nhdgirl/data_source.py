@@ -7,7 +7,7 @@ async def get_reply(msg, event):
         return None
     nickname = ''
     if isinstance(event, MessageEvent):
-        nickname = event.sender.nickname
+        nickname = event.sender.card or event.sender.nickname
     if not nickname:
         return None
     if '求交往' in msg:
