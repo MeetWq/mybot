@@ -30,6 +30,7 @@ nb plugin install nonebot_plugin_manager
 ```bash
 pip bs4 lxml aiohttp
 pip install fuzzywuzzy python-Levenshtein
+pip install translate-shell
 pip install pillow
 sudo apt install ffmpeg imagemagick
 ```
