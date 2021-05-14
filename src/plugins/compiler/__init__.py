@@ -1,7 +1,7 @@
 import re
 from nonebot import export, on_command
 from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, Event
+from nonebot.adapters.cqhttp import Bot, Event, unescape
 from nonebot.log import logger
 
 from .data_source import legal_language, network_compile
@@ -18,7 +18,7 @@ compiler = on_command('lang', priority=20)
 
 @compiler.handle()
 async def _(bot: Bot, event: Event, state: T_State):
-    msg = str(event.get_message()).strip()
+    msg = unescape(event.get_plaintext()).strip()
 
     match_obj = re.match(r'(.*?)[;\n]+(.*)', msg, re.S)
     if not match_obj:

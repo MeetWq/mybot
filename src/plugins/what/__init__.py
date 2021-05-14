@@ -33,7 +33,7 @@ def split_command(msg):
 @what.handle()
 async def _(bot: Bot, event: Event, state: T_State):
     msg = str(event.get_message()).strip().strip('.>,?!。，（）()[]【】')
-    prefix_words = ['这', '这个', '那', '那个']
+    prefix_words = ['这', '这个', '那', '那个', '你', '我', '他', '它']
     suffix_words = ['意思', '梗', '玩意', '鬼']
     prefix, suffix = split_command(msg)
     if not prefix or prefix in prefix_words:
