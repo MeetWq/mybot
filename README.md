@@ -77,6 +77,12 @@ sudo wx-voice compile -->
 sudo apt install texlive-full poppler-utils
 ```
 
+- For plugin wolfram
+
+```bash
+pip install wolframalpha
+```
+
 - For plugin what
 
 ```bash
