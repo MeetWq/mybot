@@ -47,7 +47,7 @@ pip install imageio
 pip install bilibili_api
 ```
 
-- For plugin fortune, logo, text
+- For plugin fortune, logo
 
 ```bash
 pip install playwright
