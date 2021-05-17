@@ -18,7 +18,7 @@ pixiv = on_command('pixiv', priority=25)
 async def _(bot: Bot, event: Event, state: T_State):
     keyword = str(event.get_message()).strip()
     if not keyword:
-        pixiv.finish(export.usage)
+        await pixiv.finish(export.usage)
 
     msg = await get_pixiv(keyword)
     if not str(msg):

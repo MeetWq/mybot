@@ -1,32 +1,23 @@
-from nonebot import require, on_command, on_message
+from nonebot import require, on_command
 from nonebot.plugin import get_loaded_plugins
-from nonebot.rule import to_me
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, Event, GroupMessageEvent
 
-help_command = on_command('help', aliases={'帮助'}, priority=11)
-help_at = on_message(rule=to_me(), priority=11, block=False)
+help = on_command('help', aliases={'帮助'}, priority=11)
 
 
-@help_command.handle()
+@help.handle()
 async def _(bot: Bot, event: Event, state: T_State):
     plugin_name = str(event.get_message()).strip()
+    group_id = str(event.group_id) if isinstance(event, GroupMessageEvent) else '0'
+    help_msg = ''
     if plugin_name:
-        group_id = str(event.group_id) if isinstance(event, GroupMessageEvent) else '0'
         help_msg = await get_help_msg(group_id, plugin_name)
-        if help_msg:
-            await help_command.finish(help_msg)
-
-
-@help_at.handle()
-async def _(bot: Bot, event: Event, state: T_State):
-    help_at.block = False
-    msg = str(event.get_message()).strip()
-    if not msg or msg == 'help':
-        help_at.block = True
-        group_id = str(event.group_id) if isinstance(event, GroupMessageEvent) else '0'
-        help_msg = await get_help_msg(group_id)
-        await help_at.finish(help_msg)
+    else:
+        if event.is_tome():
+            help_msg = await get_help_msg(group_id)
+    if help_msg:
+        await help.finish(help_msg)
 
 
 async def get_help_msg(group_id='', plugin_name=''):

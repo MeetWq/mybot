@@ -26,8 +26,9 @@ async def get_content(keyword, source='all', force=False):
         elif source == 'all':
             titles = []
             msgs = []
-            for s in sources.keys():
-                t, m = await sources[s](keyword, force)
+            sources_used = sources if force else sources_less
+            for s in sources_used.keys():
+                t, m = await sources_used[s](keyword, force)
                 titles.append(t)
                 msgs.append(m)
             title = process.extractOne(keyword, titles)[0]
@@ -155,4 +156,9 @@ sources = {
     'jiki': get_jiki,
     'baidu': get_baidu,
     'wiki': get_wiki
+}
+
+sources_less = {
+    'nbnhhsh': sources['nbnhhsh'],
+    'jiki': sources['jiki']
 }

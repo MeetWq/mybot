@@ -4,8 +4,6 @@ from nonebot.rule import ArgumentParser
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, Event, MessageSegment
 
-from nonebot.log import logger
-
 from .data_source import get_emoji_path, get_image, make_emoji, emojis
 
 export = export()
@@ -45,8 +43,13 @@ async def _(bot: Bot, event: Event, state: T_State):
 
 @get_jpg.handle()
 async def _(bot: Bot, event: Event, state: T_State):
-    keyword = str(event.get_message()).strip()
+    msgs = event.get_message()
+    if len(msgs) > 1:
+        return
+    keyword = str(msgs).strip()
     keyword = os.path.splitext(keyword)[0]
+    if len(keyword) > 20:
+        return
     img_url = await get_image(keyword)
     if not img_url:
         await get_jpg.finish(message="找不到相关的图片")

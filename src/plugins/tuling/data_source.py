@@ -1,6 +1,8 @@
 import json
+import random
 import aiohttp
 import traceback
+from pathlib import Path
 from nonebot import get_driver
 from nonebot.log import logger
 
@@ -43,3 +45,11 @@ async def call_tuling_api(text, user_id):
     except (aiohttp.ClientError, json.JSONDecodeError, KeyError):
         logger.warning('Error in calling tuling API: {}'.format(traceback.format_exc()))
         return None
+
+
+async def get_anime_thesaurus(text):
+    thesaurus_path = Path('src/libs/AnimeThesaurus/data.json')
+    thesaurus_data = json.load(thesaurus_path.open('r', encoding='utf-8'))
+    if text in thesaurus_data:
+        return random.choice(thesaurus_data[text])
+    return ''

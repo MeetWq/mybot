@@ -1,8 +1,5 @@
-import os
-import time
 import nonebot
 from pathlib import Path
-from datetime import datetime
 from nonebot.adapters.cqhttp import Bot as CQHTTPBot
 
 from nonebot.log import logger, default_format
