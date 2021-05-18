@@ -11,7 +11,7 @@
 #### NoneBot
 
 ```bash
-pip install nb-cli nonebot-adapter-cqhttp nonebot-adapter-mirai
+pip install nb-cli nonebot-adapter-cqhttp
 ```
 
 #### Plugins
@@ -28,17 +28,8 @@ nb plugin install nonebot_plugin_manager
 - Commonly used
 
 ```bash
-pip bs4 lxml aiohttp
-pip install fuzzywuzzy python-Levenshtein
-pip install translate-shell
-pip install pillow
-sudo apt install ffmpeg imagemagick
-```
-
-- For plugin avatar
-
-```bash
-pip install imageio
+pip install bs4 lxml jinja2 aiohttp pillow imageio langid fuzzywuzzy python-Levenshtein
+sudo apt install ffmpeg imagemagick translate-shell
 ```
 
 - For plugin bilibili_live
@@ -63,13 +54,9 @@ pip install pixivpy-async aiohttp_socks
 - For plugin tts
 
 ```bash
-pip install pydub langid
+pip install pydub
 pip install tencentcloud-sdk-python
 ```
-<!-- sudo apt install nodejs npm
-sudo npm install wx-voice --save
-sudo npm install wx-voice -g
-sudo wx-voice compile -->
 
 - For plugin tex
 
