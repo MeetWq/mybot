@@ -1,4 +1,5 @@
 import re
+import base64
 import aiohttp
 from pathlib import Path
 from pytz import timezone
@@ -8,7 +9,6 @@ from nonebot import get_driver
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
 from .config import Config
-from src.utils.functions import download
 
 global_config = get_driver().config
 ptfxq_config = Config(**global_config.dict())
@@ -17,9 +17,6 @@ data_path = Path('data/ptfxq')
 if not data_path.exists():
     data_path.mkdir(parents=True)
 time_path = data_path / 'last_time.log'
-cache_path = Path('cache/ptfxq')
-if not cache_path.exists():
-    cache_path.mkdir(parents=True)
 
 
 async def get_msgs():
@@ -46,10 +43,12 @@ async def get_msgs():
 async def format_msg(message):
     message_photos = message.find_all('a', {'class': 'tgme_widget_message_photo_wrap'})
     photos = [re.search(r'url\([\'"](.*?)[\'"]\)', m.get('style')).group(1) for m in message_photos]
-    photo_files = []
+    photo_b64 = []
     for photo_url in photos:
-        file = await download(photo_url, dir_path=cache_path, proxy='http://' + ptfxq_config.proxy)
-        photo_files.append(file)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(photo_url, proxy='http://' + ptfxq_config.proxy) as resp:
+                result = await resp.read()
+        photo_b64.append(f"base64://{base64.b64encode(result).decode()}")
 
     message_texts = message.find_all('div', {'class': 'tgme_widget_message_text'})
     texts = [m.text for m in message_texts]
@@ -60,8 +59,8 @@ async def format_msg(message):
     msg = Message()
     time = get_time(message).strftime("%y/%m/%d %H:%M:%S")
     msg.append(f'PT风向旗 {time}\n')
-    for photo in photo_files:
-        msg.append(MessageSegment.image(file='file://' + str(photo.absolute())))
+    for photo in photo_b64:
+        msg.append(MessageSegment.image(photo))
     for text in texts:
         msg.append('\n' + text)
     for link in links:

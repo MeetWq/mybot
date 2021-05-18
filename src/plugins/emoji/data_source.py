@@ -1,7 +1,9 @@
+import io
 import re
-import uuid
+import base64
 import random
 import aiohttp
+import imageio
 import traceback
 from pathlib import Path
 from bs4 import BeautifulSoup
@@ -11,10 +13,9 @@ from nonebot.adapters.cqhttp import MessageSegment
 
 from nonebot.log import logger
 
-image_path = Path('src/data/images')
-cache_path = Path('cache/emoji').absolute()
-if not cache_path.exists():
-    cache_path.mkdir(parents=True)
+dir_path = Path(__file__).parent
+emoji_path = dir_path / 'emojis'
+gif_path = dir_path / 'gifs'
 
 
 def get_emoji_path(name: str):
@@ -34,7 +35,7 @@ def get_emoji_path(name: str):
         if re.match(pattern, name):
             name = re.sub(pattern, func, name)
             for ext in file_ext:
-                file_path = image_path / dir_name / (name + ext)
+                file_path = emoji_path / dir_name / (name + ext)
                 if file_path.exists():
                     return str(file_path.absolute())
     return None
@@ -82,12 +83,11 @@ async def darw_text(image, x, y, text, font, shadowcolor, fillcolor):
 
 
 async def make_wangjingze(texts):
-    font_path = Path('src/data/fonts/msyh.ttc')
-    font = ImageFont.truetype(str(font_path), 20, encoding='utf-8')
+    font = ImageFont.truetype('msyh.ttc', 20, encoding='utf-8')
     shadowcolor = (0, 0, 0)
     fillcolor = (255, 255, 255)
 
-    files = [Path('src/data/emojis/wangjingze/%d.jpg' % i) for i in range(0, 52)]
+    files = [gif_path / 'wangjingze' / ('%d.jpg' % i) for i in range(0, 52)]
     frames = [Image.open(f) for f in files]
     parts = [frames[0:9], frames[12:24], frames[25:35], frames[37:48]]
     for part, text in zip(parts, texts):
@@ -96,18 +96,17 @@ async def make_wangjingze(texts):
             if x < 5:
                 return f'“{text}”长度过长，请适当缩减'
             await darw_text(frame, x, y, text, font, shadowcolor, fillcolor)
-    save_path = cache_path / (uuid.uuid1().hex + '.gif')
-    frames[0].save(save_path, save_all=True, append_images=frames[1:], duration=130)
-    return MessageSegment.image(file=f'file://{save_path}')
+    gif_file = io.BytesIO()
+    imageio.mimsave(gif_file, frames, format='gif', duration=0.13)
+    return MessageSegment.image(f"base64://{base64.b64encode(gif_file.getvalue()).decode()}")
 
 
 async def make_weisuoyuwei(texts):
-    font_path = Path('src/data/fonts/msyh.ttc')
-    font = ImageFont.truetype(str(font_path), 15, encoding='utf-8')
+    font = ImageFont.truetype('msyh.ttc', 15, encoding='utf-8')
     shadowcolor = (0, 0, 0)
     fillcolor = (255, 255, 255)
 
-    files = [Path('src/data/emojis/weisuoyuwei/%d.jpg' % i) for i in range(0, 125)]
+    files = [gif_path / 'weisuoyuwei' / ('%d.jpg' % i) for i in range(0, 125)]
     frames = [Image.open(f) for f in files]
     parts = [frames[8:10], frames[20:27], frames[32:45], frames[46:60],
              frames[61:70], frames[72:79], frames[83:98], frames[109:118], frames[118:125]]
@@ -117,18 +116,17 @@ async def make_weisuoyuwei(texts):
             if x < 5:
                 return f'“{text}”长度过长，请适当缩减'
             await darw_text(frame, x, y, text, font, shadowcolor, fillcolor)
-    save_path = cache_path / (uuid.uuid1().hex + '.gif')
-    frames[0].save(save_path, save_all=True, append_images=frames[1:], duration=170)
-    return MessageSegment.image(file=f'file://{save_path}')
+    gif_file = io.BytesIO()
+    imageio.mimsave(gif_file, frames, format='gif', duration=0.17)
+    return MessageSegment.image(f"base64://{base64.b64encode(gif_file.getvalue()).decode()}")
 
 
 async def make_ninajiaoxihuanma(texts):
-    font_path = Path('src/data/fonts/msyh.ttc')
-    font = ImageFont.truetype(str(font_path), 20, encoding='utf-8')
+    font = ImageFont.truetype('msyh.ttc', 20, encoding='utf-8')
     shadowcolor = (0, 0, 0)
     fillcolor = (255, 255, 255)
 
-    files = [Path('src/data/emojis/ninajiaoxihuanma/%d.jpg' % i) for i in range(0, 58)]
+    files = [gif_path / 'ninajiaoxihuanma' / ('%d.jpg' % i) for i in range(0, 58)]
     frames = [Image.open(f) for f in files]
     parts = [frames[5:22], frames[26:38], frames[39:50]]
     for part, text in zip(parts, texts):
@@ -137,18 +135,17 @@ async def make_ninajiaoxihuanma(texts):
             if x < 5:
                 return f'“{text}”长度过长，请适当缩减'
             await darw_text(frame, x, y, text, font, shadowcolor, fillcolor)
-    save_path = cache_path / (uuid.uuid1().hex + '.gif')
-    frames[0].save(save_path, save_all=True, append_images=frames[1:], duration=100)
-    return MessageSegment.image(file=f'file://{save_path}')
+    gif_file = io.BytesIO()
+    imageio.mimsave(gif_file, frames, format='gif', duration=0.1)
+    return MessageSegment.image(f"base64://{base64.b64encode(gif_file.getvalue()).decode()}")
 
 
 async def make_qiegewala(texts):
-    font_path = Path('src/data/fonts/msyh.ttc')
-    font = ImageFont.truetype(str(font_path), 20, encoding='utf-8')
+    font = ImageFont.truetype('msyh.ttc', 20, encoding='utf-8')
     shadowcolor = (0, 0, 0)
     fillcolor = (255, 255, 255)
 
-    files = [Path('src/data/emojis/qiegewala/%d.jpg' % i) for i in range(0, 87)]
+    files = [gif_path / 'qiegewala' / ('%d.jpg' % i) for i in range(0, 87)]
     frames = [Image.open(f) for f in files]
     parts = [frames[0:15], frames[16:31], frames[31:38], 
              frames[38:48], frames[49:68], frames[68:86]]
@@ -158,9 +155,9 @@ async def make_qiegewala(texts):
             if x < 5:
                 return f'“{text}”长度过长，请适当缩减'
             await darw_text(frame, x, y, text, font, shadowcolor, fillcolor)
-    save_path = cache_path / (uuid.uuid1().hex + '.gif')
-    frames[0].save(save_path, save_all=True, append_images=frames[1:], duration=130)
-    return MessageSegment.image(file=f'file://{save_path}')
+    gif_file = io.BytesIO()
+    imageio.mimsave(gif_file, frames, format='gif', duration=0.13)
+    return MessageSegment.image(f"base64://{base64.b64encode(gif_file.getvalue()).decode()}")
 
 
 emojis = [

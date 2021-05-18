@@ -3,7 +3,7 @@ from typing import Type
 from nonebot import export, on_startswith
 from nonebot.typing import T_State
 from nonebot.matcher import Matcher
-from nonebot.adapters.cqhttp import Bot, Event, MessageSegment
+from nonebot.adapters.cqhttp import Bot, Event
 
 from .data_source import get_image
 
@@ -35,9 +35,9 @@ async def handle(matcher: Type[Matcher], event: Event, command: str, type: str):
             qq = event.user_id
     if qq:
         matcher.block = True
-        img_path = await get_image(qq, type)
-        if img_path:
-            await matcher.send(message=MessageSegment.image(file='file://' + img_path))
+        image = await get_image(qq, type)
+        if image:
+            await matcher.send(message=image)
             await matcher.finish()
         else:
             await matcher.finish(message='出错了，请稍后再试')

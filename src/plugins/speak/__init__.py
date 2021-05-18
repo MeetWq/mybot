@@ -2,7 +2,7 @@ from nonebot import export, on_command, on_shell_command
 from nonebot.rule import ArgumentParser
 from nonebot.rule import to_me
 from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, Event, MessageSegment
+from nonebot.adapters.cqhttp import Bot, Event
 
 from .data_source import get_voice
 
@@ -36,9 +36,9 @@ async def _(bot: Bot, event: Event, state: T_State):
     if type not in [0, 1]:
         await speak.finish(export.options)
 
-    file_path = await get_voice(words, type)
-    if file_path:
-        await speak.send(message=MessageSegment.record(file='file://' + file_path))
+    voice = await get_voice(words, type)
+    if voice:
+        await speak.send(message=voice)
     else:
         await speak.send(message='出错了，请稍后再试')
 
@@ -50,8 +50,8 @@ async def _(bot: Bot, event: Event, state: T_State):
         await speak_at.send(message=export.usage)
         return
 
-    file_path = await get_voice(msg)
-    if file_path:
-        await speak_at.send(message=MessageSegment.record(file='file://' + file_path))
+    voice = await get_voice(msg)
+    if voice:
+        await speak_at.send(message=voice)
     else:
         await speak_at.send(message='出错了，请稍后再试')

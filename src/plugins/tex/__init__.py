@@ -2,7 +2,7 @@ import re
 from nonebot import export, on_shell_command
 from nonebot.rule import ArgumentParser
 from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, unescape, Event, MessageSegment
+from nonebot.adapters.cqhttp import Bot, unescape, Event
 from nonebot.log import logger
 
 from .data_source import tex2pic
@@ -38,9 +38,9 @@ async def _(bot: Bot, event: Event, state: T_State):
     if not equation:
         await tex.finish(export.usage)
 
-    file_path = await tex2pic(equation, border=args.border, resolution=args.resolution)
-    if file_path:
-        await tex.send(message=MessageSegment.image(file='file://' + file_path))
+    image = await tex2pic(equation, border=args.border, resolution=args.resolution)
+    if image:
+        await tex.send(message=image)
         await tex.finish()
     else:
         await tex.finish('出错了，请检查公式或稍后再试')

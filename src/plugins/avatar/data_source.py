@@ -1,3 +1,5 @@
+import io
+import base64
 import random
 import aiohttp
 import hashlib
@@ -6,14 +8,14 @@ import traceback
 from pathlib import Path
 from nonebot.log import logger
 from PIL import Image, ImageDraw, ImageFilter
+from nonebot.adapters.cqhttp import MessageSegment
 
-data_path = Path('src/data/emojis')
-cache_path = Path('cache/avatar')
-if not cache_path.exists():
-    cache_path.mkdir(parents=True)
+dir_path = Path(__file__).parent
+image_path = dir_path / 'images'
 
 
-async def get_avatar(user_id, avatar_path):
+async def get_avatar(user_id):
+    result = None
     avatar_url = 'http://q1.qlogo.cn/g?b=qq&nk={}&s=640'.format(user_id)
     async with aiohttp.ClientSession() as session:
         async with session.get(avatar_url) as resp:
@@ -24,15 +26,11 @@ async def get_avatar(user_id, avatar_path):
         async with aiohttp.ClientSession() as session:
             async with session.get(avatar_url_small) as resp:
                 result = await resp.read()
-
-    with avatar_path.open('wb') as f:
-        f.write(result)
-    return True
+    return Image.open(io.BytesIO(result)).convert('RGBA') if result else None
 
 
-async def create_petpet(input_path, output_path):
-    avatar = Image.open(input_path).convert('RGBA')
-    hand_frames = [data_path / f'petpet/frame{i}.png' for i in range(5)]
+async def create_petpet(avatar):
+    hand_frames = [image_path / f'petpet/frame{i}.png' for i in range(5)]
     hand_frames = [Image.open(i) for i in hand_frames]
     frame_locs = [(14, 20, 98, 98), (12, 33, 101, 85), (8, 40, 110, 76), (10, 33, 102, 84), (12, 20, 98, 98)]
     frames = []
@@ -44,13 +42,13 @@ async def create_petpet(input_path, output_path):
         hand = hand_frames[i]
         frame.paste(hand, mask=hand)
         frames.append(frame)
-    imageio.mimsave(output_path, frames, duration=0.06)
-    return True
+    output = io.BytesIO()
+    imageio.mimsave(output, frames, format='gif', duration=0.06)
+    return output
 
 
-async def create_tear(input_path, output_path):
-    avatar = Image.open(input_path).convert('RGBA')
-    tear = Image.open(data_path / 'tear.png')
+async def create_tear(avatar):
+    tear = Image.open(image_path / 'tear.png')
     frame = Image.new('RGBA', (1080, 804), (255, 255, 255, 0))
     left = avatar.resize((385, 385)).rotate(24, expand=True)
     right = avatar.resize((385, 385)).rotate(-11, expand=True)
@@ -58,12 +56,12 @@ async def create_tear(input_path, output_path):
     frame.paste(right, (649, 310))
     frame.paste(tear, mask=tear)
     frame = frame.convert('RGB')
-    frame.save(output_path)
-    return True
+    output = io.BytesIO()
+    frame.save(output, format='jpeg')
+    return output
 
 
-async def create_throw(input_path, output_path):
-    avatar = Image.open(input_path).convert('RGBA')
+async def create_throw(avatar):
     mask = Image.new('L', avatar.size, 0)
     draw = ImageDraw.Draw(mask)
     offset = 1
@@ -72,60 +70,63 @@ async def create_throw(input_path, output_path):
     avatar.putalpha(mask)
     avatar = avatar.rotate(random.randint(1, 360), Image.BICUBIC)
     avatar = avatar.resize((143, 143), Image.ANTIALIAS)
-    throw = Image.open(data_path / 'throw.png')
+    throw = Image.open(image_path / 'throw.png')
     throw.paste(avatar, (15, 178), mask=avatar)
     throw = throw.convert('RGB')
-    throw.save(output_path)
-    return True
+    output = io.BytesIO()
+    throw.save(output, format='jpeg')
+    return output
 
 
-async def create_crawl(input_path, output_path):
-    avatar = Image.open(input_path).convert('RGBA')
+async def create_crawl(avatar):
     mask = Image.new('L', avatar.size, 0)
     draw = ImageDraw.Draw(mask)
     offset = 1
     draw.ellipse((offset, offset, avatar.size[0] - offset, avatar.size[1] - offset), fill=255)
     mask = mask.filter(ImageFilter.GaussianBlur(0))
     avatar.putalpha(mask)
-    images = [i for i in (data_path / 'crawl').iterdir() if i.is_file()]
+    images = [i for i in (image_path / 'crawl').iterdir() if i.is_file()]
     crawl = Image.open(random.choice(images)).resize((500, 500), Image.ANTIALIAS)
     avatar = avatar.resize((100, 100), Image.ANTIALIAS)
     crawl.paste(avatar, (0, 400), mask=avatar)
     crawl = crawl.convert('RGB')
-    crawl.save(output_path)
-    return True
+    output = io.BytesIO()
+    crawl.save(output, format='jpeg')
+    return output
+    
 
 
-async def create_support(input_path, output_path):
-    avatar = Image.open(input_path).convert('RGBA')
-    support = Image.open(data_path / 'support.png')
+async def create_support(avatar):
+    support = Image.open(image_path / 'support.png')
     frame = Image.new('RGBA', (1293, 1164), (255, 255, 255, 0))
     avatar = avatar.resize((815, 815), Image.ANTIALIAS).rotate(23, expand=True)
     frame.paste(avatar, (-172, -17))
     frame.paste(support, mask=support)
     frame = frame.convert('RGB')
-    frame.save(output_path)
-    return True
+    output = io.BytesIO()
+    frame.save(output, format='jpeg')
+    return output
 
 
 types = {
-    'petpet': (create_petpet, '.gif'),
-    'tear': (create_tear, '.jpg'),
-    'throw': (create_throw, '.jpg'),
-    'crawl': (create_crawl, '.jpg'),
-    'support': (create_support, '.jpg')
+    'petpet': create_petpet,
+    'tear': create_tear,
+    'throw': create_throw,
+    'crawl': create_crawl,
+    'support': create_support
 }
 
 
 async def get_image(user_id: str, type: str):
     try:
         if type in types:
-            func, img_ext = types[type]
-            avatar_path = cache_path / f'{user_id}.jpg'
-            img_path = cache_path / f'{user_id}_{type}{img_ext}'
-            if await get_avatar(user_id, avatar_path):
-                if await func(avatar_path, img_path):
-                    return str(img_path.absolute())
+            func = types[type]
+            avatar = await get_avatar(user_id)
+            if avatar:
+                output = await func(avatar)
+                if output:
+                    return MessageSegment.image(f"base64://{base64.b64encode(output.getvalue()).decode()}")
+        return None
     except (AttributeError, TypeError, OSError, ValueError):
         logger.debug(traceback.format_exc())
-        return ''
+        return None
