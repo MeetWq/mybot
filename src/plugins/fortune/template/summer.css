@@ -1,0 +1,41 @@
+@font-face {
+  font-family: "sakura";
+  src: local("樱酥体 蔷薇微光静谧时"), url("sakura.ttf");
+}
+p {
+  margin: 25px auto;
+}
+.image {
+  display: inline-block;
+  height: 300px;
+  background-size: auto 300px;
+  font-family: sakura, Arial, Helvetica, sans-serif, "Microsoft YaHei";
+  background-image: url("{{'summer.jpg' | load_jpg}}");
+  background-position: right -950px center;
+}
+.face {
+  background-color: #ffffff;
+  width: 240px;
+  height: 240px;
+  margin: 30px;
+  float: left;
+}
+.box {
+  display: inline-block;
+  height: 240px;
+  border-radius: 20px;
+  font-size: 50px;
+  color: #ffffff;
+  background-color: rgba(105, 170, 224, 0.8);
+  margin: 30px 310px 30px 0px;
+}
+.content {
+  display: inline-block;
+  margin: 20px;
+}
+.good {
+  color: #d02090;
+}
+.bad {
+  color: #228b22;
+}

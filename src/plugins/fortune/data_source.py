@@ -1,40 +1,45 @@
-import uuid
+import io
 import json
 import base64
+import jinja2
 import random
 from pathlib import Path
 from datetime import datetime
-from src.utils.functions import trim_image
-from src.utils.playwright import get_new_page
+from PIL import Image, ImageChops
+from src.libs.playwright import get_new_page
 from nonebot.adapters.cqhttp import MessageSegment
 
 dir_path = Path(__file__).parent
-cache_path = Path('cache/fortune')
-if not cache_path.exists():
-    cache_path.mkdir(parents=True)
+template_path = dir_path / 'template'
+data_path = Path('data/fortune')
+if not data_path.exists():
+    data_path.mkdir(parents=True)
 
 
-async def get_response(group_id, user_id, username):
-    date = datetime.now().strftime('%Y%m%d')
-    log_path = cache_path / (date + '_' + str(group_id) + '.log')
-    log_path.touch()
-    with log_path.open('r+') as f:
-        logs = f.readlines()
-        logs = [l.strip() for l in logs]
-        if str(user_id) not in logs:
-            f.write(str(user_id) + '\n')
+async def get_response(user_id, username):
+    try:
+        log_path = data_path / (datetime.now().strftime('%Y%m%d') + '.json')
+        if log_path.exists():
+            log = json.load(log_path.open('r', encoding='utf-8'))
+        else:
+            log = {}
+
+        if user_id not in log:
             copywriting = get_copywriting()
             luck = copywriting['luck']
             content = copywriting['content']
-            type = get_type(luck)
+            fortune = get_type(luck)
             face = get_face(luck)
-            img_path = await create_image(username, luck, type, content, face)
-            if img_path:
-                return MessageSegment.image(file='file://' + str(img_path))
-            else:
-                return '出错了，请稍后再试'
+            image = await create_image(username, luck, fortune, content, face)
+            if image:
+                log[user_id] = fortune
+                json.dump(log, log_path.open('w', encoding='utf-8'), ensure_ascii=False)
+                return MessageSegment.image(f"base64://{base64.b64encode(image).decode()}")
         else:
-            return '你今天已经抽过签了，请明天再来~'
+            fortune = log[user_id]
+            return '你今天已经抽过签了，你的今日运势是：' + fortune
+    except:
+        return '出错了，请稍后再试'
 
 
 def get_copywriting():
@@ -55,7 +60,6 @@ def get_type(luck):
 
 
 def get_face(luck):
-    image_path = Path('src/data/images/cc98')
     if luck in [10]:
         face_id = '04'
     elif luck in [9, 20]:
@@ -80,32 +84,41 @@ def get_face(luck):
         face_id = '11'
     elif luck in [-8, -9, -10]:
         face_id = '12'
-    return image_path / f'cc98{face_id}.png'
+    return f'cc98{face_id}.png'
 
 
-async def create_image(username, luck, fortune, content, face_path):
-    html_path = dir_path / 'fortune.html'
-    bg_path = dir_path / 'summer.jpg'
-    img_name = uuid.uuid1().hex
-    img_path = (cache_path / (img_name + '.png')).absolute()
-    out_path = (cache_path / (img_name + '.jpg')).absolute()
-    color = 'VioletRed' if luck > 0 else 'ForestGreen'
+def load_jpg(name):
+   with (template_path / name).open('rb') as f:
+        return 'data:image/jpeg;base64,' + base64.b64encode(f.read()).decode()
 
-    with bg_path.open('rb') as f:
-        bg_b64 = 'data:image/png;base64,' + str(base64.b64encode(f.read()), 'utf-8')
 
-    with face_path.open('rb') as f:
-        face_b64 = 'data:image/png;base64,' + str(base64.b64encode(f.read()), 'utf-8')
+def load_png(name):
+   with (template_path / name).open('rb') as f:
+        return 'data:image/png;base64,' + base64.b64encode(f.read()).decode()
 
-    with html_path.open('r', encoding='utf-8') as f:
-        html = f.read()
-        html = html.replace('USERNAME', username).replace('FORTUNE', fortune).replace('COLOR', color) \
-                   .replace('CONTENT', content).replace('FACE', face_b64).replace('BACKGROUND', bg_b64)
+
+async def create_image(username, luck, fortune, content, face):
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(str(template_path.absolute())))
+    env.filters['load_jpg'] = load_jpg
+    env.filters['load_png'] = load_png
+    template = env.get_template('fortune.html')
+    html = template.render(username=username, luck=luck, fortune=fortune, content=content, face=face)
 
     async with get_new_page(viewport={"width": 2000,"height": 500}) as page:
         await page.set_content(html)
-        await page.screenshot(path=str(img_path))
+        raw_image = await page.screenshot()
 
-    if await trim_image(img_path, out_path):
-        return out_path
-    return None
+    return await trim(raw_image, format='jpeg')
+
+
+async def trim(im, format='png'):
+    im = Image.open(io.BytesIO(im)).convert('RGB')
+    bg = Image.new(im.mode, im.size, im.getpixel((0, 0)))
+    diff = ImageChops.difference(im, bg)
+    diff = ImageChops.add(diff, diff, 2.0, -100)
+    box = diff.getbbox()
+    if box:
+        im = im.crop(box)
+    output = io.BytesIO()
+    im.save(output, format=format)
+    return output.getvalue()

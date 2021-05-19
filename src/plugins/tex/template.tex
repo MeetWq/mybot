@@ -1,8 +1,5 @@
-{% if multi_line %}
-\documentclass[border={{ border }}pt, varwidth=20cm]{standalone}
-{% else %}
-\documentclass[border={{ border }}pt]{standalone}
-{% endif %}
+\documentclass[border={{border}}pt{{', varwidth=20cm' if multi_line}}]{standalone}
+
 \usepackage{amsmath}
 \usepackage{mathtools}
 \usepackage{amsfonts}
@@ -17,11 +14,11 @@
 \begin{document}
 {% if multi_line %}
     \begin{equation*}
-        {{ equation }}
+        {{equation}}
     \end{equation*}
 {% else %}
     $\displaystyle
-        {{ equation }}
+        {{equation}}
     $
 {% endif %}
 \end{document}

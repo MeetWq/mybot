@@ -7,7 +7,7 @@
         font-style: normal;
         font-weight: 400;
         src: local("Oswald Regular"), local("Oswald-Regular"),
-          url(FONT1) format("woff2");
+          url("{{'TK3iWkUHHAIjg752HT8Ghe4.woff2' | load_woff}}") format("woff2");
         unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
       }
       /* vietnamese */
@@ -16,7 +16,7 @@
         font-style: normal;
         font-weight: 400;
         src: local("Oswald Regular"), local("Oswald-Regular"),
-          url(FONT2) format("woff2");
+          url("{{'TK3iWkUHHAIjg752Fj8Ghe4.woff2' | load_woff}}") format("woff2");
         unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
       }
       /* latin-ext */
@@ -25,7 +25,7 @@
         font-style: normal;
         font-weight: 400;
         src: local("Oswald Regular"), local("Oswald-Regular"),
-          url(FONT3) format("woff2");
+          url("{{'TK3iWkUHHAIjg752Fz8Ghe4.woff2' | load_woff}}") format("woff2");
         unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB,
           U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
       }
@@ -35,7 +35,7 @@
         font-style: normal;
         font-weight: 400;
         src: local("Oswald Regular"), local("Oswald-Regular"),
-          url(FONT4) format("woff2");
+          url("{{'TK3iWkUHHAIjg752GT8G.woff2' | load_woff}}") format("woff2");
         unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
           U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193,
           U+2212, U+2215, U+FEFF, U+FFFD;
@@ -122,13 +122,13 @@
   <body>
     <div class="logo">
       <div class="box">
-        <div class="l">You</div>
+        <div class="l">{{left_text}}</div>
         <div class="r">
-          <span>Tube</span>
-          <img src="CORNER" alt="lt" class="lt" />
-          <img src="CORNER" alt="lb" class="lb" />
-          <img src="CORNER" alt="rt" class="rt" />
-          <img src="CORNER" alt="rb" class="rb" />
+          <span>{{right_text}}</span>
+          <img src="{{'corner.png' | load_png}}" alt="lt" class="lt" />
+          <img src="{{'corner.png' | load_png}}" alt="lb" class="lb" />
+          <img src="{{'corner.png' | load_png}}" alt="rt" class="rt" />
+          <img src="{{'corner.png' | load_png}}" alt="rb" class="rb" />
         </div>
       </div>
     </div>

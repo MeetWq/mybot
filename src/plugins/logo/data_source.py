@@ -1,104 +1,99 @@
-import uuid
+import io
 import base64
+import jinja2
 import aiohttp
 import asyncio
 import traceback
 from pathlib import Path
 from PIL import ImageFont
 from bs4 import BeautifulSoup
+from PIL import Image, ImageChops
+
 from nonebot.log import logger
-from src.utils.playwright import get_new_page
-from src.utils.functions import download, trim_image
+from nonebot.adapters.cqhttp import MessageSegment
+from src.libs.playwright import get_new_page
 
 dir_path = Path(__file__).parent
-cache_path = Path('cache/logo')
-if not cache_path.exists():
-    cache_path.mkdir(parents=True)
+template_path = dir_path / 'template'
 
 
 async def create_logo(texts, style='pornhub'):
-    img_path = ''
     try:
         if style == 'pornhub':
-            img_path = await create_pornhub_logo(texts[0], texts[1])
+            image = await create_pornhub_logo(texts[0], texts[1])
         elif style == 'youtube':
-            img_path = await create_youtube_logo(texts[0], texts[1])
+            image = await create_youtube_logo(texts[0], texts[1])
         elif style == 'douyin':
-            img_path = await create_douyin_logo(' '.join(texts))
+            image = await create_douyin_logo(' '.join(texts))
         elif style in ['cocacola', 'harrypotter']:
-            img_path = await create_logomaker_logo(' '.join(texts), style)
+            image = await create_logomaker_logo(' '.join(texts), style)
 
-        if img_path:
-            return str(img_path.absolute())
-        return ''
+        if image:
+            return MessageSegment.image(f"base64://{base64.b64encode(image).decode()}")
+        return None
     except (AttributeError, TypeError, OSError):
         logger.debug(traceback.format_exc())
-        return ''
+        return None
 
 
 async def create_pornhub_logo(left_text, right_text):
-    html_path = dir_path / 'pornhub.html'
-    img_path = cache_path / (uuid.uuid1().hex + '.png')
-
     font = ImageFont.truetype('msyh.ttc', 100)
     font_width, _ = font.getsize(left_text + right_text)
     img_width = font_width + 200
 
-    with html_path.open('r', encoding='utf-8') as f:
-        content = f.read()
-        content = content.replace('Porn', left_text).replace('Hub', right_text)
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(str(template_path.absolute())))
+    template = env.get_template('pornhub.html')
+    content = template.render(left_text=left_text, right_text=right_text)
 
     async with get_new_page(viewport={"width": img_width,"height": 250}) as page:
         await page.set_content(content)
-        await page.screenshot(path=str(img_path))
+        raw_image = await page.screenshot()
 
-    if await trim_image(img_path, img_path):
-        return img_path
-    return None
+    return await trim(raw_image)
+
+
+def load_woff(name):
+    with (template_path / name).open('rb') as f:
+        return 'data:application/x-font-woff;charset=utf-8;base64,' + base64.b64encode(f.read()).decode()
+
+
+def load_png(name):
+   with (template_path / name).open('rb') as f:
+        return 'data:image/png;base64,' + base64.b64encode(f.read()).decode()
 
 
 async def create_youtube_logo(left_text, right_text):
-    html_path = dir_path / 'youtube.html'
-    img_path = cache_path / (uuid.uuid1().hex + '.png')
-
     font = ImageFont.truetype('msyh.ttc', 100)
     font_width, _ = font.getsize(left_text + right_text)
     img_width = font_width + 300
 
-    def load_gfont(path):
-        with open(path, 'rb') as f:
-            return 'data:application/x-font-woff;charset=utf-8;base64,' + \
-                str(base64.b64encode(f.read()), 'utf-8')
-
-    gfont1_b64 = load_gfont('src/data/fonts/TK3iWkUHHAIjg752HT8Ghe4.woff2')
-    gfont2_b64 = load_gfont('src/data/fonts/TK3iWkUHHAIjg752Fj8Ghe4.woff2')
-    gfont3_b64 = load_gfont('src/data/fonts/TK3iWkUHHAIjg752Fz8Ghe4.woff2')
-    gfont4_b64 = load_gfont('src/data/fonts/TK3iWkUHHAIjg752GT8G.woff2')
-
-    corner_path = dir_path / 'corner.png'
-    with corner_path.open('rb') as f:
-        corner_b64 = 'data:image/png;base64,' + str(base64.b64encode(f.read()), 'utf-8')
-
-    with html_path.open('r', encoding='utf-8') as f:
-        content = f.read()
-        content = content.replace('You', left_text).replace('Tube', right_text) \
-                         .replace('FONT1', gfont1_b64).replace('FONT2', gfont2_b64) \
-                         .replace('FONT3', gfont3_b64).replace('FONT4', gfont4_b64) \
-                         .replace('CORNER', corner_b64)
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(str(template_path.absolute())))
+    env.filters['load_woff'] = load_woff
+    env.filters['load_png'] = load_png
+    template = env.get_template('youtube.html')
+    content = template.render(left_text=left_text, right_text=right_text)
 
     async with get_new_page(viewport={"width": img_width,"height": 250}) as page:
         await page.set_content(content)
-        await page.screenshot(path=str(img_path))
+        raw_image = await page.screenshot()
 
-    if await trim_image(img_path, img_path):
-        if await trim_image(img_path, img_path):
-            return img_path
-    return None
+    return await trim(await trim(raw_image))
+
+
+async def trim(im, format='png'):
+    im = Image.open(io.BytesIO(im)).convert('RGB')
+    bg = Image.new(im.mode, im.size, im.getpixel((0, 0)))
+    diff = ImageChops.difference(im, bg)
+    diff = ImageChops.add(diff, diff, 2.0, -100)
+    box = diff.getbbox()
+    if box:
+        im = im.crop(box)
+    output = io.BytesIO()
+    im.save(output, format=format)
+    return output.getvalue()
 
 
 async def create_douyin_logo(text):
-    img_path = cache_path / (uuid.uuid1().hex + '.gif')
-
     async with get_new_page() as page:
         await page.goto('https://tools.miku.ac/douyin_text/')
         try:
@@ -116,15 +111,10 @@ async def create_douyin_logo(text):
         url = await (await img.get_property('src')).json_value()
         resp = await page.goto(url)
         content = await resp.body()
-        
-        with img_path.open('wb') as f:
-            f.write(content)
-        return img_path
+        return content
 
 
 async def create_logomaker_logo(text, style='cocacola'):
-    img_path = cache_path / (uuid.uuid1().hex + '.png')
-
     url = 'https://logomaker.herokuapp.com/proc.php'
     params = {
         'type': '@' + style,
@@ -147,5 +137,7 @@ async def create_logomaker_logo(text, style='cocacola'):
     headers = {
         'Referer': 'https://logomaker.herokuapp.com/gstyle.php'
     }
-    await download(link, img_path, headers=headers)
-    return img_path
+    async with aiohttp.ClientSession() as session:
+        async with session.get(link, headers=headers) as resp:
+            result = await resp.read()
+    return result
