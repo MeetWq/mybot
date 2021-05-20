@@ -1,5 +1,4 @@
 import re
-import langid
 import subprocess
 from nonebot import export, on_command
 from nonebot.typing import T_State
@@ -35,7 +34,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     if not text:
         await wolfram.finish(export.usage)
 
-    if langid.classify(text)[0] not in ['en', 'es']:
+    if not re.fullmatch(r'[\x00-\x7F]+', text):
         text = subprocess.getoutput(f'trans -t en -brief -no-warn "{text}"').strip()
         if text:
             await wolfram.send('WolframAlpha 仅支持英文，将使用如下翻译进行搜索：\n' + text)
