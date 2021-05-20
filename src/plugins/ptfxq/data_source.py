@@ -8,10 +8,8 @@ from datetime import datetime
 from nonebot import get_driver
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
-from .config import Config
-
 global_config = get_driver().config
-ptfxq_config = Config(**global_config.dict())
+proxy = global_config.http_proxy
 
 data_path = Path('data/ptfxq')
 if not data_path.exists():
@@ -25,7 +23,7 @@ async def get_msgs():
 
     url = 'https://t.me/s/Ptfxq'
     async with aiohttp.ClientSession() as session:
-        async with session.get(url, proxy='http://' + ptfxq_config.proxy) as resp:
+        async with session.get(url, proxy=proxy) as resp:
             result = await resp.text()
     result = BeautifulSoup(result, 'lxml')
     messages = result.find_all('div', {'class': 'tgme_widget_message'})
@@ -46,7 +44,7 @@ async def format_msg(message):
     photo_b64 = []
     for photo_url in photos:
         async with aiohttp.ClientSession() as session:
-            async with session.get(photo_url, proxy='http://' + ptfxq_config.proxy) as resp:
+            async with session.get(photo_url, proxy=proxy) as resp:
                 result = await resp.read()
         photo_b64.append(f"base64://{base64.b64encode(result).decode()}")
 

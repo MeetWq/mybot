@@ -1,6 +1,3 @@
-[submodule "src/libs/mediawiki"]
-	path = src/libs/mediawiki
-	url = https://github.com/barrust/mediawiki
 [submodule "src/libs/AnimeThesaurus"]
 	path = src/libs/AnimeThesaurus
 	url = https://github.com/Kyomotoi/AnimeThesaurus.git

@@ -1,3 +1,4 @@
+import os
 import re
 import aiohttp
 import traceback
@@ -8,13 +9,13 @@ from nonebot import get_driver
 from nonebot.log import logger
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
-from .config import Config
 global_config = get_driver().config
-what_config = Config(**global_config.dict())
+os.environ['http_proxy'] = global_config.http_proxy
+os.environ['https_proxy'] = global_config.https_proxy
+os.environ['no_proxy'] = global_config.no_proxy
 
-from src.libs.mediawiki.mediawiki import MediaWiki, DisambiguationError
-wikipedia = MediaWiki(lang='zh', proxies={'http': 'http://' + what_config.proxy, 'https': 'http://' + what_config.proxy})
-
+import wikipedia
+wikipedia.set_lang('zh')
 from baike import getBaike
 
 
@@ -137,7 +138,7 @@ async def get_wiki(keyword, force=False):
 
     try:
         content = wikipedia.summary(title)
-    except DisambiguationError:
+    except wikipedia.DisambiguationError:
         if len(entries) < 2:
             return '', ''
         title = entries[1]

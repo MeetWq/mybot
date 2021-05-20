@@ -1,6 +1,6 @@
 import random
 import traceback
-from pixivpy_async import *
+from pixivpy_async import PixivClient, AppPixivAPI
 from nonebot import get_driver
 from nonebot.adapters.cqhttp import MessageSegment, Message
 from nonebot.log import logger
@@ -9,6 +9,7 @@ from .config import Config
 
 global_config = get_driver().config
 pixiv_config = Config(**global_config.dict())
+proxy = global_config.http_proxy
 
 
 async def get_pixiv(keyword: str):
@@ -40,8 +41,8 @@ async def get_pixiv(keyword: str):
 
 async def to_msg(illusts):
     msg = Message()
-    async with PixivClient(proxy='http://' + pixiv_config.proxy) as client:
-        aapi = AppPixivAPI(client=client, proxy='http://' + pixiv_config.proxy)
+    async with PixivClient(proxy=proxy) as client:
+        aapi = AppPixivAPI(client=client, proxy=proxy)
         await aapi.login(refresh_token=pixiv_config.pixiv_token)
         for illust in illusts:
             msg.append('{} ({})'.format(illust['title'], illust['id']))
@@ -52,8 +53,8 @@ async def to_msg(illusts):
 
 
 async def get_by_ranking(mode='day', num=3):
-    async with PixivClient(proxy='http://' + pixiv_config.proxy) as client:
-        aapi = AppPixivAPI(client=client, proxy='http://' + pixiv_config.proxy)
+    async with PixivClient(proxy=proxy) as client:
+        aapi = AppPixivAPI(client=client, proxy=proxy)
         await aapi.login(refresh_token=pixiv_config.pixiv_token)
         illusts = await aapi.illust_ranking(mode)
         illusts = illusts['illusts']
@@ -62,8 +63,8 @@ async def get_by_ranking(mode='day', num=3):
 
 
 async def get_by_search(keyword, num=3):
-    async with PixivClient(proxy='http://' + pixiv_config.proxy) as client:
-        aapi = AppPixivAPI(client=client, proxy='http://' + pixiv_config.proxy)
+    async with PixivClient(proxy=proxy) as client:
+        aapi = AppPixivAPI(client=client, proxy=proxy)
         await aapi.login(refresh_token=pixiv_config.pixiv_token)
         illusts = await aapi.search_illust(keyword)
         illusts = illusts['illusts']
@@ -72,8 +73,8 @@ async def get_by_search(keyword, num=3):
 
 
 async def get_by_id(work_id):
-    async with PixivClient(proxy='http://' + pixiv_config.proxy) as client:
-        aapi = AppPixivAPI(client=client, proxy='http://' + pixiv_config.proxy)
+    async with PixivClient(proxy=proxy) as client:
+        aapi = AppPixivAPI(client=client, proxy=proxy)
         await aapi.login(refresh_token=pixiv_config.pixiv_token)
         illust = await aapi.illust_detail(work_id)
         return illust
