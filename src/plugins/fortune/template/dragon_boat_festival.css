@@ -1,0 +1,41 @@
+@font-face {
+  font-family: "sakura";
+  src: local("樱酥体 蔷薇微光静谧时"), url("sakura.ttf");
+}
+p {
+  margin: 25px auto;
+}
+.image {
+  display: inline-block;
+  height: 300px;
+  background-size: auto 300px;
+  font-family: sakura, Arial, Helvetica, sans-serif, "Microsoft YaHei";
+  background-image: url("{{'dragon_boat_festival.jpg' | load_jpg}}");
+  background-position: left -1280px center;
+}
+.face {
+  background-color: #ffffff;
+  width: 240px;
+  height: 240px;
+  margin: 30px;
+  float: right;
+}
+.box {
+  display: inline-block;
+  height: 240px;
+  border-radius: 20px;
+  font-size: 50px;
+  color: #ffffff;
+  background-color: rgba(53, 120, 188, 0.7);
+  margin: 30px 0px 30px 320px;
+}
+.content {
+  display: inline-block;
+  margin: 20px;
+}
+.good {
+  color: #C71585;
+}
+.bad {
+  color: #32CD32;
+}
