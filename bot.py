@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import nonebot
 from pathlib import Path
 from nonebot.adapters.cqhttp import Bot as CQHTTPBot
@@ -19,13 +22,12 @@ logger.add(str(log_path),
 
 # You can pass some keyword args config to init function
 nonebot.init()
+app = nonebot.get_asgi()
+
 driver = nonebot.get_driver()
 driver.register_adapter('cqhttp', CQHTTPBot)
 
-nonebot.load_plugins('src/plugins')
-nonebot.load_plugin('nonebot_plugin_manager')
-nonebot.load_plugin('nonebot_plugin_test')
-nonebot.load_plugin('nonebot_plugin_apscheduler')
+nonebot.load_from_toml("pyproject.toml")
 
 # Modify some config / config depends on loaded configs
 #
@@ -33,4 +35,5 @@ nonebot.load_plugin('nonebot_plugin_apscheduler')
 # do something...
 
 if __name__ == '__main__':
-    nonebot.run()
+    nonebot.logger.warning("Always use `nb run` to start the bot instead of manually running!")
+    nonebot.run(app="__mp_main__:app")
