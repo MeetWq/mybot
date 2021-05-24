@@ -1,6 +1,5 @@
 from nonebot import export, require, get_bots
-from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, Event
+from nonebot.adapters.cqhttp import Bot
 
 from .data_source import get_msgs
 
@@ -16,13 +15,13 @@ async def update_ptfxq():
         return
 
     bots = []
-    for bot_id, bot in get_bots().items():
+    for _, bot in get_bots().items():
         bots.append(bot)
 
     for bot in bots:
         noitce_groups = []
         npm = require('nonebot_plugin_manager')
-        group_list = await bot.call_api(api='get_group_list')
+        group_list = await Bot(bot).get_group_list()
         for group in group_list:
             group_id = group['group_id']
             group_plugin_list = npm.get_group_plugin_list(str(group_id))
@@ -31,7 +30,7 @@ async def update_ptfxq():
 
         for group_id in noitce_groups:
             for msg in msgs:
-                await bot.call_api(api='send_group_msg', group_id=group_id, message=msg)
+                await Bot(bot).send_group_msg(group_id=group_id, message=msg)
 
 
 scheduler = require('nonebot_plugin_apscheduler').scheduler
