@@ -1,6 +1,6 @@
 from pathlib import Path
 from nonebot import require, get_bots
-from nonebot.adapters.cqhttp import Bot, Message, MessageSegment
+from nonebot.adapters.cqhttp import Message, MessageSegment
 
 from .sub_list import get_sub_list
 from .data_source import get_live_info
@@ -23,7 +23,7 @@ async def bilibili_live_monitor():
     for bot in bots:
         noitce_groups = []
         npm = require('nonebot_plugin_manager')
-        group_list = await Bot(bot).get_group_list()
+        group_list = await bot.get_group_list()
         for group in group_list:
             group_id = str(group['group_id'])
             group_plugin_list = npm.get_group_plugin_list(group_id)
@@ -36,7 +36,7 @@ async def bilibili_live_monitor():
                 if room_id in msg_dict:
                     msg = msg_dict[room_id]
                     if msg:
-                        await Bot(bot).send_group_msg(group_id=group_id, message=msg)
+                        await bot.send_group_msg(group_id=group_id, message=msg)
 
 
 def format_msg(info: dict) -> Message:
