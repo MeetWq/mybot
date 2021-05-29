@@ -10,7 +10,7 @@ setu_config = Config(**global_config.dict())
 
 async def get_pic_url(key_word=None, r18=False) -> str:
     url = 'https://api.lolicon.app/setu/'
-    data = {
+    params = {
         'apikey': setu_config.setu_apikey,
         'r18': 1 if r18 else 0,
         'num': 1,
@@ -18,7 +18,7 @@ async def get_pic_url(key_word=None, r18=False) -> str:
         'keyword': key_word
     }
     async with aiohttp.ClientSession() as session:
-        async with session.get(url) as resp:
+        async with session.get(url, params=params) as resp:
             response = await resp.json()
     if response['code'] != 0:
         return ''

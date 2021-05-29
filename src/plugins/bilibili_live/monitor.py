@@ -60,7 +60,7 @@ scheduler.add_job(
     bilibili_live_monitor,
     'cron',
     hour='9-23',
-    minute='*/2',
+    minute='*/1',
     id='bilibili_live_monitor_in_day',
     coalesce=True,
     misfire_grace_time=30

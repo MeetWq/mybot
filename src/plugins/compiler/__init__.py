@@ -29,6 +29,8 @@ async def _(bot: Bot, event: Event, state: T_State):
         await compiler.finish(export.notice)
 
     code = match_obj.group(2)
+    if not code:
+        return
     result = await network_compile(language, code)
     logger.debug(result)
     if isinstance(result, str):
