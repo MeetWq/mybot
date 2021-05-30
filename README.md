@@ -21,6 +21,8 @@ pip install nb-cli nonebot-adapter-cqhttp
 nb plugin install nonebot_plugin_test
 nb plugin install nonebot_plugin_apscheduler
 nb plugin install nonebot_plugin_manager
+nb plugin install nonebot_plugin_alias
+nb plugin install nonebot_plugin_withdraw
 ```
 
 ##### 其他插件
@@ -36,6 +38,12 @@ sudo apt install ffmpeg imagemagick translate-shell
 
 ```bash
 pip install bilibili_api
+```
+
+- For plugin chat
+
+```bash
+pip install cachetools
 ```
 
 - For plugin fortune, logo
@@ -73,5 +81,5 @@ pip install wolframalpha
 - For plugin what
 
 ```bash
-pip install baike
+pip install baike wikipedia
 ```

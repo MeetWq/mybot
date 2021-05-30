@@ -4,6 +4,7 @@ import random
 import aiohttp
 import requests
 from pathlib import Path
+from cachetools import TTLCache
 from nonebot import get_driver
 from nonebot.log import logger
 
@@ -19,21 +20,24 @@ class ChatBot:
         self.secret_key = chat_config.baidu_unit_secret_key
         self.bot_id = chat_config.baidu_unit_bot_id
         self.base_url = 'https://aip.baidubce.com'
-        self.token = ''
-        self.session_id = ''
+        self.token = self.get_token()
+        self.sessions = TTLCache(maxsize=128, ttl=60 * 60 * 1)
 
     def get_token(self):
         url = f'{self.base_url}/oauth/2.0/token?grant_type=client_credentials&client_id={self.api_key}&client_secret={self.secret_key}'
         response = requests.post(url).json()
-        self.token = response['access_token']
+        return response['access_token']
 
-    async def get_reply(self, text: str, user_id: str, new: bool = False) -> str:
+    async def get_reply(self, text: str, user_id: str) -> str:
         url = f'{self.base_url}/rpc/2.0/unit/service/chat?access_token={self.token}'
+        session_id = self.sessions.get(user_id)
+        if not session_id:
+            session_id = ''
         params = {
             'log_id': str(uuid.uuid4()),
             'version': '2.0',
             'service_id': self.bot_id,
-            'session_id': '' if new else self.session_id,
+            'session_id': session_id,
             'request': {
                 'query': text,
                 'user_id': user_id
@@ -48,7 +52,8 @@ class ChatBot:
             async with session.post(url, data=json.dumps(params, ensure_ascii=False)) as resp:
                 response = await resp.json()
         if response and response['error_code'] == 0:
-            self.session_id = response['result']['session_id']
+            session_id = response['result']['session_id']
+            self.sessions[user_id] = session_id
             return response['result']['response_list'][0]['action_list'][0]['say']
         else:
             logger.debug(response)
@@ -64,4 +69,3 @@ async def get_anime_thesaurus(text):
 
 
 chat_bot = ChatBot()
-chat_bot.get_token()

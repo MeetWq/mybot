@@ -6,18 +6,33 @@ from nonebot.adapters.cqhttp import Bot, Event, GroupMessageEvent, Message
 
 from .data_source import chat_bot, get_anime_thesaurus
 
-# export = export()
-# export.description = '闲聊'
-# export.usage = 'Usage:\n  智障对话'
-# export.notice = 'Notice:\n  需要@我'
-# export.help = export.description + '\n' + export.usage + '\n' + export.notice
+export = export()
+export.description = '闲聊'
+export.usage = 'Usage:\n  和我对话即可，第一次需要@我触发，若30s无响应则结束对话'
+export.notice = 'Notice:\n  对话是一对一的，不能插话'
+export.help = export.description + '\n' + export.usage + '\n' + export.notice
 
-chat = on_message(rule=to_me(), priority=39)
+chat = on_message(rule=to_me(), priority=40)
 
 null_reply = [
     '怎么了？',
     '唔...怎么了？',
-    '你好呀'
+    '你好呀',
+    '我在的'
+]
+
+error_reply = [
+    '这个问题我还不会',
+    '我不知道该怎么回答',
+    '其实我不太明白你的意思……'
+]
+
+end_word = [
+    '停',
+    '爬'
+    'stop',
+    '结束',
+    '再见'
 ]
 
 
@@ -30,8 +45,8 @@ async def _(bot: Bot, event: Event, state: T_State):
     state['user_id'] = user_id
     state['username'] = username
 
-    msg = get_plain_text(event.get_message())
-    reply = await get_reply(msg, user_id, username, new=True)
+    msg = event.get_plaintext().strip()
+    reply = await get_reply(msg, user_id, username)
     if reply:
         await chat.send(reply)
 
@@ -43,9 +58,9 @@ async def _(bot: Bot, event: Event, state: T_State):
     msg = Message(state['msg'])
     msg = get_plain_text(msg)
     if not msg:
-        await chat.finish()
-    if len(msg) <= 1:
         await chat.reject()
+    if msg in end_word:
+        await chat.finish()
     reply = await get_reply(msg, user_id, username)
     if reply:
         await chat.reject(reply)
@@ -56,17 +71,17 @@ def get_plain_text(msgs) -> str:
     return ' '.join(msgs).strip()
 
 
-async def get_reply(msg: str, user_id: str, username: str, new: bool = False):
+async def get_reply(msg: str, user_id: str, username: str):
     if msg:
         reply = await get_anime_thesaurus(msg)
         if reply:
             return reply
 
-        reply = await chat_bot.get_reply(msg, user_id, new)
+        reply = await chat_bot.get_reply(msg, user_id)
         reply = reply.replace('<USER-NAME>', username)
         if reply:
             return reply
 
-        return '其实我不太明白你的意思……'
+        return random.choice(error_reply)
     else:
         return random.choice(null_reply)
