@@ -19,7 +19,7 @@ wikipedia.set_lang('zh')
 from baike import getBaike
 
 
-async def get_content(keyword, source='all', force=False):
+async def get_content(keyword, source='all', force=False, less=False):
     try:
         msg = ''
         if source in sources:
@@ -27,7 +27,7 @@ async def get_content(keyword, source='all', force=False):
         elif source == 'all':
             titles = []
             msgs = []
-            sources_used = sources if force else sources_less
+            sources_used = sources_less if less else sources
             for s in sources_used.keys():
                 t, m = await sources_used[s](keyword, force)
                 titles.append(t)

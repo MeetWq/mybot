@@ -44,7 +44,8 @@ async def _(bot: Bot, event: Event, state: T_State):
         return
     keyword = prefix
 
-    msg = await get_content(keyword)
+    less = False if event.is_tome() else True
+    msg = await get_content(keyword, less=less)
     if msg:
         what.block = True
         await what.send(message=msg)

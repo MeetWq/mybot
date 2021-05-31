@@ -26,7 +26,7 @@ async def _(bot: Bot, event: Event, state: T_State):
 
     language = match_obj.group(1)
     if language not in legal_language:
-        await compiler.finish(export.notice)
+        await compiler.finish(export.options)
 
     code = match_obj.group(2)
     if not code:
