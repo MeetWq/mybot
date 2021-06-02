@@ -32,7 +32,10 @@ def del_sub_list(user_id: str, room_id: str) -> str:
     if room_id not in group_sub_list:
         return 'dupe'
     group_sub_list.pop(room_id)
-    sub_list[user_id] = group_sub_list
+    if group_sub_list:
+        sub_list[user_id] = group_sub_list
+    else:
+        sub_list.pop(user_id)
     dump_sub_list(sub_list)
     return 'success'
 
