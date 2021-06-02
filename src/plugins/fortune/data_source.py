@@ -102,6 +102,9 @@ async def create_image(username, luck, fortune, content, face):
     env.filters['load_jpg'] = load_jpg
     env.filters['load_png'] = load_png
     template = env.get_template('fortune.html')
+
+    if len(username) > 50:
+        username = username[:50] + '...'
     html = template.render(username=username, luck=luck, fortune=fortune, content=content, face=face)
 
     async with get_new_page(viewport={"width": 2000,"height": 500}) as page:
