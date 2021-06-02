@@ -1,11 +1,15 @@
 import re
 from pathlib import Path
-from nonebot import require, get_bots
+from nonebot import require, get_bots, get_driver
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
 from .sub_list import load_sub_list
 from .data_source import get_live_info
 from .live_status import load_status_list, update_status
+
+from .config import Config
+global_config = get_driver().config
+bilibili_live_config = Config(**global_config.dict())
 
 status_path = Path() / 'data' / 'bilibili_live' / 'live_status.json'
 
@@ -66,21 +70,31 @@ def format_msg(info: dict) -> Message:
 
 scheduler = require("nonebot_plugin_apscheduler").scheduler
 
+cron_day = bilibili_live_config.bilibili_live_cron_day
 scheduler.add_job(
     bilibili_live_monitor,
     'cron',
-    hour='9-23',
-    minute='*/1',
+    second=cron_day[0],
+    minute=cron_day[1],
+    hour=cron_day[2],
+    day=cron_day[3],
+    month=cron_day[4],
+    year=cron_day[5],
     id='bilibili_live_monitor_in_day',
     coalesce=True,
     misfire_grace_time=30
 )
 
+cron_night = bilibili_live_config.bilibili_live_cron_night
 scheduler.add_job(
     bilibili_live_monitor,
     'cron',
-    hour='0-8',
-    minute='*/10',
+    second=cron_night[0],
+    minute=cron_night[1],
+    hour=cron_night[2],
+    day=cron_night[3],
+    month=cron_night[4],
+    year=cron_night[5],
     id='bilibili_live_monitor_in_night',
     coalesce=True,
     misfire_grace_time=30
