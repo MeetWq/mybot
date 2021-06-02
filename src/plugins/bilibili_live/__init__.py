@@ -1,7 +1,7 @@
 from nonebot import export, on_command
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp.bot import Bot
-from nonebot.adapters.cqhttp.event import GroupMessageEvent
+from nonebot.adapters.cqhttp.event import Event, GroupMessageEvent
 
 from .monitor import *
 from .data_source import get_live_info
@@ -15,23 +15,22 @@ B站直播间 订阅 {房间号/用户名}
 B站直播间 取消订阅 {房间号/用户名}
 B站直播间 清空订阅
 B站直播间 订阅列表'''
-# export.notice = 'Notice:\n管理订阅需要群管理员权限'
-export.help = export.description + '\n' + export.usage # + '\n' + export.notice
+export.help = export.description + '\n' + export.usage
 
 bilibili_live = on_command('bilibili_live', aliases={'B站直播间', 'b站直播间'}, priority=35)
 
 
 @bilibili_live.handle()
 @bilibili_live.args_parser
-async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
+async def _(bot: Bot, event: Event, state: T_State):
     args = str(event.get_plaintext()).strip().split()
     if not args:
-        await bilibili_live.finish(export.usage + '\n' + export.notice)
+        await bilibili_live.finish(export.usage)
     state['args'] = args
 
 
 @bilibili_live.got('args')
-async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
+async def _(bot: Bot, event: Event, state: T_State):
     args = state['args']
     if len(args) == 1:
         state['command'] = args[0]
@@ -42,38 +41,41 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
         await bilibili_live.finish('参数数量错误\n' + export.usage)
 
 
+def get_id(event: Event):
+    if isinstance(event, GroupMessageEvent):
+        return 'group_' + str(event.group_id)
+    else:
+        return 'private_' + str(event.get_user_id())
+
+
 @bilibili_live.got('command')
-async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
+async def _(bot: Bot, event: Event, state: T_State):
     command = state['command']
     if command not in ['订阅', '取消订阅', '订阅列表', '清空订阅', 'd', 'td', 'list', 'clear']:
         await bilibili_live.finish('没有这个命令哦\n' + export.usage)
 
-    group_id = str(event.group_id)
+    user_id = get_id(event)
+    state['user_id'] = user_id
     if command in ['订阅列表', 'list']:
-        sub_list = get_sub_list(group_id)
+        sub_list = get_sub_list(user_id)
         if not sub_list:
-            await bilibili_live.finish('本群还没有任何订阅')
-        msg = '本群已订阅以下直播间:\n'
+            await bilibili_live.finish('目前还没有任何订阅')
+        msg = '已订阅以下直播间:\n'
         for room_id, up_name in sub_list.items():
             msg += f'\n{up_name} ({room_id})'
         await bilibili_live.send(message=msg)
         await bilibili_live.finish()
     elif command in ['清空订阅', 'clear']:
-        # if not check_permission(bot, event):
-        #     await bilibili_live.finish('管理订阅需要群管理员权限')
-        clear_sub_list(group_id)
+        clear_sub_list(user_id)
         await update_status_list()
-        await bilibili_live.finish('本群订阅列表已清空')
-    # else:
-    #     if not check_permission(bot, event):
-    #         await bilibili_live.finish('管理订阅需要群管理员权限')
+        await bilibili_live.finish('订阅列表已清空')
 
 
 @bilibili_live.got('room_id', prompt='请输入房间号或主播名称')
-async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
+async def _(bot: Bot, event: Event, state: T_State):
     command = state['command']
     room_id = state['room_id']
-    group_id = str(event.group_id)
+    user_id = state['user_id']
 
     if room_id.isdigit():
         info = await get_live_info(room_id=room_id)
@@ -89,7 +91,7 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     up_name = info['up_name']
 
     if command in ['订阅', 'd']:
-        status = add_sub_list(group_id, room_id, up_name)
+        status = add_sub_list(user_id, room_id, up_name)
         if status == 'success':
             await update_status_list()
             await bilibili_live.finish(f"成功订阅 {info['up_name']} 的直播间")
@@ -98,7 +100,7 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
         else:
             await bilibili_live.finish('出错了，请稍后再试')
     elif command in ['取消订阅', 'td']:
-        status = del_sub_list(group_id, room_id)
+        status = del_sub_list(user_id, room_id)
         if status == 'success':
             await update_status_list()
             await bilibili_live.finish(f"成功取消订阅 {info['up_name']} 的直播间")
@@ -106,7 +108,3 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
             await bilibili_live.finish('尚未订阅该主播')
         else:
             await bilibili_live.finish('出错了，请稍后再试')
-
-
-# def check_permission(bot: Bot, event: GroupMessageEvent):
-#     return event.sender.role in ['admin', 'owner'] or event.get_user_id() in bot.config.superusers

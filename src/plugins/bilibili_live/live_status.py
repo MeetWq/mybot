@@ -40,8 +40,8 @@ def dump_status_list(status_list: dict):
 async def update_status_list():
     sub_list = load_sub_list()
     user_list = set()
-    for group_sub_list in sub_list.values():
-        for room_id in group_sub_list.keys():
+    for user_sub_list in sub_list.values():
+        for room_id in user_sub_list.keys():
             user_list.add(room_id)
     status_list = load_status_list()
     room_ids = list(status_list.keys())

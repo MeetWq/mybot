@@ -1,12 +1,25 @@
+import re
 from pathlib import Path
 from nonebot import require, get_bots
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
-from .sub_list import get_sub_list
+from .sub_list import load_sub_list
 from .data_source import get_live_info
 from .live_status import load_status_list, update_status
 
 status_path = Path() / 'data' / 'bilibili_live' / 'live_status.json'
+
+
+def user_type(user_id: str):
+    p_group = r'group_(\d+)'
+    p_private = r'private_(\d+)'
+    match = re.fullmatch(p_group, user_id)
+    if match:
+        return 'group', match.group(1)
+    match = re.fullmatch(p_private, user_id)
+    if match:
+        return 'private', match.group(1)
+    return '', user_id
 
 
 async def bilibili_live_monitor():
@@ -19,24 +32,21 @@ async def bilibili_live_monitor():
             update_status(room_id, info['status'])
     if not msg_dict:
         return
+
     bots = list(get_bots().values())
     for bot in bots:
-        noitce_groups = []
-        npm = require('nonebot_plugin_manager')
-        group_list = await bot.get_group_list()
-        for group in group_list:
-            group_id = str(group['group_id'])
-            group_plugin_list = npm.get_group_plugin_list(group_id)
-            if group_plugin_list['bilibili_live']:
-                noitce_groups.append(group_id)
-
-        for group_id in noitce_groups:
-            group_sub_list = get_sub_list(group_id)
-            for room_id in group_sub_list.keys():
+        sub_list = load_sub_list()
+        for user_id, user_sub_list in sub_list.items():
+            for room_id in user_sub_list.keys():
                 if room_id in msg_dict:
                     msg = msg_dict[room_id]
-                    if msg:
-                        await bot.send_group_msg(group_id=group_id, message=msg)
+                    if not msg:
+                        continue
+                    type, id = user_type(user_id)
+                    if type == 'group':
+                        await bot.send_group_msg(group_id=id, message=msg)
+                    elif type == 'private':
+                        await bot.send_private_msg(user_id=id, message=msg)
 
 
 def format_msg(info: dict) -> Message:
@@ -45,12 +55,12 @@ def format_msg(info: dict) -> Message:
         msg = f"{info['up_name']} 下播了"
     elif info['status'] == 1:
         msg = Message()
-        msg.append(f"{info['time']}\n{info['up_name']}开播啦！\n{info['title']}\n直播间链接：{info['url']}")
+        msg.append(f"{info['time']}\n{info['up_name']} 开播啦！\n{info['title']}\n直播间链接：{info['url']}")
         cover = info['cover']
         if cover:
             msg.append(MessageSegment.image(file=cover))
     elif info['status'] == 2:
-        msg = f"{info['up_name']}下播了（轮播中）"
+        msg = f"{info['up_name']} 下播了（轮播中）"
     return msg
 
 
