@@ -87,6 +87,8 @@ async def get_jiki(keyword, force=False):
 
     card = masonry.find('div', recursive=False)
     card_content = card.find('a', {'class': 'card-content'})
+    if not card_content:
+        return '', ''
     card_url = 'https://jikipedia.com' + card_content.get('href')
     async with aiohttp.ClientSession() as session:
         async with session.get(card_url) as resp:
