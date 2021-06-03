@@ -51,7 +51,7 @@ env.filters['load_png'] = load_png
 
 async def create_pornhub_logo(left_text, right_text):
     template = env.get_template('pornhub.html')
-    content = template.render_async(left_text=left_text, right_text=right_text)
+    content = await template.render_async(left_text=left_text, right_text=right_text)
 
     async with get_new_page(viewport={"width": 100, "height": 100}) as page:
         await page.set_content(content)
@@ -61,7 +61,7 @@ async def create_pornhub_logo(left_text, right_text):
 
 async def create_youtube_logo(left_text, right_text):
     template = env.get_template('youtube.html')
-    content = template.render_async(left_text=left_text, right_text=right_text)
+    content = await template.render_async(left_text=left_text, right_text=right_text)
 
     async with get_new_page(viewport={"width": 100, "height": 100}) as page:
         await page.set_content(content)
