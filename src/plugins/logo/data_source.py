@@ -12,7 +12,8 @@ from src.libs.playwright import get_new_page
 
 dir_path = Path(__file__).parent
 template_path = dir_path / 'template'
-env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_path))
+env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_path),
+                         enable_async=True)
 
 
 async def create_logo(texts, style='pornhub'):
@@ -40,7 +41,7 @@ def load_woff(name):
 
 
 def load_png(name):
-   with (template_path / name).open('rb') as f:
+    with (template_path / name).open('rb') as f:
         return 'data:image/png;base64,' + base64.b64encode(f.read()).decode()
 
 
@@ -50,7 +51,7 @@ env.filters['load_png'] = load_png
 
 async def create_pornhub_logo(left_text, right_text):
     template = env.get_template('pornhub.html')
-    content = template.render(left_text=left_text, right_text=right_text)
+    content = template.render_async(left_text=left_text, right_text=right_text)
 
     async with get_new_page(viewport={"width": 100, "height": 100}) as page:
         await page.set_content(content)
@@ -60,9 +61,9 @@ async def create_pornhub_logo(left_text, right_text):
 
 async def create_youtube_logo(left_text, right_text):
     template = env.get_template('youtube.html')
-    content = template.render(left_text=left_text, right_text=right_text)
+    content = template.render_async(left_text=left_text, right_text=right_text)
 
-    async with get_new_page(viewport={"width": 100,"height": 100}) as page:
+    async with get_new_page(viewport={"width": 100, "height": 100}) as page:
         await page.set_content(content)
         img = await page.screenshot(full_page=True)
     return img

@@ -15,7 +15,8 @@ fortune_config = Config(**global_config.dict())
 
 dir_path = Path(__file__).parent
 template_path = dir_path / 'template'
-env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_path))
+env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_path),
+                         enable_async=True)
 
 data_path = Path('data/fortune')
 if not data_path.exists():
@@ -113,12 +114,12 @@ async def create_image(username, luck, fortune, content, face):
         username = username[:50] + '...'
 
     template = env.get_template('fortune.html')
-    html = template.render(username=username,
-                           luck=luck,
-                           fortune=fortune,
-                           content=content,
-                           face=face,
-                           style=fortune_config.fortune_style)
+    html = template.render_async(username=username,
+                                 luck=luck,
+                                 fortune=fortune,
+                                 content=content,
+                                 face=face,
+                                 style=fortune_config.fortune_style)
 
     async with get_new_page(viewport={"width": 100, "height": 100}) as page:
         await page.set_content(html)
