@@ -1,13 +1,10 @@
-import io
 import base64
 import jinja2
 import aiohttp
 import asyncio
 import traceback
 from pathlib import Path
-from PIL import ImageFont
 from bs4 import BeautifulSoup
-from PIL import Image, ImageChops
 
 from nonebot.log import logger
 from nonebot.adapters.cqhttp import MessageSegment
@@ -15,6 +12,7 @@ from src.libs.playwright import get_new_page
 
 dir_path = Path(__file__).parent
 template_path = dir_path / 'template'
+env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_path))
 
 
 async def create_logo(texts, style='pornhub'):
@@ -36,22 +34,6 @@ async def create_logo(texts, style='pornhub'):
         return None
 
 
-async def create_pornhub_logo(left_text, right_text):
-    font = ImageFont.truetype('msyh.ttc', 100)
-    font_width, _ = font.getsize(left_text + right_text)
-    img_width = font_width + 200
-
-    env = jinja2.Environment(loader=jinja2.FileSystemLoader(str(template_path.absolute())))
-    template = env.get_template('pornhub.html')
-    content = template.render(left_text=left_text, right_text=right_text)
-
-    async with get_new_page(viewport={"width": img_width,"height": 250}) as page:
-        await page.set_content(content)
-        raw_image = await page.screenshot()
-
-    return await trim(raw_image)
-
-
 def load_woff(name):
     with (template_path / name).open('rb') as f:
         return 'data:application/x-font-woff;charset=utf-8;base64,' + base64.b64encode(f.read()).decode()
@@ -62,35 +44,28 @@ def load_png(name):
         return 'data:image/png;base64,' + base64.b64encode(f.read()).decode()
 
 
-async def create_youtube_logo(left_text, right_text):
-    font = ImageFont.truetype('msyh.ttc', 100)
-    font_width, _ = font.getsize(left_text + right_text)
-    img_width = font_width + 300
+env.filters['load_woff'] = load_woff
+env.filters['load_png'] = load_png
 
-    env = jinja2.Environment(loader=jinja2.FileSystemLoader(str(template_path.absolute())))
-    env.filters['load_woff'] = load_woff
-    env.filters['load_png'] = load_png
+
+async def create_pornhub_logo(left_text, right_text):
+    template = env.get_template('pornhub.html')
+    content = template.render(left_text=left_text, right_text=right_text)
+
+    async with get_new_page(viewport={"width": 100, "height": 100}) as page:
+        await page.set_content(content)
+        img = await page.screenshot(full_page=True)
+    return img
+
+
+async def create_youtube_logo(left_text, right_text):
     template = env.get_template('youtube.html')
     content = template.render(left_text=left_text, right_text=right_text)
 
-    async with get_new_page(viewport={"width": img_width,"height": 250}) as page:
+    async with get_new_page(viewport={"width": 100,"height": 100}) as page:
         await page.set_content(content)
-        raw_image = await page.screenshot()
-
-    return await trim(await trim(raw_image))
-
-
-async def trim(im, format='png'):
-    im = Image.open(io.BytesIO(im)).convert('RGB')
-    bg = Image.new(im.mode, im.size, im.getpixel((0, 0)))
-    diff = ImageChops.difference(im, bg)
-    diff = ImageChops.add(diff, diff, 2.0, -100)
-    box = diff.getbbox()
-    if box:
-        im = im.crop(box)
-    output = io.BytesIO()
-    im.save(output, format=format)
-    return output.getvalue()
+        img = await page.screenshot(full_page=True)
+    return img
 
 
 async def create_douyin_logo(text):

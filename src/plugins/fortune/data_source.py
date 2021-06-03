@@ -1,16 +1,22 @@
-import io
 import json
 import base64
 import jinja2
 import random
 from pathlib import Path
 from datetime import datetime
-from PIL import Image, ImageChops
-from src.libs.playwright import get_new_page
+
+from nonebot import get_driver
 from nonebot.adapters.cqhttp import MessageSegment
+from src.libs.playwright import get_new_page
+
+from .config import Config
+global_config = get_driver().config
+fortune_config = Config(**global_config.dict())
 
 dir_path = Path(__file__).parent
 template_path = dir_path / 'template'
+env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_path))
+
 data_path = Path('data/fortune')
 if not data_path.exists():
     data_path.mkdir(parents=True)
@@ -33,7 +39,8 @@ async def get_response(user_id, username):
             image = await create_image(username, luck, fortune, content, face)
             if image:
                 log[user_id] = fortune
-                json.dump(log, log_path.open('w', encoding='utf-8'), ensure_ascii=False)
+                json.dump(log, log_path.open(
+                    'w', encoding='utf-8'), ensure_ascii=False)
                 return MessageSegment.image(f"base64://{base64.b64encode(image).decode()}")
         else:
             fortune = log[user_id]
@@ -88,40 +95,32 @@ def get_face(luck):
 
 
 def load_jpg(name):
-   with (template_path / name).open('rb') as f:
+    with (template_path / name).open('rb') as f:
         return 'data:image/jpeg;base64,' + base64.b64encode(f.read()).decode()
 
 
 def load_png(name):
-   with (template_path / name).open('rb') as f:
+    with (template_path / name).open('rb') as f:
         return 'data:image/png;base64,' + base64.b64encode(f.read()).decode()
 
 
-async def create_image(username, luck, fortune, content, face):
-    env = jinja2.Environment(loader=jinja2.FileSystemLoader(str(template_path.absolute())))
-    env.filters['load_jpg'] = load_jpg
-    env.filters['load_png'] = load_png
-    template = env.get_template('fortune.html')
+env.filters['load_jpg'] = load_jpg
+env.filters['load_png'] = load_png
 
+
+async def create_image(username, luck, fortune, content, face):
     if len(username) > 50:
         username = username[:50] + '...'
-    html = template.render(username=username, luck=luck, fortune=fortune, content=content, face=face)
 
-    async with get_new_page(viewport={"width": 2000,"height": 500}) as page:
+    template = env.get_template('fortune.html')
+    html = template.render(username=username,
+                           luck=luck,
+                           fortune=fortune,
+                           content=content,
+                           face=face,
+                           style=fortune_config.fortune_style)
+
+    async with get_new_page(viewport={"width": 100, "height": 100}) as page:
         await page.set_content(html)
-        raw_image = await page.screenshot()
-
-    return await trim(raw_image, format='jpeg')
-
-
-async def trim(im, format='png'):
-    im = Image.open(io.BytesIO(im)).convert('RGB')
-    bg = Image.new(im.mode, im.size, im.getpixel((0, 0)))
-    diff = ImageChops.difference(im, bg)
-    diff = ImageChops.add(diff, diff, 2.0, -100)
-    box = diff.getbbox()
-    if box:
-        im = im.crop(box)
-    output = io.BytesIO()
-    im.save(output, format=format)
-    return output.getvalue()
+        img = await page.screenshot(type='jpeg', full_page=True)
+    return img

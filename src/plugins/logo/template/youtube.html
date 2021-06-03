@@ -40,18 +40,15 @@
           U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193,
           U+2212, U+2215, U+FEFF, U+FFFD;
       }
-      .logo {
-        overflow: auto;
-        background-color: #000000;
-        border: var(--t1) 1px solid;
-        text-align: center;
+      body {
+        margin: 0;
       }
-      .box {
+      .logo {
+        overflow: scroll;
+        text-align: center;
         background-color: #ffffff;
         padding: 30px 30px;
         white-space: nowrap;
-        font-size: 0;
-        margin: 0 auto;
         display: inline-block;
         font-family: "Oswald", sans-serif, "Microsoft YaHei";
       }
@@ -121,7 +118,6 @@
   </head>
   <body>
     <div class="logo">
-      <div class="box">
         <div class="l">{{left_text}}</div>
         <div class="r">
           <span>{{right_text}}</span>
@@ -130,7 +126,6 @@
           <img src="{{'corner.png' | load_png}}" alt="rt" class="rt" />
           <img src="{{'corner.png' | load_png}}" alt="rb" class="rb" />
         </div>
-      </div>
     </div>
   </body>
 </html>
