@@ -34,7 +34,7 @@ async def rss_to_html(rss: RSS, info: dict) -> str:
 
 async def replace_url(text: str, base_url: str) -> str:
     pattern = r'<img .*?src=[\"\'](.*?)[\"\'].*?/>'
-    urls = re.findall(pattern, text)
+    urls = re.findall(pattern, text, re.DOTALL)
     for url in urls:
         url = RSS.parse_url(url, base_url)
         b64 = await url_to_b64(url)

@@ -71,6 +71,7 @@ def del_rss_list(user_id: str, name: str) -> str:
 
 
 def clear_rss_list(user_id: str) -> str:
-    _rss_list.pop(user_id)
+    if user_id in _rss_list:
+        _rss_list.pop(user_id)
     dump_rss_list()
     return 'success'

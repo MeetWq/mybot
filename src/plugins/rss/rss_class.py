@@ -34,6 +34,7 @@ class RSS:
             url = base_url + url
         else:
             url = base_url + '/' + url
+        return url
 
     @staticmethod
     def parse_time(raw_time: time_type):

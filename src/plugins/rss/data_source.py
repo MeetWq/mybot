@@ -67,7 +67,7 @@ async def update_rss(rss: RSS) -> List[dict]:
             except:
                 pass
             new_entries.append({
-                'time': time.strftime('%Y-%m-%d %H:%M:%S'),
+                'time': time.strftime('%c'),
                 'title': title,
                 'summary': summary,
                 'link': link,
