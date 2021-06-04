@@ -1,3 +1,4 @@
+from pathlib import Path
 from nonebot import export, on_command
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp.bot import Bot
@@ -7,6 +8,10 @@ from .monitor import *
 from .data_source import get_live_info
 from .live_status import update_status_list
 from .sub_list import get_sub_list, clear_sub_list, add_sub_list, del_sub_list
+
+data_path = Path('data/bilibili_live')
+if not data_path.exists():
+    data_path.mkdir(parents=True)
 
 export = export()
 export.description = 'B站直播间订阅'
@@ -21,9 +26,10 @@ bilibili_live = on_command('bilibili_live', aliases={'B站直播间', 'b站直�
 
 
 @bilibili_live.handle()
-@bilibili_live.args_parser
 async def _(bot: Bot, event: Event, state: T_State):
     args = str(event.get_plaintext()).strip().split()
+    args = [s.strip() for s in args]
+    args = [s for s in args if s]
     if not args:
         await bilibili_live.finish(export.usage)
     state['args'] = args
