@@ -5,7 +5,7 @@ from nonebot.adapters.cqhttp import MessageSegment
 
 from .data_source import update_rss, update_rss_info
 from .render import rss_to_image
-from .rss_list import get_rss_list, get_user_ids
+from .rss_list import get_rss_list, get_user_ids, dump_rss_list
 
 from .config import Config
 global_config = get_driver().config
@@ -43,6 +43,7 @@ async def rss_monitor():
                         await bot.send_group_msg(group_id=id, message=msg)
                     elif type == 'private':
                         await bot.send_private_msg(user_id=id, message=msg)
+    dump_rss_list()
 
 
 async def rss_info_monitor():
@@ -51,6 +52,7 @@ async def rss_info_monitor():
         user_rss_list = get_rss_list(user_id)
         for rss in user_rss_list:
             await update_rss_info(rss)
+    dump_rss_list()
 
 
 scheduler = require("nonebot_plugin_apscheduler").scheduler

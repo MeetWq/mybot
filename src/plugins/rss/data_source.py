@@ -76,4 +76,8 @@ async def update_rss(rss: RSS) -> List[dict]:
             })
         except:
             continue
+    try:
+        rss.last_update = RSS.parse_time(entries[0]['published_parsed'])
+    except:
+        rss.last_update = RSS.time_now()
     return new_entries

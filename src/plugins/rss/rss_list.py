@@ -22,7 +22,7 @@ def _load_rss_list() -> dict:
 _rss_list = _load_rss_list()
 
 
-def _dump_rss_list():
+def dump_rss_list():
     rss_path.parent.mkdir(parents=True, exist_ok=True)
     json_list = {}
     for user_id, user_rss_list in _rss_list.items():
@@ -52,7 +52,7 @@ def add_rss_list(user_id: str, new_rss: RSS) -> str:
     if user_id not in _rss_list:
         _rss_list[user_id] = []
     _rss_list[user_id].append(new_rss)
-    _dump_rss_list()
+    dump_rss_list()
     return 'success'
 
 
@@ -66,11 +66,11 @@ def del_rss_list(user_id: str, name: str) -> str:
     if index == -1:
         return 'dupe'
     user_sub_list.pop(index)
-    _dump_rss_list()
+    dump_rss_list()
     return 'success'
 
 
 def clear_rss_list(user_id: str) -> str:
     _rss_list.pop(user_id)
-    _dump_rss_list()
+    dump_rss_list()
     return 'success'
