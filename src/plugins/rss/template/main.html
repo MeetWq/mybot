@@ -1,0 +1,92 @@
+<html>
+  <head>
+    <style>
+      body {
+        margin: 15pt;
+      }
+      hr {
+        color: lightgray;
+        background-color: lightgray;
+        border-width: 0;
+        height: 1px;
+        margin-top: 15pt;
+        margin-bottom: 15pt;
+        margin-left: 5pt;
+        margin-right: 5pt;
+      }
+      .image {
+        overflow: scroll;
+      }
+      .head {
+        display: inline-block;
+        width: 470pt;
+        margin-top: 10pt;
+        margin-bottom: 10pt;
+        padding: 10pt;
+        background-color: whitesmoke;
+      }
+      .avatar {
+        float: left;
+      }
+      .avatar img {
+        margin-right: 10pt;
+        width: 20pt;
+        height: 20pt;
+      }
+      .name {
+        font-size: 15pt;
+      }
+      .info {
+        font-size: 12pt;
+        color: gray;
+      }
+      .info p {
+        margin-top: 5px;
+        margin-bottom: 5px;
+      }
+      .summary {
+        font-size: 12pt;
+      }
+      .link {
+        font-size: 12pt;
+        color: orange;
+        margin-top: 10pt;
+        margin-bottom: 10pt;
+      }
+      .rights {
+        text-align: center;
+        font-size: 10pt;
+        margin-top: 20pt;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="image">
+      <div class="head">
+        <div class="avatar">
+          <img src="{{ rss.logo }}" />
+        </div>
+        <div class="name">{{ rss.name }} - {{ rss.title }}</div>
+      </div>
+      <h2>{{ info['title'] }}</h2>
+      <div class="info">
+        <p>{{ info['time'] }}</p>
+        {% if info['author'] %}
+        <p>{{ info['author'] }}</p>
+        {% endif %}
+        {% if info['tags'] %}
+        <p>{{ info['tags'] }}</p>
+        {% endif %}
+      </div>
+      <hr />
+      <div class="summary">{{ info['summary'] }}</div>
+      {% if info['link'] %}
+      <div class="link">原文链接：{{ info['link'] }}</div>
+      {% endif %}
+      {% if rss.rights %}
+      <div class="rights">{{ rss.rights }}</div>
+      {% endif %}
+    </div>
+  </body>
+</html>

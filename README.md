@@ -59,6 +59,12 @@ python -m playwright install
 pip install pixivpy-async aiohttp_socks
 ```
 
+- For plugin rss
+
+```bash
+pip install feedparser
+```
+
 - For plugin tts
 
 ```bash
