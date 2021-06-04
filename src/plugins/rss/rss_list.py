@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from .rss import RSS
+from .rss_class import RSS
 
 data_path = Path('data/rss')
 if not data_path.exists():

@@ -3,7 +3,7 @@ from nonebot.typing import T_State
 from nonebot.adapters.cqhttp.bot import Bot
 from nonebot.adapters.cqhttp.event import Event, GroupMessageEvent
 
-from .rss import RSS
+from .rss_class import RSS
 from .monitor import *
 from .data_source import update_rss_info
 from .rss_list import get_rss_list, clear_rss_list, add_rss_list, del_rss_list

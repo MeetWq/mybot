@@ -7,7 +7,7 @@ from pathlib import Path
 from nonebot import get_driver
 from src.libs.playwright import get_new_page
 
-from .rss import RSS
+from .rss_class import RSS
 
 global_config = get_driver().config
 proxy = global_config.http_proxy

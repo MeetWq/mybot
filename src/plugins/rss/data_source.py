@@ -4,7 +4,7 @@ from urllib.parse import quote
 from typing import List
 from nonebot import get_driver
 
-from .rss import RSS
+from .rss_class import RSS
 
 global_config = get_driver().config
 proxy = global_config.http_proxy
