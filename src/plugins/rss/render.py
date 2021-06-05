@@ -21,7 +21,7 @@ env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_path),
 async def rss_to_image(rss: RSS, info: dict) -> bytearray:
     html = await rss_to_html(rss, info)
     html = await replace_url(html, rss.link)
-    async with get_new_page(viewport={"width": 500, "height": 100}) as page:
+    async with get_new_page(viewport={"width": 800, "height": 100}) as page:
         await page.set_content(html)
         img = await page.screenshot(type='jpeg', full_page=True)
     return img

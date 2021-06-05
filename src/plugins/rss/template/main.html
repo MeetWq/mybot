@@ -9,8 +9,8 @@
         background-color: lightgray;
         border-width: 0;
         height: 1px;
-        margin-top: 15pt;
-        margin-bottom: 15pt;
+        margin-top: 10pt;
+        margin-bottom: 10pt;
         margin-left: 5pt;
         margin-right: 5pt;
       }
@@ -19,9 +19,9 @@
       }
       .head {
         display: inline-block;
-        width: 470pt;
-        margin-top: 10pt;
-        margin-bottom: 10pt;
+        width: 770pt;
+        margin-top: 5pt;
+        margin-bottom: 5pt;
         padding: 10pt;
         background-color: whitesmoke;
       }
@@ -48,8 +48,7 @@
         font-size: 12pt;
       }
       .summary img {
-        width: 100%;
-        max-width: 470pt;
+        max-width: 770pt;
       }
       .link {
         font-size: 12pt;
@@ -60,7 +59,7 @@
       .rights {
         text-align: center;
         font-size: 10pt;
-        margin-top: 20pt;
+        margin-top: 15pt;
       }
     </style>
   </head>
@@ -75,13 +74,15 @@
       </div>
       <h2>{{ info['title'] }}</h2>
       <div class="info">
-        <p>{{ info['time'] }}</p>
-        {% if info['author'] %}
-        <p>{{ info['author'] }}</p>
-        {% endif %}
-        {% if info['tags'] %}
-        <p>{{ info['tags'] }}</p>
-        {% endif %}
+        <p>
+          {{ info['time'] }}
+          {% if info['author'] %}
+          &nbsp;&nbsp; | &nbsp;&nbsp; {{ info['author'] }}
+          {% endif %}
+          {% if info['tags'] %}
+          &nbsp;&nbsp; | &nbsp;&nbsp; {{ info['tags'] }}
+          {% endif %}
+        </p>
       </div>
       <hr />
       <div class="summary">{{ info['summary'] }}</div>

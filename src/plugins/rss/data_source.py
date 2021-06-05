@@ -30,11 +30,9 @@ async def update_rss_info(rss: RSS) -> bool:
     except:
         return False
     try:
-        logo = info['feed']['image']['href']
-    finally:
-        if not logo:
-            logo = f'https://ui-avatars.com/api/?background=random&name={quote(rss.title)}'
-        rss.logo = logo
+        rss.logo = info['feed']['image']['href']
+    except:
+        rss.logo = f'https://ui-avatars.com/api/?background=random&name={quote(rss.title)}'
     try:
         rss.rights = info['feed']['rights']
     except:
