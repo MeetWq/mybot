@@ -1,6 +1,7 @@
 import re
 import time
 from datetime import datetime
+import pytz
 from pytz import timezone
 
 TZ = timezone('Asia/Shanghai')
@@ -41,7 +42,7 @@ class RSS:
         if isinstance(raw_time, datetime):
             return raw_time.astimezone(TZ)
         elif isinstance(raw_time, time.struct_time):
-            return datetime.fromtimestamp(time.mktime(raw_time)).astimezone(TZ)
+            return datetime.fromtimestamp(time.mktime(raw_time)).replace(tzinfo=pytz.utc).astimezone(TZ)
         elif isinstance(raw_time, str):
             return datetime.fromisoformat(raw_time).astimezone(TZ)
         return raw_time

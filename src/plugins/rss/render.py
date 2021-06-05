@@ -36,8 +36,8 @@ async def replace_url(text: str, base_url: str) -> str:
     pattern = r'<img .*?src=[\"\'](.*?)[\"\'].*?/>'
     urls = re.findall(pattern, text, re.DOTALL)
     for url in urls:
-        url = RSS.parse_url(url, base_url)
-        b64 = await url_to_b64(url)
+        url_new = RSS.parse_url(url, base_url)
+        b64 = await url_to_b64(url_new)
         text = text.replace(url, b64, 1)
     return text
 
