@@ -2,7 +2,7 @@ import os
 from nonebot import export, on_regex, on_endswith, on_shell_command
 from nonebot.rule import ArgumentParser
 from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, Event, MessageSegment
+from nonebot.adapters.cqhttp import Bot, Event, MessageSegment, unescape
 
 from .data_source import get_emoji_path, get_image, make_emoji, emojis
 
@@ -14,13 +14,13 @@ export.usage = 'Usage:\n  1、98表情包，包含"cc98xx"、"acxx"、"tbxx"、"
 export.notice = 'Notice:\n  由于NHD表情"emxx"与98冲突，用"emmxx"代替'
 export.help = export.description + '\n' + export.usage + '\n' + export.notice
 
-ac = on_regex(r'^ac\d{2,4}$', priority=14)
-em = on_regex(r'^em\d{2}$', priority=14)
-em_nhd = on_regex(r'^emm\d{1,3}$', priority=14)
-mahjong = on_regex(r'^[acf]:?\d{3}$', priority=14)
-ms = on_regex(r'^ms\d{2}$', priority=14)
-tb = on_regex(r'^tb\d{2}$', priority=14)
-cc98 = on_regex(r'^[Cc][Cc]98\d{2}$', priority=14)
+ac = on_regex(r'^(&#91;)?ac\d{2,4}(&#93;)?$', priority=14)
+em = on_regex(r'^(&#91;)?em\d{2}(&#93;)?$', priority=14)
+em_nhd = on_regex(r'^(&#91;)?emm\d{1,3}(&#93;)?$', priority=14)
+mahjong = on_regex(r'^(&#91;)?[acf]:?\d{3}(&#93;)?$', priority=14)
+ms = on_regex(r'^(&#91;)?ms\d{2}(&#93;)?$', priority=14)
+tb = on_regex(r'^(&#91;)?tb\d{2}(&#93;)?$', priority=14)
+cc98 = on_regex(r'^(&#91;)?[Cc][Cc]98\d{2}(&#93;)?$', priority=14)
 
 get_jpg = on_endswith('.jpg', priority=30)
 
@@ -33,7 +33,7 @@ get_jpg = on_endswith('.jpg', priority=30)
 @tb.handle()
 @cc98.handle()
 async def _(bot: Bot, event: Event, state: T_State):
-    file_name = str(event.get_message()).strip()
+    file_name = unescape(event.get_plaintext()).strip().strip('[').strip(']')
     file_path = get_emoji_path(file_name)
     if file_path:
         await bot.send(event=event, message=MessageSegment.image(file='file://' + file_path))
