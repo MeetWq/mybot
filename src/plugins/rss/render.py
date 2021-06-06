@@ -76,7 +76,7 @@ async def download_img(url: str) -> bytearray:
         return None
 
 
-def split_nexus_title(text, url):
+def split_nhd_title(text, url):
     text = text.strip()
     pattern = r''
     if 'icat' in url:
@@ -99,5 +99,5 @@ def load_category_img(category):
         return 'data:image/png;base64,' + base64.b64encode(f.read()).decode()
 
 
-env.filters['split_nexus_title'] = split_nexus_title
+env.filters['split_nhd_title'] = split_nhd_title
 env.filters['load_category_img'] = load_category_img
