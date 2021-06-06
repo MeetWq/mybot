@@ -56,10 +56,11 @@ async def update_rss(rss: RSS) -> List[dict]:
             title = entry['title']
             summary = entry['summary']
             link = entry['link']
-            author = ''
+            authors = []
             tags = []
             try:
-                author = entry['author']
+                for author in entry['authors']:
+                    authors.append(author['name'])
                 for tag in entry['tags']:
                     tags.append(tag['term'])
             except:
@@ -69,7 +70,7 @@ async def update_rss(rss: RSS) -> List[dict]:
                 'title': title,
                 'summary': summary,
                 'link': link,
-                'author': author,
+                'author': ', '.join(authors),
                 'tags': ', '.join(tags)
             })
         except:

@@ -17,6 +17,7 @@ class RSS:
                  link: str = '',
                  logo: str = '',
                  rights: str = '',
+                 style: str = 'main',
                  last_update: time_type = None):
         self.name = name
         self.url = self.parse_url(url, RSSHUB_PREFIX) if url else ''
@@ -24,6 +25,7 @@ class RSS:
         self.link = link
         self.logo = logo
         self.rights = rights
+        self.style = style
         self.last_update = self.parse_time(
             last_update) if last_update else self.time_now()
 
@@ -59,6 +61,7 @@ class RSS:
         link = json_dict.get('link', '')
         logo = json_dict.get('logo', '')
         rights = json_dict.get('rights', '')
+        style = json_dict.get('style', 'main')
         last_update = json_dict.get('last_update')
         if last_update:
             last_update = datetime.fromisoformat(last_update)
@@ -69,6 +72,7 @@ class RSS:
                    link=link,
                    logo=logo,
                    rights=rights,
+                   style=style,
                    last_update=last_update)
 
     def to_json(self):
@@ -79,5 +83,6 @@ class RSS:
             'link': self.link,
             'logo': self.logo,
             'rights': self.rights,
+            'style': self.style,
             'last_update': self.last_update.isoformat(),
         }

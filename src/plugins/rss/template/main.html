@@ -19,7 +19,7 @@
       }
       .head {
         display: inline-block;
-        width: 770pt;
+        width: 100%;
         margin-top: 5pt;
         margin-bottom: 5pt;
         padding: 10pt;
@@ -45,21 +45,14 @@
         margin-bottom: 5px;
       }
       .summary {
+        display: flex;
+        flex-direction: column;
         font-size: 12pt;
-      }
-      .summary img {
-        max-width: 770pt;
-      }
-      .link {
-        font-size: 12pt;
-        color: orange;
-        margin-top: 10pt;
-        margin-bottom: 10pt;
       }
       .rights {
         text-align: center;
         font-size: 10pt;
-        margin-top: 15pt;
+        margin-top: 20pt;
       }
     </style>
   </head>
@@ -86,9 +79,6 @@
       </div>
       <hr />
       <div class="summary">{{ info['summary'] }}</div>
-      {% if info['link'] %}
-      <div class="link">原文链接：{{ info['link'] }}</div>
-      {% endif %}
       {% if rss.rights %}
       <div class="rights">{{ rss.rights }}</div>
       {% endif %}

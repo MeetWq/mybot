@@ -1,10 +1,8 @@
 import re
-import base64
 from nonebot import require, get_bots, get_driver
-from nonebot.adapters.cqhttp import MessageSegment
 
 from .data_source import update_rss, update_rss_info
-from .render import rss_to_image
+from .render import rss_to_msg
 from .rss_list import get_rss_list, get_user_ids, dump_rss_list
 
 from .config import Config
@@ -33,11 +31,9 @@ async def rss_monitor():
             for rss in user_rss_list:
                 entries = await update_rss(rss)
                 for entry in entries:
-                    img = await rss_to_image(rss, entry)
-                    if not img:
+                    msg = await rss_to_msg(rss, entry)
+                    if not msg:
                         continue
-                    msg = MessageSegment.image(
-                        f"base64://{base64.b64encode(img).decode()}")
                     type, id = user_type(user_id)
                     if type == 'group':
                         await bot.send_group_msg(group_id=id, message=msg)
