@@ -2,6 +2,11 @@
 
 基于 [NoneBot](https://github.com/nonebot/nonebot2) 和 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp) 实现的QQ机器人
 
+实现了一些乱七八糟的功能
+
+![](https://pic.imgdb.cn/item/60bf677f844ef46bb2829a7c.jpg)
+
+
 ### install
 
 #### go-cqhttp
