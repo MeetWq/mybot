@@ -4,8 +4,7 @@
 
 实现了一些乱七八糟的功能
 
-![](https://pic.imgdb.cn/item/60bf677f844ef46bb2829a7c.jpg)
-
+<img src="https://pic.imgdb.cn/item/60bf677f844ef46bb2829a7c.jpg" height = "500" align="left" />
 
 ### install
 
