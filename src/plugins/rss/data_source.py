@@ -2,6 +2,7 @@ import aiohttp
 import feedparser
 from urllib.parse import quote
 from typing import List
+from datetime import timedelta
 from nonebot import get_driver
 
 from .rss_class import RSS
@@ -51,7 +52,7 @@ async def update_rss(rss: RSS) -> List[dict]:
     for entry in entries[::-1]:
         try:
             time = RSS.parse_time(entry['published_parsed'])
-            if time <= rss.last_update:
+            if time <= rss.last_update + timedelta(seconds=0.5):
                 continue
             title = entry['title']
             summary = entry['summary']

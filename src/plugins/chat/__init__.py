@@ -2,7 +2,7 @@ import random
 from nonebot import export, on_message
 from nonebot.rule import to_me
 from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, Event, GroupMessageEvent, Message
+from nonebot.adapters.cqhttp import Bot, Event, GroupMessageEvent, PrivateMessageEvent, Message
 
 from .data_source import chat_bot, get_anime_thesaurus
 
@@ -53,7 +53,10 @@ async def _(bot: Bot, event: Event, state: T_State):
     msg = event.get_plaintext().strip()
     reply = await get_reply(msg, user_id, username)
     if reply:
-        await chat.send(reply)
+        if isinstance(event, PrivateMessageEvent):
+            await chat.finish(reply)
+        else:
+            await chat.send(reply)
 
 
 @chat.got('msg')
