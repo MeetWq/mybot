@@ -6,7 +6,7 @@
 
 #### go-cqhttp
 
-从 [release](https://github.com/Mrs4s/go-cqhttp/releases) 界面下载可执行文件，初次运行后生成 `config.hjson` 配置文件，修改相关配置
+从 [release](https://github.com/Mrs4s/go-cqhttp/releases) 界面下载可执行文件，初次运行后生成 `config.yml` 配置文件，修改相关配置
 
 #### NoneBot
 
@@ -27,65 +27,9 @@ nb plugin install nonebot_plugin_withdraw
 
 ##### 其他插件
 
-- Commonly used
-
 ```bash
-pip install bs4 lxml jinja2 aiohttp pillow imageio langid fuzzywuzzy python-Levenshtein
-sudo apt install ffmpeg imagemagick translate-shell
-```
-
-- For plugin bilibili_live
-
-```bash
-pip install bilibili_api
-```
-
-- For plugin chat
-
-```bash
-pip install cachetools
-```
-
-- For plugin fortune, logo
-
-```bash
-pip install playwright
+pip install -r requirements.txt
 python -m playwright install
-```
-
-- For plugin pixiv
-
-```bash
-pip install pixivpy-async aiohttp_socks
-```
-
-- For plugin rss
-
-```bash
-pip install feedparser
-```
-
-- For plugin tts
-
-```bash
-pip install pydub
-pip install tencentcloud-sdk-python
-```
-
-- For plugin tex
-
-```bash
+sudo apt install ffmpeg imagemagick translate-shell
 sudo apt install texlive-full poppler-utils
-```
-
-- For plugin wolfram
-
-```bash
-pip install wolframalpha
-```
-
-- For plugin what
-
-```bash
-pip install baike wikipedia
 ```
