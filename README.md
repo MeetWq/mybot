@@ -4,7 +4,8 @@
 
 实现了一些乱七八糟的功能
 
-<img src="https://pic.imgdb.cn/item/60bf677f844ef46bb2829a7c.jpg" height = "500" align="left" />
+![](https://i.loli.net/2021/06/08/fchno4KViBIZTrp.jpg)
+
 
 ### install
 
