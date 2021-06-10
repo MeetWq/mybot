@@ -15,6 +15,8 @@ async def search_song(keyword, source='qq'):
             msg = await search_netease(keyword)
         elif source == 'kugou':
             msg = await search_kugou(keyword)
+        elif source == 'migu':
+            msg = await search_migu(keyword)
         elif source == 'bilibili':
             msg = await search_bilibili(keyword)
         return msg
@@ -94,6 +96,29 @@ async def search_kugou(keyword, page=1, pagesize=1, number=1):
     title = info['song_name']
     content = info['author_name']
     img_url = info['img']
+    return MessageSegment.music_custom(url=url, audio=audio, title=title, content=content, img_url=img_url)
+
+
+async def search_migu(keyword, page=1, pagesize=1, number=1):
+    url = 'https://m.music.migu.cn/migu/remoting/scr_search_tag'
+    params = {
+        'rows': pagesize,
+        'type': 2,
+        'keyword': keyword,
+        'pgc': page
+    }
+    headers = {
+        "Referer": "https://m.music.migu.cn"
+    }
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, params=params, headers=headers) as resp:
+            result = await resp.json()
+    info = result['musics'][number - 1]
+    url = f"https://music.migu.cn/v3/music/song/{info['copyrightId']}"
+    audio = info['mp3']
+    title = info['title']
+    content = info['singerName']
+    img_url = info['cover']
     return MessageSegment.music_custom(url=url, audio=audio, title=title, content=content, img_url=img_url)
 
 

@@ -8,7 +8,7 @@ from .data_source import search_song
 export = export()
 export.description = '点歌'
 export.usage = 'Usage:\n  music/点歌 [options] {song}'
-export.options = 'Options:\n  -s, --source 音乐来源，目前支持QQ音乐(qq)、网易云音乐(netease)、酷狗音乐(kugou)、B站(bilibili)'
+export.options = 'Options:\n  -s, --source 音乐来源，目前支持QQ音乐(qq)、网易云音乐(netease)、酷狗音乐(kugou)、咪咕音乐(migu)、B站(bilibili)'
 export.help = export.description + '\n' + export.usage + '\n' + export.options
 
 music_parser = ArgumentParser()
@@ -17,7 +17,7 @@ music_parser.add_argument('song', nargs='+')
 
 music = on_shell_command('music', aliases={'点歌'}, parser=music_parser, priority=29)
 
-sources = ['qq', 'netease', 'kugou', 'bilibili']
+sources = ['qq', 'netease', 'kugou', 'migu', 'bilibili']
 
 
 @music.handle()
