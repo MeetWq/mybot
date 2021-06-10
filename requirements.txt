@@ -20,7 +20,7 @@ click==7.1.2
 colorama==0.4.4
 cookiecutter==1.7.3
 cssutils==2.3.0
-fastapi==0.63.0
+fastapi==0.65.2
 feedparser==6.0.2
 fuzzywuzzy==0.18.0
 greenlet==1.0.0
