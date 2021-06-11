@@ -117,6 +117,37 @@ async def create_crawl(avatar):
     return output
 
 
+async def create_rub(self_img, user_img):
+    async def resize_img(img, width, height, angle):
+        mask = Image.new('L', img.size, 0)
+        draw = ImageDraw.Draw(mask)
+        draw.ellipse((0, 0, img.size[0], img.size[1]), fill=255)
+        mask = mask.filter(ImageFilter.GaussianBlur(0))
+        img.putalpha(mask)
+        img = img.resize((width, height), Image.ANTIALIAS)
+        if angle:
+            img = img.rotate(angle, Image.BICUBIC, expand=True)
+        return img
+
+    user_locs = [(39, 91, 75, 75, 0), (49, 101, 75, 75, 0), (67, 98, 75, 75, 0),
+                 (55, 86, 75, 75, 0), (61, 109, 75, 75, 0), (65, 101, 75, 75, 0)]
+    self_locs = [(102, 95, 70, 80, 0), (108, 60, 50, 100, 0), (97, 18, 65, 95, 0),
+                 (65, 5, 75, 75, -20), (95, 57, 100, 55, -70), (109, 107, 65, 75, 0)]
+    frames = []
+    for i in range(6):
+        frame = Image.open(image_path / f'rub/frame{i}.png').convert('RGBA')
+        x, y, w, h, angle = user_locs[i]
+        user_img_new = await resize_img(user_img, w, h, angle)
+        frame.paste(user_img_new, (x, y), mask=user_img_new)
+        x, y, w, h, angle = self_locs[i]
+        self_img_new = await resize_img(self_img, w, h, angle)
+        frame.paste(self_img_new, (x, y), mask=self_img_new)
+        frames.append(frame)
+    output = io.BytesIO()
+    imageio.mimsave(output, frames, format='gif', duration=0.1)
+    return output
+
+
 async def create_support(avatar):
     support = Image.open(image_path / 'support.png')
     frame = Image.new('RGBA', (1293, 1164), (255, 255, 255, 0))
@@ -134,7 +165,8 @@ types = {
     'tear': create_tear,
     'throw': create_throw,
     'crawl': create_crawl,
-    'support': create_support
+    'support': create_support,
+    'rub': create_rub
 }
 
 
@@ -151,10 +183,18 @@ async def get_image(type: str, self_id: str, user_id: str = '', img_url: str = '
         else:
             return None
 
-        if user_img:
+        if not user_img:
+            return None
+
+        if type in ['rub']:
+            self_img = await get_avatar(self_id)
+            if not self_img:
+                return None
+            output = await func(self_img, user_img)
+        else:
             output = await func(user_img)
-            if output:
-                return MessageSegment.image(f"base64://{base64.b64encode(output.getvalue()).decode()}")
+        if output:
+            return MessageSegment.image(f"base64://{base64.b64encode(output.getvalue()).decode()}")
         return None
     except (AttributeError, TypeError, OSError, ValueError):
         logger.debug(traceback.format_exc())
