@@ -117,18 +117,39 @@ async def create_crawl(avatar):
     return output
 
 
-async def create_rub(self_img, user_img):
-    async def resize_img(img, width, height, angle):
-        mask = Image.new('L', img.size, 0)
-        draw = ImageDraw.Draw(mask)
-        draw.ellipse((0, 0, img.size[0], img.size[1]), fill=255)
-        mask = mask.filter(ImageFilter.GaussianBlur(0))
-        img.putalpha(mask)
-        img = img.resize((width, height), Image.ANTIALIAS)
-        if angle:
-            img = img.rotate(angle, Image.BICUBIC, expand=True)
-        return img
+async def resize_img(img, width, height, angle=0):
+    mask = Image.new('L', img.size, 0)
+    draw = ImageDraw.Draw(mask)
+    draw.ellipse((0, 0, img.size[0], img.size[1]), fill=255)
+    mask = mask.filter(ImageFilter.GaussianBlur(0))
+    img.putalpha(mask)
+    img = img.resize((width, height), Image.ANTIALIAS)
+    if angle:
+        img = img.rotate(angle, Image.BICUBIC, expand=True)
+    return img
 
+
+async def create_kiss(self_img, user_img):
+    user_locs = [(92, 64), (135, 40), (84, 105), (80, 110), (155, 82), (60, 96),
+                 (50, 80), (98, 55), (35, 65), (38, 100), (70, 80), (84, 65), (75, 65)]
+    self_locs = [(58, 90), (62, 95), (42, 100), (50, 100), (56, 100), (18, 120),
+                 (28, 110), (54, 100), (46, 100), (60, 100), (35, 115), (20, 120), (40, 96)]
+    frames = []
+    for i in range(13):
+        frame = Image.open(image_path / f'kiss/frame{i}.png').convert('RGBA')
+        user_img_new = await resize_img(user_img, 50, 50)
+        x, y = user_locs[i]
+        frame.paste(user_img_new, (x, y), mask=user_img_new)
+        self_img_new = await resize_img(self_img, 40, 40)
+        x, y = self_locs[i]
+        frame.paste(self_img_new, (x, y), mask=self_img_new)
+        frames.append(frame)
+    output = io.BytesIO()
+    imageio.mimsave(output, frames, format='gif', duration=0.05)
+    return output
+
+
+async def create_rub(self_img, user_img):
     user_locs = [(39, 91, 75, 75, 0), (49, 101, 75, 75, 0), (67, 98, 75, 75, 0),
                  (55, 86, 75, 75, 0), (61, 109, 75, 75, 0), (65, 101, 75, 75, 0)]
     self_locs = [(102, 95, 70, 80, 0), (108, 60, 50, 100, 0), (97, 18, 65, 95, 0),
@@ -165,8 +186,9 @@ types = {
     'tear': create_tear,
     'throw': create_throw,
     'crawl': create_crawl,
-    'support': create_support,
-    'rub': create_rub
+    'kiss': create_kiss,
+    'rub': create_rub,
+    'support': create_support
 }
 
 
@@ -186,7 +208,7 @@ async def get_image(type: str, self_id: str, user_id: str = '', img_url: str = '
         if not user_img:
             return None
 
-        if type in ['rub']:
+        if type in ['rub', 'kiss']:
             self_img = await get_avatar(self_id)
             if not self_img:
                 return None

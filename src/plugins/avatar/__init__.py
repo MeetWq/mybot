@@ -9,13 +9,14 @@ from .data_source import get_image
 
 export = export()
 export.description = '头像相关表情生成'
-export.usage = 'Usage:\n  摸/撕/丢/爬/蹭/精神支柱 {qq/@user/自己/图片}'
+export.usage = 'Usage:\n  摸/撕/丢/爬/亲/蹭/精神支柱 {qq/@user/自己/图片}'
 export.help = export.description + '\n' + export.usage
 
 petpet = on_startswith('摸', priority=26)
 tear = on_startswith('撕', priority=26)
 throw = on_startswith('丢', priority=26)
 crawl = on_startswith('爬', priority=26)
+kiss = on_startswith('亲', priority=26)
 rub = on_startswith('蹭', priority=26)
 support = on_startswith('精神支柱', priority=26)
 
@@ -80,6 +81,11 @@ async def _(bot: Bot, event: Event, state: T_State):
 @crawl.handle()
 async def _(bot: Bot, event: Event, state: T_State):
     await handle(crawl, event, '爬', 'crawl')
+
+
+@kiss.handle()
+async def _(bot: Bot, event: Event, state: T_State):
+    await handle(kiss, event, '亲', 'kiss')
 
 
 @rub.handle()
