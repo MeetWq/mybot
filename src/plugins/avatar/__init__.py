@@ -9,7 +9,7 @@ from .data_source import get_image
 
 export = export()
 export.description = '头像相关表情生成'
-export.usage = 'Usage:\n  摸/撕/丢/爬/精神支柱 {qq/@user/自己}'
+export.usage = 'Usage:\n  摸/撕/丢/爬/精神支柱 {qq/@user/自己/图片}'
 export.help = export.description + '\n' + export.usage
 
 petpet = on_startswith('摸', priority=26)
@@ -22,28 +22,42 @@ support = on_startswith('精神支柱', priority=26)
 async def handle(matcher: Type[Matcher], event: Event, command: str, type: str):
     msg = event.get_message()
     msg_text = event.get_plaintext().strip()
-    qq = ''
+    self_id = event.user_id
+    user_id = ''
+
     for msg_seg in msg:
         if msg_seg.type == 'at':
-            qq = msg_seg.data['qq']
+            user_id = msg_seg.data['qq']
             break
-    if not qq:
+
+    if not user_id:
         msg_content = re.sub(command, '', msg_text).strip()
         if msg_content.isdigit():
-            qq = msg_content
+            user_id = msg_content
         elif msg_content == '自己':
-            qq = event.user_id
-    if qq:
-        matcher.block = True
-        image = await get_image(qq, type)
-        if image:
-            await matcher.send(message=image)
-            await matcher.finish()
-        else:
-            await matcher.finish(message='出错了，请稍后再试')
-    matcher.block = False
-    await matcher.finish()
+            user_id = event.user_id
 
+    if not user_id:
+        img_url = ''
+        for msg_seg in msg:
+            if msg_seg.type == 'image':
+                img_url = msg_seg.data['url']
+                break
+        if not img_url:
+            matcher.block = False
+            await matcher.finish()
+
+    matcher.block = True
+    image = None
+    if user_id:
+        image = await get_image(type, self_id, user_id=user_id)
+    elif img_url:
+        image = await get_image(type, self_id, img_url=img_url)
+    if image:
+        await matcher.send(message=image)
+        await matcher.finish()
+    else:
+        await matcher.finish(message='出错了，请稍后再试')
 
 
 @petpet.handle()

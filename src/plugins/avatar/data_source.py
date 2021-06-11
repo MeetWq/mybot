@@ -16,23 +16,42 @@ image_path = dir_path / 'images'
 
 async def get_avatar(user_id):
     result = None
-    avatar_url = 'http://q1.qlogo.cn/g?b=qq&nk={}&s=640'.format(user_id)
+    avatar_url = f"http://q1.qlogo.cn/g?b=qq&nk={user_id}&s=640"
     async with aiohttp.ClientSession() as session:
         async with session.get(avatar_url) as resp:
             result = await resp.read()
     md5 = hashlib.md5(result).hexdigest()
     if md5 == 'acef72340ac0e914090bd35799f5594e':
-        avatar_url_small = 'http://q1.qlogo.cn/g?b=qq&nk={}&s=100'.format(user_id)
+        avatar_url_small = f"http://q1.qlogo.cn/g?b=qq&nk={user_id}&s=100"
         async with aiohttp.ClientSession() as session:
             async with session.get(avatar_url_small) as resp:
                 result = await resp.read()
     return Image.open(io.BytesIO(result)).convert('RGBA') if result else None
 
 
+async def get_img(img_url):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(img_url) as resp:
+            result = await resp.read()
+    if not result:
+        return None
+    img = Image.open(io.BytesIO(result))
+    img = await crop_square(img)
+    return img.convert('RGBA')
+
+
+async def crop_square(img):
+    width, height = img.size
+    length = min(width, height)
+    return img.crop(((width - length) / 2, (height - length) / 2,
+                     (width + length) / 2, (height + length) / 2))
+
+
 async def create_petpet(avatar):
     hand_frames = [image_path / f'petpet/frame{i}.png' for i in range(5)]
     hand_frames = [Image.open(i) for i in hand_frames]
-    frame_locs = [(14, 20, 98, 98), (12, 33, 101, 85), (8, 40, 110, 76), (10, 33, 102, 84), (12, 20, 98, 98)]
+    frame_locs = [(14, 20, 98, 98), (12, 33, 101, 85),
+                  (8, 40, 110, 76), (10, 33, 102, 84), (12, 20, 98, 98)]
     frames = []
     for i in range(5):
         frame = Image.new('RGBA', (112, 112), (255, 255, 255, 0))
@@ -65,7 +84,8 @@ async def create_throw(avatar):
     mask = Image.new('L', avatar.size, 0)
     draw = ImageDraw.Draw(mask)
     offset = 1
-    draw.ellipse((offset, offset, avatar.size[0] - offset, avatar.size[1] - offset), fill=255)
+    draw.ellipse((offset, offset, avatar.size[0] - offset, avatar.size[1] - offset),
+                 fill=255)
     mask = mask.filter(ImageFilter.GaussianBlur(0))
     avatar.putalpha(mask)
     avatar = avatar.rotate(random.randint(1, 360), Image.BICUBIC)
@@ -82,18 +102,19 @@ async def create_crawl(avatar):
     mask = Image.new('L', avatar.size, 0)
     draw = ImageDraw.Draw(mask)
     offset = 1
-    draw.ellipse((offset, offset, avatar.size[0] - offset, avatar.size[1] - offset), fill=255)
+    draw.ellipse((offset, offset, avatar.size[0] - offset, avatar.size[1] - offset),
+                 fill=255)
     mask = mask.filter(ImageFilter.GaussianBlur(0))
     avatar.putalpha(mask)
     images = [i for i in (image_path / 'crawl').iterdir() if i.is_file()]
-    crawl = Image.open(random.choice(images)).resize((500, 500), Image.ANTIALIAS)
+    crawl = Image.open(random.choice(images)).resize(
+        (500, 500), Image.ANTIALIAS)
     avatar = avatar.resize((100, 100), Image.ANTIALIAS)
     crawl.paste(avatar, (0, 400), mask=avatar)
     crawl = crawl.convert('RGB')
     output = io.BytesIO()
     crawl.save(output, format='jpeg')
     return output
-    
 
 
 async def create_support(avatar):
@@ -117,15 +138,23 @@ types = {
 }
 
 
-async def get_image(user_id: str, type: str):
+async def get_image(type: str, self_id: str, user_id: str = '', img_url: str = ''):
     try:
-        if type in types:
-            func = types[type]
-            avatar = await get_avatar(user_id)
-            if avatar:
-                output = await func(avatar)
-                if output:
-                    return MessageSegment.image(f"base64://{base64.b64encode(output.getvalue()).decode()}")
+        if type not in types:
+            return None
+
+        func = types[type]
+        if user_id:
+            user_img = await get_avatar(user_id)
+        elif img_url:
+            user_img = await get_img(img_url)
+        else:
+            return None
+
+        if user_img:
+            output = await func(user_img)
+            if output:
+                return MessageSegment.image(f"base64://{base64.b64encode(output.getvalue()).decode()}")
         return None
     except (AttributeError, TypeError, OSError, ValueError):
         logger.debug(traceback.format_exc())
