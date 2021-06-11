@@ -144,7 +144,7 @@ async def create_rub(self_img, user_img):
         frame.paste(self_img_new, (x, y), mask=self_img_new)
         frames.append(frame)
     output = io.BytesIO()
-    imageio.mimsave(output, frames, format='gif', duration=0.1)
+    imageio.mimsave(output, frames, format='gif', duration=0.05)
     return output
 
 
