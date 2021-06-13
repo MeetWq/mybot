@@ -89,7 +89,7 @@ uvicorn==0.13.4
 uvloop==0.15.2
 watchgod==0.7
 wcwidth==0.2.5
-websockets==8.1
+websockets==9.1
 wikipedia==1.4.0
 wolframalpha==5.0.0
 xmltodict==0.12.0
