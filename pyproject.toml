@@ -1,17 +1,42 @@
 [tool.poetry]
 name = "mybot"
-version = "1.0.0"
+version = "0.1.0"
 description = "mybot"
 authors = ["meetwq <meetwq@gmail.com>"]
-readme = "README.md"
+license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.7"
-nonebot2 = "^2.0.0.a1"
-nb-cli = "^0.1.0"
+python = "^3.8"
+nb-cli = "^0.4.2"
+nonebot2 = "^2.0.0-alpha.13"
+nonebot-adapter-cqhttp = "^2.0.0-alpha.13"
+nonebot-plugin-apscheduler = "^0.1.2"
+nonebot-plugin-manager = "0.3.13"
+nonebot-plugin-alias = "^0.1.4"
+nonebot-plugin-withdraw = "^0.1.3"
+aiohttp = "^3.7.4.post0"
+aiohttp-socks = "^0.6.0"
+baike = "^1.4.1"
+beautifulsoup4 = "^4.9.3"
+bilibili-api = "^4.1.0"
+cachetools = "^4.2.2"
+feedparser = "^6.0.2"
+fuzzywuzzy = "^0.18.0"
+imageio = "^2.9.0"
+Jinja2 = "^2.11.3"
+langid = "^1.1.6"
+lxml = "^4.6.3"
+Pillow = "^8.2.0"
+PixivPy-Async = "^1.2.12"
+playwright = "^1.10.0"
+pydub = "^0.25.1"
+python-Levenshtein = "^0.12.2"
+tencentcloud-sdk-python = "^3.0.381"
+wikipedia = "^1.4.0"
+wolframalpha = "^5.0.0"
 
 [tool.poetry.dev-dependencies]
-nonebot-test = "^0.1.0"
+nonebot-plugin-test = "^0.2.0"
 
 [nonebot.plugins]
 plugins = ["nonebot_plugin_test", "nonebot_plugin_apscheduler", "nonebot_plugin_manager", "nonebot_plugin_alias", "nonebot_plugin_withdraw"]
@@ -20,3 +45,4 @@ plugin_dirs = ["src/plugins"]
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
+
