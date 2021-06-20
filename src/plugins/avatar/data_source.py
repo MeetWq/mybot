@@ -192,7 +192,7 @@ types = {
 }
 
 
-async def get_image(type: str, self_id: str, user_id: str = '', img_url: str = ''):
+async def get_image(type: str, self_id: str, user_id: str = '', img_url: str = '', reverse: bool = False):
     try:
         if type not in types:
             return None
@@ -212,7 +212,10 @@ async def get_image(type: str, self_id: str, user_id: str = '', img_url: str = '
             self_img = await get_avatar(self_id)
             if not self_img:
                 return None
-            output = await func(self_img, user_img)
+            if reverse:
+                output = await func(user_img, self_img)
+            else:
+                output = await func(self_img, user_img)
         else:
             output = await func(user_img)
         if output:

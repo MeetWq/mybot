@@ -9,7 +9,7 @@ from .data_source import get_image
 
 export = export()
 export.description = '头像相关表情生成'
-export.usage = 'Usage:\n  摸/撕/丢/爬/亲/蹭/精神支柱 {qq/@user/自己/图片}'
+export.usage = 'Usage:\n  摸/撕/丢/爬/亲/贴/精神支柱 {qq/@user/自己/图片}'
 export.help = export.description + '\n' + export.usage
 
 petpet = on_startswith('摸', priority=26)
@@ -17,11 +17,13 @@ tear = on_startswith('撕', priority=26)
 throw = on_startswith('丢', priority=26)
 crawl = on_startswith('爬', priority=26)
 kiss = on_startswith('亲', priority=26)
-rub = on_startswith('蹭', priority=26)
+kiss_me = on_startswith('亲我', priority=25)
+rub = on_startswith('贴', priority=26)
+rub_me = on_startswith('贴我', priority=25)
 support = on_startswith('精神支柱', priority=26)
 
 
-async def handle(matcher: Type[Matcher], event: Event, command: str, type: str):
+async def handle(matcher: Type[Matcher], event: Event, command: str, type: str, reverse: bool = False):
     msg = event.get_message()
     msg_text = event.get_plaintext().strip()
     self_id = event.user_id
@@ -48,9 +50,9 @@ async def handle(matcher: Type[Matcher], event: Event, command: str, type: str):
 
     image = None
     if user_id:
-        image = await get_image(type, self_id, user_id=user_id)
+        image = await get_image(type, self_id, user_id=user_id, reverse=reverse)
     elif img_url:
-        image = await get_image(type, self_id, img_url=img_url)
+        image = await get_image(type, self_id, img_url=img_url, reverse=reverse)
     else:
         matcher.block = False
         await matcher.finish()
@@ -88,9 +90,19 @@ async def _(bot: Bot, event: Event, state: T_State):
     await handle(kiss, event, '亲', 'kiss')
 
 
+@kiss_me.handle()
+async def _(bot: Bot, event: Event, state: T_State):
+    await handle(kiss, event, '亲我', 'kiss', reverse=True)
+
+
 @rub.handle()
 async def _(bot: Bot, event: Event, state: T_State):
-    await handle(rub, event, '蹭', 'rub')
+    await handle(rub, event, '贴', 'rub')
+
+
+@rub_me.handle()
+async def _(bot: Bot, event: Event, state: T_State):
+    await handle(rub, event, '贴我', 'rub', reverse=True)
 
 
 @support.handle()
