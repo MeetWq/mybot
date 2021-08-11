@@ -1,5 +1,7 @@
 import re
+from bs4 import BeautifulSoup
 from nonebot import require, get_bots, get_driver
+from nonebot.log import logger
 
 from .dynmap import get_dynmap_updates
 from .dynmap_list import get_dynmap_list, dump_dynmap_list, set_last_update
@@ -34,6 +36,7 @@ async def dynmap_monitor():
             if not result:
                 continue
 
+            logger.debug(result)
             updates = result['updates']
             chats = []
             last_update = config['last_update']
@@ -51,9 +54,10 @@ async def dynmap_monitor():
 
             msgs = []
             for chat in chats:
-                account = chat['account']
+                name = chat['playerName']
+                name = BeautifulSoup(name).text
                 message = chat['message']
-                msgs.append(f'{account}: {message}')
+                msgs.append(f'[dynmap] {name}: {message}')
             msg = '\n'.join(msgs)
 
             type, id = user_type(user_id)
@@ -77,7 +81,7 @@ scheduler.add_job(
     day=dynmap_cron[3],
     month=dynmap_cron[4],
     year=dynmap_cron[5],
-    id='dynmap',
+    id='dynmap_monitor',
     coalesce=True,
     misfire_grace_time=30
 )

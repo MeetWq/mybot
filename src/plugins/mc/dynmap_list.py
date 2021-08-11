@@ -1,7 +1,9 @@
 import json
 import aiohttp
+import traceback
 from pathlib import Path
 from datetime import datetime
+from nonebot.log import logger
 
 from .dynmap import get_status
 
@@ -49,10 +51,12 @@ async def get_update_url(url: str) -> str:
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(url_config) as resp:
-                result = await resp.json()
+                result = await resp.read()
+        result = json.loads(result)
         world = result['defaultworld']
         return f'{url}/up/world/{world}'
     except:
+        logger.debug(traceback.format_exc())
         return ''
 
 
@@ -82,11 +86,13 @@ async def unbind_dynmap(user_id: str) -> bool:
 
 async def open_dynmap_chat(user_id: str) -> bool:
     _dynmap_list[user_id]['chat'] = True
+    dump_dynmap_list()
     return True
 
 
 async def close_dynmap_chat(user_id: str) -> bool:
     _dynmap_list[user_id]['chat'] = False
+    dump_dynmap_list()
     return True
 
 

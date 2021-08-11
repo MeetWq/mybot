@@ -3,6 +3,7 @@ from nonebot.typing import T_State
 from nonebot.adapters.cqhttp.bot import Bot
 from nonebot.adapters.cqhttp.event import Event, GroupMessageEvent
 
+from .monitor import *
 from .dynmap_list import get_dynmap_url, bind_dynmap, unbind_dynmap, open_dynmap_chat, close_dynmap_chat, get_dynmap_status
 
 
@@ -57,7 +58,7 @@ async def _(bot: Bot, event: Event, state: T_State):
         url_ok = await bind_dynmap(user_id, url)
         if not url_ok:
             await dynmap.finish('出错了，请检查链接或稍后再试')
-        await dynmap.finish('成功绑定动态地图，使用“dynmap chat on/off”展示或关闭聊天消息；使用“dynmap status”查看在线状态')
+        await dynmap.finish('成功绑定动态地图，使用“dynmap chat on/off”开启或关闭聊天转发；使用“dynmap status”查看在线状态')
     elif command in ['unbind']:
         await unbind_dynmap(user_id)
         await dynmap.finish('成功解绑动态地图')
@@ -69,13 +70,12 @@ async def _(bot: Bot, event: Event, state: T_State):
             await dynmap.finish('Usage: dynmap chat on/off')
         if action in ['on']:
             await open_dynmap_chat(user_id)
-            await dynmap.finish('动态地图聊天显示已打开')
+            await dynmap.finish('聊天转发已打开')
         elif action in ['off']:
             await close_dynmap_chat(user_id)
-            await dynmap.finish('动态地图聊天显示已关闭')
+            await dynmap.finish('聊天转发已关闭')
     elif command in ['status']:
-        url = await get_dynmap_url(user_id)
-        status = await get_dynmap_status(url)
+        status = await get_dynmap_status(user_id)
         if not status:
             await dynmap.finish('出错了，请稍后再试')
-        await dynmap.finish()
+        await dynmap.finish(status)
