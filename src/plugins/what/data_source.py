@@ -20,25 +20,29 @@ from baike import getBaike
 
 
 async def get_content(keyword, source='all', force=False, less=False):
-    try:
-        msg = ''
-        if source in sources:
+    msg = ''
+    if source in sources:
+        try:
             title, msg = await sources[source](keyword, force)
-        elif source == 'all':
-            titles = []
-            msgs = []
-            sources_used = sources_less if less else sources
-            for s in sources_used.keys():
+        except:
+            logger.warning(f'Error in get {source} content: \n{traceback.format_exc()}')
+    elif source == 'all':
+        titles = []
+        msgs = []
+        sources_used = sources_less if less else sources
+        for s in sources_used.keys():
+            try:
                 t, m = await sources_used[s](keyword, force)
-                titles.append(t)
-                msgs.append(m)
+                if t and m:
+                    titles.append(t)
+                    msgs.append(m)
+            except:
+                logger.warning(f'Error in get {s} content: \n{traceback.format_exc()}')
+        if msgs:
             title = process.extractOne(keyword, titles)[0]
             index = titles.index(title)
             msg = msgs[index]
-        return msg
-    except:
-        logger.warning('Error in get content: ' + traceback.format_exc())
-        return ''
+    return msg
 
 
 async def get_nbnhhsh(keyword, force=False):

@@ -1,7 +1,6 @@
 import re
 from bs4 import BeautifulSoup
 from nonebot import require, get_bots, get_driver
-from nonebot.log import logger
 
 from .dynmap import get_dynmap_updates
 from .dynmap_list import get_dynmap_list, dump_dynmap_list, set_last_update
@@ -36,7 +35,6 @@ async def dynmap_monitor():
             if not result:
                 continue
 
-            logger.debug(result)
             updates = result['updates']
             chats = []
             last_update = config['last_update']
