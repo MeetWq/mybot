@@ -22,12 +22,16 @@ async def create_logo(texts, style='pornhub'):
             image = await create_pornhub_logo(texts[0], texts[1])
         elif style == 'youtube':
             image = await create_youtube_logo(texts[0], texts[1])
+        elif style == '5000choyen':
+            image = await create_5000choyen_logo(texts[0], texts[1])
         elif style == 'douyin':
             image = await create_douyin_logo(' '.join(texts))
         elif style in ['cocacola', 'harrypotter']:
             image = await create_logomaker_logo(' '.join(texts), style)
 
         if image:
+            if style == '5000choyen':
+                return MessageSegment.image(f"base64://{image}")
             return MessageSegment.image(f"base64://{base64.b64encode(image).decode()}")
         return None
     except (AttributeError, TypeError, OSError):
@@ -45,8 +49,14 @@ def load_png(name):
         return 'data:image/png;base64,' + base64.b64encode(f.read()).decode()
 
 
+def load_file(name):
+    with (template_path / name).open('r', encoding='utf-8') as f:
+        return f.read()
+
+
 env.filters['load_woff'] = load_woff
 env.filters['load_png'] = load_png
+env.filters['load_file'] = load_file
 
 
 async def create_pornhub_logo(left_text, right_text):
@@ -66,6 +76,18 @@ async def create_youtube_logo(left_text, right_text):
     async with get_new_page(viewport={"width": 100, "height": 100}) as page:
         await page.set_content(content)
         img = await page.screenshot(full_page=True)
+    return img
+
+
+async def create_5000choyen_logo(top_text, bottom_text):
+    template = env.get_template('5000choyen.html')
+    content = await template.render_async(top_text=top_text, bottom_text=bottom_text)
+
+    async with get_new_page() as page:
+        await page.set_content(content)
+        a = await page.query_selector('a')
+        img = await (await a.get_property('href')).json_value()
+        img = img.replace('data:image/png;base64,', '')
     return img
 
 

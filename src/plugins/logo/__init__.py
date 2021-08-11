@@ -8,8 +8,8 @@ from .data_source import create_logo
 export = export()
 export.description = 'logo生成'
 export.usage = 'Usage:\n  logo [options] {text}'
-export.options = 'Options:\n  -s, --style logo风格，目前支持：pornhub(默认)、youtube、抖音(douyin)、cocacola、harrypotter'
-export.notice = 'Notice:\n  pornhub和youtube需输入2段文字并用空格分开'
+export.options = 'Options:\n  -s, --style logo风格，目前支持：pornhub(默认)、youtube、5000兆(5000choyen)、抖音(douyin)、cocacola、harrypotter'
+export.notice = 'Notice:\n  pornhub, youtube和5000choyen需输入2段文字并用空格分开'
 export.help = export.description + '\n' + export.usage + '\n' + export.options + '\n' + export.notice
 
 logo_parser = ArgumentParser()
@@ -26,11 +26,11 @@ async def _(bot: Bot, event: Event, state: T_State):
         await logo.finish(export.usage)
 
     style = args.style
-    if style not in ['pornhub', 'youtube', 'douyin', 'cocacola', 'harrypotter']:
+    if style not in ['pornhub', 'youtube', '5000choyen', 'douyin', 'cocacola', 'harrypotter']:
         await logo.finish(export.options)
 
     texts = args.text
-    if style in ['pornhub', 'youtube'] and len(texts) != 2:
+    if style in ['pornhub', 'youtube', '5000choyen'] and len(texts) != 2:
         await logo.finish('参数数量不符\n' + export.usage + '\n' + export.notice)
 
     image = await create_logo(texts, style)
