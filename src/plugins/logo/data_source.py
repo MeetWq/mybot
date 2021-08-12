@@ -1,8 +1,10 @@
+import io
 import base64
 import jinja2
 import aiohttp
-import asyncio
+import imageio
 import traceback
+from PIL import Image
 from pathlib import Path
 from bs4 import BeautifulSoup
 
@@ -30,8 +32,6 @@ async def create_logo(texts, style='pornhub'):
             image = await create_logomaker_logo(' '.join(texts), style)
 
         if image:
-            if style == '5000choyen':
-                return MessageSegment.image(f"base64://{image}")
             return MessageSegment.image(f"base64://{base64.b64encode(image).decode()}")
         return None
     except (AttributeError, TypeError, OSError):
@@ -81,6 +81,8 @@ async def create_youtube_logo(left_text, right_text):
 
 async def create_5000choyen_logo(top_text, bottom_text):
     template = env.get_template('5000choyen.html')
+    top_text = top_text.replace('！', '!').replace('？', '?')
+    bottom_text = bottom_text.replace('！', '!').replace('？', '?')
     content = await template.render_async(top_text=top_text, bottom_text=bottom_text)
 
     async with get_new_page() as page:
@@ -88,28 +90,29 @@ async def create_5000choyen_logo(top_text, bottom_text):
         a = await page.query_selector('a')
         img = await (await a.get_property('href')).json_value()
         img = img.replace('data:image/png;base64,', '')
-    return img
+    return base64.b64decode(img)
 
 
 async def create_douyin_logo(text):
+    template = env.get_template('douyin.html')
+    content = await template.render_async(text=text)
+
     async with get_new_page() as page:
-        await page.goto('https://tools.miku.ac/douyin_text/')
-        try:
-            await page.click('button[class="el-button el-button--default el-button--small el-button--primary "]')
-            await asyncio.sleep(1)
-        except:
-            pass
-        await page.evaluate('function() {document.querySelector("input[type=checkbox]").click()}')
-        await page.click('input[type=text]')
-        await page.fill('input[type=text]', text)
-        await page.click('button[class="el-button el-button--default"]')
-        await asyncio.sleep(2)
-        preview = await page.query_selector('div[class="nya-container preview pt"]')
-        img = await preview.query_selector('img')
-        url = await (await img.get_property('src')).json_value()
-        resp = await page.goto(url)
-        content = await resp.body()
-        return content
+        await page.set_content(content)
+        content = await page.content()
+
+    imgs = []
+    soup = BeautifulSoup(content, 'lxml')
+    elements = soup.find_all('a')
+    for e in elements:
+        imgs.append(e.get('href'))
+
+    imgs = [Image.open(io.BytesIO(base64.b64decode(
+        img.replace('data:image/png;base64,', '')))) for img in imgs]
+
+    output = io.BytesIO()
+    imageio.mimsave(output, imgs, format='gif', duration=0.2)
+    return output.getvalue()
 
 
 async def create_logomaker_logo(text, style='cocacola'):

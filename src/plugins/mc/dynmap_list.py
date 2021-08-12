@@ -34,7 +34,7 @@ def dump_dynmap_list():
 
 
 def get_dynmap_list():
-    return _dynmap_list
+    return _dynmap_list.copy()
 
 
 def set_last_update(user_id: str, last_update: int):

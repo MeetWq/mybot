@@ -7,6 +7,11 @@ function TopText(ctx) {
     this.ctx = ctx;
 }
 
+TopText.prototype.init = function() {
+    this.ctx.font = this.font;
+    this.w = this.ctx.measureText(this.value).width;
+}
+
 TopText.prototype.draw = function() {
     this.ctx.font = this.font;
     this.ctx.setTransform(1, 0, -0.45, 1, 0, 0);
@@ -89,6 +94,4 @@ TopText.prototype.draw = function() {
         this.ctx.fillStyle = grad;
         this.ctx.fillText(this.value, this.x, this.y - 3);
     }
-
-    this.w = this.ctx.measureText(this.value).width + 30;
 }

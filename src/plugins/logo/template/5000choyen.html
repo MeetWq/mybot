@@ -1,18 +1,14 @@
 <html>
     <body>
-        <div>
-            <canvas id="canvas" width="10000px" height="290px" ></canvas>
-        </div>
         <script> {{"top_text.js" | load_file}} </script>
         <script> {{"bottom_text.js" | load_file}} </script>
         <script> {{"drawer.js" | load_file}} </script>
         <script>
-            var canvas = document.getElementById("canvas");
-            drawer = new Drawer(canvas);
+            drawer = new Drawer();
             drawer.topText.value = "{{top_text}}";
             drawer.bottomText.value = "{{bottom_text}}";
             drawer.refresh();
-            drawer.saveImage();
+            drawer.createImage();
         </script>
     </body>
 </html>

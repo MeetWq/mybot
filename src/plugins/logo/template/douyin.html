@@ -1,0 +1,21 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<html>
+    <body>
+        <script>{{"douyin_text.js" | load_file}}</script>
+        <script>
+            var options = {
+                word: '{{text}}',
+                divider: false,
+                color: 'white',
+                colorBg: '#1c0b1b',
+                colorLeft: '#00F5EB',
+                colorRight: '#FF0050',
+                dev: false,
+                seed: 20 * 0.05,
+                fontSize: 110
+            };
+            var dytext = new DYText(options);
+            dytext.createFrames(10);
+        </script>
+    </body>
+</html>
