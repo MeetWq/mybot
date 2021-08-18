@@ -1,9 +1,8 @@
 import aiohttp
-from nonebot import get_driver
 from nonebot.log import logger
 
 
-async def get_pic_url(key_word=None, r18=False) -> str:
+async def get_pic_url(key_word='', r18=False) -> str:
     url = 'https://api.lolicon.app/setu/v2'
     params = {
         'r18': 1 if r18 else 0,

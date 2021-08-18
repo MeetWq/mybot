@@ -96,6 +96,8 @@ async def close_dynmap_chat(user_id: str) -> bool:
     return True
 
 
-async def get_dynmap_status(user_id: str) -> str:
-    url = _dynmap_list[user_id]['update_url']
-    return await get_status(url)
+async def set_user(user_id: str, username: str, password: str) -> bool:
+    _dynmap_list[user_id]['username'] = username
+    _dynmap_list[user_id]['password'] = password
+    dump_dynmap_list()
+    return True

@@ -10,13 +10,13 @@ function DYText(opts) {
     this.word = _opts.word || 'Hello World';
 
     this.fontSize = _opts.fontSize + 'px' || '120px';
-    this.height = (_opts.fontSize || 120) * 1.5;
+    this.height = (_opts.fontSize || 120) * 1.75;
     this.fontFamily =
         _opts.fontFamily ||
         '-apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif';
     this.font =
         'italic 900 ' + this.fontSize + ' ' + this.fontFamily;
-    this.offset = this.height * _opts.offset || this.height * 0.035;
+    this.offset = this.height * _opts.offset || this.height * 0.03;
 
     this.x = _opts.x || 0;
     this.y = _opts.y || 0;

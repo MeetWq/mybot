@@ -34,3 +34,28 @@ async def get_status(url: str) -> str:
     weather = '☀' if not storm else '⛈' if thunder else '🌧'
     status = f'当前在线：{players}\n服务器时间：{time}\n服务器天气：{weather}'
     return status
+
+
+async def send_message(config, msg):
+    try:
+        login_url = config['url'] + '/up/login'
+        send_url = config['url'] + '/up/sendmessage'
+        info = {
+            'j_username': config['username'],
+            'j_password': config['password']
+        }
+        data = {
+            'name': '',
+            'message': msg
+        }
+        async with aiohttp.ClientSession() as session:
+            async with session.post(login_url, data=info) as resp:
+                if resp.status != 200:
+                    return False
+            async with session.post(send_url, json=data) as resp:
+                if resp.status != 200:
+                    return False
+        return True
+    except:
+        logger.debug(traceback.format_exc())
+        return False
