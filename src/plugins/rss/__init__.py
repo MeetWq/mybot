@@ -1,5 +1,6 @@
-from nonebot import export, on_command
+from nonebot import export, on_shell_command
 from nonebot.typing import T_State
+from nonebot.rule import ArgumentParser
 from nonebot.adapters.cqhttp.bot import Bot
 from nonebot.adapters.cqhttp.event import Event, GroupMessageEvent
 
@@ -17,22 +18,22 @@ RSS clear/清空
 RSS list/列表'''
 export.help = export.description + '\n' + export.usage
 
-rss = on_command('rss', aliases={'RSS', 'Rss'}, priority=37)
+rss_parser = ArgumentParser()
+rss_parser.add_argument('arg', nargs='+')
+rss = on_shell_command('rss', parser=rss_parser, priority=37)
 
 
 @rss.handle()
 async def _(bot: Bot, event: Event, state: T_State):
-    args = str(event.get_plaintext()).strip().split()
-    args = [s.strip() for s in args]
-    args = [s for s in args if s]
-    if not args:
-        await rss.finish(export.usage)
-    state['args'] = args
-
-
-@rss.got('args')
-async def _(bot: Bot, event: Event, state: T_State):
     args = state['args']
+    if not hasattr(args, 'arg'):
+        await rss.finish()
+    state['arg'] = args.arg
+
+
+@rss.got('arg')
+async def _(bot: Bot, event: Event, state: T_State):
+    args = state['arg']
     if len(args) >= 1:
         state['command'] = args[0]
     if len(args) >= 2:
@@ -56,7 +57,7 @@ def get_id(event: Event):
 async def _(bot: Bot, event: Event, state: T_State):
     command = state['command']
     if command not in ['添加', '删除', '列表', '清空', 'add', 'del', 'list', 'clear']:
-        await rss.finish('没有这个命令哦\n' + export.usage)
+        await rss.finish()
 
     user_id = get_id(event)
     state['user_id'] = user_id

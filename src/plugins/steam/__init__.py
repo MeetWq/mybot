@@ -1,4 +1,5 @@
 from nonebot import export, on_command
+from nonebot.rule import to_me
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, Event
 
@@ -9,7 +10,7 @@ export.description = 'Steam游戏查询'
 export.usage = 'Usage:\n  steam {keyword}'
 export.help = export.description + '\n' + export.usage
 
-steam = on_command('steam', priority=22)
+steam = on_command('steam', rule=to_me(), priority=22)
 
 
 @steam.handle()

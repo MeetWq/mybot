@@ -13,7 +13,7 @@ export.notice = 'Notice:\n  抽象话只支持中文；翻转文字只支持英�
 export.help = export.description + '\n' + export.usage + '\n' + export.options + '\n' + export.notice
 
 text_parser = ArgumentParser()
-text_parser.add_argument('-t', '--type', type=int, default=0)
+text_parser.add_argument('-t', '--type', type=int)
 text_parser.add_argument('text', nargs='+')
 
 text = on_shell_command('text', parser=text_parser, priority=19)
@@ -23,11 +23,11 @@ text = on_shell_command('text', parser=text_parser, priority=19)
 async def _(bot: Bot, event: Event, state: T_State):
     args = state['args']
     if not hasattr(args, 'text'):
-        await text.finish(export.usage + '\n' + export.options)
+        await text.finish()
 
     type = args.type
     if type not in [0, 1, 2, 3, 4]:
-        await text.finish(export.options)
+        await text.finish()
 
     texts = args.text
     texts = ' '.join(texts)

@@ -1,7 +1,5 @@
 from nonebot import export, on_command
-from nonebot.rule import to_me
 from nonebot.typing import T_State
-from nonebot.permission import SUPERUSER
 from nonebot.adapters.cqhttp import Bot, Event
 
 from .data_source import get_pixiv
@@ -19,6 +17,10 @@ async def _(bot: Bot, event: Event, state: T_State):
     keyword = str(event.get_message()).strip()
     if not keyword:
         await pixiv.finish(export.usage)
+
+    if not keyword.isdigit() and keyword not in ['日榜', 'day', '周榜', 'week', '月榜', 'month', '月榜', 'month']:
+        if not event.is_tome():
+            await pixiv.finish()
 
     msg = await get_pixiv(keyword)
     if not str(msg):
