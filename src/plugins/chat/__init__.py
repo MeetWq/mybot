@@ -1,16 +1,24 @@
+from asyncio.events import new_event_loop
+import re
 import random
-from nonebot import export, on_message
-from nonebot.rule import to_me
+from datetime import datetime, timedelta
+from nonebot import export, get_driver, on_message
+from nonebot.permission import Permission
+from nonebot.rule import to_me, Rule
 from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, Event, GroupMessageEvent, PrivateMessageEvent, Message
+from nonebot.matcher import Matcher
+from nonebot.adapters.cqhttp import Bot, Event, GroupMessageEvent, PrivateMessageEvent
 
 from .data_source import chat_bot, get_anime_thesaurus
+from .config import Config
+
+global_config = get_driver().config
+chat_config = Config(**global_config.dict())
 
 export = export()
 export.description = '闲聊'
-export.usage = 'Usage:\n  和我对话即可，第一次需要@我触发，若30s无响应则结束对话'
-export.notice = 'Notice:\n  对话是一对一的，不能插话'
-export.help = export.description + '\n' + export.usage + '\n' + export.notice
+export.usage = 'Usage:\n @我触发，若20s无响应则结束对话'
+export.help = export.description + '\n' + export.usage
 
 chat = on_message(rule=to_me(), priority=40)
 
@@ -29,67 +37,99 @@ error_reply = [
 
 end_word = [
     '停',
-    '停下',
-    '停停',
-    '停一停',
-    '爬'
+    '爬',
+    '滚',
     'stop',
     '结束',
-    '结束对话',
-    '结束会话',
-    '再见'
+    '再见',
+    '闭嘴',
+    '安静'
 ]
 
 
 @chat.handle()
-async def _(bot: Bot, event: Event, state: T_State):
+async def first_receive(bot: Bot, event: Event, state: T_State):
+    msg = event.get_plaintext().strip()
+    msg = filter_msg(msg)
+    if msg:
+        reply = await get_reply(msg, event)
+    else:
+        reply = random.choice(null_reply)
+
+    await handle_reply(reply, event)
+
+
+async def continue_receive(bot: Bot, event: Event, state: T_State):
+    msg = event.get_plaintext().strip()
+    msg = filter_msg(msg)
+    if msg:
+        for word in end_word:
+            if word in msg.lower():
+                await chat.finish()
+        reply = await get_reply(msg, event)
+        await handle_reply(reply, event)
+    else:
+        new_matcher(event)
+        await chat.finish()
+
+
+async def handle_reply(reply: str, event: Event):
+    if not reply:
+        return
+    if isinstance(event, PrivateMessageEvent):
+        await chat.finish(reply)
+    else:
+        await chat.send(reply)
+        new_matcher(event)
+        await chat.finish()
+
+
+def get_event_id(event: Event):
+    if isinstance(event, GroupMessageEvent):
+        return f'group_{event.group_id}'
+    else:
+        return f'private_{event.user_id}'
+
+
+def new_matcher(event: Event):
+    async def check_event_id(bot: "Bot", new_event: "Event") -> bool:
+        return get_event_id(event) == get_event_id(new_event) and await chat.permission(bot, new_event)
+
+    Matcher.new(chat.type,
+                Rule(),
+                Permission(check_event_id),
+                [continue_receive],
+                temp=True,
+                priority=chat.priority - 1,
+                block=True,
+                module=chat.module,
+                expire_time=datetime.now() + timedelta(seconds=chat_config.chat_expire_time))
+
+
+def filter_msg(msg: str):
+    if '此处消息的转义尚未被插件支持' in msg or '请使用最新版手机QQ体验新功能' in msg or re.fullmatch(r'&#91;[^:,= ]+&#93;', msg):
+        return ''
+    if re.fullmatch(r'[.。？！?!/~$#@&^%+-_（）\\\(\)\*]+', msg):
+        return ''
+    if msg in ['草', '艹']:
+        return ''
+    return msg
+
+
+async def get_reply(msg: str, event: Event):
     prefix = event.group_id if isinstance(
         event, GroupMessageEvent) else 'private'
     user_id = f'{prefix}_{event.user_id}'
+    event_id = get_event_id(event)
     username = event.sender.card or event.sender.nickname
-    state['user_id'] = user_id
-    state['username'] = username
 
-    msg = event.get_plaintext().strip()
-    reply = await get_reply(msg, user_id, username)
+    reply = await get_anime_thesaurus(msg)
     if reply:
-        if isinstance(event, PrivateMessageEvent):
-            await chat.finish(reply)
-        else:
-            await chat.send(reply)
+        return reply
 
-
-@chat.got('msg')
-async def _(bot: Bot, event: Event, state: T_State):
-    user_id = state['user_id']
-    username = state['username']
-    msg = Message(state['msg'])
-    msg = get_plain_text(msg)
-    if not msg:
-        await chat.reject()
-    if msg in end_word:
-        await chat.finish()
-    reply = await get_reply(msg, user_id, username)
+    reply = await chat_bot.get_reply(msg, event_id, user_id)
+    reply = reply.replace('<USER-NAME>', username)
     if reply:
-        await chat.reject(reply)
+        return reply
 
-
-def get_plain_text(msgs) -> str:
-    msgs = [str(msg) for msg in msgs if msg.get('type') == 'text']
-    return ' '.join(msgs).strip()
-
-
-async def get_reply(msg: str, user_id: str, username: str):
-    if msg:
-        reply = await get_anime_thesaurus(msg)
-        if reply:
-            return reply
-
-        reply = await chat_bot.get_reply(msg, user_id)
-        reply = reply.replace('<USER-NAME>', username)
-        if reply:
-            return reply
-
-        return random.choice(error_reply)
-    else:
-        return random.choice(null_reply)
+    return random.choice(error_reply)

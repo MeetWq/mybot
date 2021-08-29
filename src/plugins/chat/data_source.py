@@ -3,6 +3,7 @@ import uuid
 import random
 import aiohttp
 import requests
+import traceback
 from pathlib import Path
 from cachetools import TTLCache
 from nonebot import get_driver
@@ -28,9 +29,9 @@ class ChatBot:
         response = requests.post(url).json()
         return response['access_token']
 
-    async def get_reply(self, text: str, user_id: str) -> str:
+    async def get_reply(self, text: str, event_id: str, user_id: str) -> str:
         url = f'{self.base_url}/rpc/2.0/unit/service/chat?access_token={self.token}'
-        session_id = self.sessions.get(user_id)
+        session_id = self.sessions.get(event_id)
         if not session_id:
             session_id = ''
         params = {
@@ -48,15 +49,19 @@ class ChatBot:
                 }
             }
         }
-        async with aiohttp.ClientSession() as session:
-            async with session.post(url, data=json.dumps(params, ensure_ascii=False)) as resp:
-                response = await resp.json()
-        if response and response['error_code'] == 0:
-            session_id = response['result']['session_id']
-            self.sessions[user_id] = session_id
-            return response['result']['response_list'][0]['action_list'][0]['say']
-        else:
-            logger.debug(response)
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(url, data=json.dumps(params, ensure_ascii=False)) as resp:
+                    response = await resp.json()
+            if response and response['error_code'] == 0:
+                session_id = response['result']['session_id']
+                self.sessions[event_id] = session_id
+                return response['result']['response_list'][0]['action_list'][0]['say']
+            else:
+                logger.debug(response)
+                return ''
+        except:
+            logger.debug(traceback.format_exc())
             return ''
 
 
