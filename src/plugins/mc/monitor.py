@@ -2,7 +2,7 @@ import re
 from bs4 import BeautifulSoup
 from nonebot import require, get_bots, get_driver
 
-from .dynmap import get_dynmap_updates
+from .dynmap_source import get_dynmap_updates
 from .dynmap_list import get_dynmap_list, dump_dynmap_list, set_last_update
 
 from .config import Config

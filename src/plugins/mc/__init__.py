@@ -1,12 +1,33 @@
-from nonebot import on_shell_command
+from nonebot import on_command, on_shell_command, on_notice, get_driver
 from nonebot.typing import T_State
 from nonebot.rule import ArgumentParser
 from nonebot.adapters.cqhttp.bot import Bot
-from nonebot.adapters.cqhttp.event import Event, GroupMessageEvent
+from nonebot.adapters.cqhttp.event import Event, GroupMessageEvent, PokeNotifyEvent
 
+from .data_source import get_mcstatus
 from .monitor import *
-from .dynmap import get_status, send_message
-from .dynmap_list import get_dynmap_url, bind_dynmap, unbind_dynmap, open_dynmap_chat, close_dynmap_chat, get_dynmap_list, set_user
+from .dynmap_source import get_status, send_message
+from .dynmap_list import get_dynmap_url, bind_dynmap, unbind_dynmap, \
+    open_dynmap_chat, close_dynmap_chat, open_poke_status, close_poke_status, get_dynmap_list, set_user
+
+from .config import Config
+global_config = get_driver().config
+mc_config = Config(**global_config.dict())
+
+
+mcstatus = on_command('mcstatus', priority=38)
+
+
+@mcstatus.handle()
+async def _(bot: Bot, event: Event, state: T_State):
+    addr = event.get_plaintext().strip()
+    if addr:
+        status = await get_mcstatus(addr)
+        if status:
+            await mcstatus.finish(status)
+        else:
+            await mcstatus.finish('出错了，请稍后再试')
+
 
 dynmap_parser = ArgumentParser()
 dynmap_parser.add_argument('arg', nargs='+')
@@ -34,7 +55,7 @@ async def _(bot: Bot, event: Event, state: T_State):
 
 
 def get_id(event: Event):
-    if isinstance(event, GroupMessageEvent):
+    if isinstance(event, GroupMessageEvent) or isinstance(event, PokeNotifyEvent):
         return 'group_' + str(event.group_id)
     else:
         return 'private_' + str(event.get_user_id())
@@ -43,13 +64,13 @@ def get_id(event: Event):
 @dynmap.got('command')
 async def _(bot: Bot, event: Event, state: T_State):
     command = state['command']
-    if command not in ['bind', 'unbind', 'chat', 'status', 'login', 'send']:
+    if command not in ['bind', 'unbind', 'chat', 'poke', 'status', 'login', 'send']:
         await dynmap.finish()
 
     user_id = get_id(event)
     state['user_id'] = user_id
 
-    if command in ['unbind', 'chat', 'status', 'login', 'send']:
+    if command in ['unbind', 'chat', 'poke', 'status', 'login', 'send']:
         dynmap_url = await get_dynmap_url(user_id)
         if not dynmap_url:
             await dynmap.finish('目前还没有绑定动态地图，使用“dynmap bind <url>”绑定')
@@ -77,6 +98,18 @@ async def _(bot: Bot, event: Event, state: T_State):
         elif action in ['off']:
             await close_dynmap_chat(user_id)
             await dynmap.finish('聊天转发已关闭')
+    elif command in ['poke']:
+        if 'arg1' not in state.keys():
+            await dynmap.finish('Usage: dynmap poke on/off')
+        action = state['arg1']
+        if action not in ['on', 'off']:
+            await dynmap.finish('Usage: dynmap poke on/off')
+        if action in ['on']:
+            await open_poke_status(user_id)
+            await dynmap.finish('已打开戳一戳状态显示')
+        elif action in ['off']:
+            await close_poke_status(user_id)
+            await dynmap.finish('已关闭戳一戳状态显示')
     elif command in ['status']:
         url = get_dynmap_list()[user_id]['update_url']
         status = await get_status(url)
@@ -96,3 +129,26 @@ async def _(bot: Bot, event: Event, state: T_State):
             await dynmap.finish('尚未登录，使用“dynmap login <username> <password>”登录')
         if not await send_message(config, state['arg1']):
             await dynmap.finish('发送消息失败')
+
+
+async def _poke_status(bot: Bot, event: Event, state: T_State) -> bool:
+    if isinstance(event, PokeNotifyEvent) and event.is_tome():
+        user_id = get_id(event)
+        dynmap_list = get_dynmap_list()
+        if user_id in dynmap_list:
+            if dynmap_list[user_id]['poke']:
+                return True
+    return False
+
+
+poke_status = on_notice(_poke_status, priority=38, block=True)
+
+
+@poke_status.handle()
+async def _(bot: Bot, event: Event, state: T_State):
+    user_id = get_id(event)
+    url = get_dynmap_list()[user_id]['update_url']
+    status = await get_status(url)
+    if not status:
+        await poke_status.finish('出错了，请稍后再试')
+    await poke_status.finish(status)

@@ -5,7 +5,7 @@ from pathlib import Path
 from datetime import datetime
 from nonebot.log import logger
 
-from .dynmap import get_status
+from .dynmap_source import get_status
 
 data_path = Path('data/mc')
 if not data_path.exists():
@@ -72,6 +72,7 @@ async def bind_dynmap(user_id: str, url: str) -> bool:
         'url': url,
         'update_url': update_url,
         'chat': False,
+        'poke': False,
         'last_update': int(datetime.now().timestamp() * 1000)
     }
     dump_dynmap_list()
@@ -92,6 +93,18 @@ async def open_dynmap_chat(user_id: str) -> bool:
 
 async def close_dynmap_chat(user_id: str) -> bool:
     _dynmap_list[user_id]['chat'] = False
+    dump_dynmap_list()
+    return True
+
+
+async def open_poke_status(user_id: str) -> bool:
+    _dynmap_list[user_id]['poke'] = True
+    dump_dynmap_list()
+    return True
+
+
+async def close_poke_status(user_id: str) -> bool:
+    _dynmap_list[user_id]['poke'] = False
     dump_dynmap_list()
     return True
 

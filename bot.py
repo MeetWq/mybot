@@ -16,7 +16,7 @@ log_path = log_dir / log_name
 logger.add(str(log_path),
            rotation='00:00',
            diagnose=False,
-           level='DEBUG',
+           level='INFO',
            format=default_format,
            encoding='utf-8')
 
