@@ -4,7 +4,7 @@ from nonebot.rule import ArgumentParser
 from nonebot.adapters.cqhttp.bot import Bot
 from nonebot.adapters.cqhttp.event import Event, GroupMessageEvent, PokeNotifyEvent
 
-from .data_source import get_mcstatus
+from .data_source import get_mcstatus, get_mc_uuid, get_crafatar, get_mcmodel
 from .monitor import *
 from .dynmap_source import get_status, send_message
 from .dynmap_list import get_dynmap_url, bind_dynmap, unbind_dynmap, \
@@ -15,18 +15,43 @@ global_config = get_driver().config
 mc_config = Config(**global_config.dict())
 
 
-mcstatus = on_command('mcstatus', priority=38)
+mc = on_command('mc', priority=38)
 
 
-@mcstatus.handle()
+@mc.handle()
 async def _(bot: Bot, event: Event, state: T_State):
-    addr = event.get_plaintext().strip()
-    if addr:
-        status = await get_mcstatus(addr)
-        if status:
-            await mcstatus.finish(status)
-        else:
-            await mcstatus.finish('出错了，请稍后再试')
+    msg = event.get_plaintext().strip()
+    if not msg:
+        await mc.finish()
+    if msg.startswith('status'):
+        addr = msg.replace('status', '', 1).strip()
+        if addr:
+            status = await get_mcstatus(addr)
+            if status:
+                await mc.finish(status)
+            else:
+                await mc.finish('出错了，请稍后再试')
+    else:
+        types = ['avatar', 'head', 'body', 'skin', 'cape', 'model']
+        for t in types:
+            if msg.startswith(t):
+                username = msg.replace(t, '', 1).strip()
+                if username:
+                    uuid = await get_mc_uuid(username)
+                    if not uuid:
+                        await mc.finish('出错了，请稍后再试')
+                    if uuid == 'none':
+                        await mc.finish('找不到该用户')
+                    if t == 'model':
+                        await mc.send('生成中，请耐心等待。。。')
+                        result = await get_mcmodel(uuid)
+                    else:
+                        result = await get_crafatar(t, uuid)
+                    if result:
+                        await mc.finish(result)
+                    else:
+                        await mc.finish('出错了，请稍后再试')
+    await mc.finish()
 
 
 dynmap_parser = ArgumentParser()

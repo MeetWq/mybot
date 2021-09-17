@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <style>
+            .skinContainer {
+                height: 60vh;
+                display: block;
+                margin: 0 auto;
+            }
+            .skinContainer > img {
+                height: 50vh;
+                padding: 10vh 5vh 5vh;
+            }
+            .shadow > canvas {
+                -webkit-filter: drop-shadow(5px 5px 5px #222);
+                filter: drop-shadow(5px 5px 5px #222);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="center">
+            <div class="skinContainer shadow" id="skinExample"></div>
+        </div>
+        <script>{{"jquery.min.js" | load_file}}</script>
+        <script>{{"three.min.js" | load_file}}</script>
+        <script>{{"skin.min.js" | load_file}}</script>
+        <script>
+            var element = $("#skinExample");
+            var skinRender = new SkinRender({
+                canvas: {
+                    width: 200,
+                    height: 400
+                },
+                render: {
+                    taa: true
+                },
+                controls: {
+                    enabled: false
+                },
+                forceContext: true,
+                sendStats: false
+            }, element[0]);
+            element.on("skinRender", function (e) {
+                if (e.detail.playerModel) {
+                    e.detail.playerModel.rotation.y += 0.01;
+                    e.detail.playerModel.children[2].rotation.z = -0.1;
+                    e.detail.playerModel.children[3].rotation.z = 0.1;
+                    e.detail.playerModel.children[6].rotation.x = 0.1;
+                }
+            })
+            var texture = {
+                data: "{{skin}}",
+                {% if cape %} capeData: "{{cape}}" {% endif %}
+            };
+            skinRender.render(texture);
+        </script>
+    </body>
+</html>
