@@ -2,14 +2,14 @@ import re
 from nonebot import export, on_keyword, on_shell_command
 from nonebot.rule import ArgumentParser
 from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, Event, Message
+from nonebot.adapters.cqhttp import Bot, Event
 
 from .data_source import get_content, sources
 
 export = export()
 export.description = '百科'
 export.usage = 'Usage:\n  1. what [options] {keyword}\n  2. {keyword}是啥/是什么'
-export.options = 'Options:\n  -s, --source 百科来源，目前支持：nbnhhsh、小鸡词典(jiki)、百度百科(baidu)、维基百科(wiki)'
+export.options = 'Options:\n  -s, --source 百科来源，目前支持：nbnhhsh、小鸡词典(jiki)、百度百科(baidu)'
 export.notice = 'Notice:\n  为避免影响正常聊天，“是啥”仅当词条完全匹配时才会响应。若要返回相近的结果请用“what”命令'
 export.help = export.description + '\n' + export.usage + '\n' + export.options + '\n' + export.notice
 

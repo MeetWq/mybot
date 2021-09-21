@@ -1,21 +1,12 @@
-import os
 import re
 import aiohttp
 import traceback
 from fuzzywuzzy import fuzz, process
 from bs4 import BeautifulSoup
 from urllib.parse import quote
-from nonebot import get_driver
 from nonebot.log import logger
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
-global_config = get_driver().config
-os.environ['http_proxy'] = global_config.http_proxy
-os.environ['https_proxy'] = global_config.https_proxy
-os.environ['no_proxy'] = global_config.no_proxy
-
-import wikipedia
-wikipedia.set_lang('zh')
 from baike import getBaike
 
 
@@ -136,33 +127,10 @@ async def get_baidu(keyword, force=False):
     return title, msg
 
 
-async def get_wiki(keyword, force=False):
-    entries = wikipedia.search(keyword)
-    if len(entries) < 1:
-        return '', ''
-    title = entries[0]
-
-    try:
-        content = wikipedia.summary(title)
-    except wikipedia.DisambiguationError:
-        if len(entries) < 2:
-            return '', ''
-        title = entries[1]
-        content = wikipedia.summary(title)
-
-    if not force:
-        if fuzz.ratio(title, keyword) < 90:
-            return '', ''
-
-    msg = title + ':\n---------------\n' + content
-    return title, msg
-
-
 sources = {
     'nbnhhsh': get_nbnhhsh,
     'jiki': get_jiki,
-    'baidu': get_baidu,
-    'wiki': get_wiki
+    'baidu': get_baidu
 }
 
 sources_less = {

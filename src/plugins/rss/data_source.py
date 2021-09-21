@@ -14,7 +14,7 @@ proxy = global_config.http_proxy
 async def get_rss_info(url: str) -> dict:
     try:
         async with aiohttp.ClientSession() as session:
-            async with session.get(url, proxy=proxy) as resp:
+            async with session.get(url, proxy=proxy, timeout=10) as resp:
                 result = await resp.text()
         return feedparser.parse(result)
     except:

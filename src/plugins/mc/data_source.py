@@ -93,7 +93,7 @@ async def get_mcmodel(uuid: str) -> Message:
                 images.append(Image.open(io.BytesIO(image)))
 
         output = io.BytesIO()
-        imageio.mimsave(output, images, format='gif', duration=0.01)
+        imageio.mimsave(output, images, format='gif', duration=0.05)
         return MessageSegment.image(f'base64://{base64.b64encode(output.getvalue()).decode()}')
     except:
         logger.warning(traceback.format_exc())

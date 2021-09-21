@@ -22,7 +22,7 @@ wolfram = on_command('wolfram', aliases={'wolframalpha'}, priority=34)
 
 @wolfram.handle()
 async def _(bot: Bot, event: Event, state: T_State):
-    text = str(event.get_message()).strip()
+    text = event.get_plaintext().strip()
 
     plaintext = False
     pattern = [r'-p +.*?', r'.*? +-p', r'--plaintext +.*?', r'.*? +--plaintext']
@@ -37,7 +37,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     if not re.fullmatch(r'[\x00-\x7F]+', text):
         text = subprocess.getoutput(f'trans -t en -brief -no-warn "{text}"').strip()
         if text:
-            await wolfram.send('WolframAlpha 仅支持英文，将使用如下翻译进行搜索：\n' + text)
+            await wolfram.send('使用如下翻译进行搜索：\n' + text)
         else:
             await wolfram.finish('出错了，请稍后再试')
 

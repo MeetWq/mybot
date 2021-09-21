@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 async def get_dynmap_updates(url: str):
     try:
-        stamp = (datetime.now() - timedelta(minutes=1)).timestamp()
+        stamp = (datetime.now() - timedelta(minutes=2)).timestamp()
         url += '/' + str(int(stamp * 1000))
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as resp:
