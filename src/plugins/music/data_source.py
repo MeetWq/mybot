@@ -1,9 +1,12 @@
 import json
 import aiohttp
+import requests
 import traceback
 from http.cookies import SimpleCookie
 from nonebot.log import logger
 from nonebot.adapters.cqhttp import MessageSegment
+
+from .qcloud_client import qcloud_client
 
 
 async def search_song(keyword, source='qq'):
@@ -91,7 +94,8 @@ async def search_kugou(keyword, page=1, pagesize=1, number=1):
             data = await resp.read()
     result = json.loads(data)
     info = result['data']
-    url = 'https://www.kugou.com/song/#hash={}&album_id={}'.format(hash, album_id)
+    url = 'https://www.kugou.com/song/#hash={}&album_id={}'.format(
+        hash, album_id)
     audio = info['play_url']
     title = info['song_name']
     content = info['author_name']
@@ -140,6 +144,14 @@ async def search_bilibili(keyword, page=1, pagesize=1, number=1):
     title = info['title']
     content = info['author']
     img_url = info['cover']
+
+    headers = {
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
+        'referer': 'https://www.bilibili.com/'
+    }
+    stream = requests.get(audio, headers=headers)
+    audio = qcloud_client.put_object(stream, f"bilibili_music/{info['id']}.m4a")
+
     return MessageSegment.music_custom(url=url, audio=audio, title=title, content=content, img_url=img_url)
 
 
