@@ -1,6 +1,6 @@
 import re
 from typing import Type
-from nonebot import export, on_startswith
+from nonebot import export, on_command
 from nonebot.typing import T_State
 from nonebot.matcher import Matcher
 from nonebot.adapters.cqhttp import Bot, Event
@@ -12,15 +12,15 @@ export.description = '头像相关表情生成'
 export.usage = 'Usage:\n  摸/撕/丢/爬/亲/贴/精神支柱 {qq/@user/自己/图片}'
 export.help = export.description + '\n' + export.usage
 
-petpet = on_startswith('摸', priority=26)
-tear = on_startswith('撕', priority=26)
-throw = on_startswith('丢', priority=26)
-crawl = on_startswith('爬', priority=26)
-kiss = on_startswith('亲', priority=26)
-kiss_me = on_startswith('亲我', priority=25)
-rub = on_startswith('贴', priority=26)
-rub_me = on_startswith('贴我', priority=25)
-support = on_startswith('精神支柱', priority=26)
+petpet = on_command('摸', aliases={'rua'}, priority=26)
+tear = on_command('撕', priority=26)
+throw = on_command('丢', priority=26)
+crawl = on_command('爬', priority=26)
+kiss = on_command('亲', priority=26)
+kiss_me = on_command('亲我', priority=25)
+rub = on_command('贴', priority=26)
+rub_me = on_command('贴我', priority=25)
+support = on_command('精神支柱', priority=26)
 
 
 async def handle(matcher: Type[Matcher], event: Event, command: str, type: str, reverse: bool = False):

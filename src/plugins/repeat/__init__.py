@@ -7,7 +7,7 @@ from nonebot.log import logger
 export = export()
 export.description = '复读机'
 export.usage = 'Usage:\n  重复两次的内容会被复读'
-export.notice = 'Notice:\n  只能复读文本和图片；指令不会被复读'
+export.notice = 'Notice:\n  只能复读文本和图片；指令及其回复不会被复读'
 export.help = export.description + '\n' + export.usage + '\n' + export.notice
 
 

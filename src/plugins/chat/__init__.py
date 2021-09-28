@@ -17,7 +17,7 @@ chat_config = Config(**global_config.dict())
 
 export = export()
 export.description = '闲聊'
-export.usage = 'Usage:\n @我触发，若20s无响应则结束对话'
+export.usage = 'Usage:\n @我触发，若15s内无响应则结束对话，也可以发送“停”结束对话'
 export.help = export.description + '\n' + export.usage
 
 chat = on_message(rule=to_me(), priority=40)

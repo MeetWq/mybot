@@ -3,31 +3,37 @@ from nonebot.plugin import get_loaded_plugins
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, Event, GroupMessageEvent
 
+from nonebot_plugin_manager import PluginManager
+
+
 help = on_command('help', aliases={'帮助'}, priority=11)
 
 
 @help.handle()
 async def _(bot: Bot, event: Event, state: T_State):
     plugin_name = str(event.get_message()).strip()
-    group_id = str(event.group_id) if isinstance(event, GroupMessageEvent) else '0'
     help_msg = ''
     if plugin_name:
-        help_msg = await get_help_msg(group_id, plugin_name)
+        help_msg = await get_help_msg(event, plugin_name)
     else:
         if event.is_tome():
-            help_msg = await get_help_msg(group_id)
+            help_msg = await get_help_msg(event)
     if help_msg:
         await help.finish(help_msg)
 
 
-async def get_help_msg(group_id='', plugin_name=''):
+async def get_help_msg(event: Event, plugin_name=''):
     plugins = list(filter(
         lambda p: set(p.export.keys()).issuperset({'description', 'help'}), get_loaded_plugins()
     ))
 
-    npm = require('nonebot_plugin_manager')
-    group_plugin_list = npm.get_group_plugin_list(group_id)
-    plugins = [p for p in plugins if group_plugin_list[p.name]]
+    conv = {
+        "user": [event.user_id] if not isinstance(event, GroupMessageEvent) else [],
+        "group": [event.group_id] if isinstance(event, GroupMessageEvent) else [],
+    }
+    plugin_manager = PluginManager()
+    plugin = plugin_manager.get_plugin(conv, 1)
+    plugins = [p for p in plugins if plugin[p.name]]
 
     if not plugins:
         return '暂时没有可用的功能'

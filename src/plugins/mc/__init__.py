@@ -1,4 +1,4 @@
-from nonebot import on_command, on_shell_command, on_notice, get_driver
+from nonebot import export, on_command, on_shell_command, on_notice
 from nonebot.typing import T_State
 from nonebot.rule import ArgumentParser
 from nonebot.adapters.cqhttp.bot import Bot
@@ -10,9 +10,12 @@ from .dynmap_source import get_status, send_message
 from .dynmap_list import get_dynmap_url, bind_dynmap, unbind_dynmap, \
     open_dynmap_chat, close_dynmap_chat, open_poke_status, close_poke_status, get_dynmap_list, set_user
 
-from .config import Config
-global_config = get_driver().config
-mc_config = Config(**global_config.dict())
+export = export()
+export.description = 'Minecraft相关功能'
+export.usage = 'Usage:\n  1、mcstatus {url}，MC服务器状态查询\n' \
+    '  2、mc avatar/head/body/skin/cape/model {id}，获取MC用户的 头像/头/身体/皮肤/披风/全身动图\n' \
+    '  3、dynmap bind {url}，动态地图相关功能，需服务器安装动态地图插件，可以实现在线玩家查询、聊天转发等功能'
+export.help = export.description + '\n' + export.usage
 
 
 mc = on_command('mc', priority=38)

@@ -10,7 +10,7 @@ from .config import Config
 
 global_config = get_driver().config
 pixiv_config = Config(**global_config.dict())
-proxy = global_config.http_proxy
+proxy = global_config.socks_proxy
 
 
 async def get_pixiv(keyword: str):
