@@ -1,4 +1,3 @@
-from asyncio.events import new_event_loop
 import re
 import random
 from datetime import datetime, timedelta

@@ -1,17 +1,14 @@
 import re
-from pathlib import Path
 from nonebot import require, get_bots, get_driver
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
-from .sub_list import load_sub_list
-from .data_source import get_live_info
-from .live_status import load_status_list, update_status
+from .sub_list import get_sub_list
+from .data_source import get_live_status, get_live_info
+from .live_status import get_status_list, update_status
 
 from .config import Config
 global_config = get_driver().config
-bilibili_live_config = Config(**global_config.dict())
-
-status_path = Path() / 'data' / 'bilibili_live' / 'live_status.json'
+blive_config = Config(**global_config.dict())
 
 
 def user_type(user_id: str):
@@ -26,20 +23,22 @@ def user_type(user_id: str):
     return '', user_id
 
 
-async def bilibili_live_monitor():
+async def blive_monitor():
     msg_dict = {}
-    status_list = load_status_list()
+    status_list = get_status_list()
     for room_id, status in status_list.items():
-        info = await get_live_info(room_id)
-        if info['status'] != status:
+        live_status = await get_live_status(room_id)
+        if live_status != status:
+            update_status(room_id, live_status)
+            info = await get_live_info(room_id)
             msg_dict[room_id] = format_msg(info)
-            update_status(room_id, info['status'])
+
     if not msg_dict:
         return
 
     bots = list(get_bots().values())
     for bot in bots:
-        sub_list = load_sub_list()
+        sub_list = get_sub_list()
         for user_id, user_sub_list in sub_list.items():
             for room_id in user_sub_list.keys():
                 if room_id in msg_dict:
@@ -59,7 +58,8 @@ def format_msg(info: dict) -> Message:
         msg = f"{info['up_name']} 下播了"
     elif info['status'] == 1:
         msg = Message()
-        msg.append(f"{info['time']}\n{info['up_name']} 开播啦！\n{info['title']}\n直播间链接：{info['url']}")
+        msg.append(
+            f"{info['time']}\n{info['up_name']} 开播啦！\n{info['title']}\n直播间链接：{info['url']}")
         cover = info['cover']
         if cover:
             msg.append(MessageSegment.image(file=cover))
@@ -70,9 +70,9 @@ def format_msg(info: dict) -> Message:
 
 scheduler = require("nonebot_plugin_apscheduler").scheduler
 
-cron_day = bilibili_live_config.bilibili_live_cron_day
+cron_day = blive_config.blive_cron_day
 scheduler.add_job(
-    bilibili_live_monitor,
+    blive_monitor,
     'cron',
     second=cron_day[0],
     minute=cron_day[1],
@@ -80,14 +80,14 @@ scheduler.add_job(
     day=cron_day[3],
     month=cron_day[4],
     year=cron_day[5],
-    id='bilibili_live_monitor_in_day',
+    id='blive_monitor_in_day',
     coalesce=True,
     misfire_grace_time=30
 )
 
-cron_night = bilibili_live_config.bilibili_live_cron_night
+cron_night = blive_config.blive_cron_night
 scheduler.add_job(
-    bilibili_live_monitor,
+    blive_monitor,
     'cron',
     second=cron_night[0],
     minute=cron_night[1],
@@ -95,7 +95,7 @@ scheduler.add_job(
     day=cron_night[3],
     month=cron_night[4],
     year=cron_night[5],
-    id='bilibili_live_monitor_in_night',
+    id='blive_monitor_in_night',
     coalesce=True,
     misfire_grace_time=30
 )

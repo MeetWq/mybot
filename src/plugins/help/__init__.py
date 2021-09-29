@@ -1,4 +1,4 @@
-from nonebot import require, on_command
+from nonebot import on_command
 from nonebot.plugin import get_loaded_plugins
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, Event, GroupMessageEvent

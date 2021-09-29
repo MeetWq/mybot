@@ -6,7 +6,7 @@ from bilibili_api.utils.network import request
 from bilibili_api.utils.utils import get_api
 
 
-async def get_live_info(room_id: str='', up_name: str='') -> dict:
+async def get_live_info(room_id: str = '', up_name: str = '') -> dict:
     if room_id:
         info = await get_live_info_by_id(room_id)
     elif up_name:
@@ -54,8 +54,17 @@ async def get_live_info_by_name(up_name: str) -> dict:
                 info = await get_live_info_by_id(room_id)
                 return info
         return {}
-    except (BilibiliException, AttributeError, KeyError):
+    except (ApiException, AttributeError, KeyError):
         return {}
+
+
+async def get_live_status(room_id: str) -> int:
+    try:
+        live = LiveRoom(int(room_id))
+        room_info = await live.get_room_info()
+        return room_info['room_info']['live_status']
+    except (ApiException, AttributeError, KeyError):
+        return 0
 
 
 async def get_user_info(uid: str) -> dict:

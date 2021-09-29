@@ -12,10 +12,10 @@ from .rss_list import get_rss_list, clear_rss_list, add_rss_list, del_rss_list
 export = export()
 export.description = 'RSS订阅'
 export.usage = '''Usage:
-RSS add/添加 订阅名 RSSHub路径/完整URL
-RSS del/删除 订阅名
-RSS clear/清空
-RSS list/列表'''
+rss add/添加 订阅名 RSSHub路径/完整URL
+rss del/删除 订阅名
+rss clear/清空
+rss list/列表'''
 export.help = export.description + '\n' + export.usage
 
 rss_parser = ArgumentParser()
