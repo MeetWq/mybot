@@ -128,27 +128,27 @@ async def _(bot: Bot, event: Event, state: T_State):
 
     if command in ['录制', 'record']:
         sub_list = get_sub_list(user_id)
-        id = ''
+        room_id_real = ''
         if room_id.isdigit():
             if room_id in sub_list:
-                id = room_id
+                room_id_real = room_id
         else:
-            for room_id, info in sub_list.items():
+            for id, info in sub_list.items():
                 if room_id == info['up_name']:
-                    id = room_id
+                    room_id_real = id
                     break
-        if not id:
+        if not room_id_real:
             await blive.finish('尚未订阅该主播，先d了再说')
 
         if action not in ['on', 'off']:
             await blive.finish('Usage: blive record {房间号/用户名} on/off')
 
-        up_name = sub_list[id]['up_name']
+        up_name = sub_list[room_id_real]['up_name']
         if action in ['on']:
-            open_record(user_id, id)
+            open_record(user_id, room_id_real)
             await blive.finish(f'{up_name} 自动录制已打开')
         elif action in ['off']:
-            close_record(user_id, id)
+            close_record(user_id, room_id_real)
             await blive.finish(f'{up_name} 自动录制已关闭')
     else:
         await blive.finish(export.usage)

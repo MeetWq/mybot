@@ -67,6 +67,16 @@ async def get_live_status(room_id: str) -> int:
         return 0
 
 
+async def get_play_url(room_id: str) -> str:
+    try:
+        live = LiveRoom(int(room_id))
+        play_url = await live.get_room_play_url()
+        url = play_url['durl'][0]['url']
+        return url
+    except (ApiException, AttributeError, KeyError):
+        return ''
+
+
 async def get_user_info(uid: str) -> dict:
     try:
         user = User(int(uid))

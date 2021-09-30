@@ -5,7 +5,7 @@ import nonebot
 from pathlib import Path
 from nonebot.adapters.cqhttp import Bot as CQHTTPBot
 
-from nonebot.log import logger, default_format
+from nonebot.log import logger, Filter, default_format
 
 log_name = 'nonebot.log'
 log_dir = Path('log')
@@ -13,10 +13,12 @@ if not log_dir.exists():
     log_dir.mkdir()
 log_path = log_dir / log_name
 
+filter = Filter()
+filter.level = 'INFO'
 logger.add(str(log_path),
            rotation='00:00',
            diagnose=False,
-           level='INFO',
+           filter=filter,
            format=default_format,
            encoding='utf-8')
 

@@ -1,26 +1,18 @@
-import re
-from nonebot import require, get_bots, get_driver
+import asyncio
+from nonebot import require, get_driver
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
 from .sub_list import get_sub_list
 from .data_source import get_live_status, get_live_info
 from .live_status import get_status_list, update_status
+from .utils import send_bot_msg
+from .recorder import Recorder
 
 from .config import Config
 global_config = get_driver().config
 blive_config = Config(**global_config.dict())
 
-
-def user_type(user_id: str):
-    p_group = r'group_(\d+)'
-    p_private = r'private_(\d+)'
-    match = re.fullmatch(p_group, user_id)
-    if match:
-        return 'group', match.group(1)
-    match = re.fullmatch(p_private, user_id)
-    if match:
-        return 'private', match.group(1)
-    return '', user_id
+recorders = {}
 
 
 async def blive_monitor():
@@ -32,24 +24,19 @@ async def blive_monitor():
             update_status(room_id, live_status)
             info = await get_live_info(room_id)
             msg_dict[room_id] = format_msg(info)
+            check_recorders(room_id, info)
 
     if not msg_dict:
         return
 
-    bots = list(get_bots().values())
-    for bot in bots:
-        sub_list = get_sub_list()
-        for user_id, user_sub_list in sub_list.items():
-            for room_id in user_sub_list.keys():
-                if room_id in msg_dict:
-                    msg = msg_dict[room_id]
-                    if not msg:
-                        continue
-                    type, id = user_type(user_id)
-                    if type == 'group':
-                        await bot.send_group_msg(group_id=id, message=msg)
-                    elif type == 'private':
-                        await bot.send_private_msg(user_id=id, message=msg)
+    sub_list = get_sub_list()
+    for user_id, user_sub_list in sub_list.items():
+        for room_id in user_sub_list.keys():
+            if room_id in msg_dict:
+                msg = msg_dict[room_id]
+                if not msg:
+                    continue
+                await send_bot_msg(user_id, msg)
 
 
 def format_msg(info: dict) -> Message:
@@ -66,6 +53,26 @@ def format_msg(info: dict) -> Message:
     elif info['status'] == 2:
         msg = f"{info['up_name']} 下播了（轮播中）"
     return msg
+
+
+def check_recorders(room_id: str, info: dict):
+    has_record = False
+    sub_list = get_sub_list()
+    for _, user_sub_list in sub_list.items():
+        if room_id in user_sub_list and user_sub_list[room_id]['record']:
+            has_record = True
+            break
+    if not has_record:
+        return
+    if info['status'] == 1:
+        if room_id not in recorders:
+            recorders[room_id] = Recorder(info['up_name'], room_id)
+        asyncio.get_event_loop().create_task(recorders[room_id].record())
+    else:
+        if room_id in recorders:
+            if recorders[room_id].recording:
+                asyncio.get_event_loop().create_task(
+                    recorders[room_id].stop_and_upload())
 
 
 scheduler = require("nonebot_plugin_apscheduler").scheduler
