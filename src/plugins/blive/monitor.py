@@ -1,4 +1,4 @@
-import asyncio
+import threading
 from nonebot import require, get_driver
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
@@ -24,7 +24,7 @@ async def blive_monitor():
             update_status(room_id, live_status)
             info = await get_live_info(room_id)
             msg_dict[room_id] = format_msg(info)
-            check_recorders(room_id, info)
+            await check_recorder(room_id, info)
 
     if not msg_dict:
         return
@@ -55,7 +55,25 @@ def format_msg(info: dict) -> Message:
     return msg
 
 
-def check_recorders(room_id: str, info: dict):
+class RecordThread(threading.Thread):
+    def __init__(self, recorder):
+        threading.Thread.__init__(self)
+        self.recorder = recorder
+
+    def run(self):
+        self.recorder.record()
+
+
+class UploadThread(threading.Thread):
+    def __init__(self, recorder):
+        threading.Thread.__init__(self)
+        self.recorder = recorder
+
+    def run(self):
+        self.recorder.stop_and_upload()
+
+
+async def check_recorder(room_id: str, info: dict):
     has_record = False
     sub_list = get_sub_list()
     for _, user_sub_list in sub_list.items():
@@ -67,12 +85,13 @@ def check_recorders(room_id: str, info: dict):
     if info['status'] == 1:
         if room_id not in recorders:
             recorders[room_id] = Recorder(info['up_name'], room_id)
-        asyncio.get_event_loop().create_task(recorders[room_id].record())
+        thread = RecordThread(recorders[room_id])
+        thread.start()
     else:
-        if room_id in recorders:
-            if recorders[room_id].recording:
-                asyncio.get_event_loop().create_task(
-                    recorders[room_id].stop_and_upload())
+        if room_id not in recorders or not recorders[room_id].recording:
+            return
+        thread = UploadThread(recorders[room_id])
+        thread.start()
 
 
 scheduler = require("nonebot_plugin_apscheduler").scheduler

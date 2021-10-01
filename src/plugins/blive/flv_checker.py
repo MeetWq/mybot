@@ -8,17 +8,17 @@ class FlvChecker:
         self.last_timestamp_read = {b'\x08': -1, b'\x09': -1}
         self.last_timestamp_write = {b'\x08': -1, b'\x09': -1}
 
-    async def check(self):
+    def check(self):
         with self.src_path.open('rb') as src:
             with self.dst_path.open('wb+') as dst:
                 head = src.read(9)
                 dst.write(head)
-                await self.check_tag(src, dst)
+                self.check_tag(src, dst)
 
         with self.dst_path.open('rb+') as dst:
-            await self.change_duration(dst)
+            self.change_duration(dst)
 
-    async def check_tag(self, src, dst):
+    def check_tag(self, src, dst):
         current_length = 9
 
         while True:
@@ -43,7 +43,7 @@ class FlvChecker:
                     time_data, byteorder='big', signed=False)
                 timestamp |= (int.from_bytes(
                     time_data_ex, byteorder='big', signed=False) << 24)
-                await self.deal_time_stamp(dst, timestamp, tag_type)
+                self.deal_time_stamp(dst, timestamp, tag_type)
 
                 data = src.read(3 + data_size)  # 数据
                 dst.write(data)
@@ -67,7 +67,7 @@ class FlvChecker:
                 dst.truncate(lats_valid_length)
                 break
 
-    async def deal_time_stamp(self, dst, timestamp, tag_type):
+    def deal_time_stamp(self, dst, timestamp, tag_type):
         if self.last_timestamp_read[tag_type] == -1:  # 如果是首帧
             self.last_timestamp_write[tag_type] = 0
         elif timestamp >= self.last_timestamp_read[tag_type]:  # 如果时序正常
@@ -99,7 +99,7 @@ class FlvChecker:
         high_current_time = self.last_timestamp_write[tag_type] >> 24
         dst.write(high_current_time.to_bytes(1, byteorder='big'))
 
-    async def change_duration(self, dst):
+    def change_duration(self, dst):
         duration = float(self.last_timestamp_write[b'\x08']) / 1000
         duration_header = b"\x08\x64\x75\x72\x61\x74\x69\x6f\x6e"
 
