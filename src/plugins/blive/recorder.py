@@ -49,6 +49,7 @@ class Recorder:
         self.recording = True
         self.downloading = True
         logger.info(f'{self.up_name} record start')
+        sync(self.send_msg(f'{self.up_name} 录制启动...'))
         while self.recording:
             self.download()
             delay = 60
@@ -67,7 +68,11 @@ class Recorder:
         urls = self.upload()
         if urls:
             msg = f'{self.up_name} 的录播文件：\n' + '\n'.join(urls)
+            logger.info(msg)
             sync(self.send_msg(msg))
+            for file in self.files_checked:
+                file.unlink(missing_ok=True)
+
 
     def download(self):
         logger.info(f'start download')
@@ -88,7 +93,7 @@ class Recorder:
             for i in range(self.retry):
                 try:
                     resp = requests.get(
-                        url, stream=True, headers=headers, timeout=600)
+                        url, stream=True, headers=headers, timeout=300)
                     for data in resp.iter_content(chunk_size=1024*1024):
                         if not self.recording:
                             break
@@ -133,7 +138,7 @@ class Recorder:
             commander.upload(str(path.absolute()), upload_path)
             logger.info(f'upload {path} to {upload_path} successfully')
             expiration = 24 * 3600
-            upload_name = f'{upload_path} / {path.name}'
+            upload_name = f'{upload_path}/{path.name}'
             file_id_list = [commander._path_list.get_path_fid(
                 upload_name, update=False)]
             if file_id_list:

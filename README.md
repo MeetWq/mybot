@@ -16,25 +16,9 @@
 #### NoneBot
 
 ```bash
-pip install nb-cli nonebot-adapter-cqhttp
-```
-
-#### Plugins
-
-##### NoneBot 商店插件
-```bash
-nb plugin install nonebot_plugin_test
-nb plugin install nonebot_plugin_apscheduler
-nb plugin install nonebot_plugin_manager
-nb plugin install nonebot_plugin_alias
-nb plugin install nonebot_plugin_withdraw
-```
-
-##### 其他插件
-
-```bash
-pip install -r requirements.txt
+pip install poetry
+poetry install
 python -m playwright install
 sudo apt install ffmpeg imagemagick translate-shell
-sudo apt install texlive-full poppler-utils
+sudo apt install texlive-latex-extra poppler-utils
 ```

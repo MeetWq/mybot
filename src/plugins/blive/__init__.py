@@ -17,7 +17,8 @@ export.usage = '''Usage:
 取消订阅：blive td {房间号/用户名}
 订阅列表：blive list
 清空订阅：blive clear
-自动录制：blive record {房间号/用户名} on/off'''
+自动录制：blive rec {房间号/用户名}
+取消录制：blive recoff {房间号/用户名}'''
 export.help = export.description + '\n' + export.usage
 
 
@@ -40,11 +41,9 @@ async def _(bot: Bot, event: Event, state: T_State):
     args = state['arg']
     if len(args) >= 1:
         state['command'] = args[0]
-    if len(args) >= 2:
+    if len(args) == 2:
         state['room_id'] = args[1]
-    if len(args) == 3:
-        state['action'] = args[2]
-    if len(args) > 3:
+    if len(args) > 2:
         await blive.finish(export.usage)
 
 
@@ -58,7 +57,7 @@ def get_id(event: Event):
 @blive.got('command')
 async def _(bot: Bot, event: Event, state: T_State):
     command = state['command']
-    if command not in ['订阅', '取消订阅', '订阅列表', '清空订阅', '录制', 'd', 'td', 'list', 'clear', 'record']:
+    if command not in ['订阅', '取消订阅', '订阅列表', '清空订阅', '录制', '取消录制', 'd', 'td', 'list', 'clear', 'rec', 'recoff']:
         await blive.finish('没有这个命令哦\n' + export.usage)
 
     user_id = get_id(event)
@@ -82,11 +81,6 @@ async def _(bot: Bot, event: Event, state: T_State):
     command = state['command']
     room_id = state['room_id']
     user_id = state['user_id']
-
-    if command not in ['订阅', '取消订阅', 'd', 'td']:
-        if 'action' not in state.keys():
-            await blive.finish(export.usage)
-        return
 
     if room_id.isdigit():
         info = await get_live_info(room_id=room_id)
@@ -117,16 +111,7 @@ async def _(bot: Bot, event: Event, state: T_State):
             await blive.finish('尚未订阅该主播')
         else:
             await blive.finish('出错了，请稍后再试')
-
-
-@blive.got('action')
-async def _(bot: Bot, event: Event, state: T_State):
-    command = state['command']
-    room_id = state['room_id']
-    user_id = state['user_id']
-    action = state['action']
-
-    if command in ['录制', 'record']:
+    elif command in ['录制', '取消录制', 'rec', 'recoff']:
         sub_list = get_sub_list(user_id)
         room_id_real = ''
         if room_id.isdigit():
@@ -138,17 +123,10 @@ async def _(bot: Bot, event: Event, state: T_State):
                     room_id_real = id
                     break
         if not room_id_real:
-            await blive.finish('尚未订阅该主播，先d了再说')
-
-        if action not in ['on', 'off']:
-            await blive.finish('Usage: blive record {房间号/用户名} on/off')
-
-        up_name = sub_list[room_id_real]['up_name']
-        if action in ['on']:
+            await blive.finish('尚未订阅该主播')
+        if command in ['录制', 'rec']:
             open_record(user_id, room_id_real)
             await blive.finish(f'{up_name} 自动录制已打开')
-        elif action in ['off']:
+        elif command in ['取消录制', 'recoff']:
             close_record(user_id, room_id_real)
             await blive.finish(f'{up_name} 自动录制已关闭')
-    else:
-        await blive.finish(export.usage)
