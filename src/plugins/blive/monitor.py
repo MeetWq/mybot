@@ -1,42 +1,20 @@
+import re
 import threading
-from nonebot import require, get_driver
+from typing import Dict
+from nonebot import require, get_driver, get_bots
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
 from .sub_list import get_sub_list
-from .data_source import get_live_status, get_live_info
+from .data_source import get_live_status, get_live_info, get_play_url
 from .live_status import get_status_list, update_status
-from .utils import send_bot_msg
 from .recorder import Recorder
 
 from .config import Config
 global_config = get_driver().config
 blive_config = Config(**global_config.dict())
 
-recorders = {}
-
-
-async def blive_monitor():
-    msg_dict = {}
-    status_list = get_status_list()
-    for room_id, status in status_list.items():
-        live_status = await get_live_status(room_id)
-        if live_status != status:
-            update_status(room_id, live_status)
-            info = await get_live_info(room_id)
-            msg_dict[room_id] = format_msg(info)
-            await check_recorder(room_id, info)
-
-    if not msg_dict:
-        return
-
-    sub_list = get_sub_list()
-    for user_id, user_sub_list in sub_list.items():
-        for room_id in user_sub_list.keys():
-            if room_id in msg_dict:
-                msg = msg_dict[room_id]
-                if not msg:
-                    continue
-                await send_bot_msg(user_id, msg)
+recorders_recording: Dict[str, Recorder] = {}
+recorders_uploading: Dict[str, Recorder] = {}
 
 
 def format_msg(info: dict) -> Message:
@@ -55,43 +33,100 @@ def format_msg(info: dict) -> Message:
     return msg
 
 
-class RecordThread(threading.Thread):
-    def __init__(self, recorder):
-        threading.Thread.__init__(self)
-        self.recorder = recorder
-
-    def run(self):
-        self.recorder.record()
-
-
-class UploadThread(threading.Thread):
-    def __init__(self, recorder):
-        threading.Thread.__init__(self)
-        self.recorder = recorder
-
-    def run(self):
-        self.recorder.stop_and_upload()
-
-
-async def check_recorder(room_id: str, info: dict):
-    has_record = False
+def has_record(room_id: str):
     sub_list = get_sub_list()
     for _, user_sub_list in sub_list.items():
         if room_id in user_sub_list and user_sub_list[room_id]['record']:
-            has_record = True
-            break
-    if not has_record:
+            return True
+    return False
+
+
+def user_type(user_id: str):
+    p_group = r'group_(\d+)'
+    p_private = r'private_(\d+)'
+    match = re.fullmatch(p_group, user_id)
+    if match:
+        return 'group', match.group(1)
+    match = re.fullmatch(p_private, user_id)
+    if match:
+        return 'private', match.group(1)
+    return '', user_id
+
+
+async def send_bot_msg(user_id: str, msg: str):
+    type, id = user_type(user_id)
+    bots = list(get_bots().values())
+    for bot in bots:
+        if type == 'group':
+            await bot.send_group_msg(group_id=id, message=msg)
+        elif type == 'private':
+            await bot.send_private_msg(user_id=id, message=msg)
+
+
+async def send_record_msg(room_id: str, msg: str):
+    if not msg:
         return
-    if info['status'] == 1:
-        if room_id not in recorders:
-            recorders[room_id] = Recorder(info['up_name'], room_id)
-        thread = RecordThread(recorders[room_id])
-        thread.start()
-    else:
-        if room_id not in recorders or not recorders[room_id].recording:
-            return
-        thread = UploadThread(recorders[room_id])
-        thread.start()
+    sub_list = get_sub_list()
+    for user_id, user_sub_list in sub_list.items():
+        if room_id in user_sub_list and user_sub_list[room_id]['record']:
+            await send_bot_msg(user_id, msg)
+
+
+async def check_recorders():
+    status_list = get_status_list()
+    for room_id, status in status_list.items():
+        if not has_record(room_id):
+            continue
+
+        if status == 1:
+            if room_id not in recorders_recording:
+                play_url = await get_play_url(room_id)
+                info = await get_live_info(room_id)
+                up_name = info['up_name']
+                if play_url:
+                    recorder = Recorder(up_name, play_url)
+                    recorders_recording[room_id] = recorder
+                    thread = threading.Thread(target=recorder.record)
+                    thread.start()
+                    await send_record_msg(room_id, f'{up_name} 录制启动...')
+        else:
+            if room_id in recorders_recording:
+                recorder = recorders_recording.pop(room_id)
+                recorders_uploading[room_id] = recorder
+                thread = threading.Thread(target=recorder.stop_and_upload)
+                thread.start()
+                await send_record_msg(room_id, f'{recorder.up_name} 录播文件上传中...')
+            elif room_id in recorders_uploading:
+                recorder = recorders_uploading[room_id]
+                if not recorder.uploading:
+                    if recorder.urls:
+                        msg = f'{recorder.up_name} 的录播文件：\n' + \
+                            '\n'.join(recorder.urls)
+                        await send_record_msg(room_id, msg)
+                    recorders_uploading.pop(room_id)
+
+
+async def blive_monitor():
+    msg_dict = {}
+    status_list = get_status_list()
+    for room_id, status in status_list.items():
+        live_status = await get_live_status(room_id)
+        if live_status != status:
+            update_status(room_id, live_status)
+            info = await get_live_info(room_id)
+            msg_dict[room_id] = format_msg(info)
+
+    if msg_dict:
+        sub_list = get_sub_list()
+        for user_id, user_sub_list in sub_list.items():
+            for room_id in user_sub_list.keys():
+                if room_id in msg_dict:
+                    msg = msg_dict[room_id]
+                    if not msg:
+                        continue
+                    await send_bot_msg(user_id, msg)
+
+    await check_recorders()
 
 
 scheduler = require("nonebot_plugin_apscheduler").scheduler

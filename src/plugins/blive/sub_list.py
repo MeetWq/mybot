@@ -64,7 +64,8 @@ def del_sub_list(user_id: str, room_id: str) -> str:
 
 
 def clear_sub_list(user_id: str) -> str:
-    _sub_list.pop(user_id)
+    if user_id in _sub_list:
+        _sub_list.pop(user_id)
     dump_sub_list()
     return 'success'
 

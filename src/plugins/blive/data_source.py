@@ -1,4 +1,3 @@
-import requests
 from datetime import datetime
 from bilibili_api.live import LiveRoom
 from bilibili_api.user import User
@@ -68,33 +67,13 @@ async def get_live_status(room_id: str) -> int:
         return 0
 
 
-# async def get_play_url(room_id: str) -> str:
-#     try:
-#         live = LiveRoom(int(room_id))
-#         play_url = await live.get_room_play_url()
-#         url = play_url['durl'][0]['url']
-#         return url
-#     except (ApiException, AttributeError, KeyError):
-#         return ''
-
-
-def get_play_url(room_id: str) -> str:
+async def get_play_url(room_id: str) -> str:
     try:
         live = LiveRoom(int(room_id))
-        api = 'https://api.live.bilibili.com/xlive/web-room/v1/playUrl/playUrl'
-        params = {
-            'cid': live.room_display_id,
-            'platform': 'web',
-            'qn': 10000,
-            'https_url_req': '1',
-            'ptype': '16'
-        }
-        headers = {
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
-            'referer': 'https://live.bilibili.com/'
-        }
-        return requests.get(api, params=params, headers=headers).json()['data']['durl'][0]['url']
-    except:
+        play_url = await live.get_room_play_url()
+        url = play_url['durl'][0]['url']
+        return url
+    except (ApiException, AttributeError, KeyError):
         return ''
 
 

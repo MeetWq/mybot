@@ -8,10 +8,7 @@ from typing import Coroutine
 from nonebot import get_driver
 from nonebot.log import logger
 
-from .sub_list import get_sub_list
-from .data_source import get_play_url
 from .flv_checker import FlvChecker
-from .utils import send_bot_msg
 
 from .config import Config
 global_config = get_driver().config
@@ -34,22 +31,18 @@ def sync(coroutine: Coroutine):
 
 
 class Recorder:
-    def __init__(self, up_name, room_id):
+    def __init__(self, up_name, play_url):
         self.up_name: str = up_name
-        self.room_id: str = room_id
+        self.play_url: str = play_url
         self.files: list[Path] = []
         self.files_checked: list[Path] = []
+        self.urls: list[str] = []
         self.recording: bool = False
-        self.downloading: bool = False
-        self.retry = 5
+        self.uploading: bool = False
 
     def record(self):
-        self.files = []
-        self.files_checked = []
         self.recording = True
-        self.downloading = True
         logger.info(f'{self.up_name} record start')
-        sync(self.send_msg(f'{self.up_name} 录制启动...'))
         while self.recording:
             self.download()
             delay = 60
@@ -57,29 +50,19 @@ class Recorder:
                 if not self.recording:
                     break
                 time.sleep(1)
-        self.downloading = False
         logger.info(f'{self.up_name} record stop')
 
     def stop_and_upload(self):
         self.recording = False
-        while self.downloading:
-            time.sleep(1)
-        self.check()
-        urls = self.upload()
-        if urls:
-            msg = f'{self.up_name} 的录播文件：\n' + '\n'.join(urls)
-            logger.info(msg)
-            sync(self.send_msg(msg))
-            for file in self.files_checked:
-                file.unlink(missing_ok=True)
-
+        self.uploading = True
+        time.sleep(10)
+        self.check_files()
+        self.upload_files()
 
     def download(self):
+        self.files = []
+        self.files_checked = []
         logger.info(f'start download')
-        url = get_play_url(self.room_id)
-        logger.info(f'{self.up_name} play url: {url}')
-        if not url:
-            return
 
         time_now = time.strftime('%Y%m%d_%H-%M', time.localtime())
         file_path = data_path / f'{self.up_name}_{time_now}.flv'
@@ -90,10 +73,11 @@ class Recorder:
             'referer': 'https://live.bilibili.com/'
         }
         with file_path.open('wb') as f:
-            for i in range(self.retry):
+            retry = 5
+            for i in range(retry):
                 try:
                     resp = requests.get(
-                        url, stream=True, headers=headers, timeout=300)
+                        self.play_url, stream=True, headers=headers, timeout=300)
                     for data in resp.iter_content(chunk_size=1024*1024):
                         if not self.recording:
                             break
@@ -102,12 +86,11 @@ class Recorder:
                     resp.close()
                 except:
                     logger.warning(
-                        'Error while download live stream!' + traceback.format_exc())
+                        f'Error while download live stream! retry {i}/{retry}' + traceback.format_exc())
 
-    def check(self):
+    def check_files(self):
         for file in self.files:
-            logger.info(f'{file} filesize: {file.stat().st_size}')
-            if not file.exists() or file.stat().st_size < 1024 * 1024:
+            if not file.exists() or file.stat().st_size < 10 * 1024 * 1024:
                 file.unlink(missing_ok=True)
                 continue
             file_checked = file.parent / f'{file.stem}-checked.flv'
@@ -117,14 +100,17 @@ class Recorder:
             self.files_checked.append(file_checked)
             file.unlink(missing_ok=True)
 
-    def upload(self):
-        urls = []
+    def upload_files(self):
+        self.urls = []
         for file in self.files_checked:
             url = self.upload_file(file)
             if url:
                 logger.info(f'upload {file} done, url: {url}')
-                urls.append(url)
-        return urls
+                self.urls.append(url)
+                file.unlink(missing_ok=True)
+            else:
+                logger.warning(f'upload {file} failed!')
+        self.uploading = False
 
     def upload_file(self, path: Path):
         if not commander:
@@ -134,9 +120,11 @@ class Recorder:
         try:
             upload_path = f'records/{self.up_name}'
             commander.mkdir(upload_path)
+
             logger.info(f'upload {path} to {upload_path} ...')
             commander.upload(str(path.absolute()), upload_path)
             logger.info(f'upload {path} to {upload_path} successfully')
+
             expiration = 24 * 3600
             upload_name = f'{upload_path}/{path.name}'
             file_id_list = [commander._path_list.get_path_fid(
@@ -144,16 +132,9 @@ class Recorder:
             if file_id_list:
                 url = commander._disk.share_link(
                     file_id_list, time.time() + expiration)
+                logger.info(f'create share link for {upload_name}, url: {url}')
                 return url
             return ''
         except:
             logger.warning(f'upload to aliyunpan failed')
             return ''
-
-    async def send_msg(self, msg):
-        if not msg:
-            return
-        sub_list = get_sub_list()
-        for user_id, user_sub_list in sub_list.items():
-            if self.room_id in user_sub_list and user_sub_list[self.room_id]['record']:
-                await send_bot_msg(user_id, msg)
