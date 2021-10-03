@@ -13,8 +13,8 @@ default = true
 [tool.poetry.dependencies]
 python = "^3.8"
 nb-cli = "*"
-nonebot2 = "^2.0.0-alpha.15"
-nonebot-adapter-cqhttp = "^2.0.0-alpha.15"
+nonebot2 = "^2.0.0-alpha.16"
+nonebot-adapter-cqhttp = "^2.0.0-alpha.16"
 nonebot-plugin-apscheduler = "*"
 nonebot-plugin-manager = "*"
 nonebot-plugin-alias = "*"
