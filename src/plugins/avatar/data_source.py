@@ -169,6 +169,41 @@ async def create_rub(self_img, user_img):
     return output
 
 
+async def create_duang(avatar):
+    frame_locs = [(180, 60, 100, 100), (184, 75, 100, 100),
+                  (183, 98, 100, 100), (179, 118, 110, 100),
+                  (156, 194, 150, 48), (178, 136, 122, 69),
+                  (175, 66, 122, 85), (170, 42, 130, 96),
+                  (175, 34, 118, 95), (179, 35, 110, 93),
+                  (180, 54, 102, 93), (183, 58, 97, 92),
+                  (174, 35, 120, 94), (179, 35,109, 93),
+                  (181, 54, 101, 92), (182, 59, 98, 92),
+                  (183, 71, 90, 96), (180, 131, 92, 101)]
+    raw_frames = [image_path / f'duang/frame{i}.png' for i in range(23)]
+    raw_frames = [Image.open(i).convert('RGBA') for i in raw_frames]
+
+    avatar_frames = []
+    for i in range(len(frame_locs)):
+        frame = Image.new('RGBA', (480, 400), (255, 255, 255, 0))
+        x, y, l, w = frame_locs[i]
+        avatar_resized = avatar.resize((l, w), Image.ANTIALIAS)
+        frame.paste(avatar_resized, (x, y))
+        img = raw_frames[i]
+        frame.paste(img, mask=img)
+        avatar_frames.append(frame)
+
+    frames = []
+    for i in range(2):
+        frames.extend(avatar_frames[0:12])
+    frames.extend(avatar_frames[0:8])
+    frames.extend(avatar_frames[12:18])
+    frames.extend(raw_frames[18:23])
+
+    output = io.BytesIO()
+    imageio.mimsave(output, frames, format='gif', duration=0.06)
+    return output
+
+
 async def create_support(avatar):
     support = Image.open(image_path / 'support.png')
     frame = Image.new('RGBA', (1293, 1164), (255, 255, 255, 0))
@@ -188,6 +223,7 @@ types = {
     'crawl': create_crawl,
     'kiss': create_kiss,
     'rub': create_rub,
+    'duang': create_duang,
     'support': create_support
 }
 
