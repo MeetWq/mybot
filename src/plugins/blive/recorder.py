@@ -52,6 +52,9 @@ class Recorder:
                 time.sleep(1)
         logger.info(f'{self.up_name} record stop')
 
+    def stop(self):
+        self.recording = False
+
     def stop_and_upload(self):
         self.recording = False
         self.uploading = True
@@ -60,13 +63,10 @@ class Recorder:
         self.upload_files()
 
     def download(self):
-        self.files = []
-        self.files_checked = []
-        logger.info(f'start download')
-
-        time_now = time.strftime('%Y%m%d_%H-%M', time.localtime())
-        file_path = data_path / f'{self.up_name}_{time_now}.flv'
+        time_now = time.strftime('%Y-%m-%d_%H-%M-%S', time.localtime())
+        file_path = data_path / f'{self.up_name}_{time_now}-raw.flv'
         self.files.append(file_path)
+        logger.info(f'start download {file_path}')
 
         headers = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
@@ -93,7 +93,7 @@ class Recorder:
             if not file.exists() or file.stat().st_size < 10 * 1024 * 1024:
                 file.unlink(missing_ok=True)
                 continue
-            file_checked = file.parent / f'{file.stem}-checked.flv'
+            file_checked = file.parent / file.name.replace('-raw.flv', '.flv')
             flv_checker = FlvChecker(file, file_checked)
             flv_checker.check()
             logger.info(f'{file} checked')
@@ -101,7 +101,6 @@ class Recorder:
             file.unlink(missing_ok=True)
 
     def upload_files(self):
-        self.urls = []
         for file in self.files_checked:
             url = self.upload_file(file)
             if url:

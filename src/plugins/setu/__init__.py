@@ -24,6 +24,8 @@ async def _(bot: Bot, event: Event, state: T_State):
         key_word = key_word.replace(word, '')
     img_url = await get_pic_url(key_word=key_word)
     if not img_url:
+        await setu.finish('出错了，请稍后再试')
+    if img_url == 'null':
         await setu.finish('找不到相关的涩图')
     await setu.send(message=MessageSegment.image(file=img_url))
     await setu.finish()
@@ -34,6 +36,8 @@ async def _(bot: Bot, event: Event, state: T_State):
     key_word = str(event.get_message()).replace('setu_', '').strip()
     img_url = await get_pic_url(key_word=key_word, r18=True)
     if not img_url:
+        await setu_.finish('出错了，请稍后再试')
+    if img_url == 'null':
         await setu_.finish('找不到相关的涩图')
     await setu_.send(message=MessageSegment.image(file=img_url))
     await setu_.finish()

@@ -76,6 +76,9 @@ async def check_recorders():
     status_list = get_status_list()
     for room_id, status in status_list.items():
         if not has_record(room_id):
+            if room_id in recorders_recording:
+                recorder = recorders_recording.pop(room_id)
+                recorder.stop()
             continue
 
         if status == 1:
