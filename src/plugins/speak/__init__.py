@@ -38,20 +38,19 @@ async def _(bot: Bot, event: Event, state: T_State):
 
     voice = await get_voice(words, type)
     if voice:
-        await speak.send(message=voice)
+        await speak.finish(voice)
     else:
-        await speak.send(message='出错了，请稍后再试')
+        await speak.finish('出错了，请稍后再试')
 
 
 @speak_at.handle()
 async def _(bot: Bot, event: Event, state: T_State):
-    msg = str(event.get_message()).strip()
+    msg = event.get_plaintext().strip()
     if not msg:
-        await speak_at.send(message=export.usage)
-        return
+        await speak_at.finish()
 
     voice = await get_voice(msg)
     if voice:
-        await speak_at.send(message=voice)
+        await speak_at.finish(voice)
     else:
-        await speak_at.send(message='出错了，请稍后再试')
+        await speak_at.finish('出错了，请稍后再试')

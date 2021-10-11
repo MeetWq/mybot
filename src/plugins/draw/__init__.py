@@ -17,8 +17,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     message = Message(f'来看看 {username} 抽到了什么：')
     reponse = await func()
     message.extend(reponse)
-    await draw.send(message=message)
-    await draw.finish()
+    await draw.finish(message)
 
 
 def get_func(msg: str):

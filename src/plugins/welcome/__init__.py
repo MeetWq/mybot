@@ -15,4 +15,4 @@ welcome = on_notice(rule=welcome_rule, priority=12)
 @welcome.handle()
 async def _(bot: Bot, event: Event, state: T_State):
     if isinstance(event, GroupIncreaseNoticeEvent):
-        await welcome.send(message=MessageSegment.image(file='file://' + welcome_path))
+        await welcome.finish(MessageSegment.image(file='file://' + welcome_path))

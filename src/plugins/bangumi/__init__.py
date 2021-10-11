@@ -17,7 +17,7 @@ bangumi_new = on_endswith('新番', priority=21)
 
 @bangumi.handle()
 async def _(bot: Bot, event: Event, state: T_State):
-    keyword = str(event.get_message()).strip()
+    keyword = event.get_plaintext().strip()
     if not keyword:
         await bangumi.finish(export.usage)
 
@@ -25,13 +25,12 @@ async def _(bot: Bot, event: Event, state: T_State):
     if not msg:
         await bangumi.finish('出错了，请稍后再试')
 
-    await bangumi.send(message=msg)
-    await bangumi.finish()
+    await bangumi.finish(msg)
 
 
 @bangumi_new.handle()
 async def _(bot: Bot, event: Event, state: T_State):
-    keyword = str(event.get_message()).strip().replace('新番', '')
+    keyword = event.get_plaintext().strip().replace('新番', '')
     if not keyword:
         await bangumi_new.finish(export.usage)
 
@@ -66,5 +65,4 @@ async def _(bot: Bot, event: Event, state: T_State):
         await bangumi_new.finish('出错了，请稍后再试')
 
     msg = new_bangumi_list[day - 1]
-    await bangumi_new.send(message=msg)
-    await bangumi_new.finish()
+    await bangumi_new.finish(msg)

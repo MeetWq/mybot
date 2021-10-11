@@ -14,13 +14,12 @@ nhdgirl = on_regex(r'^[Nn][Hh][Dd]娘', priority=33)
 
 @nhdgirl.handle()
 async def _(bot: Bot, event: Event, state: T_State):
-    msg = str(event.get_message()).strip().lower().replace('nhd娘', '')
+    msg = event.get_plaintext().strip().lower().replace('nhd娘', '')
     if msg:
         nickname = event.sender.card or event.sender.nickname
         reply = await get_response(msg, nickname)
         if reply:
             nhdgirl.block = True
-            await nhdgirl.send(message=reply)
-            await nhdgirl.finish()
+            await nhdgirl.finish(reply)
     nhdgirl.block = False
     await nhdgirl.finish()

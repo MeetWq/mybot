@@ -68,8 +68,7 @@ async def _(bot: Bot, event: Event, state: T_State):
         msg = '已订阅以下内容:\n'
         for r in rss_list:
             msg += f'\n{r.name} ({r.url})'
-        await rss.send(message=msg)
-        await rss.finish()
+        await rss.finish(msg)
     elif command in ['清空', 'clear']:
         clear_rss_list(user_id)
         await rss.finish('订阅列表已清空')

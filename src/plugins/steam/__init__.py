@@ -17,11 +17,10 @@ steam = on_command('steam', rule=to_me(), priority=22)
 async def _(bot: Bot, event: Event, state: T_State):
     keyword = str(event.get_message()).strip()
     if not keyword:
-        await steam.finish(export.usage)
+        await steam.finish()
 
     msg = await get_steam_game(keyword)
     if not msg:
-        await steam.finish('出错了，请稍后再试')
+        await steam.finish()
 
-    await steam.send(message=msg)
-    await steam.finish()
+    await steam.finish(msg)

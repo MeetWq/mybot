@@ -11,7 +11,7 @@ help = on_command('help', aliases={'帮助'}, priority=11)
 
 @help.handle()
 async def _(bot: Bot, event: Event, state: T_State):
-    plugin_name = str(event.get_message()).strip()
+    plugin_name = event.get_plaintext().strip()
     help_msg = ''
     if plugin_name:
         help_msg = await get_help_msg(event, plugin_name)

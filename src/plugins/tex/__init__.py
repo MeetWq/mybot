@@ -40,7 +40,6 @@ async def _(bot: Bot, event: Event, state: T_State):
 
     image = await tex2pic(equation, border=args.border, resolution=args.resolution)
     if image:
-        await tex.send(message=image)
-        await tex.finish()
+        await tex.finish(image)
     else:
         await tex.finish('出错了，请检查公式或稍后再试')

@@ -2,7 +2,6 @@ import re
 from nonebot import export, on_command
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, Event, unescape
-from nonebot.log import logger
 
 from .data_source import legal_language, network_compile
 
@@ -32,10 +31,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     if not code:
         return
     result = await network_compile(language, code)
-    logger.debug(result)
     if isinstance(result, str):
-        await compiler.send(message=result)
-        await compiler.finish()
+        await compiler.finish(result)
     else:
-        await compiler.send(message=result["output"] if result["output"] else result["errors"])
-        await compiler.finish()
+        await compiler.finish(result["output"] if result["output"] else result["errors"])

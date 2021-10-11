@@ -33,7 +33,6 @@ async def _(bot: Bot, event: Event, state: T_State):
     texts = ' '.join(texts)
     result = await get_text(texts, type)
     if result:
-        await text.send(message=result)
-        await text.finish()
+        await text.finish(result)
     else:
         await text.finish('出错了，请稍后再试')

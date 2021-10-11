@@ -58,10 +58,9 @@ async def handle(matcher: Type[Matcher], event: Event, type: str, reverse: bool 
 
     matcher.block = True
     if image:
-        await matcher.send(message=image)
-        await matcher.finish()
+        await matcher.finish(image)
     else:
-        await matcher.finish(message='出错了，请稍后再试')
+        await matcher.finish('出错了，请稍后再试')
 
 
 @petpet.handle()

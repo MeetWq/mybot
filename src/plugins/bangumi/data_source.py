@@ -1,4 +1,3 @@
-import os
 import aiohttp
 import datetime
 from urllib.parse import quote

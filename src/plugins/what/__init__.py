@@ -32,7 +32,7 @@ def split_command(msg):
 
 @what.handle()
 async def _(bot: Bot, event: Event, state: T_State):
-    msg = str(event.get_message()).strip().strip('.>,?!。，（）()[]【】')
+    msg = event.get_plaintext().strip().strip('.>,?!。，（）()[]【】')
     prefix_words = ['这', '这个', '那', '那个', '你', '我', '他', '它']
     suffix_words = ['意思', '梗', '玩意', '鬼']
     prefix, suffix = split_command(msg)
@@ -48,8 +48,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     msg = await get_content(keyword, less=less)
     if msg:
         what.block = True
-        await what.send(message=msg)
-        await what.finish()
+        await what.finish(msg)
     what.block = False
     return
 
@@ -71,8 +70,7 @@ async def _(bot: Bot, event: Event, state: T_State):
 
     msg = await get_content(keyword, source, force=True)
     if msg:
-        await what_command.send(message=msg)
-        await what_command.finish()
+        await what_command.finish(msg)
     else:
         if source == 'all':
             await what_command.finish('找不到相关的条目')

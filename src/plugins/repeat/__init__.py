@@ -2,7 +2,6 @@ import re
 from nonebot import export, on_message
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, Event, GroupMessageEvent, MessageSegment
-from nonebot.log import logger
 
 export = export()
 export.description = '复读机'
@@ -42,8 +41,6 @@ class Counter:
                 else:
                     self.count = 0
                     self.str_msg = ''
-        logger.debug(self.count)
-        logger.debug(self.str_msg)
 
     def save_msg(self, msg):
         easy_type = True
@@ -55,7 +52,6 @@ class Counter:
             return True
         elif len(msg) == 1:
             m = msg[0]
-            logger.debug(m.type)
             if m.type == 'image':
                 self.msg = MessageSegment.image(file=m.data['url'])
                 return True
@@ -78,4 +74,4 @@ async def _(bot: Bot, event, state: T_State):
     if msgs[group_id].count == 2:
         msg = msgs[group_id].msg
         if msg:
-            await repeat.send(message=msg)
+            await repeat.finish(msg)

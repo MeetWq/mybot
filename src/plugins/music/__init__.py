@@ -36,14 +36,12 @@ async def _(bot: Bot, event: Event, state: T_State):
         for s in sources:
             msg = await search_song(song, s)
             if msg:
-                await music.send(message=msg)
-                await music.finish()
+                await music.finish(msg)
         await music.finish('没有找到这首歌')
     elif source not in sources:
         await music.finish(export.options)
     else:
         msg = await search_song(song, source)
         if msg:
-            await music.send(message=msg)
-            await music.finish()
+            await music.finish(msg)
         await music.finish(source + '中没有找到这首歌')

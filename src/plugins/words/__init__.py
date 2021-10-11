@@ -29,8 +29,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     keyword = args.keyword
     joke = await get_ussrjoke(keyword[0], keyword[1], keyword[2], keyword[3], keyword[4])
     if joke:
-        await ussrjoke.send(message=joke)
-        await ussrjoke.finish()
+        await ussrjoke.finish(joke)
     else:
         await ussrjoke.finish('出错了，请稍后再试')
 
@@ -44,8 +43,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     keyword = args.keyword
     story = await get_cp_story(keyword[0], keyword[1])
     if story:
-        await cpstory.send(message=story)
-        await cpstory.finish()
+        await cpstory.finish(story)
     else:
         await cpstory.finish('出错了，请稍后再试')
 
@@ -59,7 +57,6 @@ async def _(bot: Bot, event: Event, state: T_State):
     keyword = args.keyword
     article = await get_marketing_article(keyword[0], keyword[1], keyword[2])
     if article:
-        await marketing.send(message=article)
-        await marketing.finish()
+        await marketing.finish(article)
     else:
         await marketing.finish('出错了，请稍后再试')

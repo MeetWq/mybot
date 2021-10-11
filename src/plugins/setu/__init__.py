@@ -2,9 +2,9 @@ from nonebot import export, on_keyword, on_command
 from nonebot.rule import to_me
 from nonebot.typing import T_State
 from nonebot.permission import SUPERUSER
-from nonebot.adapters.cqhttp import Bot, Event, MessageSegment
+from nonebot.adapters.cqhttp import Bot, Event
 
-from .data_source import get_pic_url
+from .data_source import get_setu
 
 export = export()
 export.description = '随机涩图'
@@ -18,26 +18,20 @@ setu_ = on_command('setu_', rule=to_me(), permission=SUPERUSER, priority=23)
 
 @setu.handle()
 async def _(bot: Bot, event: Event, state: T_State):
-    key_word = str(event.get_message()).strip()
+    key_word = event.get_plaintext().strip()
     words = ['setu', '涩图', '色图', '来份', '来张', '来个', '来点', '发份', '发张', '发个', '发点']
     for word in words:
         key_word = key_word.replace(word, '')
-    img_url = await get_pic_url(key_word=key_word)
-    if not img_url:
+    img = await get_setu(key_word=key_word)
+    if not img:
         await setu.finish('出错了，请稍后再试')
-    if img_url == 'null':
-        await setu.finish('找不到相关的涩图')
-    await setu.send(message=MessageSegment.image(file=img_url))
-    await setu.finish()
+    await setu.finish(message=img)
 
 
 @setu_.handle()
 async def _(bot: Bot, event: Event, state: T_State):
-    key_word = str(event.get_message()).replace('setu_', '').strip()
-    img_url = await get_pic_url(key_word=key_word, r18=True)
-    if not img_url:
+    key_word = event.get_plaintext().strip()
+    img = await get_setu(key_word=key_word, r18=True)
+    if not img:
         await setu_.finish('出错了，请稍后再试')
-    if img_url == 'null':
-        await setu_.finish('找不到相关的涩图')
-    await setu_.send(message=MessageSegment.image(file=img_url))
-    await setu_.finish()
+    await setu_.finish(message=img)

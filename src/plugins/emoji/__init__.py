@@ -52,9 +52,8 @@ async def _(bot: Bot, event: Event, state: T_State):
         return
     img_url = await get_image(keyword)
     if not img_url:
-        await get_jpg.finish(message="找不到相关的图片")
-    await get_jpg.send(message=MessageSegment.image(file=img_url))
-    await get_jpg.finish()
+        await get_jpg.finish("找不到相关的图片")
+    await get_jpg.finish(MessageSegment.image(file=img_url))
 
 
 emoji_parser = ArgumentParser()
@@ -97,5 +96,4 @@ async def _(bot: Bot, event: Event, state: T_State):
         await emoji.finish(f"该表情包需要 {emojis[num]['input_num']} 个输入")
 
     msg = await make_emoji(num, texts)
-    await emoji.send(message=msg)
-    await emoji.finish()
+    await emoji.finish(msg)

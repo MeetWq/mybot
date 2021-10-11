@@ -35,7 +35,6 @@ async def _(bot: Bot, event: Event, state: T_State):
 
     image = await create_logo(texts, style)
     if image:
-        await logo.send(message=image)
-        await logo.finish()
+        await logo.finish(image)
     else:
         await logo.finish('出错了，请稍后再试')
