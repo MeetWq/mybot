@@ -48,16 +48,17 @@ async def get_nbnhhsh(keyword, force=False):
         async with session.post(url=url, headers=headers, data=data) as resp:
             res = await resp.json()
     title = ''
-    result = ''
+    result = []
     for i in res:
         if 'trans' in i:
             if i['trans']:
                 title = i['name']
-                result += f"{i['name']} => {'，'.join(i['trans'])}"
+                result.append(f"{i['name']} => {'，'.join(i['trans'])}")
         elif force:
             if i['inputting']:
                 title = i['name']
-                result += f"{i['name']} => {'，'.join(i['inputting'])}"
+                result.append(f"{i['name']} => {'，'.join(i['inputting'])}")
+    result = '\n'.join(result)
     if not force:
         if fuzz.ratio(title, keyword) < 90:
             return '', ''

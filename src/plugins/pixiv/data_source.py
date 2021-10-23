@@ -1,3 +1,4 @@
+import base64
 import random
 import aiohttp
 import traceback
@@ -49,7 +50,12 @@ async def to_msg(illusts):
             msg.append('{} ({})'.format(illust['title'], illust['id']))
             url = illust['image_urls']['large']
             url = url.replace('_webp', '').replace('i.pximg.net', 'i.pixiv.cat')
-            msg.append(MessageSegment.image(file=url))
+
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, proxy=proxy) as resp:
+                    result = await resp.read()
+            if result:
+                msg.append(MessageSegment.image(f"base64://{base64.b64encode(result).decode()}"))
         return msg
 
 

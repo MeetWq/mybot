@@ -119,3 +119,14 @@ class FlvChecker:
                 pointer = 0
         if not find_header:
             pass
+
+
+if __name__ == '__main__':
+    import argparse
+    from pathlib import Path
+    parser = argparse.ArgumentParser()
+    parser.add_argument('src_path', type=str, help='源文件路径')
+    parser.add_argument('dst_path', type=str, help='目标文件路径')
+    args = parser.parse_args()
+    flv_checker = FlvChecker(Path(args.src_path), Path(args.dst_path))
+    flv_checker.check()

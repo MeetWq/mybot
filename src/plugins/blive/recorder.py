@@ -98,7 +98,7 @@ class Recorder:
             flv_checker.check()
             logger.info(f'{file} checked')
             self.files_checked.append(file_checked)
-            file.unlink(missing_ok=True)
+            # file.unlink(missing_ok=True)
 
     def upload_files(self):
         for file in self.files_checked:

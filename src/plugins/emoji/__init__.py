@@ -78,7 +78,7 @@ async def _(bot: Bot, event: Event, state: T_State):
         await emoji.finish(message)
 
     if not args.type:
-        await emoji.finish(help_msg)
+        await emoji.finish()
 
     type = str(args.type)
     num = -1
@@ -89,7 +89,7 @@ async def _(bot: Bot, event: Event, state: T_State):
             if type in e['names']:
                 num = i
     if num == -1:
-        await emoji.finish('暂不支持制作该表情包，发送 "emoji list" 查看支持的列表')
+        await emoji.finish(help_msg)
 
     texts = args.text
     if len(texts) != emojis[num]['input_num']:
