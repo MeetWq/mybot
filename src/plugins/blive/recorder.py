@@ -78,6 +78,8 @@ class Recorder:
                 try:
                     resp = requests.get(
                         self.play_url, stream=True, headers=headers, timeout=300)
+                    if resp.status_code != 200 or not resp.headers['Content-Type'].startswith('video/'):
+                        continue
                     for data in resp.iter_content(chunk_size=1024*1024):
                         if not self.recording:
                             break
