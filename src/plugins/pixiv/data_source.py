@@ -52,7 +52,7 @@ async def to_msg(illusts):
             url = url.replace('_webp', '').replace('i.pximg.net', 'i.pixiv.cat')
 
             async with aiohttp.ClientSession() as session:
-                async with session.get(url, proxy=proxy) as resp:
+                async with session.get(url, proxy=global_config.http_proxy) as resp:
                     result = await resp.read()
             if result:
                 msg.append(MessageSegment.image(f"base64://{base64.b64encode(result).decode()}"))

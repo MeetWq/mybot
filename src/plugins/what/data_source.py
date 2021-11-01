@@ -1,7 +1,7 @@
 import re
 import aiohttp
 import traceback
-from fuzzywuzzy import fuzz, process
+from thefuzz import fuzz
 from bs4 import BeautifulSoup
 from urllib.parse import quote
 from nonebot.log import logger
@@ -14,7 +14,7 @@ async def get_content(keyword, source='all', force=False, less=False):
     msg = ''
     if source in sources:
         try:
-            title, msg = await sources[source](keyword, force)
+            _, msg = await sources[source](keyword, force)
         except:
             logger.warning(f'Error in get {source} content: \n{traceback.format_exc()}')
     elif source == 'all':
@@ -30,8 +30,13 @@ async def get_content(keyword, source='all', force=False, less=False):
             except:
                 logger.warning(f'Error in get {s} content: \n{traceback.format_exc()}')
         if msgs:
-            title = process.extractOne(keyword, titles)[0]
-            index = titles.index(title)
+            index = 0
+            max_ratio = 0
+            for i in range(len(msgs)):
+                ratio = fuzz.ratio(titles[i].lower(), keyword.lower())
+                if ratio > max_ratio:
+                    index = i
+                    max_ratio = ratio
             msg = msgs[index]
     return msg
 
@@ -129,12 +134,12 @@ async def get_baidu(keyword, force=False):
 
 
 sources = {
-    'nbnhhsh': get_nbnhhsh,
     'jiki': get_jiki,
-    'baidu': get_baidu
+    'baidu': get_baidu,
+    'nbnhhsh': get_nbnhhsh
 }
 
 sources_less = {
-    'nbnhhsh': sources['nbnhhsh'],
-    'jiki': sources['jiki']
+    'jiki': sources['jiki'],
+    'nbnhhsh': sources['nbnhhsh']
 }

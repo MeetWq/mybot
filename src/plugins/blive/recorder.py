@@ -19,7 +19,7 @@ data_path = Path() / 'data' / 'blive'
 try:
     os.environ['ALIYUNPAN_ROOT'] = str((Path('log')).absolute())
     from aliyunpan.cli.cli import Commander
-    commander = Commander(refresh_token=blive_config.aliyunpan_refresh_token)
+    commander = Commander(refresh_token=blive_config.aliyunpan_refresh_token, filter_file=set())
 except:
     commander = None
 

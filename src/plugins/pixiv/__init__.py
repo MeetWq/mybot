@@ -7,7 +7,7 @@ from .data_source import get_pixiv, search_by_image
 
 export = export()
 export.description = 'Pixiv图片、以图搜图'
-export.usage = 'Usage:\n  1. pixiv {日榜/周榜/月榜/id/关键词}\n2. 搜图 {图片/url}'
+export.usage = 'Usage:\n  1. pixiv {日榜/周榜/月榜/id/关键词}\n  2. 搜图 {图片/url}'
 export.help = export.description + '\n' + export.usage
 
 pixiv = on_command('pixiv', priority=25)
@@ -22,8 +22,6 @@ async def _(bot: Bot, event: Event, state: T_State):
     if not keyword.isdigit() and keyword not in ['日榜', 'day', '周榜', 'week', '月榜', 'month', '月榜', 'month']:
         if not event.is_tome():
             await pixiv.finish()
-        else:
-            await pixiv.finish(export.usage)
 
     msg = await get_pixiv(keyword)
     if not str(msg):
