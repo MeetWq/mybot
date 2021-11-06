@@ -1,10 +1,8 @@
 import os
 import time
-import asyncio
 import requests
 import traceback
 from pathlib import Path
-from typing import Coroutine
 from nonebot import get_driver
 from nonebot.log import logger
 
@@ -24,27 +22,22 @@ except:
     commander = None
 
 
-def sync(coroutine: Coroutine):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    return loop.run_until_complete(coroutine)
-
-
 class Recorder:
     def __init__(self, up_name, play_url):
         self.up_name: str = up_name
         self.play_url: str = play_url
         self.files: list[Path] = []
-        self.files_checked: list[Path] = []
         self.urls: list[str] = []
         self.recording: bool = False
         self.uploading: bool = False
+        self.need_update_url: bool = False
 
     def record(self):
         self.recording = True
         logger.info(f'{self.up_name} record start')
         while self.recording:
-            self.download()
+            if not self.download():
+                self.need_update_url = True
             delay = 60
             for i in range(delay):
                 if not self.recording:
@@ -52,15 +45,13 @@ class Recorder:
                 time.sleep(1)
         logger.info(f'{self.up_name} record stop')
 
-    def stop(self):
-        self.recording = False
-
-    def stop_and_upload(self):
-        self.recording = False
+    def upload(self):
         self.uploading = True
+        files = self.files.copy()
+        self.files = []
         time.sleep(10)
-        self.check_files()
-        self.upload_files()
+        files_checked = self.check_files(files)
+        self.upload_files(files_checked)
 
     def download(self):
         time_now = time.strftime('%Y-%m-%d_%H-%M-%S', time.localtime())
@@ -86,12 +77,15 @@ class Recorder:
                         if data:
                             f.write(data)
                     resp.close()
+                    return True
                 except:
                     logger.warning(
                         f'Error while download live stream! retry {i}/{retry}' + traceback.format_exc())
+        return False
 
-    def check_files(self):
-        for file in self.files:
+    def check_files(self, files):
+        files_checked = []
+        for file in files:
             if not file.exists() or file.stat().st_size < 10 * 1024 * 1024:
                 file.unlink(missing_ok=True)
                 continue
@@ -99,11 +93,12 @@ class Recorder:
             flv_checker = FlvChecker(file, file_checked)
             flv_checker.check()
             logger.info(f'{file} checked')
-            self.files_checked.append(file_checked)
+            files_checked.append(file_checked)
             # file.unlink(missing_ok=True)
+        return files_checked
 
-    def upload_files(self):
-        for file in self.files_checked:
+    def upload_files(self, files_checked):
+        for file in files_checked:
             url = self.upload_file(file)
             if url:
                 logger.info(f'upload {file} done, url: {url}')

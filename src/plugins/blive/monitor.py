@@ -13,8 +13,7 @@ from .config import Config
 global_config = get_driver().config
 blive_config = Config(**global_config.dict())
 
-recorders_recording: Dict[str, Recorder] = {}
-recorders_uploading: Dict[str, Recorder] = {}
+recorders: Dict[str, Recorder] = {}
 
 
 def format_msg(info: dict) -> Message:
@@ -76,37 +75,48 @@ async def check_recorders():
     status_list = get_status_list()
     for room_id, status in status_list.items():
         if not has_record(room_id):
-            if room_id in recorders_recording:
-                recorder = recorders_recording.pop(room_id)
-                recorder.stop()
+            if room_id in recorders:
+                recorder = recorders.pop(room_id)
+                recorder.recording = False
             continue
 
         if status == 1:
-            if room_id not in recorders_recording:
+            if room_id not in recorders or not recorders[room_id].recording:
                 play_url = await get_play_url(room_id)
                 info = await get_live_info(room_id)
                 up_name = info['up_name']
                 if play_url:
                     recorder = Recorder(up_name, play_url)
-                    recorders_recording[room_id] = recorder
+                    recorders[room_id] = recorder
                     thread = threading.Thread(target=recorder.record)
                     thread.start()
                     await send_record_msg(room_id, f'{up_name} 录制启动...')
+            else:
+                recorder = recorders[room_id]
+                if recorder.need_update_url:
+                    play_url = await get_play_url(room_id)
+                    if play_url:
+                        recorder.play_url = play_url
+                        recorder.need_update_url = False
         else:
-            if room_id in recorders_recording:
-                recorder = recorders_recording.pop(room_id)
-                recorders_uploading[room_id] = recorder
-                thread = threading.Thread(target=recorder.stop_and_upload)
-                thread.start()
-                await send_record_msg(room_id, f'{recorder.up_name} 录播文件上传中...')
-            elif room_id in recorders_uploading:
-                recorder = recorders_uploading[room_id]
-                if not recorder.uploading:
-                    if recorder.urls:
-                        msg = f'{recorder.up_name} 的录播文件：\n' + \
-                            '\n'.join(recorder.urls)
-                        await send_record_msg(room_id, msg)
-                    recorders_uploading.pop(room_id)
+            if room_id in recorders:
+                recorder = recorders[room_id]
+                if recorder.recording:
+                    recorder.recording = False
+                    if not recorder.uploading:
+                        thread = threading.Thread(target=recorder.upload)
+                        thread.start()
+                else:
+                    if not recorder.uploading:
+                        if recorder.files:
+                            thread = threading.Thread(target=recorder.upload)
+                            thread.start()
+                        else:
+                            if recorder.urls:
+                                msg = f'{recorder.up_name} 的录播文件：\n' + \
+                                    '\n'.join(recorder.urls)
+                                await send_record_msg(room_id, msg)
+                            recorders.pop(room_id)
 
 
 async def blive_monitor():
