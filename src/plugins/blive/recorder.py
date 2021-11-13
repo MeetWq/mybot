@@ -120,7 +120,7 @@ class Recorder:
             logger.info(f'upload {path} to {upload_path} ...')
             commander.upload(str(path.absolute()), upload_path)
             logger.info(f'upload {path} to {upload_path} successfully')
-
+            time.sleep(30)
             expiration = 24 * 3600
             upload_name = f'{upload_path}/{path.name}'
             file_id_list = [commander._path_list.get_path_fid(
@@ -132,5 +132,6 @@ class Recorder:
                 return url
             return ''
         except:
+            logger.warning(traceback.format_exc())
             logger.warning(f'upload to aliyunpan failed')
             return ''

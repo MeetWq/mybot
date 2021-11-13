@@ -49,13 +49,15 @@ async def to_msg(illusts):
         for illust in illusts:
             msg.append('{} ({})'.format(illust['title'], illust['id']))
             url = illust['image_urls']['large']
-            url = url.replace('_webp', '').replace('i.pximg.net', 'i.pixiv.cat')
+            url = url.replace('_webp', '').replace(
+                'i.pximg.net', 'i.pixiv.cat')
 
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, proxy=global_config.http_proxy) as resp:
                     result = await resp.read()
             if result:
-                msg.append(MessageSegment.image(f"base64://{base64.b64encode(result).decode()}"))
+                msg.append(MessageSegment.image(
+                    f"base64://{base64.b64encode(result).decode()}"))
         return msg
 
 
@@ -113,7 +115,8 @@ async def search_by_image(img_url):
                 result = await resp.json()
 
         if result['header']['status'] == -1:
-            logger.warning(f"post saucenao failed：{result['header']['message']}")
+            logger.warning(
+                f"post saucenao failed：{result['header']['message']}")
             return None
 
         if result['header']['status'] == -2:
@@ -132,20 +135,12 @@ async def search_by_image(img_url):
             f"题目：{data['title']}\n" \
             f"pixiv id：{data['pixiv_id']}\n" \
             f"作者：{data['member_name']}\n" \
-            f"作者id：{data['member_id']}\n"
-        ext_url = ', '.join(data['ext_urls'])
+            f"作者id：{data['member_id']}\n" \
+            f"链接：{', '.join(data['ext_urls'])}"
     except:
         logger.debug(traceback.format_exc())
         return None
 
-    try:
-        illust = await get_by_id(data['pixiv_id'])
-        if illust:
-            ext_url = illust['illust']['meta_single_page']['original_image_url'].replace('i.pximg.net', 'i.pixiv.cat')
-    except:
-        pass
-
-    msg += f"链接：{ext_url}"
     msgs = Message()
     msgs.append(msg)
     msgs.append(MessageSegment.image(thumb_url))
