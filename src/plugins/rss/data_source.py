@@ -1,4 +1,5 @@
 import aiohttp
+import traceback
 import feedparser
 from urllib.parse import quote
 from typing import List
@@ -18,6 +19,7 @@ async def get_rss_info(url: str) -> dict:
                 result = await resp.text()
         return feedparser.parse(result)
     except:
+        logger.warning(traceback.format_exc())
         return {}
 
 

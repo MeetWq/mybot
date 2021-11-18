@@ -1,9 +1,8 @@
 from datetime import datetime
 from bilibili_api.live import LiveRoom
 from bilibili_api.user import User
+from bilibili_api.misc import web_search_by_type
 from bilibili_api.exceptions import ApiException
-from bilibili_api.utils.network import request
-from bilibili_api.utils.utils import get_api
 
 
 async def get_live_info(room_id: str = '', up_name: str = '') -> dict:
@@ -42,9 +41,7 @@ async def get_live_info_by_id(room_id: str) -> dict:
 
 async def get_live_info_by_name(up_name: str) -> dict:
     try:
-        api = get_api('common')['search']['web_search_by_type']
-        params = {'keyword': up_name, 'search_type': 'bili_user'}
-        result = await request('GET', url=api['url'], params=params)
+        result = await web_search_by_type(up_name, 'bili_user')
         users = result['result']
         if not users:
             return {}

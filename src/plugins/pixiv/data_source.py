@@ -33,11 +33,10 @@ async def get_pixiv(keyword: str):
                 return '找不到相关的作品'
         if not illusts:
             return '出错了，请稍后再试'
-        logger.debug(illusts)
         msg = await to_msg(illusts)
         return msg
-    except (KeyError, TypeError):
-        logger.debug(traceback.format_exc())
+    except:
+        logger.warning(traceback.format_exc())
         return '出错了，请稍后再试'
 
 
@@ -47,17 +46,19 @@ async def to_msg(illusts):
         aapi = AppPixivAPI(client=client, proxy=proxy)
         await aapi.login(refresh_token=pixiv_config.pixiv_token)
         for illust in illusts:
-            msg.append('{} ({})'.format(illust['title'], illust['id']))
-            url = illust['image_urls']['large']
-            url = url.replace('_webp', '').replace(
-                'i.pximg.net', 'i.pixiv.cat')
-
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url, proxy=global_config.http_proxy) as resp:
-                    result = await resp.read()
-            if result:
-                msg.append(MessageSegment.image(
-                    f"base64://{base64.b64encode(result).decode()}"))
+            try:
+                url = illust['image_urls']['large']
+                url = url.replace('_webp', '').replace(
+                    'i.pximg.net', 'i.pixiv.cat')
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(url, proxy=global_config.http_proxy) as resp:
+                        result = await resp.read()
+                if result:
+                    msg.append('{} ({})'.format(illust['title'], illust['id']))
+                    msg.append(MessageSegment.image(
+                        f"base64://{base64.b64encode(result).decode()}"))
+            except:
+                logger.warning(traceback.format_exc())
         return msg
 
 
@@ -77,6 +78,10 @@ async def get_by_search(keyword, num=3):
         await aapi.login(refresh_token=pixiv_config.pixiv_token)
         illusts = await aapi.search_illust(keyword)
         illusts = illusts['illusts']
+        illusts = sorted(
+            illusts, key=lambda i: i['total_bookmarks'], reverse=True)
+        if len(illusts) > num * 3:
+            illusts = illusts[0:int(len(illusts)/2)]
         random.shuffle(illusts)
         return illusts[0:min(num, len(illusts))]
 

@@ -16,22 +16,6 @@ blive_config = Config(**global_config.dict())
 recorders: Dict[str, Recorder] = {}
 
 
-def format_msg(info: dict) -> Message:
-    msg = ''
-    if info['status'] == 0:
-        msg = f"{info['up_name']} 下播了"
-    elif info['status'] == 1:
-        msg = Message()
-        msg.append(
-            f"{info['time']}\n{info['up_name']} 开播啦！\n{info['title']}\n直播间链接：{info['url']}")
-        cover = info['cover']
-        if cover:
-            msg.append(MessageSegment.image(file=cover))
-    elif info['status'] == 2:
-        msg = f"{info['up_name']} 下播了（轮播中）"
-    return msg
-
-
 def has_record(room_id: str):
     sub_list = get_sub_list()
     for _, user_sub_list in sub_list.items():
@@ -127,7 +111,21 @@ async def blive_monitor():
         if live_status != status:
             update_status(room_id, live_status)
             info = await get_live_info(room_id)
-            msg_dict[room_id] = format_msg(info)
+            msg = None
+            if info['status'] == 1:
+                msg = Message()
+                msg.append(
+                    f"{info['time']}\n{info['up_name']} 开播啦！\n{info['title']}\n直播间链接：{info['url']}")
+                cover = info['cover']
+                if cover:
+                    msg.append(MessageSegment.image(file=cover))
+            elif status == 1:
+                if info['status'] == 0:
+                    msg = f"{info['up_name']} 下播了"
+                elif info['status'] == 2:
+                    msg = f"{info['up_name']} 下播了（轮播中）"
+            if msg:
+                msg_dict[room_id] = msg
 
     if msg_dict:
         sub_list = get_sub_list()
