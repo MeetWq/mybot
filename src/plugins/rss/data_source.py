@@ -19,7 +19,6 @@ async def get_rss_info(url: str) -> dict:
                 result = await resp.text()
         return feedparser.parse(result)
     except:
-        logger.warning(traceback.format_exc())
         return {}
 
 

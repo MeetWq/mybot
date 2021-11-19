@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <style>
+      @font-face {
+        font-family: "iconfont";
+        src: url("iconfont.ttf") format("truetype");
+      }
+      .iconfont {
+        font-family: "iconfont" !important;
+        font-style: normal;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      .icon-user:before {
+        content: "\e6f4";
+      }
+      .icon-time:before {
+        content: "\e703";
+      }
+      body {
+        background-color: whitesmoke;
+      }
+      .article {
+        display: flex;
+        flex-direction: column;
+        border-radius: 5px;
+        border-color: rgba(229, 231, 235, 1);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        background-color: rgba(249, 250, 251, 1);
+      }
+      .article-header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-left: 8px;
+        margin-right: 8px;
+        padding: 8px;
+      }
+      .article-text {
+        display: flex;
+        flex-direction: row;
+	white-space: pre-line;
+        margin-left: 8px;
+        margin-right: 8px;
+        margin-bottom: 8px;
+        padding: 8px;
+        border-radius: 5px;
+        background-color: rgba(229, 231, 235, 1);
+      }
+      .username {
+        margin-left: 5px;
+        margin-right: 15px;
+      }
+      .time {
+        margin-left: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="image">
+      <div class="article">
+        <div class="article-header">
+          <span class="iconfont icon-user"></span>
+          <span class="username">{{ username }}</span>
+          <span class="iconfont icon-time"></span>
+          <span class="time">{{ time }}</span>
+        </div>
+        <div class="article-text">{{ text }}</div>
+      </div>
+    </div>
+  </body>
+</html>
