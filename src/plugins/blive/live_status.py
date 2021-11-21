@@ -1,9 +1,6 @@
 import json
 from pathlib import Path
 
-from .data_source import get_live_status
-from .sub_list import get_sub_list
-
 status_path = Path() / 'data' / 'blive' / 'live_status.json'
 
 
@@ -27,35 +24,71 @@ def dump_status_list():
     )
 
 
-def get_status_list() -> dict:
-    return _status_list.copy()
-
-
-def get_status(room_id: str) -> dict:
-    if room_id not in _status_list:
+def get_status(uid: str) -> dict:
+    if uid not in _status_list:
         return 0
-    return _status_list[room_id]
+    return _status_list[uid]['status']
 
 
-def update_status(room_id: str, status: int) -> dict:
-    _status_list[room_id] = status
+def update_status(uid: str, status: int):
+    _status_list[uid]['status'] = status
     dump_status_list()
 
 
-async def update_status_list():
-    sub_list = get_sub_list()
-    room_list = set()
-    for user_sub_list in sub_list.values():
-        for room_id in user_sub_list.keys():
-            room_list.add(room_id)
+def get_sub_uids() -> list:
+    return list(_status_list)
 
-    room_ids = list(_status_list.keys())
-    for room_id in room_ids:
-        if room_id not in room_list:
-            _status_list.pop(room_id)
 
-    for room_id in room_list:
-        if room_id not in _status_list:
-            status = await get_live_status(room_id)
-            _status_list[room_id] = status
+def get_sub_users(uid: str) -> list:
+    if uid not in _status_list:
+        return []
+    return _status_list[uid]['sub_users']
+
+
+def get_record_users(uid: str) -> list:
+    if uid not in _status_list:
+        return []
+    return _status_list[uid]['record_users']
+
+
+def add_sub_user(user_id: str, uid: str):
+    if uid not in _status_list:
+        _status_list[uid] = {
+            'sub_users': [user_id],
+            'record_users': [],
+            'status': 0
+        }
+    else:
+        _status_list[uid]['sub_users'].append(user_id)
+    dump_status_list()
+
+
+def del_sub_user(user_id: str, uid: str):
+    if uid not in _status_list:
+        return
+    if user_id in _status_list[uid]['sub_users']:
+        _status_list[uid]['sub_users'].remove(user_id)
+    if not _status_list[uid]['sub_users']:
+        _status_list.pop(uid)
+    dump_status_list()
+
+
+def add_record_user(user_id: str, uid: str):
+    if uid not in _status_list:
+        _status_list[uid] = {
+            'sub_users': [user_id],
+            'record_users': [user_id],
+            'status': 0
+        }
+    else:
+        if user_id not in _status_list[uid]['record_users']:
+            _status_list[uid]['record_users'].append(user_id)
+    dump_status_list()
+
+
+def del_record_user(user_id: str, uid: str):
+    if uid not in _status_list:
+        return
+    if user_id in _status_list[uid]['record_users']:
+        _status_list[uid]['record_users'].remove(user_id)
     dump_status_list()

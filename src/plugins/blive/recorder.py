@@ -38,7 +38,7 @@ class Recorder:
         while self.recording:
             if not self.download():
                 self.need_update_url = True
-            delay = 60
+            delay = 30
             for i in range(delay):
                 if not self.recording:
                     break

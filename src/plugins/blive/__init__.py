@@ -6,19 +6,18 @@ from nonebot.adapters.cqhttp.event import Event, GroupMessageEvent
 
 from .monitor import *
 from .data_source import get_live_info
-from .live_status import update_status_list
 from .sub_list import get_sub_list, clear_sub_list, add_sub_list, del_sub_list, open_record, close_record
 
 
 export = export()
 export.description = 'B站直播间订阅'
 export.usage = '''Usage:
-添加订阅：blive d {房间号/用户名}
-取消订阅：blive td {房间号/用户名}
+添加订阅：blive d {用户名/UID}
+取消订阅：blive td {用户名/UID}
 订阅列表：blive list
 清空订阅：blive clear
-自动录制：blive rec {房间号/用户名}
-取消录制：blive recoff {房间号/用户名}'''
+自动录播：blive rec {用户名/UID}
+取消录播：blive recoff {用户名/UID}'''
 export.help = export.description + '\n' + export.usage
 
 
@@ -42,7 +41,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     if len(args) >= 1:
         state['command'] = args[0]
     if len(args) == 2:
-        state['room_id'] = args[1]
+        state['name'] = args[1]
     if len(args) > 2:
         await blive.finish(export.usage)
 
@@ -57,7 +56,7 @@ def get_id(event: Event):
 @blive.got('command')
 async def _(bot: Bot, event: Event, state: T_State):
     command = state['command']
-    if command not in ['订阅', '取消订阅', '订阅列表', '清空订阅', '录制', '取消录制', 'd', 'td', 'list', 'clear', 'rec', 'recoff']:
+    if command not in ['订阅', '取消订阅', '订阅列表', '清空订阅', '录播', '取消录播', 'd', 'td', 'list', 'clear', 'rec', 'recoff']:
         await blive.finish('没有这个命令哦\n' + export.usage)
 
     user_id = get_id(event)
@@ -67,66 +66,59 @@ async def _(bot: Bot, event: Event, state: T_State):
         if not sub_list:
             await blive.finish('目前还没有任何订阅')
         msg = '已订阅以下直播间:\n'
-        for room_id, info in sub_list.items():
-            msg += f"\n{info['up_name']} ({room_id})"
+        for _, info in sub_list.items():
+            msg += f"\n{info['up_name']} {'(自动录播)' if info['record'] else ''}"
         await blive.finish(msg)
     elif command in ['清空订阅', 'clear']:
         clear_sub_list(user_id)
-        await update_status_list()
         await blive.finish('订阅列表已清空')
 
 
-@blive.got('room_id', prompt='请输入房间号或主播名称')
+@blive.got('name', prompt='请输入房间号或主播名称')
 async def _(bot: Bot, event: Event, state: T_State):
     command = state['command']
-    room_id = state['room_id']
+    name = state['name']
     user_id = state['user_id']
 
-    if room_id.isdigit():
-        info = await get_live_info(room_id=room_id)
+    if name.isdigit():
+        info = await get_live_info(uid=name)
     else:
-        up_name = room_id
-        info = await get_live_info(up_name=up_name)
+        info = await get_live_info(up_name=name)
     if not info:
         await blive.finish('获取直播间信息失败，请检查名称或稍后再试')
 
-    room_id = info['room_id']
-    up_name = info['up_name']
+    uid = str(info['uid'])
+    up_name = info['uname']
 
     if command in ['订阅', 'd']:
-        status = add_sub_list(user_id, room_id, up_name)
+        status = add_sub_list(user_id, uid, info)
         if status == 'success':
-            await update_status_list()
-            await blive.finish(f"成功订阅 {info['up_name']} 的直播间")
+            await blive.finish(f"成功订阅 {up_name} 的直播间")
         elif status == 'dupe':
-            await blive.finish('已经订阅该主播，请不要重复添加')
+            await blive.finish('已经订阅该主播')
         else:
             await blive.finish('出错了，请稍后再试')
     elif command in ['取消订阅', 'td']:
-        status = del_sub_list(user_id, room_id)
+        status = del_sub_list(user_id, uid)
         if status == 'success':
-            await update_status_list()
-            await blive.finish(f"成功取消订阅 {info['up_name']} 的直播间")
+            await blive.finish(f"成功取消订阅 {up_name} 的直播间")
         elif status == 'dupe':
             await blive.finish('尚未订阅该主播')
         else:
             await blive.finish('出错了，请稍后再试')
-    elif command in ['录制', '取消录制', 'rec', 'recoff']:
-        sub_list = get_sub_list(user_id)
-        room_id_real = ''
-        if room_id.isdigit():
-            if room_id in sub_list:
-                room_id_real = room_id
-        else:
-            for id, info in sub_list.items():
-                if room_id == info['up_name']:
-                    room_id_real = id
-                    break
-        if not room_id_real:
+    elif command in ['录播', 'rec']:
+        status = open_record(user_id, uid)
+        if status == 'success':
+            await blive.finish(f'{up_name} 自动录播已打开')
+        elif status == 'dupe':
             await blive.finish('尚未订阅该主播')
-        if command in ['录制', 'rec']:
-            open_record(user_id, room_id_real)
-            await blive.finish(f'{up_name} 自动录制已打开')
-        elif command in ['取消录制', 'recoff']:
-            close_record(user_id, room_id_real)
-            await blive.finish(f'{up_name} 自动录制已关闭')
+        else:
+            await blive.finish('出错了，请稍后再试')
+    elif command in ['取消录播', 'recoff']:
+        status = close_record(user_id, uid)
+        if status == 'success':
+            await blive.finish(f'{up_name} 自动录播已关闭')
+        elif status == 'dupe':
+            await blive.finish('尚未订阅该主播')
+        else:
+            await blive.finish('出错了，请稍后再试')

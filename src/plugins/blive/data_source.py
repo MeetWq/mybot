@@ -1,89 +1,77 @@
-from datetime import datetime
-from bilibili_api.live import LiveRoom
-from bilibili_api.user import User
-from bilibili_api.misc import web_search_by_type
-from bilibili_api.exceptions import ApiException
+import json
+import aiohttp
 
 
-async def get_live_info(room_id: str = '', up_name: str = '') -> dict:
-    if room_id:
-        info = await get_live_info_by_id(room_id)
+async def get_live_info(uid: str = '', up_name: str = '') -> dict:
+    info = {}
+    if uid:
+        info = await get_live_info_by_uid(uid)
     elif up_name:
         info = await get_live_info_by_name(up_name)
-    else:
-        info = {}
     return info
 
 
-async def get_live_info_by_id(room_id: str) -> dict:
+async def get_live_info_by_uid(uid: str) -> dict:
+    result = await get_live_info_by_uids([uid])
+    if uid in result:
+        return result[uid]
+    return {}
+
+
+async def get_live_info_by_uids(uids: list) -> dict:
     try:
-        live = LiveRoom(int(room_id))
-        room_info = await live.get_room_info()
-        data = room_info['room_info']
-        uid = data['uid']
-        up_info = await get_user_info(str(uid))
-        time = data['live_start_time']
-        time = datetime.fromtimestamp(time).strftime("%y/%m/%d %H:%M:%S")
-        info = {
-            'status': data['live_status'],
-            'uid': str(data['uid']),
-            'room_id': str(data['room_id']),
-            'up_name': up_info['name'],
-            'url': 'https://live.bilibili.com/%s' % data['room_id'],
-            'title': data['title'],
-            'time': time,
-            'cover': data['cover']
-        }
-        return info
-    except (ApiException, AttributeError, KeyError):
+        url = 'https://api.live.bilibili.com/room/v1/Room/get_status_info_by_uids'
+        async with aiohttp.ClientSession() as session:
+            async with session.post(url, data=json.dumps({'uids': uids})) as resp:
+                result = await resp.json()
+        if not result or result['code'] != 0:
+            return {}
+        return result['data']
+    except:
         return {}
 
 
 async def get_live_info_by_name(up_name: str) -> dict:
+    user_info = await get_user_info_by_name(up_name)
+    if not user_info:
+        return {}
+    return await get_live_info_by_uid(str(user_info['mid']))
+
+
+async def get_user_info_by_name(up_name: str) -> dict:
     try:
-        result = await web_search_by_type(up_name, 'bili_user')
-        users = result['result']
-        if not users:
+        url = 'http://api.bilibili.com/x/web-interface/search/type'
+        params = {
+            'search_type': 'bili_user',
+            'keyword': up_name
+        }
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, params=params) as resp:
+                result = await resp.json()
+        if not result or result['code'] != 0:
             return {}
+        users = result['data']['result']
         for user in users:
             if user['uname'] == up_name:
-                room_id = user['room_id']
-                info = await get_live_info_by_id(room_id)
-                return info
+                return user
         return {}
-    except (ApiException, AttributeError, KeyError):
+    except:
         return {}
 
 
-async def get_live_status(room_id: str) -> int:
+async def get_play_url(room_id: int) -> str:
     try:
-        live = LiveRoom(int(room_id))
-        room_info = await live.get_room_info()
-        return room_info['room_info']['live_status']
-    except (ApiException, AttributeError, KeyError):
-        return 0
-
-
-async def get_play_url(room_id: str) -> str:
-    try:
-        live = LiveRoom(int(room_id))
-        play_url = await live.get_room_play_url()
-        url = play_url['durl'][0]['url']
-        return url
-    except (ApiException, AttributeError, KeyError):
-        return ''
-
-
-async def get_user_info(uid: str) -> dict:
-    try:
-        user = User(int(uid))
-        data = await user.get_user_info()
-        info = {
-            'name': data['name'],
-            'sex': data['sex'],
-            'face': data['face'],
-            'sign': data['sign']
+        url = 'http://api.live.bilibili.com/room/v1/Room/playUrl'
+        params = {
+            'cid': room_id,
+            'platform': 'web',
+            'qn': 10000
         }
-        return info
-    except (ApiException, AttributeError, KeyError):
-        return {}
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, params=params) as resp:
+                result = await resp.json()
+        if not result or result['code'] != 0:
+            return ''
+        return result['durl'][0]['url']
+    except:
+        return ''

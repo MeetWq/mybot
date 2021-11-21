@@ -1,12 +1,12 @@
 import re
+import time
 import threading
 from typing import Dict
 from nonebot import require, get_driver, get_bots
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
-from .sub_list import get_sub_list
-from .data_source import get_live_status, get_live_info, get_play_url
-from .live_status import get_status_list, update_status
+from .data_source import get_live_info_by_uids, get_play_url
+from .live_status import get_sub_uids, get_status, update_status, get_sub_users, get_record_users
 from .recorder import Recorder
 
 from .config import Config
@@ -16,12 +16,119 @@ blive_config = Config(**global_config.dict())
 recorders: Dict[str, Recorder] = {}
 
 
-def has_record(room_id: str):
-    sub_list = get_sub_list()
-    for _, user_sub_list in sub_list.items():
-        if room_id in user_sub_list and user_sub_list[room_id]['record']:
-            return True
-    return False
+async def check_recorder(uid: str, info: dict):
+    if not get_record_users(uid):
+        if uid in recorders:
+            recorder = recorders.pop(uid)
+            recorder.recording = False
+        return
+
+    up_name = info['uname']
+    room_id = info['room_id']
+    status = info['live_status']
+    if status == 1:
+        if uid not in recorders or not recorders[uid].recording:
+            play_url = await get_play_url(room_id)
+            if play_url:
+                recorder = Recorder(up_name, play_url)
+                recorders[uid] = recorder
+                thread = threading.Thread(target=recorder.record)
+                thread.start()
+                await send_record_msg(uid, f'{up_name} 录播启动...')
+        else:
+            recorder = recorders[uid]
+            if recorder.need_update_url:
+                play_url = await get_play_url(room_id)
+                if play_url:
+                    recorder.play_url = play_url
+                    recorder.need_update_url = False
+    else:
+        if uid in recorders:
+            recorder = recorders[uid]
+            if recorder.recording:
+                recorder.recording = False
+                if not recorder.uploading:
+                    thread = threading.Thread(target=recorder.upload)
+                    thread.start()
+            else:
+                if not recorder.uploading:
+                    if recorder.files:
+                        thread = threading.Thread(target=recorder.upload)
+                        thread.start()
+                    else:
+                        if recorder.urls:
+                            msg = f'{up_name} 的录播文件：\n' + \
+                                '\n'.join(recorder.urls)
+                            await send_record_msg(uid, msg)
+                        recorders.pop(uid)
+
+
+async def blive_monitor():
+    uids = get_sub_uids()
+    live_infos = await get_live_info_by_uids(uids)
+    for uid in uids:
+        if uid not in live_infos:
+            continue
+        info = live_infos[uid]
+        status_old = get_status(uid)
+        status = info['live_status']
+        if status != status_old:
+            update_status(uid, status)
+            if status != 1 and status_old != 1:
+                pass
+            else:
+                msg = live_msg(info)
+                if msg:
+                    await send_live_msg(uid, msg)
+        await check_recorder(uid, info)
+
+
+def live_msg(info: dict):
+    msg = None
+    up_name = info['uname']
+    status = info['live_status']
+    if status == 1:
+        start_time = time.strftime(
+            "%y/%m/%d %H:%M:%S", time.localtime(info['live_time']))
+        live_url = 'https://live.bilibili.com/' + str(info['room_id'])
+        title = info['title']
+        msg = Message()
+        msg.append(
+            f"{start_time}\n"
+            f"{up_name} 开播啦！\n"
+            f"{title}\n"
+            f"直播间链接：{live_url}"
+        )
+        cover = info['cover_from_user']
+        if cover:
+            msg.append(MessageSegment.image(file=cover))
+    elif status == 0:
+        msg = f"{up_name} 下播了"
+    elif status == 2:
+        msg = f"{up_name} 下播了（轮播中）"
+    return msg
+
+
+async def send_live_msg(uid: str, msg):
+    users = get_sub_users(uid)
+    for user_id in users:
+        await send_bot_msg(user_id, msg)
+
+
+async def send_record_msg(uid: str, msg):
+    users = get_record_users(uid)
+    for user_id in users:
+        await send_bot_msg(user_id, msg)
+
+
+async def send_bot_msg(user_id: str, msg):
+    type, id = user_type(user_id)
+    bots = list(get_bots().values())
+    for bot in bots:
+        if type == 'group':
+            await bot.send_group_msg(group_id=id, message=msg)
+        elif type == 'private':
+            await bot.send_private_msg(user_id=id, message=msg)
 
 
 def user_type(user_id: str):
@@ -34,110 +141,6 @@ def user_type(user_id: str):
     if match:
         return 'private', match.group(1)
     return '', user_id
-
-
-async def send_bot_msg(user_id: str, msg: str):
-    type, id = user_type(user_id)
-    bots = list(get_bots().values())
-    for bot in bots:
-        if type == 'group':
-            await bot.send_group_msg(group_id=id, message=msg)
-        elif type == 'private':
-            await bot.send_private_msg(user_id=id, message=msg)
-
-
-async def send_record_msg(room_id: str, msg: str):
-    if not msg:
-        return
-    sub_list = get_sub_list()
-    for user_id, user_sub_list in sub_list.items():
-        if room_id in user_sub_list and user_sub_list[room_id]['record']:
-            await send_bot_msg(user_id, msg)
-
-
-async def check_recorders():
-    status_list = get_status_list()
-    for room_id, status in status_list.items():
-        if not has_record(room_id):
-            if room_id in recorders:
-                recorder = recorders.pop(room_id)
-                recorder.recording = False
-            continue
-
-        if status == 1:
-            if room_id not in recorders or not recorders[room_id].recording:
-                play_url = await get_play_url(room_id)
-                info = await get_live_info(room_id)
-                up_name = info['up_name']
-                if play_url:
-                    recorder = Recorder(up_name, play_url)
-                    recorders[room_id] = recorder
-                    thread = threading.Thread(target=recorder.record)
-                    thread.start()
-                    await send_record_msg(room_id, f'{up_name} 录制启动...')
-            else:
-                recorder = recorders[room_id]
-                if recorder.need_update_url:
-                    play_url = await get_play_url(room_id)
-                    if play_url:
-                        recorder.play_url = play_url
-                        recorder.need_update_url = False
-        else:
-            if room_id in recorders:
-                recorder = recorders[room_id]
-                if recorder.recording:
-                    recorder.recording = False
-                    if not recorder.uploading:
-                        thread = threading.Thread(target=recorder.upload)
-                        thread.start()
-                else:
-                    if not recorder.uploading:
-                        if recorder.files:
-                            thread = threading.Thread(target=recorder.upload)
-                            thread.start()
-                        else:
-                            if recorder.urls:
-                                msg = f'{recorder.up_name} 的录播文件：\n' + \
-                                    '\n'.join(recorder.urls)
-                                await send_record_msg(room_id, msg)
-                            recorders.pop(room_id)
-
-
-async def blive_monitor():
-    msg_dict = {}
-    status_list = get_status_list()
-    for room_id, status in status_list.items():
-        live_status = await get_live_status(room_id)
-        if live_status != status:
-            update_status(room_id, live_status)
-            info = await get_live_info(room_id)
-            msg = None
-            if info['status'] == 1:
-                msg = Message()
-                msg.append(
-                    f"{info['time']}\n{info['up_name']} 开播啦！\n{info['title']}\n直播间链接：{info['url']}")
-                cover = info['cover']
-                if cover:
-                    msg.append(MessageSegment.image(file=cover))
-            elif status == 1:
-                if info['status'] == 0:
-                    msg = f"{info['up_name']} 下播了"
-                elif info['status'] == 2:
-                    msg = f"{info['up_name']} 下播了（轮播中）"
-            if msg:
-                msg_dict[room_id] = msg
-
-    if msg_dict:
-        sub_list = get_sub_list()
-        for user_id, user_sub_list in sub_list.items():
-            for room_id in user_sub_list.keys():
-                if room_id in msg_dict:
-                    msg = msg_dict[room_id]
-                    if not msg:
-                        continue
-                    await send_bot_msg(user_id, msg)
-
-    await check_recorders()
 
 
 scheduler = require("nonebot_plugin_apscheduler").scheduler

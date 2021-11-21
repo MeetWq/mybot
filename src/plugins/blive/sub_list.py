@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+from .live_status import add_sub_user, del_sub_user, add_record_user, del_record_user
+
 data_path = Path() / 'data' / 'blive' / 'sub_list.json'
 
 
@@ -25,58 +27,65 @@ def dump_sub_list():
     )
 
 
-def get_sub_list(user_id: str = '') -> dict:
-    if not user_id:
-        return _sub_list.copy()
+def get_sub_list(user_id: str) -> dict:
     if user_id not in _sub_list:
         return {}
     return _sub_list[user_id]
 
 
-def add_sub_list(user_id: str, room_id: str, up_name: str) -> str:
-    group_sub_list = {}
-    if user_id in _sub_list:
-        group_sub_list = _sub_list[user_id]
-    if room_id in group_sub_list:
+def add_sub_list(user_id: str, uid: str, info: dict) -> str:
+    sub_list = get_sub_list(user_id)
+    if uid in sub_list:
         return 'dupe'
-    group_sub_list[room_id] = {
-        'up_name': up_name,
+    sub_list[uid] = {
+        'up_name': info['uname'],
+        'room_id': info['room_id'],
         'record': False
     }
-    _sub_list[user_id] = group_sub_list
+    _sub_list[user_id] = sub_list
     dump_sub_list()
+    add_sub_user(user_id, uid)
     return 'success'
 
 
-def del_sub_list(user_id: str, room_id: str) -> str:
-    group_sub_list = {}
-    if user_id in _sub_list:
-        group_sub_list = _sub_list[user_id]
-    if room_id not in group_sub_list:
+def del_sub_list(user_id: str, uid: str) -> str:
+    sub_list = get_sub_list(user_id)
+    if uid not in sub_list:
         return 'dupe'
-    group_sub_list.pop(room_id)
-    if group_sub_list:
-        _sub_list[user_id] = group_sub_list
+    sub_list.pop(uid)
+    if sub_list:
+        _sub_list[user_id] = sub_list
     else:
         _sub_list.pop(user_id)
     dump_sub_list()
+    del_sub_user(user_id, uid)
     return 'success'
 
 
 def clear_sub_list(user_id: str) -> str:
     if user_id in _sub_list:
+        for uid in _sub_list[user_id].keys():
+            del_sub_user(user_id, uid)
         _sub_list.pop(user_id)
     dump_sub_list()
     return 'success'
 
 
-def open_record(user_id: str, room_id: str) -> str:
-    _sub_list[user_id][room_id]['record'] = True
+def open_record(user_id: str, uid: str) -> str:
+    sub_list = get_sub_list(user_id)
+    if uid not in sub_list:
+        return 'dupe'
+    _sub_list[user_id][uid]['record'] = True
     dump_sub_list()
+    add_record_user(user_id, uid)
     return 'success'
 
 
-def close_record(user_id: str, room_id: str) -> str:
-    _sub_list[user_id][room_id]['record'] = False
+def close_record(user_id: str, uid: str) -> str:
+    sub_list = get_sub_list(user_id)
+    if uid not in sub_list:
+        return 'dupe'
+    _sub_list[user_id][uid]['record'] = False
     dump_sub_list()
+    del_record_user(user_id, uid)
     return 'success'
