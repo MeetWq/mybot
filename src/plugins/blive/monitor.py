@@ -4,6 +4,8 @@ import threading
 from typing import Dict
 from nonebot import require, get_driver, get_bots
 from nonebot.adapters.cqhttp import Message, MessageSegment
+from nonebot.log import logger
+
 
 from .data_source import get_live_info_by_uids, get_play_url
 from .live_status import get_sub_uids, get_status, update_status, get_sub_users, get_record_users
@@ -17,7 +19,8 @@ recorders: Dict[str, Recorder] = {}
 
 
 async def check_recorder(uid: str, info: dict):
-    if not get_record_users(uid):
+    users = get_record_users(uid)
+    if not users:
         if uid in recorders:
             recorder = recorders.pop(uid)
             recorder.recording = False
@@ -28,7 +31,7 @@ async def check_recorder(uid: str, info: dict):
     status = info['live_status']
     if status == 1:
         if uid not in recorders or not recorders[uid].recording:
-            play_url = await get_play_url(room_id)
+            play_url = await get_play_url(int(room_id))
             if play_url:
                 recorder = Recorder(up_name, play_url)
                 recorders[uid] = recorder
@@ -63,9 +66,17 @@ async def check_recorder(uid: str, info: dict):
                         recorders.pop(uid)
 
 
+def remove_unused_recorders(uids: list):
+    for uid in recorders.keys():
+        if uid not in uids:
+            recorder = recorders.pop(uid)
+            recorder.recording = False
+
+
 async def blive_monitor():
     uids = get_sub_uids()
     live_infos = await get_live_info_by_uids(uids)
+
     for uid in uids:
         if uid not in live_infos:
             continue
@@ -81,6 +92,7 @@ async def blive_monitor():
                 if msg:
                     await send_live_msg(uid, msg)
         await check_recorder(uid, info)
+    remove_unused_recorders(uids)
 
 
 def live_msg(info: dict):

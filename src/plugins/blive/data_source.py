@@ -72,6 +72,6 @@ async def get_play_url(room_id: int) -> str:
                 result = await resp.json()
         if not result or result['code'] != 0:
             return ''
-        return result['durl'][0]['url']
+        return result['data']['durl'][0]['url']
     except:
         return ''
