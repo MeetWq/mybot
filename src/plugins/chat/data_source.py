@@ -65,9 +65,14 @@ class ChatBot:
             return ''
 
 
-async def get_anime_thesaurus(text):
+try:
     thesaurus_path = Path('src/libs/AnimeThesaurus/data.json')
     thesaurus_data = json.load(thesaurus_path.open('r', encoding='utf-8'))
+except:
+    thesaurus_data = {}
+
+
+async def get_anime_thesaurus(text):
     if text in thesaurus_data:
         return random.choice(thesaurus_data[text])
     return ''
