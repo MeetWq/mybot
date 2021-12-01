@@ -22,47 +22,50 @@ def user_type(user_id: str):
     return '', user_id
 
 
-async def dynmap_monitor():
+async def send_bot_msg(user_id: str, msg):
+    type, id = user_type(user_id)
     bots = list(get_bots().values())
     for bot in bots:
-        dynmap_list = get_dynmap_list()
-        for user_id, config in dynmap_list.items():
-            if not config['chat']:
+        if type == 'group':
+            await bot.send_group_msg(group_id=id, message=msg)
+        elif type == 'private':
+            await bot.send_private_msg(user_id=id, message=msg)
+
+
+async def dynmap_monitor():
+    dynmap_list = get_dynmap_list()
+    for user_id, config in dynmap_list.items():
+        if not config['chat']:
+            continue
+
+        url = config['update_url']
+        result = await get_dynmap_updates(url)
+        if not result:
+            continue
+
+        updates = result['updates']
+        chats = []
+        last_update = config['last_update']
+        for update in updates:
+            if update['timestamp'] > last_update:
+                last_update = update['timestamp']
+            if update['type'] != 'chat':
                 continue
-
-            url = config['update_url']
-            result = await get_dynmap_updates(url)
-            if not result:
+            if update['timestamp'] <= config['last_update']:
                 continue
+            chats.append(update)
+        set_last_update(user_id, last_update)
+        if not chats:
+            continue
 
-            updates = result['updates']
-            chats = []
-            last_update = config['last_update']
-            for update in updates:
-                if update['timestamp'] > last_update:
-                    last_update = update['timestamp']
-                if update['type'] != 'chat':
-                    continue
-                if update['timestamp'] <= config['last_update']:
-                    continue
-                chats.append(update)
-            set_last_update(user_id, last_update)
-            if not chats:
-                continue
-
-            msgs = []
-            for chat in chats:
-                name = chat['playerName']
-                name = BeautifulSoup(name).text
-                message = chat['message']
-                msgs.append(f'[dynmap] {name}: {message}')
-            msg = '\n'.join(msgs)
-
-            type, id = user_type(user_id)
-            if type == 'group':
-                await bot.send_group_msg(group_id=id, message=msg)
-            elif type == 'private':
-                await bot.send_private_msg(user_id=id, message=msg)
+        msgs = []
+        for chat in chats:
+            name = chat['playerName']
+            name = BeautifulSoup(name).text
+            message = chat['message']
+            msgs.append(f'[dynmap] {name}: {message}')
+        msg = '\n'.join(msgs)
+        await send_bot_msg(user_id, msg)
     dump_dynmap_list()
 
 

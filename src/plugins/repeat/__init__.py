@@ -28,7 +28,10 @@ class Counter:
     def add_msg(self, msg):
         str_msg = str(msg)
         str_msg = re.sub(r',url=.*?]', ']', str_msg)
-        if str_msg == '' or str_msg == '此处消息的转义尚未被插件支持' or '请使用最新版手机QQ体验新功能' in str_msg or re.fullmatch(r'&#91;[^:,= ]+&#93;', str_msg):
+        if str_msg == '' \
+                or str_msg == '此处消息的转义尚未被插件支持' \
+                or '请使用最新版手机QQ体验新功能' in str_msg \
+                or re.fullmatch(r'&amp;#91;\S+&amp;#93;', str_msg):
             self.count = 0
             self.str_msg = ''
         else:

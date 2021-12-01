@@ -4,7 +4,6 @@ import threading
 from typing import Dict
 from nonebot import require, get_driver, get_bots
 from nonebot.adapters.cqhttp import Message, MessageSegment
-from nonebot.log import logger
 
 
 from .data_source import get_live_info_by_uids, get_play_url
@@ -32,12 +31,16 @@ async def check_recorder(uid: str, info: dict):
     if status == 1:
         if uid not in recorders or not recorders[uid].recording:
             play_url = await get_play_url(int(room_id))
-            if play_url:
+            if not play_url:
+                return
+            if uid not in recorders:
                 recorder = Recorder(up_name, play_url)
                 recorders[uid] = recorder
-                thread = threading.Thread(target=recorder.record)
-                thread.start()
-                await send_record_msg(uid, f'{up_name} 录播启动...')
+            else:
+                recorder = recorders[uid]
+            thread = threading.Thread(target=recorder.record)
+            thread.start()
+            await send_record_msg(uid, f'{up_name} 录播启动...')
         else:
             recorder = recorders[uid]
             if recorder.need_update_url:

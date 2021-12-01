@@ -26,13 +26,20 @@ async def get_status(url: str) -> str:
     players = result['players']
     players = [p['account'] for p in players]
     players = ', '.join(players)
-    time = result['servertime']
-    time = int(time / 20)
-    time = '{:02d}:{:02d}'.format(time // 60, time % 60)
+    tick = result['servertime']
+    tick = tick - 18000
+    tick = tick + 24000 if tick < 0 else tick
+    tick = tick * 36
+    stime = '{:02d}:{:02d}:{:02d}.{:01d}'.format(
+        tick // 10 // 60 // 60,
+        tick // 10 // 60 % 60,
+        tick // 10 % 60,
+        tick % 10
+    )
     storm = result['hasStorm']
     thunder = result['isThundering']
     weather = '☀' if not storm else '⛈' if thunder else '🌧'
-    status = f'当前在线：{players}\n服务器时间：{time}\n服务器天气：{weather}'
+    status = f'当前在线：{players}\n服务器时间：{stime}\n服务器天气：{weather}'
     return status
 
 
