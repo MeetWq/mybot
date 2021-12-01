@@ -19,6 +19,7 @@ nonebot-plugin-apscheduler = "*"
 nonebot-plugin-manager = "*"
 nonebot-plugin-alias = "*"
 nonebot-plugin-withdraw = "*"
+nonebot_plugin_petpet = "*"
 aiohttp = "*"
 aiohttp-socks = "*"
 aliyunpan = "*"
@@ -44,7 +45,7 @@ wolframalpha = "*"
 [tool.poetry.dev-dependencies]
 
 [nonebot.plugins]
-plugins = ["nonebot_plugin_apscheduler", "nonebot_plugin_manager", "nonebot_plugin_alias", "nonebot_plugin_withdraw"]
+plugins = ["nonebot_plugin_apscheduler", "nonebot_plugin_manager", "nonebot_plugin_alias", "nonebot_plugin_withdraw", "nonebot_plugin_petpet"]
 plugin_dirs = ["src/plugins"]
 
 [build-system]
