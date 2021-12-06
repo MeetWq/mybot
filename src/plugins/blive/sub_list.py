@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from .live_status import add_sub_user, del_sub_user, add_record_user, del_record_user
+from .live_status import add_sub_user, del_sub_user, add_record_user, del_record_user, add_dynamic_user, del_dynamic_user
 
 data_path = Path() / 'data' / 'blive' / 'sub_list.json'
 
@@ -40,7 +40,8 @@ def add_sub_list(user_id: str, uid: str, info: dict) -> str:
     sub_list[uid] = {
         'up_name': info['uname'],
         'room_id': info['room_id'],
-        'record': False
+        'record': False,
+        'dynamic': False
     }
     _sub_list[user_id] = sub_list
     dump_sub_list()
@@ -68,6 +69,26 @@ def clear_sub_list(user_id: str) -> str:
             del_sub_user(user_id, uid)
         _sub_list.pop(user_id)
     dump_sub_list()
+    return 'success'
+
+
+def open_dynamic(user_id: str, uid: str) -> str:
+    sub_list = get_sub_list(user_id)
+    if uid not in sub_list:
+        return 'dupe'
+    _sub_list[user_id][uid]['dynamic'] = True
+    dump_sub_list()
+    add_dynamic_user(user_id, uid)
+    return 'success'
+
+
+def close_dynamic(user_id: str, uid: str) -> str:
+    sub_list = get_sub_list(user_id)
+    if uid not in sub_list:
+        return 'dupe'
+    _sub_list[user_id][uid]['dynamic'] = False
+    dump_sub_list()
+    del_dynamic_user(user_id, uid)
     return 'success'
 
 

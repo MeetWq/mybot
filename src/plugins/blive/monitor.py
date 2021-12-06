@@ -2,12 +2,14 @@ import re
 import time
 import threading
 from typing import Dict
+from datetime import datetime, timedelta
 from nonebot import require, get_driver, get_bots
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
 
-from .data_source import get_live_info_by_uids, get_play_url
-from .live_status import get_sub_uids, get_status, update_status, get_sub_users, get_record_users
+from .data_source import get_live_info_by_uids, get_play_url, get_user_dynamics, get_dynamic_screenshot
+from .live_status import get_sub_uids, get_status, update_status, get_sub_users, get_dynamic_users, get_record_users
+from .dynamic import Dynamic
 from .recorder import Recorder
 
 from .config import Config
@@ -15,6 +17,7 @@ global_config = get_driver().config
 blive_config = Config(**global_config.dict())
 
 recorders: Dict[str, Recorder] = {}
+last_time = {}
 
 
 async def check_recorder(uid: str, info: dict):
@@ -76,6 +79,25 @@ def remove_unused_recorders(uids: list):
             recorder.recording = False
 
 
+async def check_dynamic(uid: str):
+    dynamics = await get_user_dynamics(uid)
+    if len(dynamics) == 0:
+        return
+
+    if uid not in last_time:
+        dynamic = Dynamic(dynamics[0])
+        last_time[uid] = dynamic.time
+        return
+
+    for dynamic in dynamics[4::-1]:  # 从旧到新取最近5条动态
+        dynamic = Dynamic(dynamic)
+        if dynamic.time > last_time[uid] and dynamic.time > datetime.now().timestamp() - timedelta(minutes=10).seconds:
+            img = await get_dynamic_screenshot(dynamic.url)
+            if img:
+                await send_dynamic_msg(uid, MessageSegment.image(img))
+                last_time[uid] = dynamic.time
+
+
 async def blive_monitor():
     uids = get_sub_uids()
     live_infos = await get_live_info_by_uids(uids)
@@ -94,6 +116,7 @@ async def blive_monitor():
                 msg = live_msg(info)
                 if msg:
                     await send_live_msg(uid, msg)
+        await check_dynamic(uid)
         await check_recorder(uid, info)
     remove_unused_recorders(uids)
 
@@ -126,6 +149,12 @@ def live_msg(info: dict):
 
 async def send_live_msg(uid: str, msg):
     users = get_sub_users(uid)
+    for user_id in users:
+        await send_bot_msg(user_id, msg)
+
+
+async def send_dynamic_msg(uid: str, msg):
+    users = get_dynamic_users(uid)
     for user_id in users:
         await send_bot_msg(user_id, msg)
 

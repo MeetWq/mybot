@@ -6,18 +6,20 @@ from nonebot.adapters.cqhttp.event import Event, GroupMessageEvent
 
 from .monitor import *
 from .data_source import get_live_info
-from .sub_list import get_sub_list, clear_sub_list, add_sub_list, del_sub_list, open_record, close_record
+from .sub_list import get_sub_list, clear_sub_list, add_sub_list, del_sub_list, open_record, close_record, open_dynamic, close_dynamic
 
 
 export = export()
-export.description = 'B站直播间订阅'
+export.description = 'B站直播、动态订阅'
 export.usage = '''Usage:
 添加订阅：blive d {用户名/UID}
 取消订阅：blive td {用户名/UID}
 订阅列表：blive list
 清空订阅：blive clear
-自动录播：blive rec {用户名/UID}
-取消录播：blive recoff {用户名/UID}'''
+开启动态：blive dynon {用户名/UID}
+关闭动态：blive dynoff {用户名/UID}
+开启录播：blive recon {用户名/UID}
+关闭录播：blive recoff {用户名/UID}'''
 export.help = export.description + '\n' + export.usage
 
 
@@ -56,7 +58,8 @@ def get_id(event: Event):
 @blive.got('command')
 async def _(bot: Bot, event: Event, state: T_State):
     command = state['command']
-    if command not in ['订阅', '取消订阅', '订阅列表', '清空订阅', '录播', '取消录播', 'd', 'td', 'list', 'clear', 'rec', 'recoff']:
+    if command not in ['订阅', '取消订阅', '订阅列表', '清空订阅', '开启动态', '关闭动态', '开启录播', '关闭录播',
+                       'd', 'td', 'list', 'clear', 'dyn', 'dynon', 'dynoff', 'rec', 'recon', 'recoff']:
         await blive.finish('没有这个命令哦\n' + export.usage)
 
     user_id = get_id(event)
@@ -67,7 +70,9 @@ async def _(bot: Bot, event: Event, state: T_State):
             await blive.finish('目前还没有任何订阅')
         msg = '已订阅以下直播间:\n'
         for _, info in sub_list.items():
-            msg += f"\n{info['up_name']} {'(自动录播)' if info['record'] else ''}"
+            record = info.get('record', False)
+            dynamic = info.get('dynamic', False)
+            msg += f"\n{info['up_name']}{'（动态）' if dynamic else ''}{'（录播）' if record else ''}"
         await blive.finish(msg)
     elif command in ['清空订阅', 'clear']:
         clear_sub_list(user_id)
@@ -106,7 +111,23 @@ async def _(bot: Bot, event: Event, state: T_State):
             await blive.finish('尚未订阅该主播')
         else:
             await blive.finish('出错了，请稍后再试')
-    elif command in ['录播', 'rec']:
+    elif command in ['开启动态', 'dynon', 'dyn']:
+        status = open_dynamic(user_id, uid)
+        if status == 'success':
+            await blive.finish(f'{up_name} 动态推送已打开')
+        elif status == 'dupe':
+            await blive.finish('尚未订阅该主播')
+        else:
+            await blive.finish('出错了，请稍后再试')
+    elif command in ['关闭动态', 'dynoff']:
+        status = close_dynamic(user_id, uid)
+        if status == 'success':
+            await blive.finish(f'{up_name} 动态推送已关闭')
+        elif status == 'dupe':
+            await blive.finish('尚未订阅该主播')
+        else:
+            await blive.finish('出错了，请稍后再试')
+    elif command in ['开启录播', 'recon', 'rec']:
         status = open_record(user_id, uid)
         if status == 'success':
             await blive.finish(f'{up_name} 自动录播已打开')
@@ -114,7 +135,7 @@ async def _(bot: Bot, event: Event, state: T_State):
             await blive.finish('尚未订阅该主播')
         else:
             await blive.finish('出错了，请稍后再试')
-    elif command in ['取消录播', 'recoff']:
+    elif command in ['关闭录播', 'recoff']:
         status = close_record(user_id, uid)
         if status == 'success':
             await blive.finish(f'{up_name} 自动录播已关闭')
