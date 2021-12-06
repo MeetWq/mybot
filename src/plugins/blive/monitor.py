@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 from nonebot import require, get_driver, get_bots
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
-
 from .data_source import get_live_info_by_uids, get_play_url, get_user_dynamics, get_dynamic_screenshot
 from .live_status import get_sub_uids, get_status, update_status, get_sub_users, get_dynamic_users, get_record_users
 from .dynamic import Dynamic
@@ -80,6 +79,10 @@ def remove_unused_recorders(uids: list):
 
 
 async def check_dynamic(uid: str):
+    users = get_dynamic_users(uid)
+    if not users:
+        return
+
     dynamics = await get_user_dynamics(uid)
     if len(dynamics) == 0:
         return
@@ -94,11 +97,12 @@ async def check_dynamic(uid: str):
         if dynamic.time > last_time[uid] and dynamic.time > datetime.now().timestamp() - timedelta(minutes=10).seconds:
             img = await get_dynamic_screenshot(dynamic.url)
             if img:
-                await send_dynamic_msg(uid, MessageSegment.image(img))
+                msg = dynamic.format_msg(img)
+                await send_dynamic_msg(uid, msg)
                 last_time[uid] = dynamic.time
 
 
-async def blive_monitor():
+async def live_monitor():
     uids = get_sub_uids()
     live_infos = await get_live_info_by_uids(uids)
 
@@ -116,7 +120,6 @@ async def blive_monitor():
                 msg = live_msg(info)
                 if msg:
                     await send_live_msg(uid, msg)
-        await check_dynamic(uid)
         await check_recorder(uid, info)
     remove_unused_recorders(uids)
 
@@ -145,6 +148,12 @@ def live_msg(info: dict):
     elif status == 2:
         msg = f"{up_name} 下播了（轮播中）"
     return msg
+
+
+async def dynamic_monitor():
+    uids = get_sub_uids()
+    for uid in uids:
+        await check_dynamic(uid)
 
 
 async def send_live_msg(uid: str, msg):
@@ -189,32 +198,32 @@ def user_type(user_id: str):
 
 scheduler = require("nonebot_plugin_apscheduler").scheduler
 
-cron_day = blive_config.blive_cron_day
+live_cron = blive_config.bilibili_live_cron
 scheduler.add_job(
-    blive_monitor,
+    live_monitor,
     'cron',
-    second=cron_day[0],
-    minute=cron_day[1],
-    hour=cron_day[2],
-    day=cron_day[3],
-    month=cron_day[4],
-    year=cron_day[5],
-    id='blive_monitor_in_day',
+    second=live_cron[0],
+    minute=live_cron[1],
+    hour=live_cron[2],
+    day=live_cron[3],
+    month=live_cron[4],
+    year=live_cron[5],
+    id='bilibili_live_cron',
     coalesce=True,
     misfire_grace_time=30
 )
 
-cron_night = blive_config.blive_cron_night
+dynamic_cron = blive_config.bilibili_dynamic_cron
 scheduler.add_job(
-    blive_monitor,
+    dynamic_monitor,
     'cron',
-    second=cron_night[0],
-    minute=cron_night[1],
-    hour=cron_night[2],
-    day=cron_night[3],
-    month=cron_night[4],
-    year=cron_night[5],
-    id='blive_monitor_in_night',
+    second=dynamic_cron[0],
+    minute=dynamic_cron[1],
+    hour=dynamic_cron[2],
+    day=dynamic_cron[3],
+    month=dynamic_cron[4],
+    year=dynamic_cron[5],
+    id='bilibili_dynamic_cron',
     coalesce=True,
     misfire_grace_time=30
 )

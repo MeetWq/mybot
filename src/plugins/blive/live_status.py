@@ -24,10 +24,10 @@ def dump_status_list():
     )
 
 
-def get_status(uid: str) -> dict:
+def get_status(uid: str) -> int:
     if uid not in _status_list:
         return 0
-    return _status_list[uid]['status']
+    return _status_list[uid].get('status', 0)
 
 
 def update_status(uid: str, status: int):
@@ -66,17 +66,22 @@ def add_sub_user(user_id: str, uid: str):
             'status': 0
         }
     else:
-        _status_list[uid]['sub_users'].append(user_id)
+        sub_users = get_sub_users(uid)
+        sub_users.append(user_id)
+        sub_users = list(set(sub_users))
+        _status_list[uid]['sub_users'] = sub_users
     dump_status_list()
 
 
 def del_sub_user(user_id: str, uid: str):
     if uid not in _status_list:
         return
-    if user_id in _status_list[uid]['sub_users']:
-        _status_list[uid]['sub_users'].remove(user_id)
-    if not _status_list[uid]['sub_users']:
+    sub_users = get_sub_users(uid)
+    if user_id in sub_users:
+        sub_users.remove(user_id)
+    if not sub_users:
         _status_list.pop(uid)
+    _status_list[uid]['sub_users'] = sub_users
     dump_status_list()
 
 
@@ -89,16 +94,20 @@ def add_dynamic_user(user_id: str, uid: str):
             'status': 0
         }
     else:
-        if user_id not in _status_list[uid]['dynamic_users']:
-            _status_list[uid]['dynamic_users'].append(user_id)
+        dynamic_users = get_dynamic_users(uid)
+        dynamic_users.append(user_id)
+        dynamic_users = list(set(dynamic_users))
+        _status_list[uid]['dynamic_users'] = dynamic_users
     dump_status_list()
 
 
 def del_dynamic_user(user_id: str, uid: str):
     if uid not in _status_list:
         return
-    if user_id in _status_list[uid]['dynamic_users']:
-        _status_list[uid]['dynamic_users'].remove(user_id)
+    dynamic_users = get_dynamic_users(uid)
+    if user_id in dynamic_users:
+        dynamic_users.remove(user_id)
+    _status_list[uid]['dynamic_users'] = dynamic_users
     dump_status_list()
 
 
@@ -111,14 +120,18 @@ def add_record_user(user_id: str, uid: str):
             'status': 0
         }
     else:
-        if user_id not in _status_list[uid]['record_users']:
-            _status_list[uid]['record_users'].append(user_id)
+        record_users = get_record_users(uid)
+        record_users.append(user_id)
+        record_users = list(set(record_users))
+        _status_list[uid]['record_users'] = record_users
     dump_status_list()
 
 
 def del_record_user(user_id: str, uid: str):
     if uid not in _status_list:
         return
-    if user_id in _status_list[uid]['record_users']:
-        _status_list[uid]['record_users'].remove(user_id)
+    record_users = get_record_users(uid)
+    if user_id in record_users:
+        record_users.remove(user_id)
+    _status_list[uid]['record_users'] = record_users
     dump_status_list()

@@ -104,7 +104,8 @@ async def get_dynamic_screenshot(url: str) -> bytes:
             bar = await page.query_selector(".text-bar")
             bar_bound = await bar.bounding_box()
             clip['height'] = bar_bound['y'] - clip['y']
-            await page.screenshot(clip=clip, full_page=True)
+            img = await page.screenshot(clip=clip, full_page=True)
+            return img
     except Exception as e:
         logger.warning(f'Error in get_dynamic_screenshot({url}): {e}')
         return None
