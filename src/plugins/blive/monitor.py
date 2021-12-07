@@ -122,6 +122,7 @@ async def live_monitor():
                 msg = live_msg(info)
                 if msg:
                     await send_live_msg(uid, msg)
+            live_status[uid] = status
         await check_recorder(uid, info)
     remove_unused_recorders(uids)
 
