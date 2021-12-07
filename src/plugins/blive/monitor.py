@@ -7,7 +7,7 @@ from nonebot import require, get_driver, get_bots
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
 from .data_source import get_live_info_by_uids, get_play_url, get_user_dynamics, get_dynamic_screenshot
-from .live_status import get_sub_uids, get_status, update_status, get_sub_users, get_dynamic_users, get_record_users
+from .uid_list import get_sub_uids, get_sub_users, get_dynamic_users, get_record_users
 from .dynamic import Dynamic
 from .recorder import Recorder
 
@@ -16,6 +16,7 @@ global_config = get_driver().config
 blive_config = Config(**global_config.dict())
 
 recorders: Dict[str, Recorder] = {}
+live_status = {}
 last_time = {}
 
 
@@ -110,11 +111,12 @@ async def live_monitor():
         if uid not in live_infos:
             continue
         info = live_infos[uid]
-        status_old = get_status(uid)
         status = info['live_status']
-        if status != status_old:
-            update_status(uid, status)
-            if status != 1 and status_old != 1:
+        if uid not in live_status:
+            live_status[uid] = status
+            continue
+        if status != live_status[uid]:
+            if status != 1 and live_status[uid] != 1:
                 pass
             else:
                 msg = live_msg(info)

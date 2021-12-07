@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from .live_status import add_sub_user, del_sub_user, add_record_user, del_record_user, add_dynamic_user, del_dynamic_user
+from .uid_list import add_sub_user, del_sub_user, add_record_user, del_record_user, add_dynamic_user, del_dynamic_user
 
 data_path = Path() / 'data' / 'blive' / 'sub_list.json'
 

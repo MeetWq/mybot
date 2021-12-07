@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-status_path = Path() / 'data' / 'blive' / 'live_status.json'
+status_path = Path() / 'data' / 'blive' / 'uid_list.json'
 
 
 def load_status_list() -> dict:
@@ -22,17 +22,6 @@ def dump_status_list():
         indent=4,
         separators=(',', ': ')
     )
-
-
-def get_status(uid: str) -> int:
-    if uid not in _status_list:
-        return 0
-    return _status_list[uid].get('status', 0)
-
-
-def update_status(uid: str, status: int):
-    _status_list[uid]['status'] = status
-    dump_status_list()
 
 
 def get_sub_uids() -> list:
@@ -62,8 +51,7 @@ def add_sub_user(user_id: str, uid: str):
         _status_list[uid] = {
             'sub_users': [user_id],
             'record_users': [],
-            'dynamic_users': [],
-            'status': 0
+            'dynamic_users': []
         }
     else:
         sub_users = get_sub_users(uid)
@@ -81,7 +69,8 @@ def del_sub_user(user_id: str, uid: str):
         sub_users.remove(user_id)
     if not sub_users:
         _status_list.pop(uid)
-    _status_list[uid]['sub_users'] = sub_users
+    else:
+        _status_list[uid]['sub_users'] = sub_users
     dump_status_list()
 
 
@@ -90,8 +79,7 @@ def add_dynamic_user(user_id: str, uid: str):
         _status_list[uid] = {
             'sub_users': [user_id],
             'record_users': [],
-            'dynamic_users': [user_id],
-            'status': 0
+            'dynamic_users': [user_id]
         }
     else:
         dynamic_users = get_dynamic_users(uid)
@@ -116,8 +104,7 @@ def add_record_user(user_id: str, uid: str):
         _status_list[uid] = {
             'sub_users': [user_id],
             'record_users': [user_id],
-            'dynamic_users': [],
-            'status': 0
+            'dynamic_users': []
         }
     else:
         record_users = get_record_users(uid)
