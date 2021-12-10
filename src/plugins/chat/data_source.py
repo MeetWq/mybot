@@ -34,7 +34,7 @@ class ChatBot:
 
     async def get_reply(self, text: str, event_id: str, user_id: str) -> str:
         if not self.token:
-            self.refresh_token()
+            await self.refresh_token()
             if not self.token:
                 return ''
 

@@ -105,6 +105,8 @@ async def check_dynamic(uid: str):
 
 async def live_monitor():
     uids = get_sub_uids()
+    if not uids:
+        return
     live_infos = await get_live_info_by_uids(uids)
 
     for uid in uids:

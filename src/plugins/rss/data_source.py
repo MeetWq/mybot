@@ -9,15 +9,15 @@ from .rss_class import RSS
 
 global_config = get_driver().config
 httpx_proxy = {
-    'http': global_config.http_proxy,
-    'https': global_config.http_proxy
+    'http://': global_config.http_proxy,
+    'https://': global_config.http_proxy
 }
 
 
 async def get_rss_info(url: str) -> dict:
     try:
         async with httpx.AsyncClient(proxies=httpx_proxy) as client:
-            resp = await client.get(url, timeout=10)
+            resp = await client.get(url, timeout=20)
             result = resp.text
         return feedparser.parse(result)
     except:

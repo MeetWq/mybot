@@ -13,8 +13,8 @@ global_config = get_driver().config
 pixiv_config = Config(**global_config.dict())
 proxy = global_config.socks_proxy
 httpx_proxy = {
-    'http': global_config.http_proxy,
-    'https': global_config.http_proxy
+    'http://': global_config.http_proxy,
+    'https://': global_config.http_proxy
 }
 
 
@@ -46,7 +46,7 @@ async def get_pixiv(keyword: str):
 
 async def to_msg(illusts):
     msg = Message()
-    async with PixivClient(proxy=proxy) as client:
+    async with PixivClient(proxy=proxy, timeout=20) as client:
         aapi = AppPixivAPI(client=client, proxy=proxy)
         await aapi.login(refresh_token=pixiv_config.pixiv_token)
         for illust in illusts:
@@ -67,7 +67,7 @@ async def to_msg(illusts):
 
 
 async def get_by_ranking(mode='day', num=3):
-    async with PixivClient(proxy=proxy) as client:
+    async with PixivClient(proxy=proxy, timeout=20) as client:
         aapi = AppPixivAPI(client=client, proxy=proxy)
         await aapi.login(refresh_token=pixiv_config.pixiv_token)
         illusts = await aapi.illust_ranking(mode)
@@ -77,7 +77,7 @@ async def get_by_ranking(mode='day', num=3):
 
 
 async def get_by_search(keyword, num=3):
-    async with PixivClient(proxy=proxy) as client:
+    async with PixivClient(proxy=proxy, timeout=20) as client:
         aapi = AppPixivAPI(client=client, proxy=proxy)
         await aapi.login(refresh_token=pixiv_config.pixiv_token)
         illusts = await aapi.search_illust(keyword)
@@ -91,7 +91,7 @@ async def get_by_search(keyword, num=3):
 
 
 async def get_by_id(work_id):
-    async with PixivClient(proxy=proxy) as client:
+    async with PixivClient(proxy=proxy, timeout=20) as client:
         aapi = AppPixivAPI(client=client, proxy=proxy)
         await aapi.login(refresh_token=pixiv_config.pixiv_token)
         illust = await aapi.illust_detail(work_id)
@@ -120,7 +120,7 @@ async def search_by_image(img_url):
     }
     try:
         async with httpx.AsyncClient() as client:
-            resp = await client.post(url, params=params, headers=headers)
+            resp = await client.post(url, params=params, headers=headers, timeout=20)
             result = resp.json()
 
         if result['header']['status'] == -1:

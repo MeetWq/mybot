@@ -1,7 +1,7 @@
 from pathlib import Path
 
 dir_path = Path(__file__).parent
-emoji_path = dir_path / 'emojis'
+emoji_path = dir_path / 'resources'
 
 emoji_list = {
     'emoji_ac': {

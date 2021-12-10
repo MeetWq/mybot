@@ -79,28 +79,35 @@ async def get_jiki(keyword, force=False):
         resp = await client.get(url=search_url)
         result = resp.text
 
-    if (not force and '对不起！小鸡词典暂未收录该词条' in result) or \
-            (force and '你可能喜欢的词条' not in result):
+    if '对不起！小鸡词典暂未收录该词条' in result and \
+            (not force or (force and '你可能喜欢的词条' not in result)):
+        logger.info('not found')
         return '', ''
 
     dom = etree.HTML(result)
     card_urls = dom.xpath(
-        "//div[@class='masonry']/div/a[@class='card-content']/@href")
+        "//div[contains(@class, 'masonry')]/div/div/div/a[contains(@class, 'title-container')]/@href")
+
     if not card_urls:
+        logger.info('no url')
         return '', ''
-    card_url = 'https://jikipedia.com' + card_urls[0]
+    card_url = card_urls[0]
+    logger.info(card_url)
     async with httpx.AsyncClient() as client:
         resp = await client.get(url=card_url)
         result = resp.text
 
     dom = etree.HTML(result)
     title = dom.xpath(
-        "//div[@class='section card-middle']/div[@class='title-container']/span[@class='title']/text()")[0]
+        "//div[@class='section card-middle']/div[@class='title-container']/div/h1/text()")[0]
     content = dom.xpath(
-        "//div[@class='section card-middle']/div[@class='content']/text()")[0]
+        "//div[@class='section card-middle']/div[@class='content']/div")[0]
+    content = content.xpath('string(.)').strip()
     img_urls = dom.xpath(
-        "//div[@class='section card-middle']/div[@class='show-images']/img/@src")
-
+        "//div[@class='section card-middle']/div/div/div[@class='show-images']/img/@src")
+    logger.info(title)
+    logger.info(content)
+    logger.info(img_urls)
     msg = Message()
     msg.append(title + ':\n---------------\n')
     msg.append(content)

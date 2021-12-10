@@ -13,7 +13,7 @@ from nonebot.adapters.cqhttp import MessageSegment
 from nonebot.log import logger
 
 dir_path = Path(__file__).parent
-gif_path = dir_path / 'gifs'
+gif_path = dir_path / 'resources'
 
 
 async def get_random_emoji(keyword):

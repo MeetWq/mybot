@@ -1,5 +1,4 @@
 import os
-import base64
 import jinja2
 import tempfile
 import traceback
@@ -8,7 +7,7 @@ from pathlib import Path
 from nonebot.log import logger
 from nonebot.adapters.cqhttp import MessageSegment
 
-dir_path = Path(__file__).parent
+dir_path = Path(__file__).parent / 'template'
 
 
 async def tex2pic(equation, fmt='png', border=2, resolution=1000):
@@ -41,8 +40,7 @@ async def tex2pic(equation, fmt='png', border=2, resolution=1000):
                 convert_cmd = f'pdftoppm -r %d -%s %s > %s' % (resolution, formats[fmt], tmp_pdf, tmp_out)
                 subprocess.check_call(convert_cmd, shell=True)
 
-            with tmp_out.open('rb') as f:
-                return MessageSegment.image(f"base64://{base64.b64encode(f.read()).decode()}")
+            return MessageSegment.image(tmp_out.read_bytes())
     except:
         logger.debug(traceback.format_exc())
         return None

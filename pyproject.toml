@@ -47,7 +47,7 @@ wolframalpha = "*"
 [tool.poetry.dev-dependencies]
 
 [nonebot.plugins]
-plugins = ["nonebot_plugin_apscheduler", "nonebot_plugin_manager", "nonebot_plugin_alias", "nonebot_plugin_withdraw", "nonebot_plugin_petpet", "nonebot_plugin_asoulcnki", "nonebot_plugin_shindan"]
+plugins = ["nonebot_plugin_test", "nonebot_plugin_apscheduler", "nonebot_plugin_manager", "nonebot_plugin_alias", "nonebot_plugin_withdraw", "nonebot_plugin_petpet", "nonebot_plugin_asoulcnki", "nonebot_plugin_shindan"]
 plugin_dirs = ["src/plugins"]
 
 [build-system]

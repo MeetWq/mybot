@@ -7,8 +7,8 @@ from nonebot.adapters.cqhttp import Message, MessageSegment
 
 global_config = get_driver().config
 httpx_proxy = {
-    'http': global_config.http_proxy,
-    'https': global_config.http_proxy
+    'http://': global_config.http_proxy,
+    'https://': global_config.http_proxy
 }
 
 

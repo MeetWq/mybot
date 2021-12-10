@@ -129,8 +129,6 @@ no_reply_patterns = [
 
 
 def filter_no_reply(msg: str):
-    if len(msg) <= 2:
-        return ''
     for p in no_reply_patterns:
         if re.search(p, msg):
             return ''
