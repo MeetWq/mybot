@@ -97,7 +97,7 @@ async def get_user_dynamics(uid: str) -> dict:
 
 async def get_dynamic_screenshot(url: str) -> bytes:
     try:
-        async with get_new_page(viewport={"width": 2000, "height": 100}) as page:
+        async with get_new_page(viewport={"width": 2000, "height": 100}, device_scale_factor=2) as page:
             await page.goto(url, wait_until='networkidle')
             card = await page.query_selector(".card")
             clip = await card.bounding_box()

@@ -65,16 +65,17 @@ async def continue_receive(bot: Bot, event: Event, state: T_State):
         for word in end_word:
             if word in msg.lower():
                 await chat.finish()
-        reply = await get_reply(msg, event)
-        await handle_reply(reply, event)
-    else:
-        new_matcher(event)
-        await chat.finish()
+        msg = filter_no_reply(msg)
+        if msg:
+            reply = await get_reply(msg, event)
+            await handle_reply(reply, event)
+    new_matcher(event)
+    await chat.finish()
 
 
 async def handle_reply(reply: str, event: Event):
     if not reply:
-        return
+        await chat.finish()
     if isinstance(event, PrivateMessageEvent):
         await chat.finish(reply)
     else:
@@ -105,13 +106,34 @@ def new_matcher(event: Event):
                 expire_time=datetime.now() + timedelta(seconds=chat_config.chat_expire_time))
 
 
+filter_patterns = [
+    r'^[\s,，.。?？!！/~$#@&^%+-_（）\\\(\)\*]+$',
+    r'^&#91;\S+&#93;$',
+    r'^&amp;#91;\S+&amp;#93;$',
+    r'此处消息的转义尚未被插件支持',
+    r'请使用最新版手机QQ体验新功能'
+]
+
+
 def filter_msg(msg: str):
-    if '此处消息的转义尚未被插件支持' in msg or '请使用最新版手机QQ体验新功能' in msg or re.fullmatch(r'&#91;[^:,= ]+&#93;', msg):
+    for p in filter_patterns:
+        if re.search(p, msg):
+            return ''
+    return msg
+
+
+no_reply_patterns = [
+    r'^[\s,，\.。?？!！/~$#@&^%+-_（）\\\(\)\*草艹哈h(卧槽)]+$',
+    r'^[\.。/#\:].*'
+]
+
+
+def filter_no_reply(msg: str):
+    if len(msg) <= 2:
         return ''
-    if re.fullmatch(r'[.。？！?!/~$#@&^%+-_（）\\\(\)\*]+', msg):
-        return ''
-    if msg in ['草', '艹']:
-        return ''
+    for p in no_reply_patterns:
+        if re.search(p, msg):
+            return ''
     return msg
 
 

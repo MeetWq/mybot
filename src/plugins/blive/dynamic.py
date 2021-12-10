@@ -24,4 +24,3 @@ class Dynamic():
         msg.append(f"{self.name} {type_msg.get(self.type, type_msg[0])}:")
         msg.append(MessageSegment.image(img))
         return msg
-
