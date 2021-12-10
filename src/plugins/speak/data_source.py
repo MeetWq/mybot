@@ -2,8 +2,8 @@ import io
 import re
 import json
 import uuid
+import httpx
 import base64
-import aiohttp
 import traceback
 
 import langid
@@ -38,7 +38,8 @@ async def get_voice(text, type=0):
 
 
 async def get_tx_voice(text, type=0):
-    cred = credential.Credential(tts_config.tencent_secret_id, tts_config.tencent_secret_key)
+    cred = credential.Credential(
+        tts_config.tencent_secret_id, tts_config.tencent_secret_key)
     http_profile = HttpProfile()
     http_profile.endpoint = 'tts.tencentcloudapi.com'
     client_profile = ClientProfile()
@@ -70,9 +71,9 @@ async def get_ai_voice(text, type=0):
     if not mp3_url:
         return None
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(mp3_url) as resp:
-            result = await resp.read()
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(mp3_url)
+        result = resp.content
 
     output = await split_voice(io.BytesIO(result))
     if output:
@@ -110,9 +111,9 @@ async def get_ai_voice_url(text, type=0):
             'webapi_version': 'v5'
         }
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url, params=params) as resp:
-            result = await resp.text()
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(url, params=params)
+        result = resp.text
 
     match_obj = re.search(r'"url":"(.*?)"', result)
     if match_obj:
@@ -123,7 +124,8 @@ async def get_ai_voice_url(text, type=0):
 
 async def split_voice(input):
     sound = AudioSegment.from_file(input)
-    silent_ranges = detect_silence(sound, min_silence_len=500, silence_thresh=-40)
+    silent_ranges = detect_silence(
+        sound, min_silence_len=500, silence_thresh=-40)
     if len(silent_ranges) >= 1:
         first_silent_end = silent_ranges[0][1] - 300
         result = sound[first_silent_end:] + AudioSegment.silent(300)

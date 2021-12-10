@@ -1,5 +1,4 @@
-import aiohttp
-import traceback
+import httpx
 import feedparser
 from urllib.parse import quote
 from typing import List
@@ -9,14 +8,17 @@ from nonebot.log import logger
 from .rss_class import RSS
 
 global_config = get_driver().config
-proxy = global_config.http_proxy
+httpx_proxy = {
+    'http': global_config.http_proxy,
+    'https': global_config.http_proxy
+}
 
 
 async def get_rss_info(url: str) -> dict:
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url, proxy=proxy, timeout=10) as resp:
-                result = await resp.text()
+        async with httpx.AsyncClient(proxies=httpx_proxy) as client:
+            resp = await client.get(url, timeout=10)
+            result = resp.text
         return feedparser.parse(result)
     except:
         return {}

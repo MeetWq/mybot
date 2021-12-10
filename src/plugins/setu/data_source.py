@@ -1,12 +1,15 @@
+import httpx
 import base64
-import aiohttp
 import traceback
 from nonebot import get_driver
 from nonebot.log import logger
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
 global_config = get_driver().config
-proxy = global_config.http_proxy
+httpx_proxy = {
+    'http': global_config.http_proxy,
+    'https': global_config.http_proxy
+}
 
 
 async def get_setu(key_word='', r18=False) -> Message:
@@ -19,19 +22,19 @@ async def get_setu(key_word='', r18=False) -> Message:
         'keyword': key_word
     }
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url, params=params) as resp:
-                response = await resp.json()
-        if response['error']:
-            logger.warning('lolicon error: ' + response['error'])
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(url, params=params)
+            result = resp.json()
+        if result['error']:
+            logger.warning('lolicon error: ' + result['error'])
             return None
-        if response['data']:
-            setu_url = response['data'][0]['urls']['regular']
+        if result['data']:
+            setu_url = result['data'][0]['urls']['regular']
             logger.info('Get setu url: ' + setu_url)
 
-            async with aiohttp.ClientSession() as session:
-                async with session.get(setu_url, proxy=proxy) as resp:
-                    result = await resp.read()
+            async with httpx.AsyncClient(proxies=httpx_proxy) as client:
+                resp = await client.get(setu_url)
+                result = resp.content
 
             if result:
                 return MessageSegment.image(f"base64://{base64.b64encode(result).decode()}")

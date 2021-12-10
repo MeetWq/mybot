@@ -1,8 +1,8 @@
 import re
-import aiohttp
+import httpx
 import traceback
+from lxml import etree
 from thefuzz import fuzz
-from bs4 import BeautifulSoup
 from urllib.parse import quote
 from nonebot.log import logger
 from nonebot.adapters.cqhttp import Message, MessageSegment
@@ -16,7 +16,8 @@ async def get_content(keyword, source='all', force=False, less=False):
         try:
             _, msg = await sources[source](keyword, force)
         except:
-            logger.warning(f'Error in get {source} content: \n{traceback.format_exc()}')
+            logger.warning(
+                f'Error in get {source} content: \n{traceback.format_exc()}')
     elif source == 'all':
         titles = []
         msgs = []
@@ -28,7 +29,8 @@ async def get_content(keyword, source='all', force=False, less=False):
                     titles.append(t)
                     msgs.append(m)
             except:
-                logger.warning(f'Error in get {s} content: \n{traceback.format_exc()}')
+                logger.warning(
+                    f'Error in get {s} content: \n{traceback.format_exc()}')
         if msgs:
             index = 0
             max_ratio = 0
@@ -49,9 +51,9 @@ async def get_nbnhhsh(keyword, force=False):
     data = {
         'text': keyword
     }
-    async with aiohttp.ClientSession() as session:
-        async with session.post(url=url, headers=headers, data=data) as resp:
-            res = await resp.json()
+    async with httpx.AsyncClient() as client:
+        resp = await client.post(url=url, headers=headers, data=data)
+        res = resp.json()
     title = ''
     result = []
     for i in res:
@@ -73,36 +75,31 @@ async def get_nbnhhsh(keyword, force=False):
 async def get_jiki(keyword, force=False):
     keyword = quote(keyword)
     search_url = 'https://jikipedia.com/search?phrase={}'.format(keyword)
-    async with aiohttp.ClientSession() as session:
-        async with session.get(search_url) as resp:
-            result = await resp.text()
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(url=search_url)
+        result = resp.text
 
     if (not force and '对不起！小鸡词典暂未收录该词条' in result) or \
             (force and '你可能喜欢的词条' not in result):
         return '', ''
 
-    search_result = BeautifulSoup(result, 'lxml')
-    masonry = search_result.find('div', {'class': 'masonry'})
-    if not masonry:
+    dom = etree.HTML(result)
+    card_urls = dom.xpath(
+        "//div[@class='masonry']/div/a[@class='card-content']/@href")
+    if not card_urls:
         return '', ''
+    card_url = 'https://jikipedia.com' + card_urls[0]
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(url=card_url)
+        result = resp.text
 
-    card = masonry.find('div', recursive=False)
-    card_content = card.find('a', {'class': 'card-content'})
-    if not card_content:
-        return '', ''
-    card_url = 'https://jikipedia.com' + card_content.get('href')
-    async with aiohttp.ClientSession() as session:
-        async with session.get(card_url) as resp:
-            result = await resp.text()
-
-    card_result = BeautifulSoup(result, 'lxml')
-    card_section = card_result.find('div', {'class': 'section card-middle'})
-    title = card_section.find('div', {'class': 'title-container'}).find('span', {'class': 'title'}).text
-    content = card_section.find('div', {'class': 'content'}).text
-    images = card_section.find_all('div', {'class': 'show-images'})
-    img_urls = []
-    for image in images:
-        img_urls.append(image.find('img').get('src'))
+    dom = etree.HTML(result)
+    title = dom.xpath(
+        "//div[@class='section card-middle']/div[@class='title-container']/span[@class='title']/text()")[0]
+    content = dom.xpath(
+        "//div[@class='section card-middle']/div[@class='content']/text()")[0]
+    img_urls = dom.xpath(
+        "//div[@class='section card-middle']/div[@class='show-images']/img/@src")
 
     msg = Message()
     msg.append(title + ':\n---------------\n')

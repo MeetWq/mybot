@@ -1,5 +1,4 @@
-import json
-import aiohttp
+import httpx
 import traceback
 from nonebot.log import logger
 from datetime import datetime, timedelta
@@ -9,10 +8,9 @@ async def get_dynmap_updates(url: str):
     try:
         stamp = (datetime.now() - timedelta(minutes=2)).timestamp()
         url += '/' + str(int(stamp * 1000))
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as resp:
-                result = await resp.read()
-        result = json.loads(result)
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(url)
+            result = resp.json()
         return result
     except:
         logger.debug(traceback.format_exc())
@@ -55,13 +53,9 @@ async def send_message(config, msg):
             'name': '',
             'message': msg
         }
-        async with aiohttp.ClientSession() as session:
-            async with session.post(login_url, data=info) as resp:
-                if resp.status != 200:
-                    return False
-            async with session.post(send_url, json=data) as resp:
-                if resp.status != 200:
-                    return False
+        async with httpx.AsyncClient() as client:
+            await client.post(login_url, data=info)
+            await client.post(send_url, json=data)
         return True
     except:
         logger.debug(traceback.format_exc())

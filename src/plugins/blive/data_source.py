@@ -1,5 +1,5 @@
 import json
-import aiohttp
+import httpx
 from nonebot.log import logger
 from src.libs.playwright import get_new_page
 
@@ -23,9 +23,9 @@ async def get_live_info_by_uid(uid: str) -> dict:
 async def get_live_info_by_uids(uids: list) -> dict:
     try:
         url = 'https://api.live.bilibili.com/room/v1/Room/get_status_info_by_uids'
-        async with aiohttp.ClientSession() as session:
-            async with session.post(url, data=json.dumps({'uids': uids})) as resp:
-                result = await resp.json()
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(url, data=json.dumps({'uids': uids}))
+            result = await resp.json()
         if not result or result['code'] != 0:
             return {}
         return result['data']
@@ -48,9 +48,9 @@ async def get_user_info_by_name(up_name: str) -> dict:
             'search_type': 'bili_user',
             'keyword': up_name
         }
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url, params=params) as resp:
-                result = await resp.json()
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(url, params=params)
+            result = await resp.json()
         if not result or result['code'] != 0:
             return {}
         users = result['data']['result']
@@ -71,9 +71,9 @@ async def get_play_url(room_id: int) -> str:
             'platform': 'web',
             'qn': 10000
         }
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url, params=params) as resp:
-                result = await resp.json()
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(url, params=params)
+            result = await resp.json()
         if not result or result['code'] != 0:
             return ''
         return result['data']['durl'][0]['url']
@@ -86,9 +86,9 @@ async def get_user_dynamics(uid: str) -> dict:
     try:
         # need_top: {1: 带置顶, 0: 不带置顶}
         url = f'https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/space_history?host_uid={uid}&offset_dynamic_id=0&need_top=0'
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as resp:
-                result = await resp.json()
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(url)
+            result = await resp.json()
         return result['data']['cards']
     except Exception as e:
         logger.warning(f'Error in get_user_dynamics({uid}): {e}')

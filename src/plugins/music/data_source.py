@@ -1,5 +1,4 @@
-import json
-import aiohttp
+import httpx
 import requests
 import traceback
 from http.cookies import SimpleCookie
@@ -36,10 +35,9 @@ async def search_qq(keyword, page=1, pagesize=1, number=1):
         'w': keyword,
         'format': 'json'
     }
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url, params=params) as resp:
-            data = await resp.read()
-    result = json.loads(data)
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(url, params=params)
+        result = resp.json()
     songid = result['data']['song']['list'][number - 1]['songid']
     return MessageSegment.music('qq', songid)
 
@@ -52,10 +50,9 @@ async def search_netease(keyword, page=1, pagesize=1, number=1):
         'offset': page * pagesize - 1,
         'limit': pagesize
     }
-    async with aiohttp.ClientSession() as session:
-        async with session.post(url, params=params) as resp:
-            data = await resp.read()
-    result = json.loads(data)
+    async with httpx.AsyncClient() as client:
+        resp = await client.post(url, params=params)
+        result = resp.json()
     songid = result['result']['songs'][number - 1]['id']
     return MessageSegment.music('163', songid)
 
@@ -69,10 +66,9 @@ async def search_kugou(keyword, page=1, pagesize=1, number=1):
         'page': page,
         'pagesize': pagesize
     }
-    async with aiohttp.ClientSession() as session:
-        async with session.get(search_url, params=params) as resp:
-            data = await resp.read()
-    result = json.loads(data)
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(search_url, params=params)
+        result = resp.json()
     hash = result['data']['info'][number - 1]['hash']
     album_id = result['data']['info'][number - 1]['album_id']
     song_url = 'https://wwwapi.kugou.com/yy/index.php'
@@ -89,10 +85,9 @@ async def search_kugou(keyword, page=1, pagesize=1, number=1):
         'kg_dfid_collect=d41d8cd98f00b204e9800998ecf8427e; ' \
         'Hm_lpvt_aedee6983d4cfc62f509129360d6bb3d=1598199021'
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(song_url, params=params, cookies=parse_cookies(cookies)) as resp:
-            data = await resp.read()
-    result = json.loads(data)
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(song_url, params=params, cookies=parse_cookies(cookies))
+        result = resp.json()
     info = result['data']
     url = 'https://www.kugou.com/song/#hash={}&album_id={}'.format(
         hash, album_id)
@@ -114,9 +109,9 @@ async def search_migu(keyword, page=1, pagesize=1, number=1):
     headers = {
         "Referer": "https://m.music.migu.cn"
     }
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url, params=params, headers=headers) as resp:
-            result = await resp.json()
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(url, params=params, headers=headers)
+        result = resp.json()
     info = result['musics'][number - 1]
     url = f"https://music.migu.cn/v3/music/song/{info['copyrightId']}"
     audio = info['mp3']
@@ -134,10 +129,9 @@ async def search_bilibili(keyword, page=1, pagesize=1, number=1):
         'search_type': 'music',
         'keyword': keyword
     }
-    async with aiohttp.ClientSession() as session:
-        async with session.get(search_url, params=params) as resp:
-            data = await resp.read()
-    result = json.loads(data)
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(search_url, params=params)
+        result = resp.json()
     info = result['data']['result'][number - 1]
     url = 'https://www.bilibili.com/audio/au{}'.format(info['id'])
     audio = info['play_url_list'][0]['url']
@@ -150,7 +144,8 @@ async def search_bilibili(keyword, page=1, pagesize=1, number=1):
         'referer': 'https://www.bilibili.com/'
     }
     stream = requests.get(audio, headers=headers)
-    audio = qcloud_client.put_object(stream, f"bilibili_music/{info['id']}.m4a")
+    audio = qcloud_client.put_object(
+        stream, f"bilibili_music/{info['id']}.m4a")
 
     return MessageSegment.music_custom(url=url, audio=audio, title=title, content=content, img_url=img_url)
 

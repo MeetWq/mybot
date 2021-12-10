@@ -1,5 +1,5 @@
 import json
-import aiohttp
+import httpx
 import traceback
 from pathlib import Path
 from datetime import datetime
@@ -49,10 +49,9 @@ async def get_dynmap_url(user_id: str) -> str:
 async def get_update_url(url: str) -> str:
     url_config = url + '/up/configuration'
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url_config) as resp:
-                result = await resp.read()
-        result = json.loads(result)
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(url_config)
+            result = resp.json()
         world = result['defaultworld']
         return f'{url}/up/world/{world}'
     except:

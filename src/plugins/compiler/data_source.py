@@ -1,4 +1,5 @@
-import aiohttp
+import httpx
+from nonebot.log import logger
 
 
 legal_language = {
@@ -39,10 +40,14 @@ async def network_compile(language: str, code: str):
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36"
     }
-    async with aiohttp.ClientSession() as session:
-        async with session.post(url=url, headers=headers, data=payload) as resp:
-            res = await resp.json()
-    return {
-        "output": res["output"],
-        "errors": res["errors"]
-    }
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(url=url, headers=headers, data=payload)
+            result = resp.json()
+        return {
+            "output": result.get('output', ''),
+            "errors": result.get('errors', '')
+        }
+    except Exception as e:
+        logger.warning(f'Error in network_compile({language}, {code}): {e}')
+        return {}

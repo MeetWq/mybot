@@ -1,8 +1,7 @@
 import io
-import json
+import httpx
 import base64
 import jinja2
-import aiohttp
 import asyncio
 import imageio
 import traceback
@@ -22,13 +21,12 @@ env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_path),
 async def get_mc_uuid(username: str) -> str:
     url = f'https://api.mojang.com/users/profiles/minecraft/{username}'
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as resp:
-                result = await resp.read()
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(url)
+            result = resp.json()
         if not result:
             return 'none'
-        result = json.loads(result)
-        return result['id']
+        return result.get('id', 'none')
     except:
         return ''
 
@@ -56,9 +54,9 @@ async def _get_crafatar(type: str, uuid: str) -> bytes:
     url = f'https://crafatar.com/{path}/{uuid}?overlay'
 
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as resp:
-                result = await resp.read()
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(url)
+            result = resp.content
         return result
     except:
         return None
@@ -119,7 +117,8 @@ async def get_mcstatus(addr: str) -> str:
 
     msg = Message()
     if favicon:
-        msg.append(MessageSegment.image('base64://' + favicon.replace('data:image/png;base64,', '')))
+        msg.append(MessageSegment.image('base64://' +
+                   favicon.replace('data:image/png;base64,', '')))
     msg.append(
         f"服务端版本：{version}\n"
         f"协议版本：{protocol}\n"

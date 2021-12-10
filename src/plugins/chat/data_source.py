@@ -1,9 +1,7 @@
 import json
 import uuid
+import httpx
 import random
-import aiohttp
-import requests
-import traceback
 from pathlib import Path
 from cachetools import TTLCache
 from nonebot import get_driver
@@ -21,15 +19,25 @@ class ChatBot:
         self.secret_key = chat_config.baidu_unit_secret_key
         self.bot_id = chat_config.baidu_unit_bot_id
         self.base_url = 'https://aip.baidubce.com'
-        self.token = self.get_token()
+        self.token = ''
         self.sessions = TTLCache(maxsize=128, ttl=60 * 60 * 1)
 
-    def get_token(self):
-        url = f'{self.base_url}/oauth/2.0/token?grant_type=client_credentials&client_id={self.api_key}&client_secret={self.secret_key}'
-        response = requests.post(url).json()
-        return response['access_token']
+    async def refresh_token(self):
+        try:
+            url = f'{self.base_url}/oauth/2.0/token?grant_type=client_credentials&client_id={self.api_key}&client_secret={self.secret_key}'
+            async with httpx.AsyncClient() as client:
+                resp = await client.post(url)
+                result = resp.json()
+            self.token = result.get('access_token', '')
+        except Exception as e:
+            logger.warning(f'Error in refresh_token: {e}')
 
     async def get_reply(self, text: str, event_id: str, user_id: str) -> str:
+        if not self.token:
+            self.refresh_token()
+            if not self.token:
+                return ''
+
         url = f'{self.base_url}/rpc/2.0/unit/service/chat?access_token={self.token}'
         session_id = self.sessions.get(event_id)
         if not session_id:
@@ -50,18 +58,16 @@ class ChatBot:
             }
         }
         try:
-            async with aiohttp.ClientSession() as session:
-                async with session.post(url, data=json.dumps(params, ensure_ascii=False)) as resp:
-                    response = await resp.json()
-            if response and response['error_code'] == 0:
-                session_id = response['result']['session_id']
-                self.sessions[event_id] = session_id
-                return response['result']['response_list'][0]['action_list'][0]['say']
-            else:
-                logger.debug(response)
-                return ''
-        except:
-            logger.debug(traceback.format_exc())
+            async with httpx.AsyncClient() as client:
+                resp = await client.post(url, data=json.dumps(params, ensure_ascii=False))
+                result = resp.json()
+
+            session_id = result['result']['session_id']
+            self.sessions[event_id] = session_id
+            return result['result']['response_list'][0]['action_list'][0]['say']
+        except Exception as e:
+            logger.warning(
+                f'Error in get_reply({text}, {event_id}, {user_id}): {e}')
             return ''
 
 

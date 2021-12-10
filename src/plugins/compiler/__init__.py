@@ -8,9 +8,11 @@ from .data_source import legal_language, network_compile
 export = export()
 export.description = '网络编译器'
 export.usage = 'Usage:\n  lang {language};\n  {code}'
-export.options = 'Options:\n  ' + f"支持的语言：{', '.join(list(legal_language.keys()))}"
+export.options = 'Options:\n  ' + \
+    f"支持的语言：{', '.join(list(legal_language.keys()))}"
 export.notice = 'Notice:\n  来源为菜鸟教程的网络编译器'
-export.help = export.description + '\n' + export.usage + '\n' + export.options + '\n' + export.notice
+export.help = export.description + '\n' + export.usage + \
+    '\n' + export.options + '\n' + export.notice
 
 compiler = on_command('lang', priority=20)
 
@@ -19,19 +21,20 @@ compiler = on_command('lang', priority=20)
 async def _(bot: Bot, event: Event, state: T_State):
     msg = unescape(event.get_plaintext()).strip()
 
-    match_obj = re.match(r'(.*?)[;\n]+(.*)', msg, re.S)
+    match_obj = re.match(r'(.*?)[;；\s]+(.*)', msg, re.S)
     if not match_obj:
-        await compiler.finish(export.usage + '\n' + export.options)
+        await compiler.finish()
+
+    code = match_obj.group(2)
+    if not code:
+        return
 
     language = match_obj.group(1)
     if language not in legal_language:
         await compiler.finish(export.options)
 
-    code = match_obj.group(2)
-    if not code:
-        return
     result = await network_compile(language, code)
-    if isinstance(result, str):
-        await compiler.finish(result)
+    if not result:
+        await compiler.finish('出错了，请稍后再试')
     else:
-        await compiler.finish(result["output"] if result["output"] else result["errors"])
+        await compiler.finish(result['output'] if result['output'] else result['errors'])

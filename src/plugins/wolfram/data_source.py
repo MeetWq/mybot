@@ -1,5 +1,4 @@
-import base64
-import aiohttp
+import httpx
 import itertools
 import urllib.parse
 import wolframalpha
@@ -21,13 +20,13 @@ async def get_wolframalpha_simple(input, params=(), **kwargs):
     query = urllib.parse.urlencode(tuple(data))
     url = 'https://api.wolframalpha.com/v2/simple?' + query
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as resp:
-            if resp.status == 200:
-                data = await resp.read()
-                return MessageSegment.image(f"base64://{base64.b64encode(data).decode()}")
-            else:
-                return None
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(url)
+            result = resp.content
+        return MessageSegment.image(result)
+    except:
+        return None
 
 
 async def get_wolframalpha_text(input, params=(), **kwargs):

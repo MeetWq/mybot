@@ -1,6 +1,6 @@
+import httpx
 import base64
 import random
-import aiohttp
 import traceback
 from pixivpy_async import PixivClient, AppPixivAPI
 from nonebot import get_driver
@@ -12,6 +12,10 @@ from .config import Config
 global_config = get_driver().config
 pixiv_config = Config(**global_config.dict())
 proxy = global_config.socks_proxy
+httpx_proxy = {
+    'http': global_config.http_proxy,
+    'https': global_config.http_proxy
+}
 
 
 async def get_pixiv(keyword: str):
@@ -50,9 +54,9 @@ async def to_msg(illusts):
                 url = illust['image_urls']['large']
                 url = url.replace('_webp', '').replace(
                     'i.pximg.net', 'i.pixiv.cat')
-                async with aiohttp.ClientSession() as session:
-                    async with session.get(url, proxy=global_config.http_proxy) as resp:
-                        result = await resp.read()
+                async with httpx.AsyncClient(proxies=httpx_proxy) as client:
+                    resp = await client.get(url)
+                    result = resp.content
                 if result:
                     msg.append('{} ({})'.format(illust['title'], illust['id']))
                     msg.append(MessageSegment.image(
@@ -115,9 +119,9 @@ async def search_by_image(img_url):
         "Host": "saucenao.com"
     }
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.post(url, params=params, headers=headers) as resp:
-                result = await resp.json()
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(url, params=params, headers=headers)
+            result = resp.json()
 
         if result['header']['status'] == -1:
             logger.warning(

@@ -1,12 +1,11 @@
 import io
 import base64
 import jinja2
-import aiohttp
 import imageio
 import traceback
 from PIL import Image
+from lxml import etree
 from pathlib import Path
-from bs4 import BeautifulSoup
 
 from nonebot.log import logger
 from nonebot.adapters.cqhttp import MessageSegment
@@ -28,11 +27,9 @@ async def create_logo(texts, style='pornhub'):
             image = await create_5000choyen_logo(texts[0], texts[1])
         elif style == 'douyin':
             image = await create_douyin_logo(' '.join(texts))
-        elif style in ['cocacola', 'harrypotter']:
-            image = await create_logomaker_logo(' '.join(texts), style)
 
         if image:
-            return MessageSegment.image(f"base64://{base64.b64encode(image).decode()}")
+            return MessageSegment.image(image)
         return None
     except (AttributeError, TypeError, OSError):
         logger.debug(traceback.format_exc())
@@ -101,44 +98,11 @@ async def create_douyin_logo(text):
         await page.set_content(content)
         content = await page.content()
 
-    imgs = []
-    soup = BeautifulSoup(content, 'lxml')
-    elements = soup.find_all('a')
-    for e in elements:
-        imgs.append(e.get('href'))
-
+    dom = etree.HTML(content)
+    imgs = dom.xpath('//a/@href')
     imgs = [Image.open(io.BytesIO(base64.b64decode(
         img.replace('data:image/png;base64,', '')))) for img in imgs]
 
     output = io.BytesIO()
     imageio.mimsave(output, imgs, format='gif', duration=0.2)
     return output.getvalue()
-
-
-async def create_logomaker_logo(text, style='cocacola'):
-    url = 'https://logomaker.herokuapp.com/proc.php'
-    params = {
-        'type': '@' + style,
-        'title': text,
-        'scale': 200,
-        'spaceheight': 0,
-        'widthplus': 0,
-        'heightplus': 0,
-        'fontcolor': '#000000',
-    }
-    async with aiohttp.ClientSession() as session:
-        async with session.post(url, params=params) as resp:
-            result = await resp.text()
-    result = BeautifulSoup(result, 'lxml')
-    href = result.find('a', {'id': 'gdownlink'})
-    if not href:
-        return None
-
-    link = 'https://logomaker.herokuapp.com/' + href['href']
-    headers = {
-        'Referer': 'https://logomaker.herokuapp.com/gstyle.php'
-    }
-    async with aiohttp.ClientSession() as session:
-        async with session.get(link, headers=headers) as resp:
-            result = await resp.read()
-    return result
