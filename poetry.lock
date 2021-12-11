@@ -1,6 +1,6 @@
 [[package]]
 name = "aiofiles"
-version = "0.8.0"
+version = "0.7.0"
 description = "File support for asyncio."
 category = "main"
 optional = false
@@ -30,24 +30,6 @@ yarl = ">=1.0,<2.0"
 
 [package.extras]
 speedups = ["aiodns", "brotli", "cchardet"]
-
-[package.source]
-type = "legacy"
-url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
-reference = "tsinghua"
-
-[[package]]
-name = "aiohttp-socks"
-version = "0.7.1"
-description = "Proxy connector for aiohttp"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-aiohttp = ">=2.3.2"
-attrs = ">=19.2.0"
-python-socks = {version = ">=2.0.0,<3.0.0", extras = ["asyncio"]}
 
 [package.source]
 type = "legacy"
@@ -298,26 +280,6 @@ python-versions = ">=3.6"
 [package.dependencies]
 lxml = "*"
 requests = "*"
-
-[package.source]
-type = "legacy"
-url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
-reference = "tsinghua"
-
-[[package]]
-name = "beautifulsoup4"
-version = "4.10.0"
-description = "Screen-scraping library"
-category = "main"
-optional = false
-python-versions = ">3.0.0"
-
-[package.dependencies]
-soupsieve = ">1.2"
-
-[package.extras]
-html5lib = ["html5lib"]
-lxml = ["lxml"]
 
 [package.source]
 type = "legacy"
@@ -779,7 +741,7 @@ reference = "tsinghua"
 
 [[package]]
 name = "imageio"
-version = "2.13.1"
+version = "2.13.3"
 description = "Library for reading and writing a wide range of image, video, scientific, and volumetric data formats."
 category = "main"
 optional = false
@@ -1105,7 +1067,7 @@ reference = "tsinghua"
 
 [[package]]
 name = "nonebot-plugin-petpet"
-version = "0.1.8"
+version = "0.1.9"
 description = "Nonebot2 plugin for making fun pictures"
 category = "main"
 optional = false
@@ -1137,6 +1099,24 @@ lxml = ">=4.6.4,<5.0.0"
 nonebot-adapter-cqhttp = ">=2.0.0-alpha.15,<3.0.0"
 nonebot2 = ">=2.0.0-alpha.15,<3.0.0"
 playwright = ">=1.9.2,<2.0.0"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "nonebot-plugin-test"
+version = "0.3.0"
+description = "Test frontend for nonebot v2+"
+category = "main"
+optional = false
+python-versions = ">=3.7.3,<4.0.0"
+
+[package.dependencies]
+aiofiles = ">=0.7.0,<0.8.0"
+nonebot2 = ">=2.0.0-alpha.14,<3.0.0"
+python-socketio = ">=4.6.1,<5.0.0"
 
 [package.source]
 type = "legacy"
@@ -1308,7 +1288,7 @@ reference = "tsinghua"
 
 [[package]]
 name = "pycryptodome"
-version = "3.11.0"
+version = "3.12.0"
 description = "Cryptographic library for Python"
 category = "main"
 optional = false
@@ -1469,6 +1449,26 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "python-engineio"
+version = "3.14.2"
+description = "Engine.IO server"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+six = ">=1.9.0"
+
+[package.extras]
+asyncio_client = ["aiohttp (>=3.4)"]
+client = ["requests (>=2.21.0)", "websocket-client (>=0.54.0)"]
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "python-levenshtein-wheels"
 version = "0.13.2"
 description = "Python extension for computing string edit distances and similarities."
@@ -1501,21 +1501,20 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
-name = "python-socks"
-version = "2.0.0"
-description = "Core proxy (SOCKS4, SOCKS5, HTTP tunneling) functionality for Python"
+name = "python-socketio"
+version = "4.6.1"
+description = "Socket.IO server"
 category = "main"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-async-timeout = {version = ">=3.0.1", optional = true, markers = "extra == \"asyncio\""}
+python-engineio = ">=3.13.0,<4"
+six = ">=1.9.0"
 
 [package.extras]
-anyio = ["anyio (>=3.3.4)"]
-asyncio = ["async-timeout (>=3.0.1)"]
-curio = ["curio (>=1.4)"]
-trio = ["trio (>=0.16.0)"]
+asyncio_client = ["aiohttp (>=3.4)", "websockets (>=7.0)"]
+client = ["requests (>=2.21.0)", "websocket-client (>=0.54.0)"]
 
 [package.source]
 type = "legacy"
@@ -1735,19 +1734,6 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
-name = "soupsieve"
-version = "2.3.1"
-description = "A modern CSS selector implementation for Beautiful Soup."
-category = "main"
-optional = false
-python-versions = ">=3.6"
-
-[package.source]
-type = "legacy"
-url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
-reference = "tsinghua"
-
-[[package]]
 name = "starlette"
 version = "0.14.2"
 description = "The little ASGI library that shines."
@@ -1765,7 +1751,7 @@ reference = "tsinghua"
 
 [[package]]
 name = "tencentcloud-sdk-python"
-version = "3.0.539"
+version = "3.0.544"
 description = "Tencent Cloud SDK for Python"
 category = "main"
 optional = false
@@ -1987,13 +1973,14 @@ reference = "tsinghua"
 
 [[package]]
 name = "websocket-client"
-version = "1.2.1"
+version = "1.2.3"
 description = "WebSocket client for Python with low level API options"
 category = "main"
 optional = false
 python-versions = ">=3.6"
 
 [package.extras]
+docs = ["Sphinx (>=3.4)", "sphinx-rtd-theme (>=0.5)"]
 optional = ["python-socks", "wsaccel"]
 test = ["websockets"]
 
@@ -2115,12 +2102,12 @@ reference = "tsinghua"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "09e97309ac7b75ddfd1095cddd2b252fa5916c36c87d66d2cae2edec647ccd34"
+content-hash = "f47682e6f080b1ea6437902f1cfcb8e5ead09c7c84551cb89021357929cc1278"
 
 [metadata.files]
 aiofiles = [
-    {file = "aiofiles-0.8.0-py3-none-any.whl", hash = "sha256:7a973fc22b29e9962d0897805ace5856e6a566ab1f0c8e5c91ff6c866519c937"},
-    {file = "aiofiles-0.8.0.tar.gz", hash = "sha256:8334f23235248a3b2e83b2c3a78a22674f39969b96397126cc93664d9a901e59"},
+    {file = "aiofiles-0.7.0-py3-none-any.whl", hash = "sha256:c67a6823b5f23fcab0a2595a289cec7d8c863ffcb4322fb8cd6b90400aedfdbc"},
+    {file = "aiofiles-0.7.0.tar.gz", hash = "sha256:a1c4fc9b2ff81568c83e21392a82f344ea9d23da906e4f6a52662764545e19d4"},
 ]
 aiohttp = [
     {file = "aiohttp-3.8.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:1ed0b6477896559f17b9eaeb6d38e07f7f9ffe40b9f0f9627ae8b9926ae260a8"},
@@ -2196,10 +2183,6 @@ aiohttp = [
     {file = "aiohttp-3.8.1-cp39-cp39-win_amd64.whl", hash = "sha256:1c182cb873bc91b411e184dab7a2b664d4fea2743df0e4d57402f7f3fa644bac"},
     {file = "aiohttp-3.8.1.tar.gz", hash = "sha256:fc5471e1a54de15ef71c1bc6ebe80d4dc681ea600e68bfd1cbce40427f0b7578"},
 ]
-aiohttp-socks = [
-    {file = "aiohttp_socks-0.7.1-py3-none-any.whl", hash = "sha256:94bcff5ef73611c6c6231c2ffc1be4af1599abec90dbd2fdbbd63233ec2fb0ff"},
-    {file = "aiohttp_socks-0.7.1.tar.gz", hash = "sha256:2215cac4891ef3fa14b7d600ed343ed0f0a670c23b10e4142aa862b3db20341a"},
-]
 aiosignal = [
     {file = "aiosignal-1.2.0-py3-none-any.whl", hash = "sha256:26e62109036cd181df6e6ad646f91f0dcfd05fe16d0cb924138ff2ab75d64e3a"},
     {file = "aiosignal-1.2.0.tar.gz", hash = "sha256:78ed67db6c7b7ced4f98e495e572106d5c432a93e1ddd1bf475e1dc05f5b7df2"},
@@ -2264,10 +2247,6 @@ attrs = [
 baike = [
     {file = "baike-1.5.0-py3-none-any.whl", hash = "sha256:f5c2e1f645667142b592de84c1bca9395c3b9681cadf2444a4b46fbc269e18ed"},
     {file = "baike-1.5.0.tar.gz", hash = "sha256:f7e06ad42cf5de082c6525af8ccf46d4df8d889fb30689ce6bc3d58f19d4d9b0"},
-]
-beautifulsoup4 = [
-    {file = "beautifulsoup4-4.10.0-py3-none-any.whl", hash = "sha256:9a315ce70049920ea4572a4055bc4bd700c940521d36fc858205ad4fcde149bf"},
-    {file = "beautifulsoup4-4.10.0.tar.gz", hash = "sha256:c23ad23c521d818955a4151a67d81580319d4bf548d3d49f4223ae041ff98891"},
 ]
 binaryornot = [
     {file = "binaryornot-0.4.4-py2.py3-none-any.whl", hash = "sha256:b8b71173c917bddcd2c16070412e369c3ed7f0528926f70cac18a6c97fd563e4"},
@@ -2510,8 +2489,8 @@ idna = [
     {file = "idna-2.10.tar.gz", hash = "sha256:b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6"},
 ]
 imageio = [
-    {file = "imageio-2.13.1-py3-none-any.whl", hash = "sha256:2b45f8275bf3f513f80512da540d60268417021d217cac7c384783be0acb42fe"},
-    {file = "imageio-2.13.1.tar.gz", hash = "sha256:d3672d6a676f284c13a89d632b07b441f234caf0748e59271a18464a84172040"},
+    {file = "imageio-2.13.3-py3-none-any.whl", hash = "sha256:126f10aa970f54b657bcc52f6481a2e55137fcc0f978bb6e0451bd1e22c54f17"},
+    {file = "imageio-2.13.3.tar.gz", hash = "sha256:bb87b272e1e9b05d242e11f8d88d030aefa68ca95daf3accc986d0b782ae3cd5"},
 ]
 itsdangerous = [
     {file = "itsdangerous-2.0.1-py3-none-any.whl", hash = "sha256:5174094b9637652bdb841a3029700391451bd092ba3db90600dea710ba28e97c"},
@@ -2761,12 +2740,16 @@ nonebot-plugin-manager = [
     {file = "nonebot_plugin_manager-0.5.3.tar.gz", hash = "sha256:6509f269a220c7730348a34279aba6fdf5bb33ed0020f13d024073b6c3b8673a"},
 ]
 nonebot-plugin-petpet = [
-    {file = "nonebot_plugin_petpet-0.1.8-py3-none-any.whl", hash = "sha256:d3392c17f598a685c7762131af53640adb3ffdcfa11b1a04518417860a2be256"},
-    {file = "nonebot_plugin_petpet-0.1.8.tar.gz", hash = "sha256:ef96236a687768111cebc5cd6590631785217e6cb953122111f6427c5c588989"},
+    {file = "nonebot_plugin_petpet-0.1.9-py3-none-any.whl", hash = "sha256:ded7958774f33a6bf84bb5bdb8e67371935c5dea3241d086e8fd90036e449fcf"},
+    {file = "nonebot_plugin_petpet-0.1.9.tar.gz", hash = "sha256:f15e76f8114e1414399395e0118772b217bb67e811061e1bc2fb69880d0c7870"},
 ]
 nonebot-plugin-shindan = [
     {file = "nonebot_plugin_shindan-0.1.2-py3-none-any.whl", hash = "sha256:aaa333b132e2536d9d0cdb228297332c7161590934d57bb43445be28a08445ea"},
     {file = "nonebot_plugin_shindan-0.1.2.tar.gz", hash = "sha256:1189d57ddcbbcb23a829eca3d7d33005c10c9bb1b629e9ac76ebf55f632cd130"},
+]
+nonebot-plugin-test = [
+    {file = "nonebot-plugin-test-0.3.0.tar.gz", hash = "sha256:6cea9342f4df69a73b9aa27a3eaa22a08c6e54b675e2e6638b4b3fc8568cd6fe"},
+    {file = "nonebot_plugin_test-0.3.0-py3-none-any.whl", hash = "sha256:edb880340436323ccd0a13b31d48975136b6bdc71daa178601c4b05b068cc73e"},
 ]
 nonebot-plugin-withdraw = [
     {file = "nonebot_plugin_withdraw-0.1.4-py3-none-any.whl", hash = "sha256:382c598c3158eebf83dc997012524d3560abc939d4e49f2e2a312d819b9810c9"},
@@ -2879,36 +2862,36 @@ pyasn1 = [
     {file = "pyasn1-0.4.8.tar.gz", hash = "sha256:aef77c9fb94a3ac588e87841208bdec464471d9871bd5050a287cc9a475cd0ba"},
 ]
 pycryptodome = [
-    {file = "pycryptodome-3.11.0-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:ffd0cac13ff41f2d15ed39dc6ba1d2ad88dd2905d656c33d8235852f5d6151fd"},
-    {file = "pycryptodome-3.11.0-cp27-cp27m-manylinux1_i686.whl", hash = "sha256:ead516e03dfe062aefeafe4a29445a6449b0fc43bc8cb30194b2754917a63798"},
-    {file = "pycryptodome-3.11.0-cp27-cp27m-manylinux1_x86_64.whl", hash = "sha256:4ce6b09547bf2c7cede3a017f79502eaed3e819c13cdb3cb357aea1b004e4cc6"},
-    {file = "pycryptodome-3.11.0-cp27-cp27m-manylinux2010_i686.whl", hash = "sha256:014c758af7fa38cab85b357a496b76f4fc9dda1f731eb28358d66fef7ad4a3e1"},
-    {file = "pycryptodome-3.11.0-cp27-cp27m-manylinux2010_x86_64.whl", hash = "sha256:a843350d08c3d22f6c09c2f17f020d8dcfa59496165d7425a3fba0045543dda7"},
-    {file = "pycryptodome-3.11.0-cp27-cp27m-manylinux2014_aarch64.whl", hash = "sha256:53989477044be41fa4a63da09d5038c2a34b2f4554cfea2e3933b17186ee9e19"},
-    {file = "pycryptodome-3.11.0-cp27-cp27m-win32.whl", hash = "sha256:f9bad2220b80b4ed74f089db012ab5ab5419143a33fad6c8aedcc2a9341eac70"},
-    {file = "pycryptodome-3.11.0-cp27-cp27m-win_amd64.whl", hash = "sha256:3c7ed5b07274535979c730daf5817db5e983ea80b04c22579eee8da4ca3ae4f8"},
-    {file = "pycryptodome-3.11.0-cp27-cp27mu-manylinux1_i686.whl", hash = "sha256:8f3a60926be78422e662b0d0b18351b426ce27657101c8a50bad80300de6a701"},
-    {file = "pycryptodome-3.11.0-cp27-cp27mu-manylinux1_x86_64.whl", hash = "sha256:fce7e22d96030b35345637c563246c24d4513bd3b413e1c40293114837ab8912"},
-    {file = "pycryptodome-3.11.0-cp27-cp27mu-manylinux2010_i686.whl", hash = "sha256:bc3c61ff92efdcc14af4a7b81da71d849c9acee51d8fd8ac9841a7620140d6c6"},
-    {file = "pycryptodome-3.11.0-cp27-cp27mu-manylinux2010_x86_64.whl", hash = "sha256:b33c9b3d1327d821e28e9cc3a6512c14f8b17570ddb4cfb9a52247ed0fcc5d8b"},
-    {file = "pycryptodome-3.11.0-cp27-cp27mu-manylinux2014_aarch64.whl", hash = "sha256:75e78360d1dd6d02eb288fd8275bb4d147d6e3f5337935c096d11dba1fa84748"},
-    {file = "pycryptodome-3.11.0-cp35-abi3-macosx_10_9_x86_64.whl", hash = "sha256:621a90147a5e255fdc2a0fec2d56626b76b5d72ea9e60164c9a5a8976d45b0c9"},
-    {file = "pycryptodome-3.11.0-cp35-abi3-manylinux1_i686.whl", hash = "sha256:0ca7a6b4fc1f9fafe990b95c8cda89099797e2cfbf40e55607f2f2f5a3355dcb"},
-    {file = "pycryptodome-3.11.0-cp35-abi3-manylinux1_x86_64.whl", hash = "sha256:b59bf823cfafde8ef1105d8984f26d1694dff165adb7198b12e3e068d7999b15"},
-    {file = "pycryptodome-3.11.0-cp35-abi3-manylinux2010_i686.whl", hash = "sha256:ce81b9c6aaa0f920e2ab05eb2b9f4ccd102e3016b2f37125593b16a83a4b0cc2"},
-    {file = "pycryptodome-3.11.0-cp35-abi3-manylinux2010_x86_64.whl", hash = "sha256:ae29fcd56152f417bfba50a36a56a7a5f9fb74ff80bab98704cac704de6568ab"},
-    {file = "pycryptodome-3.11.0-cp35-abi3-manylinux2014_aarch64.whl", hash = "sha256:ae31cb874f6f0cedbed457c6374e7e54d7ed45c1a4e11a65a9c80968da90a650"},
-    {file = "pycryptodome-3.11.0-cp35-abi3-win32.whl", hash = "sha256:6db1f9fa1f52226621905f004278ce7bd90c8f5363ffd5d7ab3755363d98549a"},
-    {file = "pycryptodome-3.11.0-cp35-abi3-win_amd64.whl", hash = "sha256:d7e5f6f692421e5219aa3b545eb0cffd832cd589a4b9dcd4a5eb4260e2c0d68a"},
-    {file = "pycryptodome-3.11.0-pp27-pypy_73-macosx_10_9_x86_64.whl", hash = "sha256:da796e9221dda61a0019d01742337eb8a322de8598b678a4344ca0a436380315"},
-    {file = "pycryptodome-3.11.0-pp27-pypy_73-manylinux1_x86_64.whl", hash = "sha256:ed45ef92d21db33685b789de2c015e9d9a18a74760a8df1fc152faee88cdf741"},
-    {file = "pycryptodome-3.11.0-pp27-pypy_73-manylinux2010_x86_64.whl", hash = "sha256:4169ed515742425ff21e4bd3fabbb6994ffb64434472fb72230019bdfa36b939"},
-    {file = "pycryptodome-3.11.0-pp27-pypy_73-win32.whl", hash = "sha256:f19edd42368e9057c39492947bb99570dc927123e210008f2af7cf9b505c6892"},
-    {file = "pycryptodome-3.11.0-pp36-pypy36_pp73-macosx_10_9_x86_64.whl", hash = "sha256:06162fcfed2f9deee8383fd59eaeabc7b7ffc3af50d3fad4000032deb8f700b0"},
-    {file = "pycryptodome-3.11.0-pp36-pypy36_pp73-manylinux1_x86_64.whl", hash = "sha256:6eda8a3157c91ba60b26a07bedd6c44ab8bda6cd79b6b5ea9744ba62c39b7b1e"},
-    {file = "pycryptodome-3.11.0-pp36-pypy36_pp73-manylinux2010_x86_64.whl", hash = "sha256:7ff701fc283412e651eaab4319b3cd4eaa0827e94569cd37ee9075d5c05fe655"},
-    {file = "pycryptodome-3.11.0-pp36-pypy36_pp73-win32.whl", hash = "sha256:2a4bcc8a9977fee0979079cd33a9e9f0d3ddba5660d35ffe874cf84f1dd399d2"},
-    {file = "pycryptodome-3.11.0.tar.gz", hash = "sha256:428096bbf7a77e207f418dfd4d7c284df8ade81d2dc80f010e92753a3e406ad0"},
+    {file = "pycryptodome-3.12.0-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:90ad3381ccdc6a24cc2841e295706a168f32abefe64c679695712acac71fd5da"},
+    {file = "pycryptodome-3.12.0-cp27-cp27m-manylinux1_i686.whl", hash = "sha256:e80f7469b0b3ea0f694230477d8501dc5a30a717e94fddd4821e6721f3053eae"},
+    {file = "pycryptodome-3.12.0-cp27-cp27m-manylinux1_x86_64.whl", hash = "sha256:b91404611767a7485837a6f1fd20cf9a5ae0ad362040a022cd65827ecb1b0d00"},
+    {file = "pycryptodome-3.12.0-cp27-cp27m-manylinux2010_i686.whl", hash = "sha256:db66ccda65d5d20c17b00768e462a86f6f540f9aea8419a7f76cc7d9effd82cd"},
+    {file = "pycryptodome-3.12.0-cp27-cp27m-manylinux2010_x86_64.whl", hash = "sha256:dc88355c4b261ed259268e65705b28b44d99570337694d593f06e3b1698eaaf3"},
+    {file = "pycryptodome-3.12.0-cp27-cp27m-manylinux2014_aarch64.whl", hash = "sha256:6f8f5b7b53516da7511951910ab458e799173722c91fea54e2ba2f56d102e4aa"},
+    {file = "pycryptodome-3.12.0-cp27-cp27m-win32.whl", hash = "sha256:93acad54a72d81253242eb0a15064be559ec9d989e5173286dc21cad19f01765"},
+    {file = "pycryptodome-3.12.0-cp27-cp27m-win_amd64.whl", hash = "sha256:5a8c24d39d4a237dbfe181ea6593792bf9b5582c7fcfa7b8e0e12fda5eec07af"},
+    {file = "pycryptodome-3.12.0-cp27-cp27mu-manylinux1_i686.whl", hash = "sha256:32d15da81959faea6cbed95df2bb44f7f796211c110cf90b5ad3b2aeeb97fc8e"},
+    {file = "pycryptodome-3.12.0-cp27-cp27mu-manylinux1_x86_64.whl", hash = "sha256:aed7eb4b64c600fbc5e6d4238991ad1b4179a558401f203d1fcbd24883748982"},
+    {file = "pycryptodome-3.12.0-cp27-cp27mu-manylinux2010_i686.whl", hash = "sha256:341c6bbf932c406b4f3ee2372e8589b67ac0cf4e99e7dc081440f43a3cde9f0f"},
+    {file = "pycryptodome-3.12.0-cp27-cp27mu-manylinux2010_x86_64.whl", hash = "sha256:de0b711d673904dd6c65307ead36cb76622365a393569bf880895cba21195b7a"},
+    {file = "pycryptodome-3.12.0-cp27-cp27mu-manylinux2014_aarch64.whl", hash = "sha256:3558616f45d8584aee3eba27559bc6fd0ba9be6c076610ed3cc62bd5229ffdc3"},
+    {file = "pycryptodome-3.12.0-cp35-abi3-macosx_10_9_x86_64.whl", hash = "sha256:a78e4324e566b5fbc2b51e9240950d82fa9e1c7eb77acdf27f58712f65622c1d"},
+    {file = "pycryptodome-3.12.0-cp35-abi3-manylinux1_i686.whl", hash = "sha256:3f2f3dd596c6128d91314e60a6bcf4344610ef0e97f4ae4dd1770f86dd0748d8"},
+    {file = "pycryptodome-3.12.0-cp35-abi3-manylinux1_x86_64.whl", hash = "sha256:e05f994f30f1cda3cbe57441f41220d16731cf99d868bb02a8f6484c454c206b"},
+    {file = "pycryptodome-3.12.0-cp35-abi3-manylinux2010_i686.whl", hash = "sha256:4cded12e13785bbdf4ba1ff5fb9d261cd98162145f869e4fbc4a4b9083392f0b"},
+    {file = "pycryptodome-3.12.0-cp35-abi3-manylinux2010_x86_64.whl", hash = "sha256:1181c90d1a6aee68a84826825548d0db1b58d8541101f908d779d601d1690586"},
+    {file = "pycryptodome-3.12.0-cp35-abi3-manylinux2014_aarch64.whl", hash = "sha256:6bb0d340c93bcb674ea8899e2f6408ec64c6c21731a59481332b4b2a8143cc60"},
+    {file = "pycryptodome-3.12.0-cp35-abi3-win32.whl", hash = "sha256:39da5807aa1ff820799c928f745f89432908bf6624b9e981d2d7f9e55d91b860"},
+    {file = "pycryptodome-3.12.0-cp35-abi3-win_amd64.whl", hash = "sha256:212c7f7fe11cad9275fbcff50ca977f1c6643f13560d081e7b0f70596df447b8"},
+    {file = "pycryptodome-3.12.0-pp27-pypy_73-macosx_10_9_x86_64.whl", hash = "sha256:b07a4238465eb8c65dd5df2ab8ba6df127e412293c0ed7656c003336f557a100"},
+    {file = "pycryptodome-3.12.0-pp27-pypy_73-manylinux1_x86_64.whl", hash = "sha256:a6e1bcd9d5855f1a3c0f8d585f44c81b08f39a02754007f374fb8db9605ba29c"},
+    {file = "pycryptodome-3.12.0-pp27-pypy_73-manylinux2010_x86_64.whl", hash = "sha256:aceb1d217c3a025fb963849071446cf3aca1353282fe1c3cb7bd7339a4d47947"},
+    {file = "pycryptodome-3.12.0-pp27-pypy_73-win32.whl", hash = "sha256:f699360ae285fcae9c8f53ca6acf33796025a82bb0ccd7c1c551b04c1726def3"},
+    {file = "pycryptodome-3.12.0-pp36-pypy36_pp73-macosx_10_9_x86_64.whl", hash = "sha256:d845c587ceb82ac7cbac7d0bf8c62a1a0fe7190b028b322da5ca65f6e5a18b9e"},
+    {file = "pycryptodome-3.12.0-pp36-pypy36_pp73-manylinux1_x86_64.whl", hash = "sha256:d8083de50f6dec56c3c6f270fb193590999583a1b27c9c75bc0b5cac22d438cc"},
+    {file = "pycryptodome-3.12.0-pp36-pypy36_pp73-manylinux2010_x86_64.whl", hash = "sha256:9ea2f6674c803602a7c0437fccdc2ea036707e60456974fe26ca263bd501ec45"},
+    {file = "pycryptodome-3.12.0-pp36-pypy36_pp73-win32.whl", hash = "sha256:5d4264039a2087977f50072aaff2346d1c1c101cb359f9444cf92e3d1f42b4cd"},
+    {file = "pycryptodome-3.12.0.zip", hash = "sha256:12c7343aec5a3b3df5c47265281b12b611f26ec9367b6129199d67da54b768c1"},
 ]
 pydantic = [
     {file = "pydantic-1.8.2-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:05ddfd37c1720c392f4e0d43c484217b7521558302e7069ce8d318438d297739"},
@@ -2967,6 +2950,10 @@ python-dotenv = [
     {file = "python-dotenv-0.19.2.tar.gz", hash = "sha256:a5de49a31e953b45ff2d2fd434bbc2670e8db5273606c1e737cc6b93eff3655f"},
     {file = "python_dotenv-0.19.2-py2.py3-none-any.whl", hash = "sha256:32b2bdc1873fd3a3c346da1c6db83d0053c3c62f28f1f38516070c4c8971b1d3"},
 ]
+python-engineio = [
+    {file = "python-engineio-3.14.2.tar.gz", hash = "sha256:eab4553f2804c1ce97054c8b22cf0d5a9ab23128075248b97e1a5b2f29553085"},
+    {file = "python_engineio-3.14.2-py2.py3-none-any.whl", hash = "sha256:5a9e6086d192463b04a1428ff1f85b6ba631bbb19d453b144ffc04f530542b84"},
+]
 python-levenshtein-wheels = [
     {file = "python-Levenshtein-wheels-0.13.2.tar.gz", hash = "sha256:7bd8fc3ceeeaca626848a0d7a01d02f5b93475f2d56eaa37921f1271dec7bfb1"},
     {file = "python_Levenshtein_wheels-0.13.2-cp27-cp27m-manylinux1_i686.whl", hash = "sha256:c18114a8685684de347a7180c279b9ac228f2efff550db0f6e6d9b51e43a0d40"},
@@ -3018,9 +3005,9 @@ python-slugify = [
     {file = "python-slugify-5.0.2.tar.gz", hash = "sha256:f13383a0b9fcbe649a1892b9c8eb4f8eab1d6d84b84bb7a624317afa98159cab"},
     {file = "python_slugify-5.0.2-py2.py3-none-any.whl", hash = "sha256:6d8c5df75cd4a7c3a2d21e257633de53f52ab0265cd2d1dc62a730e8194a7380"},
 ]
-python-socks = [
-    {file = "python-socks-2.0.0.tar.gz", hash = "sha256:7944dad882846ac73e5f79e180c841e3895ee058e16855b7e8fff24f4cd0b90b"},
-    {file = "python_socks-2.0.0-py3-none-any.whl", hash = "sha256:aac65671cbd3b0eb55b20f8558c8de3894a315536aaab3ec0a7b9d46ff89c1bf"},
+python-socketio = [
+    {file = "python-socketio-4.6.1.tar.gz", hash = "sha256:cd1f5aa492c1eb2be77838e837a495f117e17f686029ebc03d62c09e33f4fa10"},
+    {file = "python_socketio-4.6.1-py2.py3-none-any.whl", hash = "sha256:5a21da53fdbdc6bb6c8071f40e13d100e0b279ad997681c2492478e06f370523"},
 ]
 pytz = [
     {file = "pytz-2021.3-py2.py3-none-any.whl", hash = "sha256:3672058bc3453457b622aab7a1c3bfd5ab0bdae451512f6cf25f64ed37f5b87c"},
@@ -3234,17 +3221,13 @@ sniffio = [
     {file = "sniffio-1.2.0-py3-none-any.whl", hash = "sha256:471b71698eac1c2112a40ce2752bb2f4a4814c22a54a3eed3676bc0f5ca9f663"},
     {file = "sniffio-1.2.0.tar.gz", hash = "sha256:c4666eecec1d3f50960c6bdf61ab7bc350648da6c126e3cf6898d8cd4ddcd3de"},
 ]
-soupsieve = [
-    {file = "soupsieve-2.3.1-py3-none-any.whl", hash = "sha256:1a3cca2617c6b38c0343ed661b1fa5de5637f257d4fe22bd9f1338010a1efefb"},
-    {file = "soupsieve-2.3.1.tar.gz", hash = "sha256:b8d49b1cd4f037c7082a9683dfa1801aa2597fb11c3a1155b7a5b94829b4f1f9"},
-]
 starlette = [
     {file = "starlette-0.14.2-py3-none-any.whl", hash = "sha256:3c8e48e52736b3161e34c9f0e8153b4f32ec5d8995a3ee1d59410d92f75162ed"},
     {file = "starlette-0.14.2.tar.gz", hash = "sha256:7d49f4a27f8742262ef1470608c59ddbc66baf37c148e938c7038e6bc7a998aa"},
 ]
 tencentcloud-sdk-python = [
-    {file = "tencentcloud-sdk-python-3.0.539.tar.gz", hash = "sha256:018b37f2fc7be3ed33fe690aae4fc663e50ebb47988cbab05754ccac993f4a53"},
-    {file = "tencentcloud_sdk_python-3.0.539-py2.py3-none-any.whl", hash = "sha256:fbdeebb745b4f71390b7ca8fd8840443d2aa2fec791439050879ac511a15f4a3"},
+    {file = "tencentcloud-sdk-python-3.0.544.tar.gz", hash = "sha256:0e70179775f2ab777e9f61a3739e506d6ebb63ba952a8fea9a22948148cef913"},
+    {file = "tencentcloud_sdk_python-3.0.544-py2.py3-none-any.whl", hash = "sha256:2f900c410ac2947635ae30807774719e8a24fbefcb95ffd0ab020800e99e3665"},
 ]
 text-unidecode = [
     {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
@@ -3312,8 +3295,8 @@ wcwidth = [
     {file = "wcwidth-0.2.5.tar.gz", hash = "sha256:c4d647b99872929fdb7bdcaa4fbe7f01413ed3d98077df798530e5b04f116c83"},
 ]
 websocket-client = [
-    {file = "websocket-client-1.2.1.tar.gz", hash = "sha256:8dfb715d8a992f5712fff8c843adae94e22b22a99b2c5e6b0ec4a1a981cc4e0d"},
-    {file = "websocket_client-1.2.1-py2.py3-none-any.whl", hash = "sha256:0133d2f784858e59959ce82ddac316634229da55b498aac311f1620567a710ec"},
+    {file = "websocket-client-1.2.3.tar.gz", hash = "sha256:1315816c0acc508997eb3ae03b9d3ff619c9d12d544c9a9b553704b1cc4f6af5"},
+    {file = "websocket_client-1.2.3-py3-none-any.whl", hash = "sha256:2eed4cc58e4d65613ed6114af2f380f7910ff416fc8c46947f6e76b6815f56c0"},
 ]
 websockets = [
     {file = "websockets-10.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:38db6e2163b021642d0a43200ee2dec8f4980bdbda96db54fde72b283b54cbfc"},
