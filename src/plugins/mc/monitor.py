@@ -1,5 +1,5 @@
 import re
-from bs4 import BeautifulSoup
+from lxml import etree
 from nonebot import require, get_bots, get_driver
 
 from .dynmap_source import get_dynmap_updates
@@ -61,7 +61,7 @@ async def dynmap_monitor():
         msgs = []
         for chat in chats:
             name = chat['playerName']
-            name = BeautifulSoup(name).text
+            name = etree.HTML(name).xpath('string(.)').strip()
             message = chat['message']
             msgs.append(f'[dynmap] {name}: {message}')
         msg = '\n'.join(msgs)

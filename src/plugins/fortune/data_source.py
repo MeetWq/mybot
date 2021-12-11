@@ -14,7 +14,7 @@ global_config = get_driver().config
 fortune_config = Config(**global_config.dict())
 
 dir_path = Path(__file__).parent
-data_path = dir_path / 'resources'
+resource_path = dir_path / 'resources'
 template_path = dir_path / 'template'
 env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_path),
                          enable_async=True)
@@ -52,14 +52,14 @@ async def get_response(user_id, username):
 
 
 def get_copywriting():
-    path = data_path / 'copywriting.json'
+    path = resource_path / 'copywriting.json'
     with path.open('r', encoding='utf-8') as json_file:
         data = json.load(json_file)
     return random.choice(data['copywriting'])
 
 
 def get_type(luck):
-    path = data_path / 'types.json'
+    path = resource_path / 'types.json'
     with open(path, 'r', encoding='utf-8') as json_file:
         data = json.load(json_file)
     types = data['types']
