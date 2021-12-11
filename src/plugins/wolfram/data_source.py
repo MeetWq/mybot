@@ -3,6 +3,7 @@ import itertools
 import urllib.parse
 import wolframalpha
 from nonebot import get_driver
+from nonebot.log import logger
 from nonebot.adapters.cqhttp import MessageSegment
 
 from .config import Config
@@ -25,7 +26,8 @@ async def get_wolframalpha_simple(input, params=(), **kwargs):
             resp = await client.get(url)
             result = resp.content
         return MessageSegment.image(result)
-    except:
+    except Exception as e:
+        logger.warning(f"Error in get_wolframalpha_simple({input}): {e}")
         return None
 
 
@@ -34,5 +36,6 @@ async def get_wolframalpha_text(input, params=(), **kwargs):
         client = wolframalpha.Client(wolframalpha_config.wolframalpha_appid)
         res = client.query(input, params, **kwargs)
         return next(res.results).text
-    except:
+    except Exception as e:
+        logger.warning(f"Error in get_wolframalpha_text({input}): {e}")
         return ''

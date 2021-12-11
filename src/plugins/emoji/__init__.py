@@ -6,12 +6,6 @@ from nonebot.adapters.cqhttp import Bot, Event, MessageSegment
 
 from .data_source import get_random_emoji, make_emoji, emojis
 
-export = export()
-export.description = '表情包'
-export.usage = 'Usage:\n  1、{keyword}.jpg，将会回复相关的表情包\n' \
-    '  2、emoji -t {type} {text}，表情包制作，发送 "emoji list" 查看支持的表情包列表'
-export.help = export.description + '\n' + export.usage
-
 
 end_jpg = on_endswith('.jpg', priority=30)
 

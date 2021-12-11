@@ -1,6 +1,5 @@
 import re
 import httpx
-import traceback
 from lxml import etree
 from thefuzz import fuzz
 from urllib.parse import quote
@@ -8,39 +7,6 @@ from nonebot.log import logger
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
 from baike import getBaike
-
-
-async def get_content(keyword, source='all', force=False, less=False):
-    msg = ''
-    if source in sources:
-        try:
-            _, msg = await sources[source](keyword, force)
-        except:
-            logger.warning(
-                f'Error in get {source} content: \n{traceback.format_exc()}')
-    elif source == 'all':
-        titles = []
-        msgs = []
-        sources_used = sources_less if less else sources
-        for s in sources_used.keys():
-            try:
-                t, m = await sources_used[s](keyword, force)
-                if t and m:
-                    titles.append(t)
-                    msgs.append(m)
-            except:
-                logger.warning(
-                    f'Error in get {s} content: \n{traceback.format_exc()}')
-        if msgs:
-            index = 0
-            max_ratio = 0
-            for i in range(len(msgs)):
-                ratio = fuzz.ratio(titles[i].lower(), keyword.lower())
-                if ratio > max_ratio:
-                    index = i
-                    max_ratio = ratio
-            msg = msgs[index]
-    return msg
 
 
 async def get_nbnhhsh(keyword, force=False):
@@ -81,7 +47,6 @@ async def get_jiki(keyword, force=False):
 
     if '对不起！小鸡词典暂未收录该词条' in result and \
             (not force or (force and '你可能喜欢的词条' not in result)):
-        logger.info('not found')
         return '', ''
 
     dom = etree.HTML(result)
@@ -89,10 +54,8 @@ async def get_jiki(keyword, force=False):
         "//div[contains(@class, 'masonry')]/div/div/div/a[contains(@class, 'title-container')]/@href")
 
     if not card_urls:
-        logger.info('no url')
         return '', ''
     card_url = card_urls[0]
-    logger.info(card_url)
     async with httpx.AsyncClient() as client:
         resp = await client.get(url=card_url)
         result = resp.text
@@ -105,9 +68,10 @@ async def get_jiki(keyword, force=False):
     content = content.xpath('string(.)').strip()
     img_urls = dom.xpath(
         "//div[@class='section card-middle']/div/div/div[@class='show-images']/img/@src")
-    logger.info(title)
-    logger.info(content)
-    logger.info(img_urls)
+
+    if not force:
+        if fuzz.ratio(title, keyword) < 90:
+            return '', ''
     msg = Message()
     msg.append(title + ':\n---------------\n')
     msg.append(content)
@@ -147,3 +111,29 @@ sources_less = {
     'jiki': sources['jiki'],
     'nbnhhsh': sources['nbnhhsh']
 }
+
+
+async def get_content(keyword, force=False, less=False):
+    msg = ''
+    titles = []
+    msgs = []
+    sources_used = sources_less if less else sources
+    for s in sources_used.keys():
+        try:
+            t, m = await sources_used[s](keyword, force)
+            if t and m:
+                titles.append(t)
+                msgs.append(m)
+        except Exception as e:
+            logger.warning(
+                f'Error in get_content({keyword}) using {s}: {e}')
+    if msgs:
+        index = 0
+        max_ratio = 0
+        for i in range(len(msgs)):
+            ratio = fuzz.ratio(titles[i].lower(), keyword.lower())
+            if ratio > max_ratio:
+                index = i
+                max_ratio = ratio
+        msg = msgs[index]
+    return msg

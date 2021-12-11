@@ -1,5 +1,4 @@
 import httpx
-import traceback
 from nonebot.log import logger
 from datetime import datetime, timedelta
 
@@ -12,8 +11,8 @@ async def get_dynmap_updates(url: str):
             resp = await client.get(url)
             result = resp.json()
         return result
-    except:
-        logger.debug(traceback.format_exc())
+    except Exception as e:
+        logger.warning(f"Error in get_dynmap_updates({url}): {e}")
         return None
 
 
@@ -57,6 +56,6 @@ async def send_message(config, msg):
             await client.post(login_url, data=info)
             await client.post(send_url, json=data)
         return True
-    except:
-        logger.debug(traceback.format_exc())
+    except Exception as e:
+        logger.warning(f"Error in send_message({config}, {msg}): {e}")
         return False

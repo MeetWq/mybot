@@ -1,14 +1,226 @@
 <html>
-    <body>
-        <script> {{"top_text.js" | load_file}} </script>
-        <script> {{"bottom_text.js" | load_file}} </script>
-        <script> {{"drawer.js" | load_file}} </script>
-        <script>
-            drawer = new Drawer();
-            drawer.topText.value = "{{top_text}}";
-            drawer.bottomText.value = "{{bottom_text}}";
-            drawer.refresh();
-            drawer.createImage();
-        </script>
-    </body>
+  <body>
+    <script>
+      function TopText(ctx) {
+        this.value = "";
+        this.font = "";
+        this.x = 70.0;
+        this.y = 100.0;
+        this.w = 0.0;
+        this.ctx = ctx;
+      }
+      TopText.prototype.init = function () {
+        this.ctx.font = this.font;
+        this.w = this.ctx.measureText(this.value).width;
+      };
+      TopText.prototype.draw = function () {
+        this.ctx.font = this.font;
+        this.ctx.setTransform(1, 0, -0.45, 1, 0, 0);
+        // 黑色
+        {
+          this.ctx.strokeStyle = "#000";
+          this.ctx.lineWidth = 22;
+          this.ctx.strokeText(this.value, this.x + 4, this.y + 4);
+        }
+        // 银色
+        {
+          const grad = this.ctx.createLinearGradient(0, 24, 0, 122);
+          grad.addColorStop(0.0, "rgb(0,15,36)");
+          grad.addColorStop(0.1, "rgb(255,255,255)");
+          grad.addColorStop(0.18, "rgb(55,58,59)");
+          grad.addColorStop(0.25, "rgb(55,58,59)");
+          grad.addColorStop(0.5, "rgb(200,200,200)");
+          grad.addColorStop(0.75, "rgb(55,58,59)");
+          grad.addColorStop(0.85, "rgb(25,20,31)");
+          grad.addColorStop(0.91, "rgb(240,240,240)");
+          grad.addColorStop(0.95, "rgb(166,175,194)");
+          grad.addColorStop(1, "rgb(50,50,50)");
+          this.ctx.strokeStyle = grad;
+          this.ctx.lineWidth = 20;
+          this.ctx.strokeText(this.value, this.x + 4, this.y + 4);
+        }
+        // 黑色
+        {
+          this.ctx.strokeStyle = "#000000";
+          this.ctx.lineWidth = 16;
+          this.ctx.strokeText(this.value, this.x, this.y);
+        }
+        // 金色
+        {
+          const grad = this.ctx.createLinearGradient(0, 20, 0, 100);
+          grad.addColorStop(0, "rgb(253,241,0)");
+          grad.addColorStop(0.25, "rgb(245,253,187)");
+          grad.addColorStop(0.4, "rgb(255,255,255)");
+          grad.addColorStop(0.75, "rgb(253,219,9)");
+          grad.addColorStop(0.9, "rgb(127,53,0)");
+          grad.addColorStop(1, "rgb(243,196,11)");
+          this.ctx.strokeStyle = grad;
+          this.ctx.lineWidth = 10;
+          this.ctx.strokeText(this.value, this.x, this.y);
+        }
+        // 黑
+        this.ctx.lineWidth = 6;
+        this.ctx.strokeStyle = "#000";
+        this.ctx.strokeText(this.value, this.x + 2, this.y - 3);
+        // 白
+        this.ctx.lineWidth = 6;
+        this.ctx.strokeStyle = "#FFFFFF";
+        this.ctx.strokeText(this.value, this.x, this.y - 3);
+        // 红
+        {
+          const grad = this.ctx.createLinearGradient(0, 20, 0, 100);
+          grad.addColorStop(0, "rgb(255, 100, 0)");
+          grad.addColorStop(0.5, "rgb(123, 0, 0)");
+          grad.addColorStop(0.51, "rgb(240, 0, 0)");
+          grad.addColorStop(1, "rgb(5, 0, 0)");
+          this.ctx.lineWidth = 4;
+          this.ctx.strokeStyle = grad;
+          this.ctx.strokeText(this.value, this.x, this.y - 3);
+        }
+        // 红
+        {
+          const grad = this.ctx.createLinearGradient(0, 20, 0, 100);
+          grad.addColorStop(0, "rgb(230, 0, 0)");
+          grad.addColorStop(0.5, "rgb(123, 0, 0)");
+          grad.addColorStop(0.51, "rgb(240, 0, 0)");
+          grad.addColorStop(1, "rgb(5, 0, 0)");
+          this.ctx.fillStyle = grad;
+          this.ctx.fillText(this.value, this.x, this.y - 3);
+        }
+      };
+    </script>
+    <script>
+      function BottomText(ctx) {
+        this.value = "";
+        this.font = "";
+        this.x = 250.0;
+        this.y = 230.0;
+        this.w = 0.0;
+        this.ctx = ctx;
+      }
+      BottomText.prototype.init = function () {
+        this.ctx.font = this.font;
+        this.w = this.ctx.measureText(this.value).width - 40;
+      };
+      BottomText.prototype.draw = function () {
+        this.ctx.font = this.font;
+        this.ctx.setTransform(1, 0, -0.45, 1, 0, 0);
+        // 黑色
+        {
+          this.ctx.strokeStyle = "#000";
+          this.ctx.lineWidth = 22;
+          this.ctx.strokeText(this.value, this.x + 5, this.y + 2);
+        }
+        // 银
+        {
+          const grad = this.ctx.createLinearGradient(
+            0,
+            this.y - 80,
+            0,
+            this.y + 18
+          );
+          grad.addColorStop(0, "rgb(0,15,36)");
+          grad.addColorStop(0.25, "rgb(250,250,250)");
+          grad.addColorStop(0.5, "rgb(150,150,150)");
+          grad.addColorStop(0.75, "rgb(55,58,59)");
+          grad.addColorStop(0.85, "rgb(25,20,31)");
+          grad.addColorStop(0.91, "rgb(240,240,240)");
+          grad.addColorStop(0.95, "rgb(166,175,194)");
+          grad.addColorStop(1, "rgb(50,50,50)");
+          this.ctx.strokeStyle = grad;
+          this.ctx.lineWidth = 19;
+          this.ctx.strokeText(this.value, this.x + 5, this.y + 2);
+        }
+        // 黑色
+        {
+          this.ctx.strokeStyle = "#10193A";
+          this.ctx.lineWidth = 17;
+          this.ctx.strokeText(this.value, this.x, this.y);
+        }
+        // 白
+        {
+          this.ctx.strokeStyle = "#DDD";
+          this.ctx.lineWidth = 8;
+          this.ctx.strokeText(this.value, this.x, this.y);
+        }
+        // 绀
+        {
+          const grad = this.ctx.createLinearGradient(0, this.y - 80, 0, this.y);
+          grad.addColorStop(0, "rgb(16,25,58)");
+          grad.addColorStop(0.03, "rgb(255,255,255)");
+          grad.addColorStop(0.08, "rgb(16,25,58)");
+          grad.addColorStop(0.2, "rgb(16,25,58)");
+          grad.addColorStop(1, "rgb(16,25,58)");
+          this.ctx.strokeStyle = grad;
+          this.ctx.lineWidth = 7;
+          this.ctx.strokeText(this.value, this.x, this.y);
+        }
+        // 银
+        {
+          const grad = this.ctx.createLinearGradient(0, this.y - 80, 0, this.y);
+          grad.addColorStop(0, "rgb(245,246,248)");
+          grad.addColorStop(0.15, "rgb(255,255,255)");
+          grad.addColorStop(0.35, "rgb(195,213,220)");
+          grad.addColorStop(0.5, "rgb(160,190,201)");
+          grad.addColorStop(0.51, "rgb(160,190,201)");
+          grad.addColorStop(0.52, "rgb(196,215,222)");
+          grad.addColorStop(1.0, "rgb(255,255,255)");
+          this.ctx.fillStyle = grad;
+          this.ctx.fillText(this.value, this.x, this.y - 3);
+        }
+      };
+    </script>
+    <script>
+      function Drawer() {
+        this.canvas = document.createElement("canvas");
+        this.ctx = this.canvas.getContext("2d");
+        this.ctx.lineJoin = "round";
+        this.ctx.lineCap = "round";
+        this.topText = new TopText(this.ctx);
+        this.bottomText = new BottomText(this.ctx);
+        this.useTransparent = false;
+        this.lang = "";
+      }
+      Drawer.prototype.refresh = function () {
+        if (this.lang == "ja") {
+          this.topText.font = "100px notobk";
+          this.bottomText.font = "100px notoserifbk";
+        } else {
+          this.topText.font = "100px 'Noto Sans SC'";
+          this.bottomText.font = "100px 'Noto Serif SC'";
+        }
+        this.topText.init();
+        this.bottomText.init();
+        this.canvas.width = Math.max(
+          this.topText.x + this.topText.w,
+          this.bottomText.x + this.bottomText.w
+        );
+        this.canvas.height = 290;
+        this.clear();
+      };
+      Drawer.prototype.clear = function () {
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        if (!this.useTransparent) {
+          this.ctx.fillStyle = `white`;
+          this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        } else {
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+      };
+      Drawer.prototype.createImage = function () {
+        this.topText.draw();
+        this.bottomText.draw();
+        const a = document.createElement("a");
+        a.href = this.canvas.toDataURL("image/png");
+        document.body.appendChild(a);
+      };
+    </script>
+    <script>
+      drawer = new Drawer();
+      drawer.topText.value = "{{ top_text }}";
+      drawer.bottomText.value = "{{ bottom_text }}";
+      drawer.refresh();
+      drawer.createImage();
+    </script>
+  </body>
 </html>

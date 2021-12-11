@@ -1,4 +1,4 @@
-from nonebot import export, on_shell_command
+from nonebot import on_shell_command
 from nonebot.typing import T_State
 from nonebot.rule import ArgumentParser
 from nonebot.adapters.cqhttp.bot import Bot
@@ -9,14 +9,20 @@ from .monitor import *
 from .data_source import update_rss_info
 from .rss_list import get_rss_list, clear_rss_list, add_rss_list, del_rss_list
 
-export = export()
-export.description = 'RSS订阅'
-export.usage = '''Usage:
-rss add/添加 订阅名 RSSHub路径/完整URL
-rss del/删除 订阅名
-rss clear/清空
-rss list/列表'''
-export.help = export.description + '\n' + export.usage
+
+__des__ = 'RSS订阅'
+__cmd__ = '''
+添加订阅：rss add {订阅名} {RSSHub路径/完整URL}
+取消订阅：rss del {订阅名}
+订阅列表：rss list
+清空订阅：rss clear
+'''.strip()
+__example__ = '''
+rss add /bilibili/user/dynamic/282994
+rss add https://rsshub.app/bilibili/user/dynamic/282994
+'''.strip()
+__usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
+
 
 rss_parser = ArgumentParser()
 rss_parser.add_argument('arg', nargs='+')
@@ -43,7 +49,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     if len(args) < 1:
         await rss.finish()
     elif len(args) > 3:
-        await rss.finish(export.usage)
+        await rss.finish(f'Usage:\n{__cmd__}')
 
 
 def get_id(event: Event):
@@ -98,7 +104,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     user_id = state['user_id']
 
     if command not in ['添加', 'add']:
-        await rss.finish('参数数量错误\n' + export.usage)
+        await rss.finish()
 
     new_rss = RSS(name, url)
     status = await update_rss_info(new_rss)

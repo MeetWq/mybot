@@ -4,6 +4,13 @@ from nonebot.adapters.cqhttp import Bot, Event
 
 from .data_source import get_response
 
+
+__des__ = '今日运势'
+__cmd__ = '今日运势/今日人品/jrrp'
+__short_cmd__ = __cmd__
+__usage__ = f'{__des__}\nUsage:\n{__cmd__}'
+
+
 export = export()
 export.description = '今日运势'
 export.usage = 'Usage:\n  今日运势/今日人品/jrrp'

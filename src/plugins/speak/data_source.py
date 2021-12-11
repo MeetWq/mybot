@@ -4,7 +4,6 @@ import json
 import uuid
 import httpx
 import base64
-import traceback
 
 import langid
 from pydub import AudioSegment
@@ -32,8 +31,8 @@ async def get_voice(text, type=0):
         else:
             voice = await get_tx_voice(text, type)
         return voice
-    except:
-        logger.warning('Error in get_voice: ' + traceback.format_exc())
+    except Exception as e:
+        logger.warning(f'Error in get_voice({text}): {e}')
         return None
 
 

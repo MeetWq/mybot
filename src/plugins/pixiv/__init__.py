@@ -1,14 +1,22 @@
 import re
-from nonebot import export, on_command
+from nonebot import on_command
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, Event, Message
 
 from .data_source import get_pixiv, search_by_image
 
-export = export()
-export.description = 'Pixiv图片、以图搜图'
-export.usage = 'Usage:\n  1. pixiv {日榜/周榜/月榜/id/关键词}\n  2. 搜图 {图片/url}'
-export.help = export.description + '\n' + export.usage
+
+__des__ = 'Pixiv图片、以图搜图'
+__cmd__ = '''
+1. pixiv {日榜/周榜/月榜/id/关键词}
+2. 搜图 {图片/url}
+'''.strip()
+__short_cmd__ = 'pixiv {keyword}、搜图 {图片}'
+__example__ = '''
+pixiv 伊蕾娜
+'''.strip()
+__usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
+
 
 pixiv = on_command('pixiv', priority=25)
 

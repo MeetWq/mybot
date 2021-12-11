@@ -1,30 +1,10 @@
 import httpx
 import requests
-import traceback
 from http.cookies import SimpleCookie
 from nonebot.log import logger
 from nonebot.adapters.cqhttp import MessageSegment
 
 from .qcloud_client import qcloud_client
-
-
-async def search_song(keyword, source='qq'):
-    try:
-        msg = None
-        if source == 'qq':
-            msg = await search_qq(keyword)
-        elif source == 'netease':
-            msg = await search_netease(keyword)
-        elif source == 'kugou':
-            msg = await search_kugou(keyword)
-        elif source == 'migu':
-            msg = await search_migu(keyword)
-        elif source == 'bilibili':
-            msg = await search_bilibili(keyword)
-        return msg
-    except (TypeError, KeyError, IndexError):
-        logger.debug(traceback.format_exc())
-        return None
 
 
 async def search_qq(keyword, page=1, pagesize=1, number=1):
@@ -38,6 +18,8 @@ async def search_qq(keyword, page=1, pagesize=1, number=1):
     async with httpx.AsyncClient() as client:
         resp = await client.get(url, params=params)
         result = resp.json()
+    if not result['data']['song']['list']:
+        return 'QQ音乐中没有找到相关歌曲'
     songid = result['data']['song']['list'][number - 1]['songid']
     return MessageSegment.music('qq', songid)
 
@@ -53,6 +35,8 @@ async def search_netease(keyword, page=1, pagesize=1, number=1):
     async with httpx.AsyncClient() as client:
         resp = await client.post(url, params=params)
         result = resp.json()
+    if not result['result'].get('songs', []):
+        return '网易云音乐中没有找到相关歌曲'
     songid = result['result']['songs'][number - 1]['id']
     return MessageSegment.music('163', songid)
 
@@ -69,6 +53,8 @@ async def search_kugou(keyword, page=1, pagesize=1, number=1):
     async with httpx.AsyncClient() as client:
         resp = await client.get(search_url, params=params)
         result = resp.json()
+    if not result['data']['info']:
+        return '酷狗音乐中没有找到相关歌曲'
     hash = result['data']['info'][number - 1]['hash']
     album_id = result['data']['info'][number - 1]['album_id']
     song_url = 'https://wwwapi.kugou.com/yy/index.php'
@@ -85,12 +71,14 @@ async def search_kugou(keyword, page=1, pagesize=1, number=1):
         'kg_dfid_collect=d41d8cd98f00b204e9800998ecf8427e; ' \
         'Hm_lpvt_aedee6983d4cfc62f509129360d6bb3d=1598199021'
 
+    def parse_cookies(cookies_raw: str) -> dict:
+        return {key: morsel.value for key, morsel in SimpleCookie(cookies_raw).items()}
+
     async with httpx.AsyncClient() as client:
         resp = await client.get(song_url, params=params, cookies=parse_cookies(cookies))
         result = resp.json()
     info = result['data']
-    url = 'https://www.kugou.com/song/#hash={}&album_id={}'.format(
-        hash, album_id)
+    url = f'https://www.kugou.com/song/#hash={hash}&album_id={album_id}'
     audio = info['play_url']
     title = info['song_name']
     content = info['author_name']
@@ -112,6 +100,8 @@ async def search_migu(keyword, page=1, pagesize=1, number=1):
     async with httpx.AsyncClient() as client:
         resp = await client.get(url, params=params, headers=headers)
         result = resp.json()
+    if not result.get('musics', []):
+        return '咪咕音乐中没有找到相关歌曲'
     info = result['musics'][number - 1]
     url = f"https://music.migu.cn/v3/music/song/{info['copyrightId']}"
     audio = info['mp3']
@@ -132,8 +122,10 @@ async def search_bilibili(keyword, page=1, pagesize=1, number=1):
     async with httpx.AsyncClient() as client:
         resp = await client.get(search_url, params=params)
         result = resp.json()
+    if not result['data'].get('result', []):
+        return 'B站音频区中没有找到相关歌曲'
     info = result['data']['result'][number - 1]
-    url = 'https://www.bilibili.com/audio/au{}'.format(info['id'])
+    url = f"https://www.bilibili.com/audio/au{info['id']}"
     audio = info['play_url_list'][0]['url']
     title = info['title']
     content = info['author']
@@ -150,5 +142,35 @@ async def search_bilibili(keyword, page=1, pagesize=1, number=1):
     return MessageSegment.music_custom(url=url, audio=audio, title=title, content=content, img_url=img_url)
 
 
-def parse_cookies(cookies_raw: str) -> dict:
-    return {key: morsel.value for key, morsel in SimpleCookie(cookies_raw).items()}
+sources = {
+    'qq': {
+        'aliases': {'点歌', 'qq点歌', 'QQ点歌'},
+        'func': search_qq
+    },
+    'netease': {
+        'aliases': {'网易点歌', '网易云点歌'},
+        'func': search_netease
+    },
+    'kugou': {
+        'aliases': {'酷狗点歌'},
+        'func': search_kugou
+    },
+    'migu': {
+        'aliases': {'咪咕点歌'},
+        'func': search_migu
+    },
+    'bilibili': {
+        'aliases': {'b站点歌', 'B站点歌', 'bilibili点歌'},
+        'func': search_bilibili
+    },
+}
+
+
+async def search_song(keyword, source):
+    try:
+        func = sources[source]['func']
+        return await func(keyword)
+    except Exception as e:
+        logger.warning(
+            f"Error in search_song({keyword}, {source}): {e}")
+        return None

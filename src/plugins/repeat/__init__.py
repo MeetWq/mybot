@@ -1,13 +1,15 @@
 import re
-from nonebot import export, on_message
+from nonebot import on_message
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, Event, GroupMessageEvent, MessageSegment
 
-export = export()
-export.description = '复读机'
-export.usage = 'Usage:\n  重复两次的内容会被复读'
-export.notice = 'Notice:\n  只能复读文本和图片；指令及其回复不会被复读'
-export.help = export.description + '\n' + export.usage + '\n' + export.notice
+
+__des__ = '复读机'
+__cmd__ = '''
+重复两次的内容会被复读；只能复读文本和图片；指令及其回复不会被复读
+'''.strip()
+__short_cmd__ = '无'
+__usage__ = f'{__des__}\nUsage:\n{__cmd__}'
 
 
 async def repeat_rule(bot: Bot, event: Event, state: T_State) -> bool:

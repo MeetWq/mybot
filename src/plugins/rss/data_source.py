@@ -20,7 +20,8 @@ async def get_rss_info(url: str) -> dict:
             resp = await client.get(url, timeout=20)
             result = resp.text
         return feedparser.parse(result)
-    except:
+    except Exception as e:
+        logger.warning(f"Error in get_rss_info({url}): {e}")
         return {}
 
 
@@ -28,19 +29,13 @@ async def update_rss_info(rss: RSS) -> bool:
     info = await get_rss_info(rss.url)
     if not info:
         return False
-    try:
-        rss.title = info['feed']['title']
-        rss.link = info['feed']['link']
-    except:
-        return False
+    rss.title = info['feed'].get('title', '')
+    rss.link = info['feed'].get('link', '')
     try:
         rss.logo = info['feed']['image']['href']
     except:
         rss.logo = f'https://ui-avatars.com/api/?background=random&name={quote(rss.title)}'
-    try:
-        rss.rights = info['feed']['rights']
-    except:
-        pass
+    rss.rights = info['feed'].get('rights', '')
     return True
 
 
@@ -85,7 +80,4 @@ async def update_rss(rss: RSS) -> List[dict]:
             rss.last_update = newest_time
     except:
         rss.last_update = RSS.time_now()
-    if new_entries:
-        logger.debug(f'new rss in {rss.name}:')
-        logger.debug(new_entries)
     return new_entries

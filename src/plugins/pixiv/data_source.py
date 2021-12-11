@@ -1,7 +1,6 @@
 import httpx
 import base64
 import random
-import traceback
 from pixivpy_async import PixivClient, AppPixivAPI
 from nonebot import get_driver
 from nonebot.adapters.cqhttp import MessageSegment, Message
@@ -11,7 +10,7 @@ from .config import Config
 
 global_config = get_driver().config
 pixiv_config = Config(**global_config.dict())
-proxy = global_config.socks_proxy
+proxy = global_config.http_proxy
 httpx_proxy = {
     'http://': global_config.http_proxy,
     'https://': global_config.http_proxy
@@ -39,8 +38,8 @@ async def get_pixiv(keyword: str):
             return '出错了，请稍后再试'
         msg = await to_msg(illusts)
         return msg
-    except:
-        logger.warning(traceback.format_exc())
+    except Exception as e:
+        logger.warning(f"Error in get_pixiv({keyword}): {e}")
         return '出错了，请稍后再试'
 
 
@@ -55,14 +54,14 @@ async def to_msg(illusts):
                 url = url.replace('_webp', '').replace(
                     'i.pximg.net', 'i.pixiv.cat')
                 async with httpx.AsyncClient(proxies=httpx_proxy) as client:
-                    resp = await client.get(url)
+                    resp = await client.get(url, timeout=20)
                     result = resp.content
                 if result:
                     msg.append('{} ({})'.format(illust['title'], illust['id']))
                     msg.append(MessageSegment.image(
                         f"base64://{base64.b64encode(result).decode()}"))
-            except:
-                logger.warning(traceback.format_exc())
+            except Exception as e:
+                logger.warning(f"Error downloading {url}: {e}")
         return msg
 
 
@@ -146,8 +145,8 @@ async def search_by_image(img_url):
             f"作者：{data['member_name']}\n" \
             f"作者id：{data['member_id']}\n" \
             f"链接：{', '.join(data['ext_urls'])}"
-    except:
-        logger.debug(traceback.format_exc())
+    except Exception as e:
+        logger.warning(f"Error in search_by_image({url}): {e}")
         return None
 
     msgs = Message()

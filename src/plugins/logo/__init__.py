@@ -1,45 +1,55 @@
-from nonebot import export, on_shell_command
-from nonebot.rule import ArgumentParser
-from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, Event
+import shlex
+from typing import Type
+from nonebot import on_command
+from nonebot.matcher import Matcher
+from nonebot.typing import T_Handler, T_State
+from nonebot.adapters.cqhttp import Bot, Event, MessageSegment
 
-from .data_source import create_logo
-
-export = export()
-export.description = 'logo生成'
-export.usage = 'Usage:\n  logo [-s style] {text}'
-export.options = 'Options:\n  -s, --style logo风格，目前支持：pornhub(默认)、youtube、5000choyen、douyin'
-export.example = 'Example: \n  logo -s youtube text1 text2'
-export.example1 = 'Example: \n  logo -s youtube "te xt1" text2'
-export.notice = 'Notice:\n  pornhub, youtube和5000choyen需输入2段文字并用空格分开'
-export.help = export.description + '\n' + export.usage + '\n' + export.options + '\n' + export.example + '\n' + export.notice
-
-logo_parser = ArgumentParser()
-logo_parser.add_argument('-s', '--style', default='pornhub')
-logo_parser.add_argument('text', nargs='+')
-
-logo = on_shell_command('logo', parser=logo_parser, priority=16)
+from .data_source import create_logo, commands
 
 
-@logo.handle()
-async def _(bot: Bot, event: Event, state: T_State):
-    args = state['args']
-    if not hasattr(args, 'text'):
-        await logo.finish()
+__des__ = 'pornhub等风格logo生成'
+__cmd__ = '''
+pornhub：ph {text1} {text2}
+youtube：yt {text1} {text2}
+5000兆円欲しい!：5000兆 {text1} {text2}
+抖音：douyin {text}
+'''.strip()
+__short_cmd__ = 'ph、yt、5000兆、douyin'
+__example__ = '''
+ph Porn Hub
+yt You Tube
+5000兆 我去 初音未来
+'''.strip()
+__usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
-    style = args.style
-    if style not in ['pornhub', 'youtube', '5000choyen', 'douyin']:
-        await logo.finish(export.options)
 
-    texts = args.text
-    if style in ['pornhub', 'youtube', '5000choyen'] and len(texts) != 2:
-        if len(texts) < 2:
-            await logo.finish('参数数量不符\n' + export.notice + '\n' + export.example)
-        else:
-            await logo.finish('参数数量不符\n' + export.notice + '，带空格的参数需加引号' + '\n' + export.example1)
+async def handle(matcher: Type[Matcher], event: Event, style: str):
+    text = event.get_plaintext().strip()
+    arg_num = commands[style]['arg_num']
+    texts = [text] if arg_num == 1 else shlex.split(text)
+
+    if len(texts) != arg_num:
+        await matcher.finish('参数数量不符')
 
     image = await create_logo(texts, style)
     if image:
-        await logo.finish(image)
+        await matcher.finish(MessageSegment.image(image))
     else:
-        await logo.finish('出错了，请稍后再试')
+        await matcher.finish('出错了，请稍后再试')
+
+
+def create_matchers():
+
+    def create_handler(style: str) -> T_Handler:
+        async def handler(bot: Bot, event: Event, state: T_State):
+            await handle(matcher, event, style)
+        return handler
+
+    for style, params in commands.items():
+        matcher = on_command(
+            style, aliases=params['aliases'], priority=16)
+        matcher.append_handler(create_handler(style))
+
+
+create_matchers()

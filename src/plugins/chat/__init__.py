@@ -1,7 +1,7 @@
 import re
 import random
 from datetime import datetime, timedelta
-from nonebot import export, get_driver, on_message
+from nonebot import get_driver, on_message
 from nonebot.permission import Permission
 from nonebot.rule import to_me, Rule
 from nonebot.typing import T_State
@@ -14,10 +14,14 @@ from .config import Config
 global_config = get_driver().config
 chat_config = Config(**global_config.dict())
 
-export = export()
-export.description = '闲聊'
-export.usage = 'Usage:\n @我触发，若15s内无响应则结束对话，也可以发送“停”结束对话'
-export.help = export.description + '\n' + export.usage
+
+__des__ = '人工智障聊天'
+__cmd__ = '''
+@我 进入连续对话模式，若15s内无响应则结束对话，也可以发送“停、再见、闭嘴”结束对话
+'''.strip()
+__short_cmd__ = '@我 聊天即可'
+__usage__ = f'{__des__}\nUsage:\n{__cmd__}'
+
 
 chat = on_message(rule=to_me(), priority=40)
 
@@ -48,6 +52,10 @@ end_word = [
 
 @chat.handle()
 async def first_receive(bot: Bot, event: Event, state: T_State):
+    match_reply = re.search(r"\[CQ:reply,id=(-?\d*)]", event.raw_message)
+    if match_reply:
+        await chat.finish()
+
     msg = event.get_plaintext().strip()
     msg = filter_msg(msg)
     if msg:

@@ -1,25 +1,27 @@
 import re
-from nonebot import export, on_keyword, on_shell_command
-from nonebot.rule import ArgumentParser
+from nonebot import on_keyword, on_command
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, Event
 
-from .data_source import get_content, sources
+from .data_source import get_content
 
-export = export()
-export.description = '百科'
-export.usage = 'Usage:\n  1. what [options] {keyword}\n  2. {keyword}是啥/是什么'
-export.options = 'Options:\n  -s, --source 百科来源，目前支持：nbnhhsh、小鸡词典(jiki)、百度百科(baidu)'
-export.notice = 'Notice:\n  为避免影响正常聊天，“是啥”仅当词条完全匹配时才会响应。若要返回相近的结果请用“what”命令'
-export.help = export.description + '\n' + export.usage + '\n' + export.options + '\n' + export.notice
 
-what_parser = ArgumentParser()
-what_parser.add_argument('-s', '--source', default='all')
-what_parser.add_argument('keyword', nargs='+')
+__des__ = '缩写查询、梗百科'
+__cmd__ = '''
+1. {keyword} 是啥/是什么
+2. 百科 {keyword}
+'''.strip()
+__short_cmd__ = 'xxx 是啥、百科xxx'
+__example__ = '''
+xswl 是啥
+百科 洛天依
+'''.strip()
+__usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
+
 
 commands = {'是啥', '是什么', '是谁'}
 what = on_keyword(commands, priority=27)
-what_command = on_shell_command('what', parser=what_parser, priority=17)
+baike = on_command('baike', aliases={'百科'}, priority=17)
 
 
 def split_command(msg):
@@ -36,10 +38,8 @@ async def _(bot: Bot, event: Event, state: T_State):
     prefix_words = ['这', '这个', '那', '那个', '你', '我', '他', '它']
     suffix_words = ['意思', '梗', '玩意', '鬼']
     prefix, suffix = split_command(msg)
-    if not prefix or prefix in prefix_words:
-        what.block = False
-        return
-    if suffix and suffix not in suffix_words:
+    if (not prefix or prefix in prefix_words) or \
+            (suffix and suffix not in suffix_words):
         what.block = False
         return
     keyword = prefix
@@ -53,26 +53,14 @@ async def _(bot: Bot, event: Event, state: T_State):
     return
 
 
-@what_command.handle()
+@baike.handle()
 async def _(bot: Bot, event: Event, state: T_State):
-    args = state['args']
-    if not hasattr(args, 'keyword'):
-        await what_command.finish(export.usage)
-    keyword = args.keyword
-    keyword = ' '.join(keyword)
-    keyword = keyword.strip().strip('.>,?!。，（）()[]【】')
+    keyword = event.get_plaintext().strip().strip('.>,?!。，（）()[]【】')
     if not keyword:
-        await what_command.finish(export.usage)
+        await baike.finish()
 
-    source = args.source
-    if source != 'all' and source not in sources:
-        await what_command.finish(export.options)
-
-    msg = await get_content(keyword, source, force=True)
+    msg = await get_content(keyword, force=True)
     if msg:
-        await what_command.finish(msg)
+        await baike.finish(msg)
     else:
-        if source == 'all':
-            await what_command.finish('找不到相关的条目')
-        else:
-            await what_command.finish(source + '中找不到相关的条目')
+        await baike.finish('找不到相关的条目')

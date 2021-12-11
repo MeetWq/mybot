@@ -24,18 +24,17 @@ async def rss_to_msg(rss: RSS, info: dict) -> Message:
     img = await rss_to_image(rss, info)
     if not img:
         return None
-    msg.append(MessageSegment.image(
-        f"base64://{base64.b64encode(img).decode()}"))
+    msg.append(MessageSegment.image(img))
     msg.append(info['link'])
     return msg
 
 
-async def rss_to_image(rss: RSS, info: dict) -> bytearray:
+async def rss_to_image(rss: RSS, info: dict) -> bytes:
     html = await rss_to_html(rss, info)
     html = await replace_url(html, rss.link)
     async with get_new_page(viewport={"width": 300, "height": 100}) as page:
-        await page.set_content(html)
-        img = await page.screenshot(type='jpeg', full_page=True)
+        await page.set_content(html, wait_until='networkidle')
+        img = await page.screenshot(full_page=True)
     return img
 
 

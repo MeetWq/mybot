@@ -1,6 +1,4 @@
 import httpx
-import base64
-import traceback
 from nonebot import get_driver
 from nonebot.log import logger
 from nonebot.adapters.cqhttp import Message, MessageSegment
@@ -37,10 +35,10 @@ async def get_setu(key_word='', r18=False) -> Message:
                 result = resp.content
 
             if result:
-                return MessageSegment.image(f"base64://{base64.b64encode(result).decode()}")
+                return MessageSegment.image(result)
             return None
         else:
             return '找不到相关的涩图'
-    except:
-        logger.warning(traceback.format_exc())
+    except Exception as e:
+        logger.warning(f"Error in get_setu({key_word}): {e}")
         return None

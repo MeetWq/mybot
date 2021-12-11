@@ -1,4 +1,4 @@
-from nonebot import export, on_shell_command
+from nonebot import on_shell_command
 from nonebot.typing import T_State
 from nonebot.rule import ArgumentParser
 from nonebot.adapters.cqhttp.bot import Bot
@@ -9,9 +9,8 @@ from .data_source import get_live_info
 from .sub_list import get_sub_list, clear_sub_list, add_sub_list, del_sub_list, open_record, close_record, open_dynamic, close_dynamic
 
 
-export = export()
-export.description = 'B站直播、动态订阅'
-export.usage = '''Usage:
+__des__ = 'B站直播、动态订阅'
+__cmd__ = '''
 添加订阅：blive d {用户名/UID}
 取消订阅：blive td {用户名/UID}
 订阅列表：blive list
@@ -19,8 +18,14 @@ export.usage = '''Usage:
 开启动态：blive dynon {用户名/UID}
 关闭动态：blive dynoff {用户名/UID}
 开启录播：blive recon {用户名/UID}
-关闭录播：blive recoff {用户名/UID}'''
-export.help = export.description + '\n' + export.usage
+关闭录播：blive recoff {用户名/UID}
+'''.strip()
+__example__ = '''
+blive d 282994
+blive d 泠鸢yousa
+'''.strip()
+__notice__ = '注意是UID不是房间号'
+__usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}\nNotice:\n{__notice__}'
 
 
 blive_parser = ArgumentParser()
@@ -33,7 +38,7 @@ blive = on_shell_command('blive', aliases={
 async def _(bot: Bot, event: Event, state: T_State):
     args = state['args']
     if not hasattr(args, 'arg'):
-        await blive.finish(export.usage)
+        await blive.finish(f'Usage:\n{__cmd__}')
     state['arg'] = args.arg
 
 
@@ -45,7 +50,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     if len(args) == 2:
         state['name'] = args[1]
     if len(args) > 2:
-        await blive.finish(export.usage)
+        await blive.finish(f'Usage:\n{__cmd__}')
 
 
 def get_id(event: Event):
@@ -60,7 +65,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     command = state['command']
     if command not in ['订阅', '取消订阅', '订阅列表', '清空订阅', '开启动态', '关闭动态', '开启录播', '关闭录播',
                        'd', 'td', 'list', 'clear', 'dyn', 'dynon', 'dynoff', 'rec', 'recon', 'recoff']:
-        await blive.finish('没有这个命令哦\n' + export.usage)
+        await blive.finish(f'没有这个命令哦\nUsage:\n{__cmd__}')
 
     user_id = get_id(event)
     state['user_id'] = user_id
