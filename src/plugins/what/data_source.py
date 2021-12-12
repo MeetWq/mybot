@@ -9,7 +9,7 @@ from nonebot.adapters.cqhttp import Message, MessageSegment
 from baike import getBaike
 
 
-async def get_nbnhhsh(keyword, force=False):
+async def get_nbnhhsh(keyword: str, force: bool = False):
     url = 'https://lab.magiconch.com/api/nbnhhsh/guess'
     headers = {
         'referer': 'https://lab.magiconch.com/nbnhhsh/'
@@ -38,7 +38,7 @@ async def get_nbnhhsh(keyword, force=False):
     return title, result
 
 
-async def get_jiki(keyword, force=False):
+async def get_jiki(keyword: str, force: bool = False):
     keyword = quote(keyword)
     search_url = 'https://jikipedia.com/search?phrase={}'.format(keyword)
     async with httpx.AsyncClient() as client:
@@ -80,7 +80,7 @@ async def get_jiki(keyword, force=False):
     return title, msg
 
 
-async def get_baidu(keyword, force=False):
+async def get_baidu(keyword: str, force: bool = False):
     content = getBaike(keyword)
     if not content.strip():
         return '', ''
@@ -101,39 +101,29 @@ async def get_baidu(keyword, force=False):
     return title, msg
 
 
-sources = {
+sources_func = {
     'jiki': get_jiki,
     'baidu': get_baidu,
     'nbnhhsh': get_nbnhhsh
 }
 
-sources_less = {
-    'jiki': sources['jiki'],
-    'nbnhhsh': sources['nbnhhsh']
-}
 
-
-async def get_content(keyword, force=False, less=False):
-    msg = ''
-    titles = []
+async def get_content(keyword, force=False, sources=['jiki', 'baidu', 'nbnhhsh']):
+    result = ''
     msgs = []
-    sources_used = sources_less if less else sources
-    for s in sources_used.keys():
+    for s in sources:
         try:
-            t, m = await sources_used[s](keyword, force)
-            if t and m:
-                titles.append(t)
-                msgs.append(m)
+            title, msg = await sources_func[s](keyword, force)
+            if title and msg:
+                msgs.append((title, msg))
         except Exception as e:
             logger.warning(
                 f'Error in get_content({keyword}) using {s}: {e}')
-    if msgs:
-        index = 0
-        max_ratio = 0
-        for i in range(len(msgs)):
-            ratio = fuzz.ratio(titles[i].lower(), keyword.lower())
-            if ratio > max_ratio:
-                index = i
-                max_ratio = ratio
-        msg = msgs[index]
-    return msg
+
+    if len(msgs) == 1:
+        result = msgs[0][1]
+    elif len(msgs) > 1:
+        msgs = sorted(msgs, key=lambda m: fuzz.ratio(m[0].lower(), keyword.lower()),
+                      reverse=True)
+        result = msgs[0][1]
+    return result
