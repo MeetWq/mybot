@@ -1,9 +1,10 @@
-from nonebot import on_shell_command
+import re
+from nonebot import on_command, on_shell_command
 from nonebot.typing import T_State
 from nonebot.rule import ArgumentParser
 from nonebot.adapters.cqhttp import Bot, Event
 
-from .data_source import get_ussrjoke, get_cp_story, get_marketing_article
+from .data_source import get_ussrjoke, get_cp_story, get_marketing_article, get_chicken_soup, get_head_poem
 
 
 ussrjoke_help = '苏联笑话 {要讽刺的事} {谁提出来的} {有助于什么} {针对的是谁} {起作用范围}'
@@ -15,8 +16,10 @@ __cmd__ = f'''
 1、苏联笑话生成：{ussrjoke_help}
 2、CP文生成：{cpstory_help}
 3、营销号生成：{marketing_help}
+4、毒鸡汤
+5、藏头诗
 '''.strip()
-__short_cmd__ = '苏联笑话、CP文、营销号'
+__short_cmd__ = 'CP文、毒鸡汤、藏头诗 等'
 __example__ = '''
 苏联笑话 996 马云 修福报 程序员 公司
 CP文 攻 受
@@ -27,9 +30,15 @@ __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 words_parser = ArgumentParser()
 words_parser.add_argument('keyword', nargs='+')
-ussrjoke = on_shell_command('ussrjoke', aliases={'苏联笑话'}, parser=words_parser, priority=28)
-cpstory = on_shell_command('cpstory', aliases={'cp文', 'CP文'}, parser=words_parser, priority=28)
-marketing = on_shell_command('marketing', aliases={'营销号'}, parser=words_parser, priority=28)
+ussrjoke = on_shell_command(
+    'ussrjoke', aliases={'苏联笑话'}, parser=words_parser, priority=28)
+cpstory = on_shell_command(
+    'cpstory', aliases={'cp文', 'CP文'}, parser=words_parser, priority=28)
+marketing = on_shell_command(
+    'marketing', aliases={'营销号'}, parser=words_parser, priority=28)
+
+soup = on_command('chickensoup', aliases={'鸡汤', '毒鸡汤'}, priority=28)
+poem = on_command('headpoem', aliases={'藏头诗'}, priority=28)
 
 
 @ussrjoke.handle()
@@ -72,3 +81,31 @@ async def _(bot: Bot, event: Event, state: T_State):
         await marketing.finish(article)
     else:
         await marketing.finish('出错了，请稍后再试')
+
+
+@soup.handle()
+async def _(bot: Bot, event: Event, state: T_State):
+    result = await get_chicken_soup()
+    if result:
+        await soup.finish(result)
+    else:
+        await soup.finish('出错了，请稍后再试')
+
+
+@poem.handle()
+async def _(bot: Bot, event: Event, state: T_State):
+    keyword = event.get_plaintext().strip()
+    if not keyword:
+        await poem.finish()
+
+    if not re.fullmatch(r'[\u4e00-\u9fa5]+', keyword):
+        await poem.finish('关键字只能是汉字哦')
+
+    if len(keyword) > 12:
+        await poem.finish('关键字过长，最多为12个字')
+
+    result = await get_head_poem(keyword)
+    if result:
+        await poem.finish(result)
+    else:
+        await poem.finish('出错了，请稍后再试')
