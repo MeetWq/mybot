@@ -1,51 +1,50 @@
-# from nonebot import on_command
-# from nonebot.plugin import get_loaded_plugins
-# from nonebot.typing import T_State
-# from nonebot.adapters.cqhttp import Bot, Event, GroupMessageEvent
+from nonebot import on_command
+from nonebot.typing import T_State
+from nonebot.adapters.cqhttp import Bot, Event, Message, MessageSegment
 
-# from nonebot_plugin_manager import PluginManager
-
-
-# help = on_command('help', aliases={'帮助'}, priority=11)
+from .data_source import get_help_img
+from .plugin import get_plugins
 
 
-# @help.handle()
-# async def _(bot: Bot, event: Event, state: T_State):
-#     plugin_name = event.get_plaintext().strip()
-#     help_msg = ''
-#     if plugin_name:
-#         help_msg = await get_help_msg(event, plugin_name)
-#     else:
-#         if event.is_tome():
-#             help_msg = await get_help_msg(event)
-#     if help_msg:
-#         await help.finish(help_msg)
+__des__ = '插件帮助'
+__cmd__ = '''
+@我 help/帮助 查看全部可用插件
+help {plugin} 查看插件详情
+'''.strip()
+__short_cmd__ = 'help {plugin}'
+__example__ = '''
+help logo
+'''.strip()
+__usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 
-# async def get_help_msg(event: Event, plugin_name=''):
-#     plugins = list(filter(
-#         lambda p: set(p.export.keys()).issuperset({'description', 'help'}), get_loaded_plugins()
-#     ))
+help = on_command('help', aliases={'帮助', '功能'})
 
-#     conv = {
-#         "user": [event.user_id] if not isinstance(event, GroupMessageEvent) else [],
-#         "group": [event.group_id] if isinstance(event, GroupMessageEvent) else [],
-#     }
-#     plugin_manager = PluginManager()
-#     plugin = plugin_manager.get_plugin(conv, 1)
-#     plugins = [p for p in plugins if plugin[p.name]]
 
-#     if not plugins:
-#         return '暂时没有可用的功能'
+@help.handle()
+async def _(bot: Bot, event: Event, state: T_State):
+    plugin_name = event.get_plaintext().strip()
 
-#     plugins.sort(key=lambda p: p.name)
+    help_msg = None
+    if plugin_name:
+        help_msg = await get_help_msg(event, plugin_name)
+    else:
+        if event.is_tome():
+            help_msg = await get_help_msg(event)
+    if help_msg:
+        await help.finish(help_msg)
 
-#     if not plugin_name:
-#         plugins_list = '\n'.join(p.name + ': ' + p.export.description for p in plugins)
-#         msg = '我现在的功能有: \n\n' + plugins_list + '\n\n发送 "help [名称]" 查看详情\n管理员可以通过 "npm block/unblock {名称}" 管理插件'
-#         return msg
-#     else:
-#         for p in plugins:
-#             if plugin_name.lower() == p.name or  plugin_name.lower() == p.export.description.lower():
-#                 return p.export.help
-#         return ''
+
+async def get_help_msg(event: Event, plugin_name: str = '') -> Message:
+    plugins = get_plugins(event)
+
+    if not plugin_name:
+        if not plugins:
+            return '暂时没有可用的功能'
+        img = await get_help_img(event, plugins)
+        return MessageSegment.image(img) if img else '出错了，请稍后再试'
+    else:
+        for p in plugins:
+            if plugin_name.lower() in (p.name.lower(), p.short_name.lower()):
+                return '咕咕咕~'
+        return None

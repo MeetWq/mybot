@@ -9,16 +9,16 @@ from .data_source import translate
 
 __des__ = '翻译'
 __cmd__ = '''
-trans/翻译 [options] {text}
+@我 trans/翻译 [options] {text}
 Options:
 -e --engine: 翻译引擎，支持：baidu (default), youdao, google, bing
 -s --source：源语言，默认为 自动检测(auto)
 -t --target：目标语言，默认为 中文(zh)
 '''.strip()
-__short_cmd__ = '翻译 {text}'
+__short_cmd__ = '@我 翻译 {text}'
 __example__ = '''
-翻译 hello
-trans -e youdao hello
+@小Q 翻译 hello
+@小Q trans -e youdao hello
 '''.strip()
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 

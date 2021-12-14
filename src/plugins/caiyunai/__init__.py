@@ -9,6 +9,17 @@ from nonebot.log import logger
 from .data_source import get_contents, model_list, ContentError
 
 
+__des__ = '彩云小梦自动续写'
+__cmd__ = '''
+@我 续写/彩云小梦 {text}
+'''.strip()
+__short_cmd__ = '@我 续写 xxx'
+__example__ = '''
+@小Q 续写 小Q是什么
+'''.strip()
+__usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
+
+
 novel = on_command('caiyunai', aliases={'续写', '彩云小梦'},
                    rule=to_me(), priority=28)
 

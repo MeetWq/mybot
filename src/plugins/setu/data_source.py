@@ -21,7 +21,7 @@ async def get_setu(key_word='', r18=False) -> Message:
     }
     try:
         async with httpx.AsyncClient() as client:
-            resp = await client.get(url, params=params)
+            resp = await client.get(url, params=params, timeout=20)
             result = resp.json()
         if result['error']:
             logger.warning('lolicon error: ' + result['error'])
@@ -31,7 +31,7 @@ async def get_setu(key_word='', r18=False) -> Message:
             logger.info('Get setu url: ' + setu_url)
 
             async with httpx.AsyncClient(proxies=httpx_proxy) as client:
-                resp = await client.get(setu_url)
+                resp = await client.get(setu_url, timeout=20)
                 result = resp.content
 
             if result:

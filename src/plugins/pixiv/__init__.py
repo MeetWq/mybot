@@ -8,12 +8,12 @@ from .data_source import get_pixiv, search_by_image
 
 __des__ = 'Pixiv图片、以图搜图'
 __cmd__ = '''
-1. pixiv {日榜/周榜/月榜/id/关键词}
+1. pixiv {日榜/周榜/月榜/id/关键词}，关键词搜索需要 @我
 2. 搜图 {图片/url}
 '''.strip()
-__short_cmd__ = 'pixiv {keyword}、搜图 {图片}'
 __example__ = '''
-pixiv 伊蕾娜
+pixiv 日榜
+@小Q pixiv 伊蕾娜
 '''.strip()
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 

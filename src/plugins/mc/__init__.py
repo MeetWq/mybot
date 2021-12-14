@@ -17,7 +17,6 @@ __cmd__ = '''
 2、mc avatar/head/body/skin/cape/model {id}，获取MC用户的 头像/头/身体/皮肤/披风/全身动图
 3、dynmap bind {url}，动态地图相关功能
 '''.strip()
-__short_cmd__ = 'mcstatus、mcskin 等'
 __example__ = '''
 mcstatus mczju.tpddns.cn
 mcskin hsds

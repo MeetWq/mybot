@@ -11,13 +11,13 @@ ussrjoke_help = '苏联笑话 {要讽刺的事} {谁提出来的} {有助于什�
 cpstory_help = 'CP文 {人物A} {人物B}'
 marketing_help = '营销号 {主题} {描述} {另一种描述}'
 
-__des__ = '多种短文生成'
+__des__ = 'CP文等多种短文生成'
 __cmd__ = f'''
 1、苏联笑话生成：{ussrjoke_help}
 2、CP文生成：{cpstory_help}
 3、营销号生成：{marketing_help}
 4、毒鸡汤
-5、藏头诗
+5、藏头诗 {{keyword}}
 '''.strip()
 __short_cmd__ = 'CP文、毒鸡汤、藏头诗 等'
 __example__ = '''
