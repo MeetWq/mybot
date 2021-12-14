@@ -2,7 +2,7 @@ from nonebot import on_command
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, Event, Message, MessageSegment
 
-from .data_source import get_help_img
+from .data_source import get_help_img, get_plugin_img
 from .plugin import get_plugins
 
 
@@ -46,5 +46,6 @@ async def get_help_msg(event: Event, plugin_name: str = '') -> Message:
     else:
         for p in plugins:
             if plugin_name.lower() in (p.name.lower(), p.short_name.lower()):
-                return '咕咕咕~'
+                img = await get_plugin_img(p)
+                return MessageSegment.image(img) if img else '出错了，请稍后再试'
         return None
