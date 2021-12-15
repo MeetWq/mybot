@@ -157,6 +157,56 @@ async def make_luxunsay(texts):
     return output
 
 
+async def make_nokia(texts):
+
+    def wrap_text(text, font, max_width, max_line):
+        line = ''
+        lines = []
+        line_num = 1
+        for t in text:
+            if font.getsize(line + t)[0] > max_width:
+                lines.append(line)
+                line = t
+                line_num += 1
+                if line_num > max_line:
+                    break
+            else:
+                line += t
+        if line_num <= max_line:
+            lines.append(line)
+        return lines
+
+    def draw_lines(image, font, lines, gap, width, height, angle):
+        new = Image.new('RGBA', (width, height))
+        draw = ImageDraw.Draw(new)
+        for i, line in enumerate(lines):
+            draw.text((0, i * gap), text=line, font=font, fill=(0, 0, 0, 255))
+        new = new.rotate(angle, expand=True)
+        px, py = (205, 330)
+        w, h = new.size
+        image.paste(new, (px, py, px + w, py + h), new)
+
+    def draw_title(image, font, text, angle):
+        new = Image.new('RGBA', font.getsize(text))
+        draw = ImageDraw.Draw(new)
+        draw.text((0, 0), text=text, font=font, fill=(129, 212, 250, 255))
+        new = new.rotate(angle, expand=True)
+        px, py = (790, 320)
+        w, h = new.size
+        image.paste(new, (px, py, px + w, py + h), new)
+
+    text = texts[0][:900]
+    frame = Image.open(data_path / f'nokia/0.jpg')
+    font = ImageFont.truetype('方正像素14.ttf', 70, encoding='utf-8')
+    lines = wrap_text(text, font, 700, 5)
+    draw_lines(frame, font, lines, 90, 700, 450, -9.3)
+    draw_title(frame, font, f'{len(text)}/900', -9.3)
+    output = BytesIO()
+    frame = frame.convert('RGB')
+    frame.save(output, format='jpeg')
+    return output
+
+
 emojis = {
     'wangjingze': {
         'aliases': {'王境泽'},
@@ -181,6 +231,11 @@ emojis = {
     'luxunsay': {
         'aliases': {'鲁迅说', '鲁迅说过'},
         'func': make_luxunsay,
+        'arg_num': 1
+    },
+    'nokia': {
+        'aliases': {'诺基亚'},
+        'func': make_nokia,
         'arg_num': 1
     }
 }
