@@ -230,6 +230,22 @@ async def make_jichou(texts: List[str]) -> BytesIO:
     return save_jpg(bg)
 
 
+async def make_fanatic(texts: List[str]) -> BytesIO:
+    font = ImageFont.truetype('msyh.ttc', 36, encoding='utf-8')
+    lines = wrap_text(texts[0], font, 180)
+    if len(lines) > 2:
+        return OVER_LENGTH_MSG
+    text = '\n'.join(lines)
+    text_w, text_h = font.getsize_multiline(text)
+    frame = Image.open(data_path / f'fanatic/0.jpg')
+    x = 240 - int(text_w / 2)
+    y = 90 - int(text_h / 2)
+    draw = ImageDraw.Draw(frame)
+    draw.multiline_text((x, y), text, align='center',
+                        font=font, fill=(0, 0, 0))
+    return save_jpg(frame)
+
+
 emojis = {
     'wangjingze': {
         'aliases': {'王境泽'},
@@ -269,6 +285,11 @@ emojis = {
     'jichou': {
         'aliases': {'记仇'},
         'func': make_jichou,
+        'arg_num': 1
+    },
+    'fanatic': {
+        'aliases': {'狂爱', '狂粉'},
+        'func': make_fanatic,
         'arg_num': 1
     }
 }

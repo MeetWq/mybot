@@ -10,7 +10,8 @@ from .data_source import get_random_emoji, make_emoji, emojis
 
 
 __des__ = '表情包制作、随机表情包'
-emojis_help = [f"{'/'.join(list(e['aliases']))}，需要输入{e['arg_num']}段文字"
+emojis_help = [f"{'/'.join(list(e['aliases']))}" +
+               (f"，需要输入{e['arg_num']}段文字" if e['arg_num'] > 1 else ' xxx')
                for e in emojis.values()]
 emojis_help = '\n'.join(emojis_help)
 __cmd__ = f'''
