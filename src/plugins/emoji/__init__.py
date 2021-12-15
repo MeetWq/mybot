@@ -1,10 +1,29 @@
 import os
-from nonebot import export, on_endswith, on_shell_command
-from nonebot.rule import ArgumentParser
-from nonebot.typing import T_State
+import shlex
+from typing import Type
+from nonebot.matcher import Matcher
+from nonebot import on_endswith, on_command
+from nonebot.typing import T_Handler, T_State
 from nonebot.adapters.cqhttp import Bot, Event, MessageSegment
 
 from .data_source import get_random_emoji, make_emoji, emojis
+
+
+__des__ = '表情包制作、随机表情包'
+emojis_help = [f"{list(e['aliases'])[0]}，需要输入{e['arg_num']}段文字"
+               for e in emojis.values()]
+emojis_help = '\n'.join(emojis_help)
+__cmd__ = f'''
+1、{{keyword}}.jpg，随机表情包
+2、表情包制作，目前支持：
+{emojis_help}
+'''.strip()
+__example__ = '''
+真香.jpg
+王境泽 我就是饿死 死外边 不会吃你们一点东西 真香
+鲁迅说 我没说过这句话
+'''.strip()
+__usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 
 end_jpg = on_endswith('.jpg', priority=30)
@@ -22,48 +41,39 @@ async def _(bot: Bot, event: Event, state: T_State):
     img_url = await get_random_emoji(keyword)
     if not img_url:
         await end_jpg.finish('找不到相关的图片')
-    await end_jpg.finish(MessageSegment.image(file=img_url))
+    await end_jpg.finish(MessageSegment.image(img_url))
 
 
-emoji_parser = ArgumentParser()
-emoji_parser.add_argument('-t', '--type', type=str)
-emoji_parser.add_argument('text', nargs='+')
+async def handle(matcher: Type[Matcher], event: Event, type: str):
+    text = event.get_plaintext().strip()
+    if not text:
+        await matcher.finish()
 
-emoji = on_shell_command(
-    'emoji', aliases={'表情包'}, parser=emoji_parser, priority=31)
+    arg_num = emojis[type]['arg_num']
+    texts = [text] if arg_num == 1 else shlex.split(text)
+    if len(texts) < arg_num:
+        await matcher.finish(f'该表情包需要输入{arg_num}段文字')
+    elif len(texts) > arg_num:
+        await matcher.finish(f'参数数量不符，若包含空格请加引号')
 
-
-@emoji.handle()
-async def _(bot: Bot, event: Event, state: T_State):
-    help_msg = 'Usage:\n  emoji -t {type} {text}，发送 "emoji list" 查看支持的表情包列表'
-
-    args = state['args']
-    if not hasattr(args, 'text'):
-        await emoji.finish()
-
-    if args.text[0] == 'list':
-        message = '支持的表情包：'
-        for i, e in enumerate(emojis):
-            message += f"\n{i}. {'/'.join(e['names'])}，需要 {e['input_num']} 个输入"
-        await emoji.finish(message)
-
-    if not args.type:
-        await emoji.finish()
-
-    type = str(args.type)
-    num = -1
-    if type.isdigit() and 0 <= int(type) < len(emojis):
-        num = int(type)
+    msg = await make_emoji(type, texts)
+    if msg:
+        await matcher.finish(msg)
     else:
-        for i, e in enumerate(emojis):
-            if type in e['names']:
-                num = i
-    if num == -1:
-        await emoji.finish(help_msg)
+        await matcher.finish('出错了，请稍后再试')
 
-    texts = args.text
-    if len(texts) != emojis[num]['input_num']:
-        await emoji.finish(f"该表情包需要 {emojis[num]['input_num']} 个输入")
 
-    msg = await make_emoji(num, texts)
-    await emoji.finish(msg)
+def create_matchers():
+
+    def create_handler(style: str) -> T_Handler:
+        async def handler(bot: Bot, event: Event, state: T_State):
+            await handle(matcher, event, style)
+        return handler
+
+    for type, params in emojis.items():
+        matcher = on_command(
+            type, aliases=params['aliases'], priority=16)
+        matcher.append_handler(create_handler(type))
+
+
+create_matchers()

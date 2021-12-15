@@ -1,28 +1,26 @@
-import io
-import base64
-import random
+import math
 import httpx
+import random
 import imageio
-import traceback
+from io import BytesIO
 from lxml import etree
+from typing import List
 from pathlib import Path
 from urllib.parse import quote
 from PIL import Image, ImageFont, ImageDraw
-from nonebot.adapters.cqhttp import MessageSegment
+from nonebot.adapters.cqhttp import Message, MessageSegment
 
 from nonebot.log import logger
 
 dir_path = Path(__file__).parent
-gif_path = dir_path / 'resources'
+data_path = dir_path / 'resources'
 
 
 async def get_random_emoji(keyword):
     url = f'https://fabiaoqing.com/search/bqb/keyword/{quote(keyword)}/type/bq/page/1.html'
-
     async with httpx.AsyncClient() as client:
         resp = await client.get(url)
         result = resp.text
-
     dom = etree.HTML(result)
     images = dom.xpath(
         "//div[@class='searchbqppdiv tagbqppdiv']/a/img/@data-original")
@@ -40,59 +38,60 @@ def text_position(image, text, font, padding_y=5):
     return x, y
 
 
-async def darw_text(image, x, y, text, font, shadowcolor, fillcolor):
+def darw_text(image, x, y, text, font, fillcolor, shadowcolor=None):
     draw = ImageDraw.Draw(image)
-    # thin border
-    draw.text((x - 1, y), text, font=font, fill=shadowcolor)
-    draw.text((x + 1, y), text, font=font, fill=shadowcolor)
-    draw.text((x, y - 1), text, font=font, fill=shadowcolor)
-    draw.text((x, y + 1), text, font=font, fill=shadowcolor)
-    # thicker border
-    draw.text((x - 1, y - 1), text, font=font, fill=shadowcolor)
-    draw.text((x + 1, y - 1), text, font=font, fill=shadowcolor)
-    draw.text((x - 1, y + 1), text, font=font, fill=shadowcolor)
-    draw.text((x + 1, y + 1), text, font=font, fill=shadowcolor)
+    if shadowcolor:
+        # thin border
+        draw.text((x - 1, y), text, font=font, fill=shadowcolor)
+        draw.text((x + 1, y), text, font=font, fill=shadowcolor)
+        draw.text((x, y - 1), text, font=font, fill=shadowcolor)
+        draw.text((x, y + 1), text, font=font, fill=shadowcolor)
+        # thicker border
+        draw.text((x - 1, y - 1), text, font=font, fill=shadowcolor)
+        draw.text((x + 1, y - 1), text, font=font, fill=shadowcolor)
+        draw.text((x - 1, y + 1), text, font=font, fill=shadowcolor)
+        draw.text((x + 1, y + 1), text, font=font, fill=shadowcolor)
     # now draw the text over it
     draw.text((x, y), text, font=font, fill=fillcolor)
 
 
-async def make_wangjingze(texts):
+async def make_wangjingze(texts) -> BytesIO:
     font = ImageFont.truetype('msyh.ttc', 20, encoding='utf-8')
     shadowcolor = (0, 0, 0)
     fillcolor = (255, 255, 255)
 
-    files = [gif_path / 'wangjingze' / ('%d.jpg' % i) for i in range(0, 52)]
-    frames = [Image.open(f) for f in files]
+    frames = [Image.open(data_path / f'wangjingze/{i}.jpg')
+              for i in range(0, 52)]
     parts = [frames[0:9], frames[12:24], frames[25:35], frames[37:48]]
     for part, text in zip(parts, texts):
         for frame in part:
             x, y = text_position(frame, text, font)
             if x < 5:
-                return f'“{text}”长度过长，请适当缩减'
-            await darw_text(frame, x, y, text, font, shadowcolor, fillcolor)
-    gif_file = io.BytesIO()
-    imageio.mimsave(gif_file, frames, format='gif', duration=0.13)
-    return MessageSegment.image(f"base64://{base64.b64encode(gif_file.getvalue()).decode()}")
+                return '文字长度过长，请适当缩减'
+            darw_text(frame, x, y, text, font, fillcolor, shadowcolor)
+    output = BytesIO()
+    imageio.mimsave(output, frames, format='gif', duration=0.13)
+    return output
 
 
-async def make_weisuoyuwei(texts):
+async def make_weisuoyuwei(texts) -> BytesIO:
     font = ImageFont.truetype('msyh.ttc', 15, encoding='utf-8')
     shadowcolor = (0, 0, 0)
     fillcolor = (255, 255, 255)
 
-    files = [gif_path / 'weisuoyuwei' / ('%d.jpg' % i) for i in range(0, 125)]
-    frames = [Image.open(f) for f in files]
-    parts = [frames[8:10], frames[20:27], frames[32:45], frames[46:60],
-             frames[61:70], frames[72:79], frames[83:98], frames[109:118], frames[118:125]]
+    frames = [Image.open(data_path / f'weisuoyuwei/{i}.jpg')
+              for i in range(0, 125)]
+    parts = [frames[8:10], frames[20:27], frames[32:45], frames[46:60], frames[61:70],
+             frames[72:79], frames[83:98], frames[109:118], frames[118:125]]
     for part, text in zip(parts, texts):
         for frame in part:
             x, y = text_position(frame, text, font)
             if x < 5:
-                return f'“{text}”长度过长，请适当缩减'
-            await darw_text(frame, x, y, text, font, shadowcolor, fillcolor)
-    gif_file = io.BytesIO()
-    imageio.mimsave(gif_file, frames, format='gif', duration=0.17)
-    return MessageSegment.image(f"base64://{base64.b64encode(gif_file.getvalue()).decode()}")
+                return '文字长度过长，请适当缩减'
+            darw_text(frame, x, y, text, font, fillcolor, shadowcolor)
+    output = BytesIO()
+    imageio.mimsave(output, frames, format='gif', duration=0.17)
+    return output
 
 
 async def make_ninajiaoxihuanma(texts):
@@ -100,19 +99,18 @@ async def make_ninajiaoxihuanma(texts):
     shadowcolor = (0, 0, 0)
     fillcolor = (255, 255, 255)
 
-    files = [gif_path / 'ninajiaoxihuanma' /
-             ('%d.jpg' % i) for i in range(0, 58)]
-    frames = [Image.open(f) for f in files]
+    frames = [Image.open(data_path / f'ninajiaoxihuanma/{i}.jpg')
+              for i in range(0, 58)]
     parts = [frames[5:22], frames[26:38], frames[39:50]]
     for part, text in zip(parts, texts):
         for frame in part:
             x, y = text_position(frame, text, font)
             if x < 5:
-                return f'“{text}”长度过长，请适当缩减'
-            await darw_text(frame, x, y, text, font, shadowcolor, fillcolor)
-    gif_file = io.BytesIO()
-    imageio.mimsave(gif_file, frames, format='gif', duration=0.1)
-    return MessageSegment.image(f"base64://{base64.b64encode(gif_file.getvalue()).decode()}")
+                return '文字长度过长，请适当缩减'
+            darw_text(frame, x, y, text, font, fillcolor, shadowcolor)
+    output = BytesIO()
+    imageio.mimsave(output, frames, format='gif', duration=0.1)
+    return output
 
 
 async def make_qiegewala(texts):
@@ -120,49 +118,81 @@ async def make_qiegewala(texts):
     shadowcolor = (0, 0, 0)
     fillcolor = (255, 255, 255)
 
-    files = [gif_path / 'qiegewala' / ('%d.jpg' % i) for i in range(0, 87)]
-    frames = [Image.open(f) for f in files]
+    frames = [Image.open(data_path / f'qiegewala/{i}.jpg')
+              for i in range(0, 87)]
     parts = [frames[0:15], frames[16:31], frames[31:38],
              frames[38:48], frames[49:68], frames[68:86]]
     for part, text in zip(parts, texts):
         for frame in part:
             x, y = text_position(frame, text, font)
             if x < 5:
-                return f'“{text}”长度过长，请适当缩减'
-            await darw_text(frame, x, y, text, font, shadowcolor, fillcolor)
-    gif_file = io.BytesIO()
-    imageio.mimsave(gif_file, frames, format='gif', duration=0.13)
-    return MessageSegment.image(f"base64://{base64.b64encode(gif_file.getvalue()).decode()}")
+                return '文字长度过长，请适当缩减'
+            darw_text(frame, x, y, text, font, fillcolor, shadowcolor)
+    output = BytesIO()
+    imageio.mimsave(output, frames, format='gif', duration=0.13)
+    return output
 
 
-emojis = [
-    {
-        'names': ['王境泽', '真香'],
-        'input_num': 4,
+async def make_luxunsay(texts):
+    font = ImageFont.truetype('msyh.ttc', 38, encoding='utf-8')
+    luxun_font = ImageFont.truetype('msyh.ttc', 30, encoding='utf-8')
+    frame = Image.open(data_path / f'luxunsay/0.jpg')
+    color = (255, 255, 255)
+
+    text = texts[0]
+    if len(text) > 40:
+        return '文字长度过长，请适当缩减'
+    x, y = text_position(frame, text, font, padding_y=130)
+    if x < 25:
+        n = math.ceil(len(text) / 2)
+        text = text[:n] + '\n' + text[n:]
+        x, y = text_position(frame, text[:n], font, padding_y=130)
+        if x < 25:
+            return '文字长度过长，请适当缩减'
+    darw_text(frame, x, y, text, font, color)
+    darw_text(frame, 320, 400, '--鲁迅', luxun_font, color)
+    output = BytesIO()
+    frame = frame.convert('RGBA')
+    frame.save(output, format='png')
+    return output
+
+
+emojis = {
+    'wangjingze': {
+        'aliases': {'王境泽'},
         'func': make_wangjingze,
+        'arg_num': 4
     },
-    {
-        'names': ['为所欲为'],
-        'input_num': 9,
+    'weisuoyuwei': {
+        'aliases': {'为所欲为'},
         'func': make_weisuoyuwei,
+        'arg_num': 9
     },
-    {
-        'names': ['你那叫喜欢吗'],
-        'input_num': 3,
+    'ninajiaoxihuanma': {
+        'aliases': {'你那叫喜欢吗'},
         'func': make_ninajiaoxihuanma,
+        'arg_num': 3
     },
-    {
-        'names': ['切格瓦拉', '打工是不可能打工的'],
-        'input_num': 6,
+    'qiegewala': {
+        'aliases': {'切格瓦拉'},
         'func': make_qiegewala,
+        'arg_num': 6
+    },
+    'luxunsay': {
+        'aliases': {'鲁迅说', '鲁迅说过'},
+        'func': make_luxunsay,
+        'arg_num': 1
     }
-]
+}
 
 
-async def make_emoji(num, texts):
+async def make_emoji(type: str, texts: List[str]) -> Message:
     try:
-        msg = await emojis[num]['func'](texts)
-        return msg
-    except:
-        logger.debug(traceback.format_exc())
-        return '出错了，请稍后再试'
+        result = await emojis[type]['func'](texts)
+        if isinstance(result, str):
+            return result
+        else:
+            return MessageSegment.image(result)
+    except Exception as e:
+        logger.warning(f"Error in make_emoji({type}, {texts}): {e}")
+        return None

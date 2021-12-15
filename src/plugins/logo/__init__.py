@@ -26,9 +26,11 @@ __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 async def handle(matcher: Type[Matcher], event: Event, style: str):
     text = event.get_plaintext().strip()
+    if not text:
+        await matcher.finish()
+
     arg_num = commands[style]['arg_num']
     texts = [text] if arg_num == 1 else shlex.split(text)
-
     if len(texts) != arg_num:
         await matcher.finish('参数数量不符')
 
