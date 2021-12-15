@@ -6,6 +6,8 @@ from lxml import etree
 from typing import List
 from pathlib import Path
 from urllib.parse import quote
+from PIL.Image import Image as IMG
+from PIL.ImageFont import FreeTypeFont
 from PIL import Image, ImageFont, ImageDraw
 from nonebot.adapters.cqhttp import Message, MessageSegment
 
@@ -14,8 +16,10 @@ from nonebot.log import logger
 dir_path = Path(__file__).parent
 data_path = dir_path / 'resources'
 
+OVER_LENGTH_MSG = '文字长度过长，请适当缩减'
 
-async def get_random_emoji(keyword):
+
+async def get_random_emoji(keyword: str) -> str:
     url = f'https://fabiaoqing.com/search/bqb/keyword/{quote(keyword)}/type/bq/page/1.html'
     async with httpx.AsyncClient() as client:
         resp = await client.get(url)
@@ -29,31 +33,27 @@ async def get_random_emoji(keyword):
     return random.choice(images)
 
 
-def text_position(image, text, font, padding_y=5):
-    text_width, text_height = font.getsize(text)
-    img_width, img_height = image.size
-    x = int((img_width - text_width) / 2)
-    y = img_height - text_height - padding_y
-    return x, y
+def save_jpg(frame: IMG) -> BytesIO:
+    output = BytesIO()
+    frame = frame.convert('RGB')
+    frame.save(output, format='jpeg')
+    return output
 
 
-def darw_text(draw, x, y, text, font, fillcolor, shadowcolor=None, border=1):
-    if shadowcolor:
-        # thin border
-        draw.text((x - border, y), text, font=font, fill=shadowcolor)
-        draw.text((x + border, y), text, font=font, fill=shadowcolor)
-        draw.text((x, y - border), text, font=font, fill=shadowcolor)
-        draw.text((x, y + border), text, font=font, fill=shadowcolor)
-        # thicker border
-        draw.text((x - border, y - border), text, font=font, fill=shadowcolor)
-        draw.text((x + border, y - border), text, font=font, fill=shadowcolor)
-        draw.text((x - border, y + border), text, font=font, fill=shadowcolor)
-        draw.text((x + border, y + border), text, font=font, fill=shadowcolor)
-    # now draw the text over it
-    draw.text((x, y), text, font=font, fill=fillcolor)
+def save_png(frame: IMG) -> BytesIO:
+    output = BytesIO()
+    frame = frame.convert('RGBA')
+    frame.save(output, format='png')
+    return output
 
 
-def wrap_text(text, font, max_width):
+def save_gif(frames: List[IMG], duration: float) -> BytesIO:
+    output = BytesIO()
+    imageio.mimsave(output, frames, format='gif', duration=duration)
+    return output
+
+
+def wrap_text(text: str, font: FreeTypeFont, max_width: float) -> List[str]:
     line = ''
     lines = []
     for t in text:
@@ -69,170 +69,147 @@ def wrap_text(text, font, max_width):
     return lines
 
 
-async def make_wangjingze(texts) -> BytesIO:
+async def make_wangjingze(texts: List[str]) -> BytesIO:
     font = ImageFont.truetype('msyh.ttc', 20, encoding='utf-8')
-    shadowcolor = (0, 0, 0)
-    fillcolor = (255, 255, 255)
-
     frames = [Image.open(data_path / f'wangjingze/{i}.jpg')
               for i in range(0, 52)]
     parts = [frames[0:9], frames[12:24], frames[25:35], frames[37:48]]
+    img_w, img_h = frames[0].size
     for part, text in zip(parts, texts):
+        text_w, text_h = font.getsize(text)
+        if text_w > img_w - 10:
+            return OVER_LENGTH_MSG
+        x = int((img_w - text_w) / 2)
+        y = img_h - text_h - 5
         for frame in part:
-            x, y = text_position(frame, text, font)
-            if x < 5:
-                return '文字长度过长，请适当缩减'
             draw = ImageDraw.Draw(frame)
-            darw_text(draw, x, y, text, font, fillcolor, shadowcolor)
-    output = BytesIO()
-    imageio.mimsave(output, frames, format='gif', duration=0.13)
-    return output
+            draw.text((x, y), text, font=font, fill=(255, 255, 255),
+                      stroke_width=1, stroke_fill=(0, 0, 0))
+    return save_gif(frames, 0.13)
 
 
-async def make_weisuoyuwei(texts) -> BytesIO:
+async def make_weisuoyuwei(texts: List[str]) -> BytesIO:
     font = ImageFont.truetype('msyh.ttc', 15, encoding='utf-8')
-    shadowcolor = (0, 0, 0)
-    fillcolor = (255, 255, 255)
-
     frames = [Image.open(data_path / f'weisuoyuwei/{i}.jpg')
               for i in range(0, 125)]
     parts = [frames[8:10], frames[20:27], frames[32:45], frames[46:60], frames[61:70],
              frames[72:79], frames[83:98], frames[109:118], frames[118:125]]
+    img_w, img_h = frames[0].size
     for part, text in zip(parts, texts):
+        text_w, text_h = font.getsize(text)
+        if text_w > img_w - 10:
+            return OVER_LENGTH_MSG
+        x = int((img_w - text_w) / 2)
+        y = img_h - text_h - 5
         for frame in part:
-            x, y = text_position(frame, text, font)
-            if x < 5:
-                return '文字长度过长，请适当缩减'
             draw = ImageDraw.Draw(frame)
-            darw_text(draw, x, y, text, font, fillcolor, shadowcolor)
-    output = BytesIO()
-    imageio.mimsave(output, frames, format='gif', duration=0.17)
-    return output
+            draw.text((x, y), text, font=font, fill=(255, 255, 255),
+                      stroke_width=1, stroke_fill=(0, 0, 0))
+    return save_gif(frames, 0.17)
 
 
-async def make_ninajiaoxihuanma(texts):
+async def make_ninajiaoxihuanma(texts: List[str]) -> BytesIO:
     font = ImageFont.truetype('msyh.ttc', 20, encoding='utf-8')
-    shadowcolor = (0, 0, 0)
-    fillcolor = (255, 255, 255)
-
     frames = [Image.open(data_path / f'ninajiaoxihuanma/{i}.jpg')
               for i in range(0, 58)]
     parts = [frames[5:22], frames[26:38], frames[39:50]]
+    img_w, img_h = frames[0].size
     for part, text in zip(parts, texts):
+        text_w, text_h = font.getsize(text)
+        if text_w > img_w - 10:
+            return OVER_LENGTH_MSG
+        x = int((img_w - text_w) / 2)
+        y = img_h - text_h - 5
         for frame in part:
-            x, y = text_position(frame, text, font)
-            if x < 5:
-                return '文字长度过长，请适当缩减'
             draw = ImageDraw.Draw(frame)
-            darw_text(draw, x, y, text, font, fillcolor, shadowcolor)
-    output = BytesIO()
-    imageio.mimsave(output, frames, format='gif', duration=0.1)
-    return output
+            draw.text((x, y), text, font=font, fill=(255, 255, 255),
+                      stroke_width=1, stroke_fill=(0, 0, 0))
+    return save_gif(frames, 0.1)
 
 
-async def make_qiegewala(texts):
+async def make_qiegewala(texts: List[str]) -> BytesIO:
     font = ImageFont.truetype('msyh.ttc', 20, encoding='utf-8')
-    shadowcolor = (0, 0, 0)
-    fillcolor = (255, 255, 255)
-
     frames = [Image.open(data_path / f'qiegewala/{i}.jpg')
               for i in range(0, 87)]
     parts = [frames[0:15], frames[16:31], frames[31:38],
              frames[38:48], frames[49:68], frames[68:86]]
+    img_w, img_h = frames[0].size
     for part, text in zip(parts, texts):
+        text_w, text_h = font.getsize(text)
+        if text_w > img_w - 10:
+            return OVER_LENGTH_MSG
+        x = int((img_w - text_w) / 2)
+        y = img_h - text_h - 5
         for frame in part:
-            x, y = text_position(frame, text, font)
-            if x < 5:
-                return '文字长度过长，请适当缩减'
             draw = ImageDraw.Draw(frame)
-            darw_text(draw, x, y, text, font, fillcolor, shadowcolor)
-    output = BytesIO()
-    imageio.mimsave(output, frames, format='gif', duration=0.13)
-    return output
+            draw.text((x, y), text, font=font, fill=(255, 255, 255),
+                      stroke_width=1, stroke_fill=(0, 0, 0))
+    return save_gif(frames, 0.13)
 
 
-async def make_luxunsay(texts):
+async def make_luxunsay(texts: List[str]) -> BytesIO:
     font = ImageFont.truetype('msyh.ttc', 38, encoding='utf-8')
     luxun_font = ImageFont.truetype('msyh.ttc', 30, encoding='utf-8')
     lines = wrap_text(texts[0], font, 430)
     if len(lines) > 2:
-        return '文字长度过长，请适当缩减'
+        return OVER_LENGTH_MSG
+    text = '\n'.join(lines)
+    spacing = 5
+    text_w, text_h = font.getsize_multiline(text, spacing=spacing)
     frame = Image.open(data_path / f'luxunsay/0.jpg')
-    new = Image.new('RGBA', frame.size)
-    draw = ImageDraw.Draw(new)
-    text_w = max([font.getsize(line)[0] for line in lines])
-    text_h = len(lines) * 45
-    for i, line in enumerate(lines):
-        x = int((text_w - font.getsize(line)[0]) / 2)
-        darw_text(draw, x, i * 45, line, font, (255, 255, 255))
     img_w, img_h = frame.size
     x = int((img_w - text_w) / 2)
     y = int((img_h - text_h) / 2) + 110
-    frame.paste(new, (x, y), new)
     draw = ImageDraw.Draw(frame)
-    draw.text((320, 400), '--鲁迅', (255, 255, 255), luxun_font)
-    output = BytesIO()
-    frame = frame.convert('RGBA')
-    frame.save(output, format='png')
-    return output
+    draw.multiline_text((x, y), text, font=font,
+                        align='center', spacing=5, fill=(255, 255, 255))
+    draw.text((320, 400), '--鲁迅', font=luxun_font, fill=(255, 255, 255))
+    return save_png(frame)
 
 
-async def make_nokia(texts):
-
-    def draw_lines(image, font, lines, gap, width, height, angle):
-        new = Image.new('RGBA', (width, height))
-        draw = ImageDraw.Draw(new)
-        for i, line in enumerate(lines):
-            draw.text((0, i * gap), text=line, font=font, fill=(0, 0, 0, 255))
-        new = new.rotate(angle, expand=True)
-        px, py = (205, 330)
-        w, h = new.size
-        image.paste(new, (px, py, px + w, py + h), new)
-
-    def draw_title(image, font, text, angle):
-        new = Image.new('RGBA', font.getsize(text))
-        draw = ImageDraw.Draw(new)
-        draw.text((0, 0), text=text, font=font, fill=(129, 212, 250, 255))
-        new = new.rotate(angle, expand=True)
-        px, py = (790, 320)
-        w, h = new.size
-        image.paste(new, (px, py, px + w, py + h), new)
-
-    text = texts[0][:900]
-    frame = Image.open(data_path / f'nokia/0.jpg')
+async def make_nokia(texts: List[str]) -> BytesIO:
     font = ImageFont.truetype('方正像素14.ttf', 70, encoding='utf-8')
-    lines = wrap_text(text, font, 700)[:5]
-    draw_lines(frame, font, lines, 90, 700, 450, -9.3)
-    draw_title(frame, font, f'{len(text)}/900', -9.3)
-    output = BytesIO()
-    frame = frame.convert('RGB')
-    frame.save(output, format='jpeg')
-    return output
+    lines = wrap_text(texts[0][:900], font, 700)[:5]
+    text = '\n'.join(lines)
+    angle = -9.3
+
+    img_text = Image.new('RGBA', (700, 450))
+    draw = ImageDraw.Draw(img_text)
+    draw.multiline_text((0, 0), text, font=font,
+                        spacing=30, fill=(0, 0, 0, 255))
+    img_text = img_text.rotate(angle, expand=True)
+
+    head = f'{len(text)}/900'
+    img_head = Image.new('RGBA', font.getsize(head))
+    draw = ImageDraw.Draw(img_head)
+    draw.text((0, 0), head, font=font, fill=(129, 212, 250, 255))
+    img_head = img_head.rotate(angle, expand=True)
+
+    frame = Image.open(data_path / f'nokia/0.jpg')
+    frame.paste(img_text, (205, 330), mask=img_text)
+    frame.paste(img_head, (790, 320), mask=img_head)
+    return save_jpg(frame)
 
 
-async def make_goodnews(texts):
+async def make_goodnews(texts: List[str]) -> BytesIO:
     font = ImageFont.truetype('msyh.ttc', 45, encoding='utf-8')
     lines = wrap_text(texts[0], font, 480)
     if len(lines) > 5:
-        return '文字长度过长，请适当缩减'
+        return OVER_LENGTH_MSG
+    text = '\n'.join(lines)
+    spacing = 5
+    stroke_width = 3
+    text_w, text_h = font.getsize_multiline(text, spacing=spacing,
+                                            stroke_width=stroke_width)
     frame = Image.open(data_path / f'goodnews/0.jpg')
-    new = Image.new('RGBA', frame.size)
-    draw = ImageDraw.Draw(new)
-    border = 3
-    text_w = max([font.getsize(line)[0] + border * 2 for line in lines])
-    text_h = len(lines) * 55
-    for i, line in enumerate(lines):
-        x = int((text_w - font.getsize(line)[0]) / 2) + border
-        darw_text(draw, x, i * 55 + border, line, font,
-                  (238, 0, 0), (255, 255, 153), border)
     img_w, img_h = frame.size
     x = int((img_w - text_w) / 2)
     y = int((img_h - text_h) / 2)
-    frame.paste(new, (x, y), new)
-    output = BytesIO()
-    frame = frame.convert('RGBA')
-    frame.save(output, format='png')
-    return output
+    draw = ImageDraw.Draw(frame)
+    draw.multiline_text((x, y), text, font=font,
+                        align='center', spacing=8, fill=(238, 0, 0),
+                        stroke_width=3, stroke_fill=(255, 255, 153))
+    return save_png(frame)
 
 
 emojis = {
