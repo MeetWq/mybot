@@ -5,6 +5,7 @@ from io import BytesIO
 from lxml import etree
 from typing import List
 from pathlib import Path
+from datetime import datetime
 from urllib.parse import quote
 from PIL.Image import Image as IMG
 from PIL.ImageFont import FreeTypeFont
@@ -162,7 +163,7 @@ async def make_luxunsay(texts: List[str]) -> BytesIO:
     y = int((img_h - text_h) / 2) + 110
     draw = ImageDraw.Draw(frame)
     draw.multiline_text((x, y), text, font=font,
-                        align='center', spacing=5, fill=(255, 255, 255))
+                        align='center', spacing=spacing, fill=(255, 255, 255))
     draw.text((320, 400), '--鲁迅', font=luxun_font, fill=(255, 255, 255))
     return save_png(frame)
 
@@ -197,7 +198,7 @@ async def make_goodnews(texts: List[str]) -> BytesIO:
     if len(lines) > 5:
         return OVER_LENGTH_MSG
     text = '\n'.join(lines)
-    spacing = 5
+    spacing = 8
     stroke_width = 3
     text_w, text_h = font.getsize_multiline(text, spacing=spacing,
                                             stroke_width=stroke_width)
@@ -207,9 +208,26 @@ async def make_goodnews(texts: List[str]) -> BytesIO:
     y = int((img_h - text_h) / 2)
     draw = ImageDraw.Draw(frame)
     draw.multiline_text((x, y), text, font=font,
-                        align='center', spacing=8, fill=(238, 0, 0),
-                        stroke_width=3, stroke_fill=(255, 255, 153))
+                        align='center', spacing=spacing, fill=(238, 0, 0),
+                        stroke_width=stroke_width, stroke_fill=(255, 255, 153))
     return save_png(frame)
+
+
+async def make_jichou(texts: List[str]) -> BytesIO:
+    text = f"今天是{datetime.today().strftime('%Y年%m月%d日')}\n{texts[0]}\n这个仇我先记下了"
+    font = ImageFont.truetype('msyh.ttc', 36, encoding='utf-8')
+    lines = wrap_text(text, font, 440)
+    text = '\n'.join(lines)
+    spacing = 10
+    _, text_h = font.getsize_multiline(text, spacing=spacing)
+    frame = Image.open(data_path / f'jichou/0.png')
+    img_w, img_h = frame.size
+    bg = Image.new('RGB', (img_w, img_h + text_h + 20), (255, 255, 255))
+    bg.paste(frame, (0, 0))
+    draw = ImageDraw.Draw(bg)
+    draw.multiline_text((30, img_h + 5), text, font=font,
+                        spacing=spacing, fill=(0, 0, 0))
+    return save_jpg(bg)
 
 
 emojis = {
@@ -246,6 +264,11 @@ emojis = {
     'goodnews': {
         'aliases': {'喜报'},
         'func': make_goodnews,
+        'arg_num': 1
+    },
+    'jichou': {
+        'aliases': {'记仇'},
+        'func': make_jichou,
         'arg_num': 1
     }
 }
