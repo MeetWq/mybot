@@ -1,9 +1,7 @@
 from nonebot.plugin import Plugin, get_loaded_plugins
-from nonebot.adapters.cqhttp import Event
+from nonebot.adapters.cqhttp import Event, GroupMessageEvent, PrivateMessageEvent
 
 from nonebot_plugin_manager import PluginManager
-
-plugin_manager = PluginManager()
 
 
 class PluginInfo:
@@ -36,18 +34,19 @@ def get_plugin_attr(plugin: Plugin, attr: str):
 def get_plugins(event: Event):
     plugins = [PluginInfo(p) for p in get_loaded_plugins()]
     conv = {
-        'user': [event.user_id] if hasattr(event, 'user_id') else [],
-        'group': [event.group_id] if hasattr(event, 'group_id') else [],
+        "user": [event.user_id] if hasattr(event, "user_id") else [],
+        "group": [event.group_id] if hasattr(event, "group_id") else []
     }
+    plugin_manager = PluginManager()
     plugins_read = plugin_manager.get_plugin(conv, 4)
-    plugins = [p for p in plugins if plugins_read[p.name]]
+    plugins = [p for p in plugins if plugins_read.get(p.name, False)]
     plugins = [p for p in plugins if p.usage]
 
     plugins_write = plugin_manager.get_plugin(conv, 2)
     plugins_exec = plugin_manager.get_plugin(conv, 1)
     for p in plugins:
-        p.locked = not plugins_write[p.name]
-        p.status = plugins_exec[p.name]
+        p.locked = not plugins_write.get(p.name, False)
+        p.status = plugins_exec.get(p.name, False)
 
     plugins.sort(key=lambda p: p.short_name)
     return plugins
