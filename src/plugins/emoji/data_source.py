@@ -1,4 +1,3 @@
-import math
 import httpx
 import random
 import imageio
@@ -58,7 +57,10 @@ def wrap_text(text, font, max_width):
     line = ''
     lines = []
     for t in text:
-        if font.getsize(line + t)[0] > max_width:
+        if t == '\n':
+            lines.append(line)
+            line = ''
+        elif font.getsize(line + t)[0] > max_width:
             lines.append(line)
             line = t
         else:
@@ -152,22 +154,23 @@ async def make_qiegewala(texts):
 async def make_luxunsay(texts):
     font = ImageFont.truetype('msyh.ttc', 38, encoding='utf-8')
     luxun_font = ImageFont.truetype('msyh.ttc', 30, encoding='utf-8')
-    frame = Image.open(data_path / f'luxunsay/0.jpg')
-    color = (255, 255, 255)
-
-    text = texts[0]
-    if len(text) > 40:
+    lines = wrap_text(texts[0], font, 430)
+    if len(lines) > 2:
         return '文字长度过长，请适当缩减'
-    x, y = text_position(frame, text, font, padding_y=130)
-    if x < 25:
-        n = math.ceil(len(text) / 2)
-        text = text[:n] + '\n' + text[n:]
-        x, y = text_position(frame, text[:n], font, padding_y=130)
-        if x < 25:
-            return '文字长度过长，请适当缩减'
+    frame = Image.open(data_path / f'luxunsay/0.jpg')
+    new = Image.new('RGBA', frame.size)
+    draw = ImageDraw.Draw(new)
+    text_w = max([font.getsize(line)[0] for line in lines])
+    text_h = len(lines) * 45
+    for i, line in enumerate(lines):
+        x = int((text_w - font.getsize(line)[0]) / 2)
+        darw_text(draw, x, i * 45, line, font, (255, 255, 255))
+    img_w, img_h = frame.size
+    x = int((img_w - text_w) / 2)
+    y = int((img_h - text_h) / 2) + 110
+    frame.paste(new, (x, y), new)
     draw = ImageDraw.Draw(frame)
-    draw.text((x, y), text, color, font)
-    draw.text((320, 400), '--鲁迅', color, luxun_font)
+    draw.text((320, 400), '--鲁迅', (255, 255, 255), luxun_font)
     output = BytesIO()
     frame = frame.convert('RGBA')
     frame.save(output, format='png')
@@ -215,13 +218,13 @@ async def make_goodnews(texts):
     frame = Image.open(data_path / f'goodnews/0.jpg')
     new = Image.new('RGBA', frame.size)
     draw = ImageDraw.Draw(new)
-    text_w = 0
-    text_h = 0
     border = 3
+    text_w = max([font.getsize(line)[0] + border * 2 for line in lines])
+    text_h = len(lines) * 55
     for i, line in enumerate(lines):
-        text_h += 55
-        text_w = max(text_w, font.getsize(line)[0] + border * 2)
-        darw_text(draw, border, i * 55, line, font, (238, 0, 0), (255, 255, 153), border)
+        x = int((text_w - font.getsize(line)[0]) / 2) + border
+        darw_text(draw, x, i * 55 + border, line, font,
+                  (238, 0, 0), (255, 255, 153), border)
     img_w, img_h = frame.size
     x = int((img_w - text_w) / 2)
     y = int((img_h - text_h) / 2)
