@@ -38,21 +38,33 @@ def text_position(image, text, font, padding_y=5):
     return x, y
 
 
-def darw_text(image, x, y, text, font, fillcolor, shadowcolor=None):
-    draw = ImageDraw.Draw(image)
+def darw_text(draw, x, y, text, font, fillcolor, shadowcolor=None, border=1):
     if shadowcolor:
         # thin border
-        draw.text((x - 1, y), text, font=font, fill=shadowcolor)
-        draw.text((x + 1, y), text, font=font, fill=shadowcolor)
-        draw.text((x, y - 1), text, font=font, fill=shadowcolor)
-        draw.text((x, y + 1), text, font=font, fill=shadowcolor)
+        draw.text((x - border, y), text, font=font, fill=shadowcolor)
+        draw.text((x + border, y), text, font=font, fill=shadowcolor)
+        draw.text((x, y - border), text, font=font, fill=shadowcolor)
+        draw.text((x, y + border), text, font=font, fill=shadowcolor)
         # thicker border
-        draw.text((x - 1, y - 1), text, font=font, fill=shadowcolor)
-        draw.text((x + 1, y - 1), text, font=font, fill=shadowcolor)
-        draw.text((x - 1, y + 1), text, font=font, fill=shadowcolor)
-        draw.text((x + 1, y + 1), text, font=font, fill=shadowcolor)
+        draw.text((x - border, y - border), text, font=font, fill=shadowcolor)
+        draw.text((x + border, y - border), text, font=font, fill=shadowcolor)
+        draw.text((x - border, y + border), text, font=font, fill=shadowcolor)
+        draw.text((x + border, y + border), text, font=font, fill=shadowcolor)
     # now draw the text over it
     draw.text((x, y), text, font=font, fill=fillcolor)
+
+
+def wrap_text(text, font, max_width):
+    line = ''
+    lines = []
+    for t in text:
+        if font.getsize(line + t)[0] > max_width:
+            lines.append(line)
+            line = t
+        else:
+            line += t
+    lines.append(line)
+    return lines
 
 
 async def make_wangjingze(texts) -> BytesIO:
@@ -68,7 +80,8 @@ async def make_wangjingze(texts) -> BytesIO:
             x, y = text_position(frame, text, font)
             if x < 5:
                 return '文字长度过长，请适当缩减'
-            darw_text(frame, x, y, text, font, fillcolor, shadowcolor)
+            draw = ImageDraw.Draw(frame)
+            darw_text(draw, x, y, text, font, fillcolor, shadowcolor)
     output = BytesIO()
     imageio.mimsave(output, frames, format='gif', duration=0.13)
     return output
@@ -88,7 +101,8 @@ async def make_weisuoyuwei(texts) -> BytesIO:
             x, y = text_position(frame, text, font)
             if x < 5:
                 return '文字长度过长，请适当缩减'
-            darw_text(frame, x, y, text, font, fillcolor, shadowcolor)
+            draw = ImageDraw.Draw(frame)
+            darw_text(draw, x, y, text, font, fillcolor, shadowcolor)
     output = BytesIO()
     imageio.mimsave(output, frames, format='gif', duration=0.17)
     return output
@@ -107,7 +121,8 @@ async def make_ninajiaoxihuanma(texts):
             x, y = text_position(frame, text, font)
             if x < 5:
                 return '文字长度过长，请适当缩减'
-            darw_text(frame, x, y, text, font, fillcolor, shadowcolor)
+            draw = ImageDraw.Draw(frame)
+            darw_text(draw, x, y, text, font, fillcolor, shadowcolor)
     output = BytesIO()
     imageio.mimsave(output, frames, format='gif', duration=0.1)
     return output
@@ -127,7 +142,8 @@ async def make_qiegewala(texts):
             x, y = text_position(frame, text, font)
             if x < 5:
                 return '文字长度过长，请适当缩减'
-            darw_text(frame, x, y, text, font, fillcolor, shadowcolor)
+            draw = ImageDraw.Draw(frame)
+            darw_text(draw, x, y, text, font, fillcolor, shadowcolor)
     output = BytesIO()
     imageio.mimsave(output, frames, format='gif', duration=0.13)
     return output
@@ -149,8 +165,9 @@ async def make_luxunsay(texts):
         x, y = text_position(frame, text[:n], font, padding_y=130)
         if x < 25:
             return '文字长度过长，请适当缩减'
-    darw_text(frame, x, y, text, font, color)
-    darw_text(frame, 320, 400, '--鲁迅', luxun_font, color)
+    draw = ImageDraw.Draw(frame)
+    draw.text((x, y), text, color, font)
+    draw.text((320, 400), '--鲁迅', color, luxun_font)
     output = BytesIO()
     frame = frame.convert('RGBA')
     frame.save(output, format='png')
@@ -158,23 +175,6 @@ async def make_luxunsay(texts):
 
 
 async def make_nokia(texts):
-
-    def wrap_text(text, font, max_width, max_line):
-        line = ''
-        lines = []
-        line_num = 1
-        for t in text:
-            if font.getsize(line + t)[0] > max_width:
-                lines.append(line)
-                line = t
-                line_num += 1
-                if line_num > max_line:
-                    break
-            else:
-                line += t
-        if line_num <= max_line:
-            lines.append(line)
-        return lines
 
     def draw_lines(image, font, lines, gap, width, height, angle):
         new = Image.new('RGBA', (width, height))
@@ -198,12 +198,37 @@ async def make_nokia(texts):
     text = texts[0][:900]
     frame = Image.open(data_path / f'nokia/0.jpg')
     font = ImageFont.truetype('方正像素14.ttf', 70, encoding='utf-8')
-    lines = wrap_text(text, font, 700, 5)
+    lines = wrap_text(text, font, 700)[:5]
     draw_lines(frame, font, lines, 90, 700, 450, -9.3)
     draw_title(frame, font, f'{len(text)}/900', -9.3)
     output = BytesIO()
     frame = frame.convert('RGB')
     frame.save(output, format='jpeg')
+    return output
+
+
+async def make_goodnews(texts):
+    font = ImageFont.truetype('msyh.ttc', 45, encoding='utf-8')
+    lines = wrap_text(texts[0], font, 480)
+    if len(lines) > 5:
+        return '文字长度过长，请适当缩减'
+    frame = Image.open(data_path / f'goodnews/0.jpg')
+    new = Image.new('RGBA', frame.size)
+    draw = ImageDraw.Draw(new)
+    text_w = 0
+    text_h = 0
+    border = 3
+    for i, line in enumerate(lines):
+        text_h += 55
+        text_w = max(text_w, font.getsize(line)[0] + border * 2)
+        darw_text(draw, border, i * 55, line, font, (238, 0, 0), (255, 255, 153), border)
+    img_w, img_h = frame.size
+    x = int((img_w - text_w) / 2)
+    y = int((img_h - text_h) / 2)
+    frame.paste(new, (x, y), new)
+    output = BytesIO()
+    frame = frame.convert('RGBA')
+    frame.save(output, format='png')
     return output
 
 
@@ -236,6 +261,11 @@ emojis = {
     'nokia': {
         'aliases': {'诺基亚'},
         'func': make_nokia,
+        'arg_num': 1
+    },
+    'goodnews': {
+        'aliases': {'喜报'},
+        'func': make_goodnews,
         'arg_num': 1
     }
 }
