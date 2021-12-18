@@ -97,13 +97,20 @@ async def get_user_dynamics(uid: str) -> dict:
 
 async def get_dynamic_screenshot(url: str) -> bytes:
     try:
-        async with get_new_page(viewport={"width": 2000, "height": 100}, device_scale_factor=2) as page:
+        async with get_new_page(viewport={"width": 392, "height": 30},
+                                user_agent="Mozilla/5.0 (Linux; Android 11; Redmi K20 Pro Premium Edition) "
+                                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                                "Chrome/96.0.4664.55 Mobile Safari/537.36 EdgA/96.0.1054.41",
+                                device_scale_factor=2.75) as page:
             await page.goto(url, wait_until='networkidle')
-            card = await page.query_selector(".card")
+            content = await page.content()
+            content = content.replace('<div class="dyn-header__right">'
+                                      '<div data-pos="follow" class="dyn-header__following">'
+                                      '<span class="dyn-header__following__icon"></span>'
+                                      '<span class="dyn-header__following__text">关注</span></div></div>', '')
+            await page.set_content(content)
+            card = await page.query_selector(".dyn-card")
             clip = await card.bounding_box()
-            bar = await page.query_selector(".text-bar")
-            bar_bound = await bar.bounding_box()
-            clip['height'] = bar_bound['y'] - clip['y']
             img = await page.screenshot(clip=clip, full_page=True)
             return img
     except Exception as e:
