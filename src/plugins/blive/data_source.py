@@ -102,7 +102,7 @@ async def get_dynamic_screenshot(url: str) -> bytes:
                                 "AppleWebKit/537.36 (KHTML, like Gecko) "
                                 "Chrome/96.0.4664.55 Mobile Safari/537.36 EdgA/96.0.1054.41",
                                 device_scale_factor=2.75) as page:
-            await page.goto(url, wait_until='networkidle')
+            await page.goto(url, wait_until='networkidle', timeout=10000)
             content = await page.content()
             content = content.replace('<div class="dyn-header__right">'
                                       '<div data-pos="follow" class="dyn-header__following">'
