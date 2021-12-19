@@ -1,9 +1,8 @@
 from typing import Dict, List
 from nonebot import on_command
-from nonebot.rule import to_me
 from nonebot.typing import T_State
 from nonebot.plugin import Plugin, get_loaded_plugins
-from nonebot.adapters.cqhttp import Bot, Event, GroupMessageEvent, PrivateMessageEvent
+from nonebot.adapters.cqhttp import Bot, Event, GroupMessageEvent
 
 from nonebot_plugin_manager import PluginManager
 

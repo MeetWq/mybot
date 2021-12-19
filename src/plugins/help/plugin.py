@@ -1,5 +1,5 @@
 from nonebot.plugin import Plugin, get_loaded_plugins
-from nonebot.adapters.cqhttp import Event, GroupMessageEvent, PrivateMessageEvent
+from nonebot.adapters.cqhttp import Event
 
 from nonebot_plugin_manager import PluginManager
 
@@ -13,13 +13,13 @@ class PluginInfo:
         self.short_name = short_name
         self.description = get_plugin_attr(plugin, '__des__')
         self.command = get_plugin_attr(plugin, '__cmd__')
+        self.usage = get_plugin_attr(plugin, '__usage__')
         short_command = get_plugin_attr(plugin, '__short_cmd__')
         if not short_command:
-            short_command = f'发送 "help {self.short_name}" 查看详情'
+            short_command = f'发送 "help {self.short_name}" 查看详情' if self.usage else ''
         self.short_command = short_command
         self.example = get_plugin_attr(plugin, '__example__')
         self.notice = get_plugin_attr(plugin, '__notice__')
-        self.usage = get_plugin_attr(plugin, '__usage__')
         self.status = True
         self.locked = False
 
@@ -40,7 +40,6 @@ def get_plugins(event: Event):
     plugin_manager = PluginManager()
     plugins_read = plugin_manager.get_plugin(conv, 4)
     plugins = [p for p in plugins if plugins_read.get(p.name, False)]
-    plugins = [p for p in plugins if p.usage]
 
     plugins_write = plugin_manager.get_plugin(conv, 2)
     plugins_exec = plugin_manager.get_plugin(conv, 1)
