@@ -31,7 +31,7 @@ emoji_list = {
 }
 
 
-async def get_emoji(dir_name: str, file_name: str) -> bytes:
+def get_emoji(dir_name: str, file_name: str) -> bytes:
     file_name = file_name.strip().split('.')[0].replace(':', '').lower()
     file_ext = ['.jpg', '.png', '.gif']
     for ext in file_ext:

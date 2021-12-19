@@ -1,4 +1,5 @@
 import re
+import math
 from typing import Type, List, Union
 from nonebot.rule import to_me
 from nonebot import on_regex, on_command
@@ -15,7 +16,7 @@ from .data_source import cc98_api
 
 async def handle_emoji(matcher: Type[Matcher], event: Event, dir_name: str):
     file_name = unescape(event.get_plaintext()).strip().strip('[').strip(']')
-    img = await get_emoji(dir_name, file_name)
+    img = get_emoji(dir_name, file_name)
     if img:
         await matcher.send(MessageSegment.image(img))
     else:
@@ -114,12 +115,14 @@ async def _(bot: Bot, event: Event, state: T_State):
 
 @show.got('reply')
 async def _(bot: Bot, event: Event, state: T_State):
-    reply = state['reply']
+    reply = str(state['reply'])
     topic = state['topic']
     page = state['page']
     reply_num = topic["replyCount"] + 1
 
-    if reply == '+':
+    if reply == '结束':
+        await show.finish()
+    elif reply == '+':
         if reply_num - page * 10 <= 0:
             await show.reject('当前已是最后一页')
         page += 1
@@ -127,6 +130,10 @@ async def _(bot: Bot, event: Event, state: T_State):
         if page == 1:
             await show.reject('当前已是第一页')
         page -= 1
+    elif reply.isdigit():
+        if not (1 <= int(reply) <= math.ceil(reply_num / 10)):
+            await show.reject('请输入正确的页码')
+        page = int(reply)
     else:
         await show.reject()
 
@@ -140,6 +147,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     state['page'] = page
     msgs = [await str_to_message(post) for post in posts]
     await send_forward_msg(bot, event, msgs)
+    await show.reject()
 
 
 async def str_to_message(text: str) -> Message:
@@ -165,10 +173,7 @@ async def split_msg(text: str, split_pattern: str, pattern: str, func) -> Messag
             result = await func(match.group(1))
             if not result:
                 continue
-            if isinstance(result, str):
-                msgs.append(result)
-            else:
-                msgs.append(MessageSegment.image(result))
+            msgs.append(result)
         else:
             msgs.append(t)
     return msgs

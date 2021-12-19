@@ -65,6 +65,7 @@ class MyCC98Api(CC98_API_V2):
 
     async def print_posts(self, topic: dict, page: int) -> List[str]:
         msgs = []
+        msgs.append('回复"+"、"-"或页码翻页，回复“结束”结束会话')
         board_name = self.board(topic['boardId'])['name']
         reply_num = topic["replyCount"] + 1
         page_num = math.ceil(reply_num / 10)
@@ -80,7 +81,6 @@ class MyCC98Api(CC98_API_V2):
             time = re.split('[T.+]', post['time'])
             post_time = time[0].replace('-', '/') + ' ' + time[1]
             msgs.append(f'[{i}楼][{user_name}]\n{content}\n[{post_time}]')
-        msgs.append('回复"+"、"-"翻页')
         return msgs
 
     async def replace_url(self, url: str) -> Union[str, MessageSegment]:
@@ -102,10 +102,10 @@ class MyCC98Api(CC98_API_V2):
             if re.fullmatch(params['pattern'], emoji):
                 dir_name = params['dir_name']
         if dir_name:
-            data = await get_emoji(dir_name, emoji)
-            return MessageSegment.image(data)
-        else:
-            return f'[{emoji}]'
+            data = get_emoji(dir_name, emoji)
+            if data:
+                return MessageSegment.image(data)
+        return f'[{emoji}]'
 
     async def simplify_content(self, s: str):
         s = s.replace(
