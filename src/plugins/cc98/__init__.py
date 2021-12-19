@@ -5,6 +5,7 @@ from nonebot import on_regex, on_command
 from nonebot.matcher import Matcher
 from nonebot.typing import T_Handler, T_State
 from nonebot.adapters.cqhttp import Bot, Event, Message, MessageSegment, unescape
+import traceback
 
 from nonebot.log import logger
 
@@ -14,7 +15,7 @@ from .data_source import cc98_api
 
 async def handle_emoji(matcher: Type[Matcher], event: Event, dir_name: str):
     file_name = unescape(event.get_plaintext()).strip().strip('[').strip(']')
-    img = get_emoji(dir_name, file_name)
+    img = await get_emoji(dir_name, file_name)
     if img:
         await matcher.send(MessageSegment.image(img))
     else:
@@ -53,7 +54,7 @@ async def _(bot: Bot, event: Event, state: T_State):
 async def _(bot: Bot, event: Event, state: T_State):
     keyword = state['keyword']
     try:
-        board_name, score = cc98_api.get_board_name(keyword)
+        board_name, score = await cc98_api.get_board_name(keyword)
     except Exception as e:
         logger.warning(f"Error in get_board_name({keyword}): {e}")
         await cc98.finish('出错了，请稍后再试')
@@ -72,8 +73,8 @@ async def _(bot: Bot, event: Event, state: T_State):
         await cc98.finish()
     board_name = state['board_name']
     try:
-        topics = cc98_api.get_topics(board_name)
-        msgs = cc98_api.print_topics(topics)
+        topics = await cc98_api.get_topics(board_name)
+        msgs = await cc98_api.print_topics(topics)
     except Exception as e:
         logger.warning(
             f"Error in get_topics or print_topics, board_name [{board_name}]: {e}")
@@ -97,11 +98,12 @@ async def _(bot: Bot, event: Event, state: T_State):
     page = 1
 
     try:
-        topic = cc98_api.topic(topic_id)
-        posts = cc98_api.print_posts(state['topic'], page)
+        topic = await cc98_api.topic(topic_id)
+        posts = await cc98_api.print_posts(topic, page)
     except Exception as e:
         logger.warning(
             f"Error in topic or print_posts, topic_id: {topic_id}: {e}")
+        logger.info(traceback.format_exc())
         await show.finish('出错了，请稍后再试')
 
     state['topic'] = topic
@@ -129,7 +131,7 @@ async def _(bot: Bot, event: Event, state: T_State):
         await show.reject()
 
     try:
-        posts = cc98_api.print_posts(state['topic'], page)
+        posts = await cc98_api.print_posts(topic, page)
     except Exception as e:
         logger.warning(
             f"Error in print_posts, topic_id: {topic['id']}, page: {page}: {e}")
@@ -146,7 +148,7 @@ async def str_to_message(text: str) -> Message:
                            r'##emoji##(.*?)##/emoji##', cc98_api.replace_emoji)
     for seg in msgs:
         if seg.type == 'text':
-            msgs_new = await split_msg(text, r'(##img##.*?##/img##)',
+            msgs_new = await split_msg(seg.data['text'], r'(##img##.*?##/img##)',
                                        r'##img##(.*?)##/img##', cc98_api.replace_url)
             msgs_all.extend(msgs_new)
         else:
