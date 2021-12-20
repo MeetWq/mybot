@@ -11,7 +11,8 @@ import traceback
 from nonebot.log import logger
 
 from .emoji import emoji_list, get_emoji
-from .data_source import cc98_api
+from .data_source import cc98_api, get_board_name, get_topics, \
+    replace_emoji, replace_url, print_topics, print_posts
 
 
 async def handle_emoji(matcher: Type[Matcher], event: Event, dir_name: str):
@@ -55,9 +56,10 @@ async def _(bot: Bot, event: Event, state: T_State):
 async def _(bot: Bot, event: Event, state: T_State):
     keyword = state['keyword']
     try:
-        board_name, score = await cc98_api.get_board_name(keyword)
+        board_name, score = await get_board_name(keyword)
     except Exception as e:
         logger.warning(f"Error in get_board_name({keyword}): {e}")
+        logger.info(traceback.format_exc())
         await cc98.finish('出错了，请稍后再试')
 
     if score >= 70:
@@ -74,11 +76,12 @@ async def _(bot: Bot, event: Event, state: T_State):
         await cc98.finish()
     board_name = state['board_name']
     try:
-        topics = await cc98_api.get_topics(board_name)
-        msgs = await cc98_api.print_topics(topics)
+        topics = await get_topics(board_name)
+        msgs = await print_topics(topics)
     except Exception as e:
         logger.warning(
             f"Error in get_topics or print_topics, board_name [{board_name}]: {e}")
+        logger.info(traceback.format_exc())
         await cc98.finish('出错了，请稍后再试')
 
     await send_forward_msg(bot, event, msgs)
@@ -100,7 +103,7 @@ async def _(bot: Bot, event: Event, state: T_State):
 
     try:
         topic = await cc98_api.topic(topic_id)
-        posts = await cc98_api.print_posts(topic, page)
+        posts = await print_posts(topic, page)
     except Exception as e:
         logger.warning(
             f"Error in topic or print_posts, topic_id: {topic_id}: {e}")
@@ -121,7 +124,7 @@ async def _(bot: Bot, event: Event, state: T_State):
     reply_num = topic["replyCount"] + 1
 
     if reply == '结束':
-        await show.finish()
+        await show.finish('会话已结束')
     elif reply == '+':
         if reply_num - page * 10 <= 0:
             await show.reject('当前已是最后一页')
@@ -138,7 +141,7 @@ async def _(bot: Bot, event: Event, state: T_State):
         await show.reject()
 
     try:
-        posts = await cc98_api.print_posts(topic, page)
+        posts = await print_posts(topic, page)
     except Exception as e:
         logger.warning(
             f"Error in print_posts, topic_id: {topic['id']}, page: {page}: {e}")
@@ -153,11 +156,11 @@ async def _(bot: Bot, event: Event, state: T_State):
 async def str_to_message(text: str) -> Message:
     msgs_all = Message()
     msgs = await split_msg(text, r'(##emoji##.*?##/emoji##)',
-                           r'##emoji##(.*?)##/emoji##', cc98_api.replace_emoji)
+                           r'##emoji##(.*?)##/emoji##', replace_emoji)
     for seg in msgs:
         if seg.type == 'text':
             msgs_new = await split_msg(seg.data['text'], r'(##img##.*?##/img##)',
-                                       r'##img##(.*?)##/img##', cc98_api.replace_url)
+                                       r'##img##(.*?)##/img##', replace_url)
             msgs_all.extend(msgs_new)
         else:
             msgs_all.append(seg)
