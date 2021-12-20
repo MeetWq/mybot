@@ -4,7 +4,7 @@
 
 实现了一些乱七八糟的功能
 
-![](https://s2.loli.net/2021/12/15/xIK83nmaDJwCLhq.png)
+![](https://s2.loli.net/2021/12/21/hGjvSUnOExbquKY.png)
 
 
 ### install
