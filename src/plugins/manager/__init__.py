@@ -17,7 +17,8 @@ __short_cmd__ = __cmd__
 __example__ = '''
 @小Q 禁用 setu
 '''.strip()
-__usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
+__notice__ = '此功能仅群管理员或超级用户可用'
+__usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}\nNotice:\n{__notice__}'
 
 
 async def manager_rule(bot: Bot, event: Event, state: T_State) -> bool:

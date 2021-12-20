@@ -11,6 +11,25 @@ from .data_source import WordBank
 from .util import parse
 
 
+__des__ = '词库'
+__cmd__ = '''
+添加词条 [@/正则/模糊]问xxx答xxx，默认为全匹配，“正则问”为正则匹配，“模糊”问为关键词匹配，加“@”为@我才会触发
+删除词条 xxx
+清空词库
+
+回答中可使用“/user”代表发送人昵称，“/atuser”代表@发送人
+'''.strip()
+__short_cmd__ = '添加词条 问xxx答xxx'
+__example__ = '''
+添加词条 问 你好 答 嗯，我好
+添加词条 模糊问 你好 答 /user，你好
+添加词条 @模糊问 你好 答 /atuser 你好呀
+删除词条 你好
+'''.strip()
+__notice__ = '仅群管理员或超级用户可增删词条'
+__usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}\nNotice:\n{__notice__}'
+
+
 def get_id(event: MessageEvent):
     if isinstance(event, GroupMessageEvent):
         return 'group_' + str(event.group_id)
