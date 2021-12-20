@@ -1,7 +1,7 @@
 import re
 import json
 from pathlib import Path
-from typing import Optional, List
+from typing import Dict, Optional, List
 
 
 OPTIONS = ['full', 'regex', 'include']
@@ -23,7 +23,7 @@ class WordBank():
             self.__data = NULL_BANK
             self.__save()
 
-    def match(self, user_id: str, msg: str) -> Optional[List]:
+    def match(self, user_id: str, msg: str, to_me: bool = False) -> Optional[List]:
         """
         匹配词条，匹配顺序：全匹配->正则匹配->模糊匹配
         :param user_id: 为'0'时是全局词库
@@ -31,11 +31,11 @@ class WordBank():
         :return: 首先匹配成功的消息列表
         """
         for flag in range(len(OPTIONS)):
-            res = self.__match(user_id, msg, flag)
+            res = self.__match(user_id, msg, flag, to_me)
             if res:
                 return res
 
-    def __match(self, user_id: str, msg: str, flag: int = 0) -> Optional[List]:
+    def __match(self, user_id: str, msg: str, flag: int = 0, to_me: bool = False) -> Optional[List]:
         """
         匹配词条
         :param flag: 0: 全匹配（full）（默认）
@@ -43,13 +43,15 @@ class WordBank():
                      2: 模糊匹配（include）
         """
         type = OPTIONS[flag]
-        bank = dict(self.__data[type].get(user_id, {}),
-                    **self.__data[type].get("0", {}))
+        bank: Dict[str, List[str]] = dict(self.__data[type].get(user_id, {}),
+                                          **self.__data[type].get("0", {}))
 
         if flag == 0:
-            return bank.get(msg, [])
+            return bank.get(msg, []) or (bank.get('@' + msg, []) if to_me else [])
         elif flag == 1:
             for key in bank:
+                if to_me and key.startswith('@'):
+                    key = key[1:]
                 try:
                     if re.search(rf"{key}", msg, re.S):
                         return bank[key]
@@ -57,6 +59,8 @@ class WordBank():
                     continue
         elif flag == 2:
             for key in bank:
+                if to_me and key.startswith('@'):
+                    key = key[1:]
                 if key in msg:
                     return bank[key]
 
@@ -91,6 +95,9 @@ class WordBank():
         for type in self.__data:
             if self.__data[type].get(user_id, {}).get(key, False):
                 del self.__data[type][user_id][key]
+                status = True
+            if self.__data[type].get(user_id, {}).get('@' + key, False):
+                del self.__data[type][user_id]['@' + key]
                 status = True
         self.__save()
         return status

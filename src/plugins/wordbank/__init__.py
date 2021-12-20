@@ -27,7 +27,7 @@ wordbank = on_message(priority=39)
 async def _(bot: Bot, event: MessageEvent, state: T_State):
     user_id = get_id(event)
     msg = unescape(unescape(str(event.get_message()).strip()))
-    msgs = wb.match(user_id, msg)
+    msgs = wb.match(user_id, msg, event.is_tome())
     if msgs:
         wordbank.block = True
         msg = random.choice(msgs)
@@ -55,13 +55,14 @@ async def _(bot: Bot, event: MessageEvent, state: T_State):
 async def wb_add(matcher: Matcher, event: MessageEvent, gl: bool = False):
     user_id = '0' if gl else get_id(event)
     msg = unescape(unescape(str(event.get_message())))
-    pattern = r"\s*(模糊|正则)*\s*问(.+?)答(.+)"
+    pattern = r"\s*(@|模糊|正则)*\s*问(.+?)答(.+)"
     match = re.match(pattern, msg, re.S)
     if match:
         type, key, value = match.groups()
         key = key.strip()
         value = value.lstrip()
         flag = 0 if not type else 2 if '模糊' in type else 1 if '正则' in type else 0
+        key = '@' + key if '@' in type else key
         res = wb.add(user_id, key, value, flag)
         if res:
             await matcher.finish('我记住了~')
