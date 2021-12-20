@@ -26,7 +26,7 @@ __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 rss_parser = ArgumentParser()
 rss_parser.add_argument('arg', nargs='+')
-rss = on_shell_command('rss', parser=rss_parser, priority=37)
+rss = on_shell_command('rss', parser=rss_parser, priority=12)
 
 
 @rss.handle()

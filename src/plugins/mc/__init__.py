@@ -24,7 +24,7 @@ mcskin hsds
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 
-mc = on_command('mc', priority=38)
+mc = on_command('mc', priority=12)
 
 
 @mc.handle()

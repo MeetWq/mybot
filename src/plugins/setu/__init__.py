@@ -18,8 +18,8 @@ __example__ = '''
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 
-setu = on_keyword({'setu', '涩图', '色图'}, rule=to_me(), priority=24)
-setu_ = on_command('setu_', rule=to_me(), permission=SUPERUSER, priority=23)
+setu = on_keyword({'setu', '涩图', '色图'}, rule=to_me(), priority=14)
+setu_ = on_command('setu_', rule=to_me(), permission=SUPERUSER, priority=11)
 
 
 @setu.handle()

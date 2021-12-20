@@ -22,7 +22,7 @@ __notice__ = '来源为菜鸟教程的网络编译器，不要试图搞事情'
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}\nNotice:\n{__notice__}'
 
 
-compiler = on_command('lang', priority=20)
+compiler = on_command('lang', priority=13)
 
 
 @compiler.handle()

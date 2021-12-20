@@ -18,7 +18,7 @@ wolfram int x
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 
-wolfram = on_command('wolfram', aliases={'wolframalpha'}, priority=34)
+wolfram = on_command('wolfram', aliases={'wolframalpha'}, priority=12)
 
 
 @wolfram.handle()

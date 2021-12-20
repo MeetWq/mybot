@@ -31,14 +31,14 @@ __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 words_parser = ArgumentParser()
 words_parser.add_argument('keyword', nargs='+')
 ussrjoke = on_shell_command(
-    'ussrjoke', aliases={'苏联笑话'}, parser=words_parser, priority=28)
+    'ussrjoke', aliases={'苏联笑话'}, parser=words_parser, priority=13)
 cpstory = on_shell_command(
-    'cpstory', aliases={'cp文', 'CP文'}, parser=words_parser, priority=28)
+    'cpstory', aliases={'cp文', 'CP文'}, parser=words_parser, priority=13)
 marketing = on_shell_command(
-    'marketing', aliases={'营销号'}, parser=words_parser, priority=28)
+    'marketing', aliases={'营销号'}, parser=words_parser, priority=13)
 
-soup = on_command('chickensoup', aliases={'鸡汤', '毒鸡汤'}, priority=28)
-poem = on_command('headpoem', aliases={'藏头诗'}, priority=28)
+soup = on_command('chickensoup', aliases={'鸡汤', '毒鸡汤'}, priority=13)
+poem = on_command('headpoem', aliases={'藏头诗'}, priority=13)
 
 
 @ussrjoke.handle()

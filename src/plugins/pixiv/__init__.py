@@ -18,7 +18,7 @@ pixiv 日榜
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 
-pixiv = on_command('pixiv', priority=25)
+pixiv = on_command('pixiv', priority=12)
 
 
 @pixiv.handle()

@@ -16,7 +16,7 @@ __notice__ = '''
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nNotice:\n{__notice__}'
 
 
-tarot = on_command('tarot', aliases={'单张塔罗牌', '塔罗牌占卜'}, priority=36)
+tarot = on_command('tarot', aliases={'单张塔罗牌', '塔罗牌占卜'}, priority=13)
 
 
 @tarot.handle()

@@ -16,7 +16,7 @@ export.description = '今日运势'
 export.usage = 'Usage:\n  今日运势/今日人品/jrrp'
 export.help = export.description + '\n' + export.usage
 
-jrrp = on_command('jrrp', aliases={'今日运势', '今日人品'}, priority=32)
+jrrp = on_command('jrrp', aliases={'今日运势', '今日人品'}, priority=13)
 
 
 @jrrp.handle()

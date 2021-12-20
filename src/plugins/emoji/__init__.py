@@ -27,7 +27,7 @@ __example__ = '''
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 
-end_jpg = on_endswith('.jpg', priority=30)
+end_jpg = on_endswith('.jpg', priority=14)
 
 
 @end_jpg.handle()
@@ -73,7 +73,7 @@ def create_matchers():
 
     for type, params in emojis.items():
         matcher = on_command(
-            type, aliases=params['aliases'], priority=16)
+            type, aliases=params['aliases'], priority=13)
         matcher.append_handler(create_handler(type))
 
 

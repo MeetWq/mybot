@@ -38,7 +38,7 @@ def create_matchers():
 
     for source, params in sources.items():
         matcher = on_command(
-            f'music {source}', aliases=params['aliases'], priority=27)
+            f'music {source}', aliases=params['aliases'], priority=13)
         matcher.append_handler(create_handler(source))
 
 

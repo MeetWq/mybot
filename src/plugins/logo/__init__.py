@@ -50,7 +50,7 @@ def create_matchers():
 
     for style, params in commands.items():
         matcher = on_command(
-            style, aliases=params['aliases'], priority=16)
+            style, aliases=params['aliases'], priority=13)
         matcher.append_handler(create_handler(style))
 
 

@@ -21,7 +21,7 @@ __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 
 novel = on_command('caiyunai', aliases={'续写', '彩云小梦'},
-                   rule=to_me(), priority=28)
+                   rule=to_me(), priority=11)
 
 
 def handle_exception(func):

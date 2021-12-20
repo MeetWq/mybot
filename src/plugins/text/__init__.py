@@ -37,7 +37,7 @@ def create_matchers():
 
     for type, params in commands.items():
         matcher = on_command(
-            f'text {type}', aliases=params['aliases'], priority=27)
+            f'text {type}', aliases=params['aliases'], priority=13)
         matcher.append_handler(create_handler(type))
 
 

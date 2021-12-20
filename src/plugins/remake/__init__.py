@@ -23,7 +23,7 @@ __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 
 remake = on_command('remake', aliases={'liferestart', '人生重开'},
-                    rule=to_me(), priority=28)
+                    rule=to_me(), priority=11)
 
 
 @remake.handle()

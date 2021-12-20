@@ -31,7 +31,7 @@ __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}\nNotice:\n{_
 blive_parser = ArgumentParser()
 blive_parser.add_argument('arg', nargs='+')
 blive = on_shell_command('blive', aliases={
-                         'bilibili_live', 'B站直播间', 'b站直播间'}, parser=blive_parser, priority=35)
+                         'bilibili_live', 'B站直播间', 'b站直播间'}, parser=blive_parser, priority=12)
 
 
 @blive.handle()

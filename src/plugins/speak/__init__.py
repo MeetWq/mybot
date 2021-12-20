@@ -16,7 +16,7 @@ __example__ = '''
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 
-speak = on_command('说', rule=to_me(), priority=18)
+speak = on_command('speak', aliases={'说'}, rule=to_me(), priority=11)
 
 
 @speak.handle()

@@ -11,7 +11,7 @@ async def welcome_rule(bot: Bot, event: Event, state: T_State) -> bool:
     return isinstance(event, GroupIncreaseNoticeEvent) and event.user_id != bot.self_id
 
 
-welcome = on_notice(rule=welcome_rule, priority=12)
+welcome = on_notice(rule=welcome_rule, priority=10)
 
 
 @welcome.handle()

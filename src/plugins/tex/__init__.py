@@ -18,7 +18,7 @@ tex \\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix}
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 
-tex = on_command('tex', priority=15)
+tex = on_command('tex', priority=12)
 
 
 @tex.handle()

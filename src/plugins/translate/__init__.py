@@ -30,7 +30,7 @@ parser.add_argument('-t', '--target', default='zh')
 parser.add_argument('text')
 
 trans = on_shell_command(
-    'trans', aliases={'translate', '翻译'}, parser=parser, priority=37)
+    'trans', aliases={'translate', '翻译'}, parser=parser, priority=11)
 
 
 @trans.handle()
