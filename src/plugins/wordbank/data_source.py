@@ -31,16 +31,16 @@ class WordBank():
         :return: 首先匹配成功的消息列表
         """
         for flag in range(len(OPTIONS)):
-            msg = self.__match(user_id, msg, flag)
-            if msg:
-                return msg
+            res = self.__match(user_id, msg, flag)
+            if res:
+                return res
 
     def __match(self, user_id: str, msg: str, flag: int = 0) -> Optional[List]:
         """
         匹配词条
         :param flag: 0: 全匹配（full）（默认）
-                     1: 模糊匹配（include）
-                     2: 正则匹配（regex）
+                     1: 正则匹配（regex）
+                     2: 模糊匹配（include）
         """
         type = OPTIONS[flag]
         bank = dict(self.__data[type].get(user_id, {}),
@@ -48,13 +48,16 @@ class WordBank():
 
         if flag == 0:
             return bank.get(msg, [])
+        elif flag == 1:
+            for key in bank:
+                try:
+                    if re.search(rf"{key}", msg, re.S):
+                        return bank[key]
+                except:
+                    continue
         elif flag == 2:
             for key in bank:
                 if key in msg:
-                    return bank[key]
-        elif flag == 3:
-            for key in bank:
-                if re.search(key, msg, re.S):
                     return bank[key]
 
     def __save(self):
