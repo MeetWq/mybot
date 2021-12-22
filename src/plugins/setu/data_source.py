@@ -16,7 +16,7 @@ async def get_setu(key_word='', r18=False) -> Message:
         'r18': 1 if r18 else 0,
         'num': 1,
         'size': ['regular'],
-        'proxy': 'i.pixiv.cat',
+        'proxy': 'i.pixiv.re',
         'keyword': key_word
     }
     try:
@@ -30,7 +30,7 @@ async def get_setu(key_word='', r18=False) -> Message:
             setu_url = result['data'][0]['urls']['regular']
             logger.info('Get setu url: ' + setu_url)
 
-            async with httpx.AsyncClient(proxies=httpx_proxy) as client:
+            async with httpx.AsyncClient() as client:
                 resp = await client.get(setu_url, timeout=20)
                 result = resp.content
 

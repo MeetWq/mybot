@@ -52,8 +52,8 @@ async def to_msg(illusts):
             try:
                 url = illust['image_urls']['large']
                 url = url.replace('_webp', '').replace(
-                    'i.pximg.net', 'i.pixiv.cat')
-                async with httpx.AsyncClient(proxies=httpx_proxy) as client:
+                    'i.pximg.net', 'i.pixiv.re')
+                async with httpx.AsyncClient() as client:
                     resp = await client.get(url, timeout=20)
                     result = resp.content
                 if result:
