@@ -12,6 +12,9 @@ from .config import Config
 global_config = get_driver().config
 chat_config = Config(**global_config.dict())
 
+dir_path = Path(__file__).parent
+data_path = dir_path / 'resources'
+
 
 class ChatBot:
     def __init__(self):
@@ -71,11 +74,8 @@ class ChatBot:
             return ''
 
 
-try:
-    thesaurus_path = Path('src/libs/AnimeThesaurus/data.json')
-    thesaurus_data = json.load(thesaurus_path.open('r', encoding='utf-8'))
-except:
-    thesaurus_data = {}
+thesaurus_path = data_path / 'anime_thesaurus.json'
+thesaurus_data = json.load(thesaurus_path.open('r', encoding='utf-8'))
 
 
 async def get_anime_thesaurus(text):

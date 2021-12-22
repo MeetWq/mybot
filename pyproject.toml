@@ -11,7 +11,7 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"
 default = true
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 nonebot2 = "^2.0.0-alpha.16"
 nonebot-adapter-cqhttp = "^2.0.0-alpha.16"
 nonebot-plugin-apscheduler = "^0.1.2"
@@ -19,8 +19,9 @@ nonebot-plugin-manager = "^0.5.5"
 nonebot-plugin-alias = "^0.2.1"
 nonebot-plugin-withdraw = "^0.1.5"
 nonebot-plugin-petpet = "^0.1.11"
-nonebot-plugin-asoulcnki = "^0.1.1"
-nonebot-plugin-shindan = "^0.1.6"
+nonebot-plugin-asoulcnki = "^0.1.2"
+nonebot-plugin-shindan = "^0.1.7"
+nonebot-plugin-htmlrender = "^0.0.1"
 aliyunpan = "^2.10.0"
 baike = "^1.5.0"
 cachetools = "^4.2.0"
@@ -43,9 +44,12 @@ thefuzz = "^0.19.0"
 wolframalpha = "^5.0.0"
 
 [tool.poetry.dev-dependencies]
+nb-cli = "^0.5.0"
+nonebot-plugin-test = "^0.3.0"
+autopep8 = "^1.6.0"
 
 [nonebot.plugins]
-plugins = ["nonebot_plugin_apscheduler", "nonebot_plugin_manager", "nonebot_plugin_alias", "nonebot_plugin_withdraw", "nonebot_plugin_petpet", "nonebot_plugin_asoulcnki", "nonebot_plugin_shindan"]
+plugins = ["nonebot_plugin_apscheduler", "nonebot_plugin_manager", "nonebot_plugin_alias", "nonebot_plugin_withdraw", "nonebot_plugin_petpet", "nonebot_plugin_asoulcnki", "nonebot_plugin_shindan", "nonebot_plugin_htmlrender"]
 plugin_dirs = ["src/plugins"]
 
 [build-system]

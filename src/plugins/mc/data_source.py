@@ -8,7 +8,7 @@ import traceback
 from PIL import Image
 from pathlib import Path
 from mcstatus import MinecraftServer
-from src.libs.playwright import get_new_page
+from nonebot_plugin_htmlrender import get_new_page
 from nonebot.adapters.cqhttp import Message, MessageSegment
 from nonebot.log import logger
 

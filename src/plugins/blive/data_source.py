@@ -1,7 +1,7 @@
 import json
 import httpx
 from nonebot.log import logger
-from src.libs.playwright import get_new_page
+from nonebot_plugin_htmlrender import get_new_page
 
 
 async def get_live_info(uid: str = '', up_name: str = '') -> dict:

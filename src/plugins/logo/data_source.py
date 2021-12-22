@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import List, Union
 
 from nonebot.log import logger
-from src.libs.playwright import get_new_page
+from nonebot_plugin_htmlrender import get_new_page, html_to_pic
 
 dir_path = Path(__file__).parent
 template_path = dir_path / 'template'
@@ -19,21 +19,13 @@ env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_path),
 async def create_pornhub_logo(left_text, right_text):
     template = env.get_template('pornhub.html')
     content = await template.render_async(left_text=left_text, right_text=right_text)
-
-    async with get_new_page(viewport={"width": 100, "height": 100}) as page:
-        await page.set_content(content)
-        img = await page.screenshot(full_page=True)
-    return img
+    return await html_to_pic(content, wait=0, viewport={"width": 100, "height": 100})
 
 
 async def create_youtube_logo(left_text, right_text):
     template = env.get_template('youtube.html')
     content = await template.render_async(left_text=left_text, right_text=right_text)
-
-    async with get_new_page(viewport={"width": 100, "height": 100}) as page:
-        await page.set_content(content)
-        img = await page.screenshot(full_page=True)
-    return img
+    return await html_to_pic(content, wait=0, viewport={"width": 100, "height": 100})
 
 
 async def create_5000choyen_logo(top_text, bottom_text):

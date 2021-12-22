@@ -1,8 +1,8 @@
 import jinja2
 from typing import List
 from pathlib import Path
-from src.libs.playwright import get_new_page
 from nonebot.log import logger
+from nonebot_plugin_htmlrender import html_to_pic
 from nonebot.adapters.cqhttp import Event, GroupMessageEvent
 
 from .plugin import PluginInfo
@@ -18,10 +18,7 @@ async def get_help_img(event: Event, plugins: List[PluginInfo]) -> bytes:
         template = env.get_template('help.html')
         type = 'group' if isinstance(event, GroupMessageEvent) else 'private'
         content = await template.render_async(type=type, plugins=plugins)
-
-        async with get_new_page(viewport={"width": 100, "height": 100}) as page:
-            await page.set_content(content)
-            return await page.screenshot(full_page=True)
+        return await html_to_pic(content, wait=0, viewport={"width": 100, "height": 100})
     except Exception as e:
         logger.warning(f"Error in get_help_img: {e}")
         return None
@@ -31,10 +28,7 @@ async def get_plugin_img(plugin: PluginInfo) -> bytes:
     try:
         template = env.get_template('plugin.html')
         content = await template.render_async(plugin=plugin)
-
-        async with get_new_page(viewport={"width": 500, "height": 100}) as page:
-            await page.set_content(content)
-            return await page.screenshot(full_page=True)
+        return await html_to_pic(content, wait=0, viewport={"width": 500, "height": 100})
     except Exception as e:
         logger.warning(f"Error in get_plugin_img({plugin.name}): {e}")
         return None

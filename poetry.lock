@@ -1,6 +1,6 @@
 [[package]]
 name = "aiofiles"
-version = "0.8.0"
+version = "0.7.0"
 description = "File support for asyncio."
 category = "main"
 optional = false
@@ -171,6 +171,22 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "arrow"
+version = "1.2.1"
+description = "Better dates & times for Python"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+python-dateutil = ">=2.7.0"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "asgiref"
 version = "3.4.1"
 description = "ASGI specs, helper code, and adapters"
@@ -235,15 +251,16 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
-name = "backports.zoneinfo"
-version = "0.2.1"
-description = "Backport of the standard library zoneinfo module"
-category = "main"
+name = "autopep8"
+version = "1.6.0"
+description = "A tool that automatically formats Python code to conform to the PEP 8 style guide"
+category = "dev"
 optional = false
-python-versions = ">=3.6"
+python-versions = "*"
 
-[package.extras]
-tzdata = ["tzdata"]
+[package.dependencies]
+pycodestyle = ">=2.8.0"
+toml = "*"
 
 [package.source]
 type = "legacy"
@@ -261,6 +278,22 @@ python-versions = ">=3.6"
 [package.dependencies]
 lxml = "*"
 requests = "*"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "binaryornot"
+version = "0.4.4"
+description = "Ultra-lightweight pure Python package to check if a file is binary or text."
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+chardet = ">=3.0.2"
 
 [package.source]
 type = "legacy"
@@ -364,6 +397,29 @@ description = "Cross-platform colored terminal text."
 category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "cookiecutter"
+version = "1.7.3"
+description = "A command-line utility that creates projects from project templates, e.g. creating a Python package project from a Python package project template."
+category = "dev"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[package.dependencies]
+binaryornot = ">=0.4.4"
+click = ">=7.0"
+Jinja2 = ">=2.7,<4.0.0"
+jinja2-time = ">=0.2.0"
+poyo = ">=0.5.0"
+python-slugify = ">=4.0.0"
+requests = ">=2.23.0"
+six = ">=1.10"
 
 [package.source]
 type = "legacy"
@@ -715,6 +771,27 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "importlib-metadata"
+version = "4.10.0"
+description = "Read metadata from Python packages"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+zipp = ">=0.5"
+
+[package.extras]
+docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
+perf = ["ipython"]
+testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-cov", "pytest-enabler (>=1.0.1)", "packaging", "pyfakefs", "flufl.flake8", "pytest-perf (>=0.9.2)", "pytest-black (>=0.3.7)", "pytest-mypy", "importlib-resources (>=1.3)"]
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "itsdangerous"
 version = "2.0.1"
 description = "Safely pass data to untrusted environments and back."
@@ -757,6 +834,23 @@ MarkupSafe = ">=2.0"
 
 [package.extras]
 i18n = ["Babel (>=2.7)"]
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "jinja2-time"
+version = "0.2.0"
+description = "Jinja2 Extension for Dates and Times"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+arrow = "*"
+jinja2 = "*"
 
 [package.source]
 type = "legacy"
@@ -812,6 +906,25 @@ cssselect = ["cssselect (>=0.7)"]
 html5 = ["html5lib"]
 htmlsoup = ["beautifulsoup4"]
 source = ["Cython (>=0.29.7)"]
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "markdown"
+version = "3.3.6"
+description = "Python implementation of Markdown."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+importlib-metadata = {version = ">=4.4", markers = "python_version < \"3.10\""}
+
+[package.extras]
+testing = ["coverage", "pyyaml"]
 
 [package.source]
 type = "legacy"
@@ -880,6 +993,33 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "nb-cli"
+version = "0.5.1"
+description = "CLI for nonebot2"
+category = "dev"
+optional = false
+python-versions = ">=3.7.3,<4.0.0"
+
+[package.dependencies]
+click = ">=8.0.0,<9.0.0"
+colorama = ">=0.4.3,<0.5.0"
+cookiecutter = ">=1.7.2,<2.0.0"
+httpx = ">=0.18.0,<1.0.0"
+nonebot2 = ">=2.0.0-alpha.14,<3.0.0"
+prompt-toolkit = ">=3.0.19,<4.0.0"
+pyfiglet = ">=0.8.post1,<0.9"
+tomlkit = ">=0.7.0,<0.8.0"
+
+[package.extras]
+deploy = ["docker-compose (>=1.29.2,<1.30.0)"]
+docker = ["docker-compose (>=1.29.2,<1.30.0)"]
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "nonebot-adapter-cqhttp"
 version = "2.0.0a16"
 description = "OneBot(CQHTTP) adapter for nonebot2"
@@ -933,18 +1073,38 @@ reference = "tsinghua"
 
 [[package]]
 name = "nonebot-plugin-asoulcnki"
-version = "0.1.1"
+version = "0.1.2"
 description = "ASoulCnki plugin for Nonebot2"
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 
 [package.dependencies]
-httpx = ">=0.19.0,<0.20.0"
+httpx = ">=0.19.0"
 Jinja2 = ">=3.0.0,<4.0.0"
 nonebot-adapter-cqhttp = ">=2.0.0-alpha.15,<3.0.0"
+nonebot-plugin-htmlrender = ">=0.0.1,<0.0.2"
 nonebot2 = ">=2.0.0-alpha.15,<3.0.0"
-playwright = ">=1.9.2,<2.0.0"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "nonebot-plugin-htmlrender"
+version = "0.0.1"
+description = ""
+category = "main"
+optional = false
+python-versions = ">=3.9,<4.0"
+
+[package.dependencies]
+jinja2 = ">=3.0.3,<4.0.0"
+markdown = ">=3.3.6,<4.0.0"
+nonebot-adapter-cqhttp = ">=2.0.0-alpha.16,<3.0.0"
+nonebot2 = ">=2.0.0-alpha.16,<3.0.0"
+playwright = ">=1.17.2,<2.0.0"
 
 [package.source]
 type = "legacy"
@@ -990,7 +1150,7 @@ reference = "tsinghua"
 
 [[package]]
 name = "nonebot-plugin-shindan"
-version = "0.1.6"
+version = "0.1.7"
 description = "Nonebot2 plugin for using ShindanMaker"
 category = "main"
 optional = false
@@ -1001,8 +1161,27 @@ httpx = ">=0.19.0"
 Jinja2 = ">=3.0.0,<4.0.0"
 lxml = ">=4.6.5,<5.0.0"
 nonebot-adapter-cqhttp = ">=2.0.0-alpha.15,<3.0.0"
+nonebot-plugin-htmlrender = ">=0.0.1,<0.0.2"
 nonebot2 = ">=2.0.0-alpha.15,<3.0.0"
 playwright = ">=1.9.2,<2.0.0"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "nonebot-plugin-test"
+version = "0.3.0"
+description = "Test frontend for nonebot v2+"
+category = "dev"
+optional = false
+python-versions = ">=3.7.3,<4.0.0"
+
+[package.dependencies]
+aiofiles = ">=0.7.0,<0.8.0"
+nonebot2 = ">=2.0.0-alpha.14,<3.0.0"
+python-socketio = ">=4.6.1,<5.0.0"
 
 [package.source]
 type = "legacy"
@@ -1121,8 +1300,36 @@ python-versions = ">=3.7"
 [package.dependencies]
 greenlet = ">=1.0.0"
 pyee = ">=8.0.1"
-typing-extensions = {version = "*", markers = "python_version <= \"3.8\""}
 websockets = ">=8.1"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "poyo"
+version = "0.5.0"
+description = "A lightweight YAML Parser for Python. 🐓"
+category = "dev"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "prompt-toolkit"
+version = "3.0.24"
+description = "Library for building powerful interactive command lines in Python"
+category = "dev"
+optional = false
+python-versions = ">=3.6.2"
+
+[package.dependencies]
+wcwidth = "*"
 
 [package.source]
 type = "legacy"
@@ -1136,6 +1343,19 @@ description = "ASN.1 types and codecs"
 category = "main"
 optional = false
 python-versions = "*"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "pycodestyle"
+version = "2.8.0"
+description = "Python style guide checker"
+category = "dev"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [package.source]
 type = "legacy"
@@ -1203,6 +1423,19 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "pyfiglet"
+version = "0.8.post1"
+description = "Pure-python FIGlet implementation"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "pygtrie"
 version = "2.4.2"
 description = "A pure Python trie data structure implementation."
@@ -1229,6 +1462,22 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "python-dateutil"
+version = "2.8.2"
+description = "Extensions to the standard Python datetime module"
+category = "dev"
+optional = false
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
+
+[package.dependencies]
+six = ">=1.5"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "python-dotenv"
 version = "0.19.2"
 description = "Read key-value pairs from a .env file and set them as environment variables"
@@ -1245,12 +1494,72 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "python-engineio"
+version = "3.14.2"
+description = "Engine.IO server"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+six = ">=1.9.0"
+
+[package.extras]
+asyncio_client = ["aiohttp (>=3.4)"]
+client = ["requests (>=2.21.0)", "websocket-client (>=0.54.0)"]
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "python-levenshtein-wheels"
 version = "0.13.2"
 description = "Python extension for computing string edit distances and similarities."
 category = "main"
 optional = false
 python-versions = "*"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "python-slugify"
+version = "5.0.2"
+description = "A Python Slugify application that handles Unicode"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+text-unidecode = ">=1.3"
+
+[package.extras]
+unidecode = ["Unidecode (>=1.1.1)"]
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "python-socketio"
+version = "4.6.1"
+description = "Socket.IO server"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+python-engineio = ">=3.13.0,<4"
+six = ">=1.9.0"
+
+[package.extras]
+asyncio_client = ["aiohttp (>=3.4)", "websockets (>=7.0)"]
+client = ["requests (>=2.21.0)", "websocket-client (>=0.54.0)"]
 
 [package.source]
 type = "legacy"
@@ -1279,7 +1588,6 @@ optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,>=2.7"
 
 [package.dependencies]
-"backports.zoneinfo" = {version = "*", markers = "python_version >= \"3.6\" and python_version < \"3.9\""}
 tzdata = {version = "*", markers = "python_version >= \"3.6\""}
 
 [package.source]
@@ -1486,6 +1794,19 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "text-unidecode"
+version = "1.3"
+description = "The most basic Text::Unidecode port"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "thefuzz"
 version = "0.19.0"
 description = "Fuzzy string matching in python"
@@ -1578,7 +1899,6 @@ optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
-"backports.zoneinfo" = {version = "*", markers = "python_version < \"3.9\""}
 pytz-deprecation-shim = "*"
 tzdata = {version = "*", markers = "platform_system == \"Windows\""}
 
@@ -1662,6 +1982,19 @@ description = "Simple, modern file watching and code reload in python."
 category = "main"
 optional = false
 python-versions = ">=3.5"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "wcwidth"
+version = "0.2.5"
+description = "Measures the displayed width of unicode strings in a terminal"
+category = "dev"
+optional = false
+python-versions = "*"
 
 [package.source]
 type = "legacy"
@@ -1796,15 +2129,32 @@ type = "legacy"
 url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
+[[package]]
+name = "zipp"
+version = "3.6.0"
+description = "Backport of pathlib-compatible object wrapper for zip files"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
+testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-cov", "pytest-enabler (>=1.0.1)", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
 [metadata]
 lock-version = "1.1"
-python-versions = "^3.8"
-content-hash = "1c37328a2ce82c1d82bfcf3cb99721a2b8a6c4748c5e49d6727c98f3092436d5"
+python-versions = "^3.9"
+content-hash = "c08c80adb3c46de613632bc89eff9c487ea06f6cbd1237474d445fb5b735bb42"
 
 [metadata.files]
 aiofiles = [
-    {file = "aiofiles-0.8.0-py3-none-any.whl", hash = "sha256:7a973fc22b29e9962d0897805ace5856e6a566ab1f0c8e5c91ff6c866519c937"},
-    {file = "aiofiles-0.8.0.tar.gz", hash = "sha256:8334f23235248a3b2e83b2c3a78a22674f39969b96397126cc93664d9a901e59"},
+    {file = "aiofiles-0.7.0-py3-none-any.whl", hash = "sha256:c67a6823b5f23fcab0a2595a289cec7d8c863ffcb4322fb8cd6b90400aedfdbc"},
+    {file = "aiofiles-0.7.0.tar.gz", hash = "sha256:a1c4fc9b2ff81568c83e21392a82f344ea9d23da906e4f6a52662764545e19d4"},
 ]
 aiohttp = [
     {file = "aiohttp-3.8.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:1ed0b6477896559f17b9eaeb6d38e07f7f9ffe40b9f0f9627ae8b9926ae260a8"},
@@ -1903,6 +2253,10 @@ aria2p = [
     {file = "aria2p-0.10.4-py3-none-any.whl", hash = "sha256:3cba57e902685f24ead28179984b57710f8f35452026c12390c9469b02413216"},
     {file = "aria2p-0.10.4.tar.gz", hash = "sha256:df5e0b56768d118d9dbdc103f37cb9dda0cd82e4f9221e061ebf4a2ed375680b"},
 ]
+arrow = [
+    {file = "arrow-1.2.1-py3-none-any.whl", hash = "sha256:6b2914ef3997d1fd7b37a71ce9dd61a6e329d09e1c7b44f4d3099ca4a5c0933e"},
+    {file = "arrow-1.2.1.tar.gz", hash = "sha256:c2dde3c382d9f7e6922ce636bf0b318a7a853df40ecb383b29192e6c5cc82840"},
+]
 asgiref = [
     {file = "asgiref-3.4.1-py3-none-any.whl", hash = "sha256:ffc141aa908e6f175673e7b1b3b7af4fdb0ecb738fc5c8b88f69f055c2415214"},
     {file = "asgiref-3.4.1.tar.gz", hash = "sha256:4ef1ab46b484e3c706329cedeff284a5d40824200638503f5768edb6de7d58e9"},
@@ -1919,27 +2273,17 @@ attrs = [
     {file = "attrs-21.2.0-py2.py3-none-any.whl", hash = "sha256:149e90d6d8ac20db7a955ad60cf0e6881a3f20d37096140088356da6c716b0b1"},
     {file = "attrs-21.2.0.tar.gz", hash = "sha256:ef6aaac3ca6cd92904cdd0d83f629a15f18053ec84e6432106f7a4d04ae4f5fb"},
 ]
-"backports.zoneinfo" = [
-    {file = "backports.zoneinfo-0.2.1-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:da6013fd84a690242c310d77ddb8441a559e9cb3d3d59ebac9aca1a57b2e18bc"},
-    {file = "backports.zoneinfo-0.2.1-cp36-cp36m-manylinux1_i686.whl", hash = "sha256:89a48c0d158a3cc3f654da4c2de1ceba85263fafb861b98b59040a5086259722"},
-    {file = "backports.zoneinfo-0.2.1-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:1c5742112073a563c81f786e77514969acb58649bcdf6cdf0b4ed31a348d4546"},
-    {file = "backports.zoneinfo-0.2.1-cp36-cp36m-win32.whl", hash = "sha256:e8236383a20872c0cdf5a62b554b27538db7fa1bbec52429d8d106effbaeca08"},
-    {file = "backports.zoneinfo-0.2.1-cp36-cp36m-win_amd64.whl", hash = "sha256:8439c030a11780786a2002261569bdf362264f605dfa4d65090b64b05c9f79a7"},
-    {file = "backports.zoneinfo-0.2.1-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:f04e857b59d9d1ccc39ce2da1021d196e47234873820cbeaad210724b1ee28ac"},
-    {file = "backports.zoneinfo-0.2.1-cp37-cp37m-manylinux1_i686.whl", hash = "sha256:17746bd546106fa389c51dbea67c8b7c8f0d14b5526a579ca6ccf5ed72c526cf"},
-    {file = "backports.zoneinfo-0.2.1-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:5c144945a7752ca544b4b78c8c41544cdfaf9786f25fe5ffb10e838e19a27570"},
-    {file = "backports.zoneinfo-0.2.1-cp37-cp37m-win32.whl", hash = "sha256:e55b384612d93be96506932a786bbcde5a2db7a9e6a4bb4bffe8b733f5b9036b"},
-    {file = "backports.zoneinfo-0.2.1-cp37-cp37m-win_amd64.whl", hash = "sha256:a76b38c52400b762e48131494ba26be363491ac4f9a04c1b7e92483d169f6582"},
-    {file = "backports.zoneinfo-0.2.1-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:8961c0f32cd0336fb8e8ead11a1f8cd99ec07145ec2931122faaac1c8f7fd987"},
-    {file = "backports.zoneinfo-0.2.1-cp38-cp38-manylinux1_i686.whl", hash = "sha256:e81b76cace8eda1fca50e345242ba977f9be6ae3945af8d46326d776b4cf78d1"},
-    {file = "backports.zoneinfo-0.2.1-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:7b0a64cda4145548fed9efc10322770f929b944ce5cee6c0dfe0c87bf4c0c8c9"},
-    {file = "backports.zoneinfo-0.2.1-cp38-cp38-win32.whl", hash = "sha256:1b13e654a55cd45672cb54ed12148cd33628f672548f373963b0bff67b217328"},
-    {file = "backports.zoneinfo-0.2.1-cp38-cp38-win_amd64.whl", hash = "sha256:4a0f800587060bf8880f954dbef70de6c11bbe59c673c3d818921f042f9954a6"},
-    {file = "backports.zoneinfo-0.2.1.tar.gz", hash = "sha256:fadbfe37f74051d024037f223b8e001611eac868b5c5b06144ef4d8b799862f2"},
+autopep8 = [
+    {file = "autopep8-1.6.0-py2.py3-none-any.whl", hash = "sha256:ed77137193bbac52d029a52c59bec1b0629b5a186c495f1eb21b126ac466083f"},
+    {file = "autopep8-1.6.0.tar.gz", hash = "sha256:44f0932855039d2c15c4510d6df665e4730f2b8582704fa48f9c55bd3e17d979"},
 ]
 baike = [
     {file = "baike-1.5.0-py3-none-any.whl", hash = "sha256:f5c2e1f645667142b592de84c1bca9395c3b9681cadf2444a4b46fbc269e18ed"},
     {file = "baike-1.5.0.tar.gz", hash = "sha256:f7e06ad42cf5de082c6525af8ccf46d4df8d889fb30689ce6bc3d58f19d4d9b0"},
+]
+binaryornot = [
+    {file = "binaryornot-0.4.4-py2.py3-none-any.whl", hash = "sha256:b8b71173c917bddcd2c16070412e369c3ed7f0528926f70cac18a6c97fd563e4"},
+    {file = "binaryornot-0.4.4.tar.gz", hash = "sha256:359501dfc9d40632edc9fac890e19542db1a287bbcfa58175b66658392018061"},
 ]
 cachetools = [
     {file = "cachetools-4.2.4-py3-none-any.whl", hash = "sha256:92971d3cb7d2a97efff7c7bb1657f21a8f5fb309a37530537c71b1774189f2d1"},
@@ -1968,6 +2312,10 @@ click-aliases = [
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
     {file = "colorama-0.4.4.tar.gz", hash = "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b"},
+]
+cookiecutter = [
+    {file = "cookiecutter-1.7.3-py2.py3-none-any.whl", hash = "sha256:f8671531fa96ab14339d0c59b4f662a4f12a2ecacd94a0f70a3500843da588e2"},
+    {file = "cookiecutter-1.7.3.tar.gz", hash = "sha256:6b9a4d72882e243be077a7397d0f1f76fe66cf3df91f3115dbb5330e214fa457"},
 ]
 cos-python-sdk-v5 = [
     {file = "cos-python-sdk-v5-1.9.14.tar.gz", hash = "sha256:58d8c4bb1b617f000b4d857fabba00fb87d8b86fbdb2ac7bfe7394b34e6ac15f"},
@@ -2177,6 +2525,10 @@ imageio = [
     {file = "imageio-2.13.4-py3-none-any.whl", hash = "sha256:613c1f9524bfba4f3e71e681c4e9e763cd1799acbb1dbf7da1ba214e4bbbf132"},
     {file = "imageio-2.13.4.tar.gz", hash = "sha256:ca9e2e2e61f1fd25fdbc3274cbeb893debbf1a606e87cea9b5dee7566d68d284"},
 ]
+importlib-metadata = [
+    {file = "importlib_metadata-4.10.0-py3-none-any.whl", hash = "sha256:b7cf7d3fef75f1e4c80a96ca660efbd51473d7e8f39b5ab9210febc7809012a4"},
+    {file = "importlib_metadata-4.10.0.tar.gz", hash = "sha256:92a8b58ce734b2a4494878e0ecf7d79ccd7a128b5fc6014c401e0b61f006f0f6"},
+]
 itsdangerous = [
     {file = "itsdangerous-2.0.1-py3-none-any.whl", hash = "sha256:5174094b9637652bdb841a3029700391451bd092ba3db90600dea710ba28e97c"},
     {file = "itsdangerous-2.0.1.tar.gz", hash = "sha256:9e724d68fc22902a1435351f84c3fb8623f303fffcc566a4cb952df8c572cff0"},
@@ -2188,6 +2540,10 @@ itsdangerous = [
 jinja2 = [
     {file = "Jinja2-3.0.3-py3-none-any.whl", hash = "sha256:077ce6014f7b40d03b47d1f1ca4b0fc8328a692bd284016f806ed0eaca390ad8"},
     {file = "Jinja2-3.0.3.tar.gz", hash = "sha256:611bb273cd68f3b993fabdc4064fc858c5b47a973cb5aa7999ec1ba405c87cd7"},
+]
+jinja2-time = [
+    {file = "jinja2-time-0.2.0.tar.gz", hash = "sha256:d14eaa4d315e7688daa4969f616f226614350c48730bfa1692d2caebd8c90d40"},
+    {file = "jinja2_time-0.2.0-py2.py3-none-any.whl", hash = "sha256:d3eab6605e3ec8b7a0863df09cc1d23714908fa61aa6986a845c20ba488b4efa"},
 ]
 langid = [
     {file = "langid-1.1.6.tar.gz", hash = "sha256:044bcae1912dab85c33d8e98f2811b8f4ff1213e5e9a9e9510137b84da2cb293"},
@@ -2257,6 +2613,10 @@ lxml = [
     {file = "lxml-4.7.1-pp38-pypy38_pp73-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_24_i686.whl", hash = "sha256:8e54945dd2eeb50925500957c7c579df3cd07c29db7810b83cf30495d79af267"},
     {file = "lxml-4.7.1-pp38-pypy38_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl", hash = "sha256:447d5009d6b5447b2f237395d0018901dcc673f7d9f82ba26c1b9f9c3b444b60"},
     {file = "lxml-4.7.1.tar.gz", hash = "sha256:a1613838aa6b89af4ba10a0f3a972836128801ed008078f8c1244e65958f1b24"},
+]
+markdown = [
+    {file = "Markdown-3.3.6-py3-none-any.whl", hash = "sha256:9923332318f843411e9932237530df53162e29dc7a4e2b91e35764583c46c9a3"},
+    {file = "Markdown-3.3.6.tar.gz", hash = "sha256:76df8ae32294ec39dcf89340382882dfa12975f87f45c3ed1ecdb1e8cefc7006"},
 ]
 markupsafe = [
     {file = "MarkupSafe-2.0.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:d8446c54dc28c01e5a2dbac5a25f071f6653e6e40f3a8818e8b45d790fe6ef53"},
@@ -2396,6 +2756,10 @@ multidict = [
     {file = "multidict-5.2.0-cp39-cp39-win_amd64.whl", hash = "sha256:c9631c642e08b9fff1c6255487e62971d8b8e821808ddd013d8ac058087591ac"},
     {file = "multidict-5.2.0.tar.gz", hash = "sha256:0dd1c93edb444b33ba2274b66f63def8a327d607c6c790772f448a53b6ea59ce"},
 ]
+nb-cli = [
+    {file = "nb-cli-0.5.1.tar.gz", hash = "sha256:b3f31e1d2fe4e3d6551cf9dcb0843ebc53503df63baf017b51347673ad10c1e4"},
+    {file = "nb_cli-0.5.1-py3-none-any.whl", hash = "sha256:c47cbdb106db6b2ae5fe4ff538775da8c8f2d17f535432b13eb23ad1889c2fc2"},
+]
 nonebot-adapter-cqhttp = [
     {file = "nonebot-adapter-cqhttp-2.0.0a16.tar.gz", hash = "sha256:9de270291b98c41a45e5b629c02f16e3b25cafb3867b8161851f49c84145d8aa"},
     {file = "nonebot_adapter_cqhttp-2.0.0a16-py3-none-any.whl", hash = "sha256:831747c55c9c1a660215225f84784a4ca275a84bffa8d1312524367066b68bbe"},
@@ -2409,8 +2773,12 @@ nonebot-plugin-apscheduler = [
     {file = "nonebot_plugin_apscheduler-0.1.2-py3-none-any.whl", hash = "sha256:eed7b9e60d08826ae4919f82dc240fc7ec469185271c2271e14438a3e0ca7692"},
 ]
 nonebot-plugin-asoulcnki = [
-    {file = "nonebot_plugin_asoulcnki-0.1.1-py3-none-any.whl", hash = "sha256:f2a30f11306dd3372d2b09cb940d442e74729cf7518a69e09be7431f3f6a7d12"},
-    {file = "nonebot_plugin_asoulcnki-0.1.1.tar.gz", hash = "sha256:b21084590d44f7abc0a8186e0ee7d7243f67eee0397ef22e7471a1b2b0694a97"},
+    {file = "nonebot_plugin_asoulcnki-0.1.2-py3-none-any.whl", hash = "sha256:8ae991c6dd46b6895bb0100346a1098782c0a2221fb7867b53e32898df6888b3"},
+    {file = "nonebot_plugin_asoulcnki-0.1.2.tar.gz", hash = "sha256:92390830acdb1a4f37a913c5b42d59f5f2bd58166af970faa189c2ef6e0b729d"},
+]
+nonebot-plugin-htmlrender = [
+    {file = "nonebot-plugin-htmlrender-0.0.1.tar.gz", hash = "sha256:1280d4db67ba45e8af14733d569128a542cd4e6bf7c9fd52a88598851227b8ba"},
+    {file = "nonebot_plugin_htmlrender-0.0.1-py3-none-any.whl", hash = "sha256:49af3e4c7781f46b4db203ca3adbd7b25b63bd31198013da3ecaa0eeb4b7da52"},
 ]
 nonebot-plugin-manager = [
     {file = "nonebot_plugin_manager-0.5.5-py3-none-any.whl", hash = "sha256:ca1a8ed08adcfeef60e9817035856db02b0b0a497b32c711c7ce666e6463a4f6"},
@@ -2421,8 +2789,12 @@ nonebot-plugin-petpet = [
     {file = "nonebot_plugin_petpet-0.1.11.tar.gz", hash = "sha256:382408234cb00ac0e32f28a9dd7dcf5e1c52b5c6ceb995eed869dcf48a560e3f"},
 ]
 nonebot-plugin-shindan = [
-    {file = "nonebot_plugin_shindan-0.1.6-py3-none-any.whl", hash = "sha256:e4a6b57cbdd07e3619f284a9fe8aee51290b1d3c6a783776dd24360765bcaafa"},
-    {file = "nonebot_plugin_shindan-0.1.6.tar.gz", hash = "sha256:7300ace14ac0d7908c0e1b68d541f29338bd73aa1c12885e227f838d755d6a07"},
+    {file = "nonebot_plugin_shindan-0.1.7-py3-none-any.whl", hash = "sha256:75801556a081763f9e5bbf067876fdba49e32b8ab2c6bc0b2812a0602e392752"},
+    {file = "nonebot_plugin_shindan-0.1.7.tar.gz", hash = "sha256:0f6fbe4c7121f0e44eaaf6df9d8302e16bf3fbc06a6409986eaba26408619565"},
+]
+nonebot-plugin-test = [
+    {file = "nonebot-plugin-test-0.3.0.tar.gz", hash = "sha256:6cea9342f4df69a73b9aa27a3eaa22a08c6e54b675e2e6638b4b3fc8568cd6fe"},
+    {file = "nonebot_plugin_test-0.3.0-py3-none-any.whl", hash = "sha256:edb880340436323ccd0a13b31d48975136b6bdc71daa178601c4b05b068cc73e"},
 ]
 nonebot-plugin-withdraw = [
     {file = "nonebot_plugin_withdraw-0.1.5-py3-none-any.whl", hash = "sha256:8b2b6906267682a72d31710763c1c97f5b2c9fdbc8ea3bf244639eeed2952d81"},
@@ -2521,9 +2893,21 @@ playwright = [
     {file = "playwright-1.17.2-py3-none-win32.whl", hash = "sha256:8fefe383ba1baf474534c6fc2338113318725c420639bdbe1a57a371c20245b3"},
     {file = "playwright-1.17.2-py3-none-win_amd64.whl", hash = "sha256:f64403941e0d6bfcc92d451150bbdb4d8eefdaa0c26866c27304106f86923d60"},
 ]
+poyo = [
+    {file = "poyo-0.5.0-py2.py3-none-any.whl", hash = "sha256:3e2ca8e33fdc3c411cd101ca395668395dd5dc7ac775b8e809e3def9f9fe041a"},
+    {file = "poyo-0.5.0.tar.gz", hash = "sha256:e26956aa780c45f011ca9886f044590e2d8fd8b61db7b1c1cf4e0869f48ed4dd"},
+]
+prompt-toolkit = [
+    {file = "prompt_toolkit-3.0.24-py3-none-any.whl", hash = "sha256:e56f2ff799bacecd3e88165b1e2f5ebf9bcd59e80e06d395fa0cc4b8bd7bb506"},
+    {file = "prompt_toolkit-3.0.24.tar.gz", hash = "sha256:1bb05628c7d87b645974a1bad3f17612be0c29fa39af9f7688030163f680bad6"},
+]
 pyasn1 = [
     {file = "pyasn1-0.4.8-py2.py3-none-any.whl", hash = "sha256:39c7e2ec30515947ff4e87fb6f456dfc6e84857d34be479c9d4a4ba4bf46aa5d"},
     {file = "pyasn1-0.4.8.tar.gz", hash = "sha256:aef77c9fb94a3ac588e87841208bdec464471d9871bd5050a287cc9a475cd0ba"},
+]
+pycodestyle = [
+    {file = "pycodestyle-2.8.0-py2.py3-none-any.whl", hash = "sha256:720f8b39dde8b293825e7ff02c475f3077124006db4f440dcbc9a20b76548a20"},
+    {file = "pycodestyle-2.8.0.tar.gz", hash = "sha256:eddd5847ef438ea1c7870ca7eb78a9d47ce0cdb4851a5523949f2601d0cbbe7f"},
 ]
 pycryptodome = [
     {file = "pycryptodome-3.12.0-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:90ad3381ccdc6a24cc2841e295706a168f32abefe64c679695712acac71fd5da"},
@@ -2589,15 +2973,27 @@ pyee = [
     {file = "pyee-8.2.2-py2.py3-none-any.whl", hash = "sha256:c09f56e36eb10bf23aa2aacf145f690ded75b990a3d9523fd478b005940303d2"},
     {file = "pyee-8.2.2.tar.gz", hash = "sha256:5c7e60f8df95710dbe17550e16ce0153f83990c00ef744841b43f371ed53ebea"},
 ]
+pyfiglet = [
+    {file = "pyfiglet-0.8.post1-py2.py3-none-any.whl", hash = "sha256:d555bcea17fbeaf70eaefa48bb119352487e629c9b56f30f383e2c62dd67a01c"},
+    {file = "pyfiglet-0.8.post1.tar.gz", hash = "sha256:c6c2321755d09267b438ec7b936825a4910fec696292139e664ca8670e103639"},
+]
 pygtrie = [
     {file = "pygtrie-2.4.2.tar.gz", hash = "sha256:43205559d28863358dbbf25045029f58e2ab357317a59b11f11ade278ac64692"},
 ]
 pyperclip = [
     {file = "pyperclip-1.8.2.tar.gz", hash = "sha256:105254a8b04934f0bc84e9c24eb360a591aaf6535c9def5f29d92af107a9bf57"},
 ]
+python-dateutil = [
+    {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},
+    {file = "python_dateutil-2.8.2-py2.py3-none-any.whl", hash = "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9"},
+]
 python-dotenv = [
     {file = "python-dotenv-0.19.2.tar.gz", hash = "sha256:a5de49a31e953b45ff2d2fd434bbc2670e8db5273606c1e737cc6b93eff3655f"},
     {file = "python_dotenv-0.19.2-py2.py3-none-any.whl", hash = "sha256:32b2bdc1873fd3a3c346da1c6db83d0053c3c62f28f1f38516070c4c8971b1d3"},
+]
+python-engineio = [
+    {file = "python-engineio-3.14.2.tar.gz", hash = "sha256:eab4553f2804c1ce97054c8b22cf0d5a9ab23128075248b97e1a5b2f29553085"},
+    {file = "python_engineio-3.14.2-py2.py3-none-any.whl", hash = "sha256:5a9e6086d192463b04a1428ff1f85b6ba631bbb19d453b144ffc04f530542b84"},
 ]
 python-levenshtein-wheels = [
     {file = "python-Levenshtein-wheels-0.13.2.tar.gz", hash = "sha256:7bd8fc3ceeeaca626848a0d7a01d02f5b93475f2d56eaa37921f1271dec7bfb1"},
@@ -2645,6 +3041,14 @@ python-levenshtein-wheels = [
     {file = "python_Levenshtein_wheels-0.13.2-pp37-pypy37_pp73-manylinux1_x86_64.whl", hash = "sha256:5f37c055dcf8ea3fa88bb62c63195cbb05619236ae289aefa1cb0720fa01373e"},
     {file = "python_Levenshtein_wheels-0.13.2-pp37-pypy37_pp73-manylinux2010_x86_64.whl", hash = "sha256:4c55f77ac0b9c87152a409824f9880c8abebe0a7381956a260a4c52e16e32b6b"},
     {file = "python_Levenshtein_wheels-0.13.2-pp37-pypy37_pp73-win32.whl", hash = "sha256:150852c3851659fc95a3435331e9c980ebde6729f2cb0cf5ed4a33f98b0f0839"},
+]
+python-slugify = [
+    {file = "python-slugify-5.0.2.tar.gz", hash = "sha256:f13383a0b9fcbe649a1892b9c8eb4f8eab1d6d84b84bb7a624317afa98159cab"},
+    {file = "python_slugify-5.0.2-py2.py3-none-any.whl", hash = "sha256:6d8c5df75cd4a7c3a2d21e257633de53f52ab0265cd2d1dc62a730e8194a7380"},
+]
+python-socketio = [
+    {file = "python-socketio-4.6.1.tar.gz", hash = "sha256:cd1f5aa492c1eb2be77838e837a495f117e17f686029ebc03d62c09e33f4fa10"},
+    {file = "python_socketio-4.6.1-py2.py3-none-any.whl", hash = "sha256:5a21da53fdbdc6bb6c8071f40e13d100e0b279ad997681c2492478e06f370523"},
 ]
 pytz = [
     {file = "pytz-2021.3-py2.py3-none-any.whl", hash = "sha256:3672058bc3453457b622aab7a1c3bfd5ab0bdae451512f6cf25f64ed37f5b87c"},
@@ -2815,6 +3219,10 @@ tencentcloud-sdk-python = [
     {file = "tencentcloud-sdk-python-3.0.552.tar.gz", hash = "sha256:6d8370735400fc7032dee1f8dea8f56d1898781adde6ef46f08148b7356746d8"},
     {file = "tencentcloud_sdk_python-3.0.552-py2.py3-none-any.whl", hash = "sha256:691069c3ad5441f1708a95e5dcc4e71933df208b1f392096ff761c6ab78a1cde"},
 ]
+text-unidecode = [
+    {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
+    {file = "text_unidecode-1.3-py2.py3-none-any.whl", hash = "sha256:1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8"},
+]
 thefuzz = [
     {file = "thefuzz-0.19.0-py2.py3-none-any.whl", hash = "sha256:4fcdde8e40f5ca5e8106bc7665181f9598a9c8b18b0a4d38c41a095ba6788972"},
     {file = "thefuzz-0.19.0.tar.gz", hash = "sha256:6f7126db2f2c8a54212b05e3a740e45f4291c497d75d20751728f635bb74aa3d"},
@@ -2871,6 +3279,10 @@ uvloop = [
 watchgod = [
     {file = "watchgod-0.7-py3-none-any.whl", hash = "sha256:d6c1ea21df37847ac0537ca0d6c2f4cdf513562e95f77bb93abbcf05573407b7"},
     {file = "watchgod-0.7.tar.gz", hash = "sha256:48140d62b0ebe9dd9cf8381337f06351e1f2e70b2203fa9c6eff4e572ca84f29"},
+]
+wcwidth = [
+    {file = "wcwidth-0.2.5-py2.py3-none-any.whl", hash = "sha256:beb4802a9cebb9144e99086eff703a642a13d6a0052920003a230f3294bbe784"},
+    {file = "wcwidth-0.2.5.tar.gz", hash = "sha256:c4d647b99872929fdb7bdcaa4fbe7f01413ed3d98077df798530e5b04f116c83"},
 ]
 websocket-client = [
     {file = "websocket-client-1.2.3.tar.gz", hash = "sha256:1315816c0acc508997eb3ae03b9d3ff619c9d12d544c9a9b553704b1cc4f6af5"},
@@ -3027,4 +3439,8 @@ yarl = [
     {file = "yarl-1.7.2-cp39-cp39-win32.whl", hash = "sha256:1edc172dcca3f11b38a9d5c7505c83c1913c0addc99cd28e993efeaafdfaa18d"},
     {file = "yarl-1.7.2-cp39-cp39-win_amd64.whl", hash = "sha256:797c2c412b04403d2da075fb93c123df35239cd7b4cc4e0cd9e5839b73f52c58"},
     {file = "yarl-1.7.2.tar.gz", hash = "sha256:45399b46d60c253327a460e99856752009fcee5f5d3c80b2f7c0cae1c38d56dd"},
+]
+zipp = [
+    {file = "zipp-3.6.0-py3-none-any.whl", hash = "sha256:9fe5ea21568a0a70e50f273397638d39b03353731e6cbbb3fd8502a33fec40bc"},
+    {file = "zipp-3.6.0.tar.gz", hash = "sha256:71c644c5369f4a6e07636f0aa966270449561fcea2e3d6747b8d23efaa9d7832"},
 ]

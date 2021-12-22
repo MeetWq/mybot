@@ -7,7 +7,7 @@ from datetime import datetime
 
 from nonebot import get_driver
 from nonebot.adapters.cqhttp import MessageSegment
-from src.libs.playwright import get_new_page
+from nonebot_plugin_htmlrender import html_to_pic
 
 from .config import Config
 global_config = get_driver().config
@@ -121,8 +121,4 @@ async def create_image(username, luck, fortune, content, face):
                                        content=content,
                                        face=face,
                                        style=fortune_config.fortune_style)
-
-    async with get_new_page(viewport={"width": 100, "height": 100}) as page:
-        await page.set_content(html)
-        img = await page.screenshot(type='jpeg', full_page=True)
-    return img
+    return await html_to_pic(html, wait=0, viewport={"width": 100, "height": 100})
