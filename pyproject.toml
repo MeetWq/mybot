@@ -19,6 +19,7 @@ nonebot-plugin-manager = "^0.5.5"
 nonebot-plugin-alias = "^0.2.1"
 nonebot-plugin-withdraw = "^0.1.5"
 nonebot-plugin-petpet = "^0.1.11"
+nonebot-plugin-logo = "^0.1.0"
 nonebot-plugin-asoulcnki = "^0.1.2"
 nonebot-plugin-shindan = "^0.1.7"
 nonebot-plugin-htmlrender = "^0.0.1"
@@ -49,7 +50,7 @@ nonebot-plugin-test = "^0.3.0"
 autopep8 = "^1.6.0"
 
 [nonebot.plugins]
-plugins = ["nonebot_plugin_apscheduler", "nonebot_plugin_manager", "nonebot_plugin_alias", "nonebot_plugin_withdraw", "nonebot_plugin_petpet", "nonebot_plugin_asoulcnki", "nonebot_plugin_shindan", "nonebot_plugin_htmlrender"]
+plugins = ["nonebot_plugin_apscheduler", "nonebot_plugin_manager", "nonebot_plugin_alias", "nonebot_plugin_withdraw", "nonebot_plugin_petpet", "nonebot_plugin_logo", "nonebot_plugin_asoulcnki", "nonebot_plugin_shindan", "nonebot_plugin_htmlrender"]
 plugin_dirs = ["src/plugins"]
 
 [build-system]

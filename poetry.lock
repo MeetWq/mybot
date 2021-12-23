@@ -1112,6 +1112,26 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "nonebot-plugin-logo"
+version = "0.1.0"
+description = "Nonebot2 plugin for making logo in PornHub or other styles"
+category = "main"
+optional = false
+python-versions = ">=3.8,<4.0"
+
+[package.dependencies]
+imageio = ">=2.12.0,<3.0.0"
+Jinja2 = ">=3.0.0,<4.0.0"
+nonebot-adapter-cqhttp = ">=2.0.0-alpha.15,<3.0.0"
+nonebot-plugin-htmlrender = ">=0.0.1,<0.0.2"
+nonebot2 = ">=2.0.0-alpha.15,<3.0.0"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "nonebot-plugin-manager"
 version = "0.5.5"
 description = "Nonebot Plugin Manager base on import hook"
@@ -2149,7 +2169,7 @@ reference = "tsinghua"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "c08c80adb3c46de613632bc89eff9c487ea06f6cbd1237474d445fb5b735bb42"
+content-hash = "d535fe9d70f2824de549a34590cce1e01a1bcc84577c5c4e3c185c53e2e92221"
 
 [metadata.files]
 aiofiles = [
@@ -2779,6 +2799,10 @@ nonebot-plugin-asoulcnki = [
 nonebot-plugin-htmlrender = [
     {file = "nonebot-plugin-htmlrender-0.0.1.tar.gz", hash = "sha256:1280d4db67ba45e8af14733d569128a542cd4e6bf7c9fd52a88598851227b8ba"},
     {file = "nonebot_plugin_htmlrender-0.0.1-py3-none-any.whl", hash = "sha256:49af3e4c7781f46b4db203ca3adbd7b25b63bd31198013da3ecaa0eeb4b7da52"},
+]
+nonebot-plugin-logo = [
+    {file = "nonebot_plugin_logo-0.1.0-py3-none-any.whl", hash = "sha256:5e6c07aeaefa43d7b068c204476495417c39ba6d339288bc6aafa8dcf88dfbdf"},
+    {file = "nonebot_plugin_logo-0.1.0.tar.gz", hash = "sha256:11821ab859dd8eb638d79438016e8d3ef39c6e4aec9dd4678f691c3adcce9751"},
 ]
 nonebot-plugin-manager = [
     {file = "nonebot_plugin_manager-0.5.5-py3-none-any.whl", hash = "sha256:ca1a8ed08adcfeef60e9817035856db02b0b0a497b32c711c7ce666e6463a4f6"},
