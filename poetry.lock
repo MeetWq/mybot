@@ -1149,6 +1149,27 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "nonebot-plugin-memes"
+version = "0.1.0"
+description = "Nonebot2 plugin for making memes"
+category = "main"
+optional = false
+python-versions = ">=3.8,<4.0"
+
+[package.dependencies]
+httpx = ">=0.19.0"
+imageio = ">=2.12.0,<3.0.0"
+Jinja2 = ">=3.0.0,<4.0.0"
+nonebot-adapter-cqhttp = ">=2.0.0-alpha.15,<3.0.0"
+nonebot2 = ">=2.0.0-alpha.15,<3.0.0"
+Pillow = ">=8.4.0,<9.0.0"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "nonebot-plugin-petpet"
 version = "0.1.11"
 description = "Nonebot2 plugin for making fun pictures"
@@ -2169,7 +2190,7 @@ reference = "tsinghua"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "d535fe9d70f2824de549a34590cce1e01a1bcc84577c5c4e3c185c53e2e92221"
+content-hash = "6b722c245c93a725f98017ffc86bf0c1a797ed06e1c40379621403260053b657"
 
 [metadata.files]
 aiofiles = [
@@ -2807,6 +2828,10 @@ nonebot-plugin-logo = [
 nonebot-plugin-manager = [
     {file = "nonebot_plugin_manager-0.5.5-py3-none-any.whl", hash = "sha256:ca1a8ed08adcfeef60e9817035856db02b0b0a497b32c711c7ce666e6463a4f6"},
     {file = "nonebot_plugin_manager-0.5.5.tar.gz", hash = "sha256:da616cbf09d0b87c54bfba6e8e7431ab13f71f42d6bed6b504373f3066226f6a"},
+]
+nonebot-plugin-memes = [
+    {file = "nonebot_plugin_memes-0.1.0-py3-none-any.whl", hash = "sha256:b5ad2e6f9a89e0763049613a03022af9bdea0a8f65f5d32f548e6787a26908ec"},
+    {file = "nonebot_plugin_memes-0.1.0.tar.gz", hash = "sha256:73d65693e58b0bb23fc2e5f1ddbf134006336cd6972819d2655e4c109fa81d21"},
 ]
 nonebot-plugin-petpet = [
     {file = "nonebot_plugin_petpet-0.1.11-py3-none-any.whl", hash = "sha256:45441b39287268bac238e64f283cdc986129fd7d2f26e7603fb473ca9de084c9"},
