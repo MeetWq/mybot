@@ -30,7 +30,17 @@ driver = nonebot.get_driver()
 driver.register_adapter('cqhttp', CQHTTPBot)
 
 nonebot.load_builtin_plugins()
-nonebot.load_from_toml("pyproject.toml")
+nonebot.load_plugin('nonebot_plugin_apscheduler')
+nonebot.load_plugin('nonebot_plugin_manager')
+nonebot.load_plugin('nonebot_plugin_alias')
+nonebot.load_plugin('nonebot_plugin_withdraw')
+nonebot.load_plugin('nonebot_plugin_htmlrender')
+nonebot.load_plugin('nonebot_plugin_petpet')
+nonebot.load_plugin('nonebot_plugin_logo')
+nonebot.load_plugin('nonebot_plugin_memes')
+nonebot.load_plugin('nonebot_plugin_asoulcnki')
+nonebot.load_plugin('nonebot_plugin_shindan')
+nonebot.load_plugins('src/plugins')
 
 # Modify some config / config depends on loaded configs
 #

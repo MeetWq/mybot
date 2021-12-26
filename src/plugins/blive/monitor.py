@@ -5,6 +5,7 @@ from typing import Dict
 from datetime import datetime, timedelta
 from nonebot import require, get_driver, get_bots
 from nonebot.adapters.cqhttp import Message, MessageSegment
+from nonebot.log import logger
 
 from .data_source import get_live_info_by_uids, get_play_url, get_user_dynamics, get_dynamic_screenshot
 from .uid_list import get_sub_uids, get_sub_users, get_dynamic_users, get_record_users
@@ -183,10 +184,14 @@ async def send_bot_msg(user_id: str, msg):
     type, id = user_type(user_id)
     bots = list(get_bots().values())
     for bot in bots:
-        if type == 'group':
-            await bot.send_group_msg(group_id=id, message=msg)
-        elif type == 'private':
-            await bot.send_private_msg(user_id=id, message=msg)
+        try:
+            if type == 'group':
+                await bot.send_group_msg(group_id=id, message=msg)
+            elif type == 'private':
+                await bot.send_private_msg(user_id=id, message=msg)
+        except:
+            logger.warning(f"send msg failed, user_id: {user_id}, msg: {msg}")
+            continue
 
 
 def user_type(user_id: str):
