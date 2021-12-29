@@ -5,10 +5,10 @@ description = "mybot"
 authors = ["meetwq <meetwq@gmail.com>"]
 license = "MIT"
 
-# [[tool.poetry.source]]
-# name = "aliyun"
-# url = "https://mirrors.aliyun.com/pypi/simple/"
-# default = true
+[[tool.poetry.source]]
+name = "tsinghua"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"
+default = true
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -18,9 +18,9 @@ nonebot-plugin-apscheduler = "^0.1.2"
 nonebot-plugin-manager = "^0.5.5"
 nonebot-plugin-alias = "^0.2.1"
 nonebot-plugin-withdraw = "^0.1.5"
-nonebot-plugin-petpet = "^0.1.11"
+nonebot-plugin-petpet = "^0.1.12"
 nonebot-plugin-logo = "^0.1.0"
-nonebot-plugin-memes = "^0.1.0"
+nonebot-plugin-memes = "^0.1.1"
 nonebot-plugin-asoulcnki = "^0.1.2"
 nonebot-plugin-shindan = "^0.1.7"
 nonebot-plugin-htmlrender = "^0.0.1"
