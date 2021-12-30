@@ -90,8 +90,7 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
         msgs[group_id] = Counter()
     counter = msgs[group_id]
 
-    match_reply = re.search(r"\[CQ:reply,id=(-?\d*)]", event.raw_message)
-    if match_reply:
+    if event.reply:
         counter.clear()
     else:
         counter.add_msg(msg)

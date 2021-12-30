@@ -233,17 +233,17 @@ reference = "tsinghua"
 
 [[package]]
 name = "attrs"
-version = "21.3.0"
+version = "21.4.0"
 description = "Classes Without Boilerplate"
 category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [package.extras]
-dev = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "zope.interface", "furo", "sphinx", "sphinx-notfound-page", "pre-commit"]
+dev = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "zope.interface", "furo", "sphinx", "sphinx-notfound-page", "pre-commit", "cloudpickle"]
 docs = ["furo", "sphinx", "zope.interface", "sphinx-notfound-page"]
-tests = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "zope.interface"]
-tests_no_zope = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins"]
+tests = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "zope.interface", "cloudpickle"]
+tests_no_zope = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "cloudpickle"]
 
 [package.source]
 type = "legacy"
@@ -1040,11 +1040,11 @@ reference = "tsinghua"
 
 [[package]]
 name = "nonebot-plugin-alias"
-version = "0.2.1"
+version = "0.2.2"
 description = "A simple plugin for adding aliases for Nonebot command"
 category = "main"
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = ">=3.7.3,<4.0.0"
 
 [package.dependencies]
 expandvars = ">=0.7.0,<0.8.0"
@@ -1075,17 +1075,17 @@ reference = "tsinghua"
 
 [[package]]
 name = "nonebot-plugin-asoulcnki"
-version = "0.1.2"
+version = "0.1.3"
 description = "ASoulCnki plugin for Nonebot2"
 category = "main"
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = ">=3.7.3,<4.0.0"
 
 [package.dependencies]
 httpx = ">=0.19.0"
 Jinja2 = ">=3.0.0,<4.0.0"
 nonebot-adapter-cqhttp = ">=2.0.0-alpha.15,<3.0.0"
-nonebot-plugin-htmlrender = ">=0.0.1,<0.0.2"
+nonebot-plugin-htmlrender = ">=0.0.1"
 nonebot2 = ">=2.0.0-alpha.15,<3.0.0"
 
 [package.source]
@@ -1095,7 +1095,7 @@ reference = "tsinghua"
 
 [[package]]
 name = "nonebot-plugin-htmlrender"
-version = "0.0.1"
+version = "0.0.3"
 description = ""
 category = "main"
 optional = false
@@ -1107,6 +1107,9 @@ markdown = ">=3.3.6,<4.0.0"
 nonebot-adapter-cqhttp = ">=2.0.0-alpha.16,<3.0.0"
 nonebot2 = ">=2.0.0-alpha.16,<3.0.0"
 playwright = ">=1.17.2,<2.0.0"
+Pygments = ">=2.10.0,<3.0.0"
+pymdown-extensions = ">=9.1,<10.0"
+python-markdown-math = ">=0.8,<0.9"
 
 [package.source]
 type = "legacy"
@@ -1115,17 +1118,17 @@ reference = "tsinghua"
 
 [[package]]
 name = "nonebot-plugin-logo"
-version = "0.1.0"
+version = "0.1.1"
 description = "Nonebot2 plugin for making logo in PornHub or other styles"
 category = "main"
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = ">=3.7.3,<4.0.0"
 
 [package.dependencies]
 imageio = ">=2.12.0,<3.0.0"
 Jinja2 = ">=3.0.0,<4.0.0"
 nonebot-adapter-cqhttp = ">=2.0.0-alpha.15,<3.0.0"
-nonebot-plugin-htmlrender = ">=0.0.1,<0.0.2"
+nonebot-plugin-htmlrender = ">=0.0.1"
 nonebot2 = ">=2.0.0-alpha.15,<3.0.0"
 
 [package.source]
@@ -1152,11 +1155,11 @@ reference = "tsinghua"
 
 [[package]]
 name = "nonebot-plugin-memes"
-version = "0.1.1"
+version = "0.1.2"
 description = "Nonebot2 plugin for making memes"
 category = "main"
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = ">=3.7.3,<4.0.0"
 
 [package.dependencies]
 httpx = ">=0.19.0"
@@ -1173,11 +1176,11 @@ reference = "tsinghua"
 
 [[package]]
 name = "nonebot-plugin-petpet"
-version = "0.1.12"
+version = "0.1.13"
 description = "Nonebot2 plugin for making fun pictures"
 category = "main"
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = ">=3.7.3,<4.0.0"
 
 [package.dependencies]
 httpx = ">=0.19.0"
@@ -1193,18 +1196,18 @@ reference = "tsinghua"
 
 [[package]]
 name = "nonebot-plugin-shindan"
-version = "0.1.7"
+version = "0.1.8"
 description = "Nonebot2 plugin for using ShindanMaker"
 category = "main"
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = ">=3.7.3,<4.0.0"
 
 [package.dependencies]
 httpx = ">=0.19.0"
 Jinja2 = ">=3.0.0,<4.0.0"
 lxml = ">=4.6.5,<5.0.0"
 nonebot-adapter-cqhttp = ">=2.0.0-alpha.15,<3.0.0"
-nonebot-plugin-htmlrender = ">=0.0.1,<0.0.2"
+nonebot-plugin-htmlrender = ">=0.0.1"
 nonebot2 = ">=2.0.0-alpha.15,<3.0.0"
 playwright = ">=1.9.2,<2.0.0"
 
@@ -1233,11 +1236,11 @@ reference = "tsinghua"
 
 [[package]]
 name = "nonebot-plugin-withdraw"
-version = "0.1.5"
+version = "0.1.6"
 description = "A simple withdraw plugin for Nonebot2"
 category = "main"
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = ">=3.7.3,<4.0.0"
 
 [package.dependencies]
 nonebot-adapter-cqhttp = ">=2.0.0-alpha.13,<3.0.0"
@@ -1479,12 +1482,41 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "pygments"
+version = "2.11.0"
+description = "Pygments is a syntax highlighting package written in Python."
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "pygtrie"
 version = "2.4.2"
 description = "A pure Python trie data structure implementation."
 category = "main"
 optional = false
 python-versions = "*"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "pymdown-extensions"
+version = "9.1"
+description = "Extension pack for Python Markdown."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+Markdown = ">=3.2"
 
 [package.source]
 type = "legacy"
@@ -1563,6 +1595,22 @@ description = "Python extension for computing string edit distances and similari
 category = "main"
 optional = false
 python-versions = "*"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "python-markdown-math"
+version = "0.8"
+description = "Math extension for Python-Markdown"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+Markdown = ">=3.0"
 
 [package.source]
 type = "legacy"
@@ -1825,7 +1873,7 @@ reference = "tsinghua"
 
 [[package]]
 name = "tencentcloud-sdk-python"
-version = "3.0.556"
+version = "3.0.557"
 description = "Tencent Cloud SDK for Python"
 category = "main"
 optional = false
@@ -2192,7 +2240,7 @@ reference = "tsinghua"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "3bc86e190d24a6b2d5c23fd1cad1e76dba211fad3f58101250b3137e15da4597"
+content-hash = "53e7b365261ebfe5c110599d43714444532752601f1234e154ef08b22bc17ffd"
 
 [metadata.files]
 aiofiles = [
@@ -2313,8 +2361,8 @@ asyncio-dgram = [
     {file = "asyncio_dgram-2.1.1-py3-none-any.whl", hash = "sha256:dc1c574981061e3fccfc82c319aeb9e0b57c441dbd68ee236469c426e371905f"},
 ]
 attrs = [
-    {file = "attrs-21.3.0-py2.py3-none-any.whl", hash = "sha256:8f7335278dedd26b58c38e006338242cc0977f06d51579b2b8b87b9b33bff66c"},
-    {file = "attrs-21.3.0.tar.gz", hash = "sha256:50f3c9b216dc9021042f71b392859a773b904ce1a029077f58f6598272432045"},
+    {file = "attrs-21.4.0-py2.py3-none-any.whl", hash = "sha256:2d27e3784d7a565d36ab851fe94887c5eccd6a463168875832a1be79c82828b4"},
+    {file = "attrs-21.4.0.tar.gz", hash = "sha256:626ba8234211db98e869df76230a137c4c40a12d72445c45d5f5b716f076e2fd"},
 ]
 autopep8 = [
     {file = "autopep8-1.6.0-py2.py3-none-any.whl", hash = "sha256:ed77137193bbac52d029a52c59bec1b0629b5a186c495f1eb21b126ac466083f"},
@@ -2808,48 +2856,48 @@ nonebot-adapter-cqhttp = [
     {file = "nonebot_adapter_cqhttp-2.0.0a16-py3-none-any.whl", hash = "sha256:831747c55c9c1a660215225f84784a4ca275a84bffa8d1312524367066b68bbe"},
 ]
 nonebot-plugin-alias = [
-    {file = "nonebot_plugin_alias-0.2.1-py3-none-any.whl", hash = "sha256:bf6882bf2f892483984b9b696d7c17720f822db1b078d7fbdea2cc44470501a3"},
-    {file = "nonebot_plugin_alias-0.2.1.tar.gz", hash = "sha256:2fec0d4cd81ac91bb6c4111607638dba338dab366edf9681cf560fea05258b92"},
+    {file = "nonebot_plugin_alias-0.2.2-py3-none-any.whl", hash = "sha256:566efe8fb2dc12ef59ee868d568d1cf29b3c815ac84fd142f044928753429dde"},
+    {file = "nonebot_plugin_alias-0.2.2.tar.gz", hash = "sha256:d88de703adeee85e9abec0d4e91d096d4c6bb69c38d7381eb7b2d1d12a9a13aa"},
 ]
 nonebot-plugin-apscheduler = [
     {file = "nonebot-plugin-apscheduler-0.1.2.tar.gz", hash = "sha256:1765336cd388dde15f723ed12dbca942b04e4c25d5d7786878e447b09e68b909"},
     {file = "nonebot_plugin_apscheduler-0.1.2-py3-none-any.whl", hash = "sha256:eed7b9e60d08826ae4919f82dc240fc7ec469185271c2271e14438a3e0ca7692"},
 ]
 nonebot-plugin-asoulcnki = [
-    {file = "nonebot_plugin_asoulcnki-0.1.2-py3-none-any.whl", hash = "sha256:8ae991c6dd46b6895bb0100346a1098782c0a2221fb7867b53e32898df6888b3"},
-    {file = "nonebot_plugin_asoulcnki-0.1.2.tar.gz", hash = "sha256:92390830acdb1a4f37a913c5b42d59f5f2bd58166af970faa189c2ef6e0b729d"},
+    {file = "nonebot_plugin_asoulcnki-0.1.3-py3-none-any.whl", hash = "sha256:75f53ed4e63ba3ac679b7cb2a4e2332468eb0fff67adf65a856e6794df30d926"},
+    {file = "nonebot_plugin_asoulcnki-0.1.3.tar.gz", hash = "sha256:4d5fadc2cd8b30d13c1ab7d5e64f1ecc76bbbe557c5c9ec3730c462385555ebb"},
 ]
 nonebot-plugin-htmlrender = [
-    {file = "nonebot-plugin-htmlrender-0.0.1.tar.gz", hash = "sha256:1280d4db67ba45e8af14733d569128a542cd4e6bf7c9fd52a88598851227b8ba"},
-    {file = "nonebot_plugin_htmlrender-0.0.1-py3-none-any.whl", hash = "sha256:49af3e4c7781f46b4db203ca3adbd7b25b63bd31198013da3ecaa0eeb4b7da52"},
+    {file = "nonebot-plugin-htmlrender-0.0.3.tar.gz", hash = "sha256:7ab40823914afad06b049675b7a24b33b2e6a833c734ca0256c900b2004ddab8"},
+    {file = "nonebot_plugin_htmlrender-0.0.3-py3-none-any.whl", hash = "sha256:6ebc8c49cda37b4a37af6eedf5932e6c034f500bb6711479bc6206bdff492913"},
 ]
 nonebot-plugin-logo = [
-    {file = "nonebot_plugin_logo-0.1.0-py3-none-any.whl", hash = "sha256:5e6c07aeaefa43d7b068c204476495417c39ba6d339288bc6aafa8dcf88dfbdf"},
-    {file = "nonebot_plugin_logo-0.1.0.tar.gz", hash = "sha256:11821ab859dd8eb638d79438016e8d3ef39c6e4aec9dd4678f691c3adcce9751"},
+    {file = "nonebot_plugin_logo-0.1.1-py3-none-any.whl", hash = "sha256:f7020d2abdc9130d873f5cd54d3e259c132448994d9715bfe2b1efdb1f5dcf80"},
+    {file = "nonebot_plugin_logo-0.1.1.tar.gz", hash = "sha256:3669065bfeaeaec8dfdc43fa7d908c61b5b077ffcd98f99063f15a65c6bd700e"},
 ]
 nonebot-plugin-manager = [
     {file = "nonebot_plugin_manager-0.5.5-py3-none-any.whl", hash = "sha256:ca1a8ed08adcfeef60e9817035856db02b0b0a497b32c711c7ce666e6463a4f6"},
     {file = "nonebot_plugin_manager-0.5.5.tar.gz", hash = "sha256:da616cbf09d0b87c54bfba6e8e7431ab13f71f42d6bed6b504373f3066226f6a"},
 ]
 nonebot-plugin-memes = [
-    {file = "nonebot_plugin_memes-0.1.1-py3-none-any.whl", hash = "sha256:3759d6cf4a4a26611342f22f8690d30a1a4336efc1b7e8157e096fad095ac2df"},
-    {file = "nonebot_plugin_memes-0.1.1.tar.gz", hash = "sha256:81d628da20ad8be20ba0bef768884ba6c954dd43e04b6d739d2e0e65d8117c06"},
+    {file = "nonebot_plugin_memes-0.1.2-py3-none-any.whl", hash = "sha256:8aeb0aea94ba8da50ae4ef5f6820eeb8277ba60f06721b82cc1c426d08bf1976"},
+    {file = "nonebot_plugin_memes-0.1.2.tar.gz", hash = "sha256:df2703d0a63c68939d60197b7a4331220881f00692968890d6a5ff4e4d2e7d3a"},
 ]
 nonebot-plugin-petpet = [
-    {file = "nonebot_plugin_petpet-0.1.12-py3-none-any.whl", hash = "sha256:0f13f2ccc54b20f5a98b2e3e1d5a67888f09d3cd122b94455dfec5ad993409b3"},
-    {file = "nonebot_plugin_petpet-0.1.12.tar.gz", hash = "sha256:685480d5ba3ef8b298b2c1a6fa5964d923e7e2077c08555b7fe89a9a2b762128"},
+    {file = "nonebot_plugin_petpet-0.1.13-py3-none-any.whl", hash = "sha256:a92914d87e330c14fd9188e07c8d0654e721dbd0e14cd204795037a463093daa"},
+    {file = "nonebot_plugin_petpet-0.1.13.tar.gz", hash = "sha256:95150fd889f7f07709f090f66b991511c36ddbeff781dca972ff34d4fda39dec"},
 ]
 nonebot-plugin-shindan = [
-    {file = "nonebot_plugin_shindan-0.1.7-py3-none-any.whl", hash = "sha256:75801556a081763f9e5bbf067876fdba49e32b8ab2c6bc0b2812a0602e392752"},
-    {file = "nonebot_plugin_shindan-0.1.7.tar.gz", hash = "sha256:0f6fbe4c7121f0e44eaaf6df9d8302e16bf3fbc06a6409986eaba26408619565"},
+    {file = "nonebot_plugin_shindan-0.1.8-py3-none-any.whl", hash = "sha256:43307780033d2b4d64a4dcc5fe36bd3c9d2aa6fb7f3bfc5ae2ca08f13bd38e29"},
+    {file = "nonebot_plugin_shindan-0.1.8.tar.gz", hash = "sha256:4216e65c739f2723393047bb705785829378bf89262975eff8d48af3f40834fc"},
 ]
 nonebot-plugin-test = [
     {file = "nonebot-plugin-test-0.3.0.tar.gz", hash = "sha256:6cea9342f4df69a73b9aa27a3eaa22a08c6e54b675e2e6638b4b3fc8568cd6fe"},
     {file = "nonebot_plugin_test-0.3.0-py3-none-any.whl", hash = "sha256:edb880340436323ccd0a13b31d48975136b6bdc71daa178601c4b05b068cc73e"},
 ]
 nonebot-plugin-withdraw = [
-    {file = "nonebot_plugin_withdraw-0.1.5-py3-none-any.whl", hash = "sha256:8b2b6906267682a72d31710763c1c97f5b2c9fdbc8ea3bf244639eeed2952d81"},
-    {file = "nonebot_plugin_withdraw-0.1.5.tar.gz", hash = "sha256:dd54152cba445d8a64fdc7a2c5a998afa4825d523c8f8d05e78ce5dacc5d4af3"},
+    {file = "nonebot_plugin_withdraw-0.1.6-py3-none-any.whl", hash = "sha256:1a3cc1a79936a51726f35609c5be5be974ef2facfc3536351ea6c127c63e1c3b"},
+    {file = "nonebot_plugin_withdraw-0.1.6.tar.gz", hash = "sha256:71618d7cd662b9819760d51d0ab85d82603960d313bb23441cf70a225704a685"},
 ]
 nonebot2 = [
     {file = "nonebot2-2.0.0a16-py3-none-any.whl", hash = "sha256:88596c154143fc2203a50d224bacf4e2e5be1b4142fd92e645c40258e5819924"},
@@ -3028,8 +3076,16 @@ pyfiglet = [
     {file = "pyfiglet-0.8.post1-py2.py3-none-any.whl", hash = "sha256:d555bcea17fbeaf70eaefa48bb119352487e629c9b56f30f383e2c62dd67a01c"},
     {file = "pyfiglet-0.8.post1.tar.gz", hash = "sha256:c6c2321755d09267b438ec7b936825a4910fec696292139e664ca8670e103639"},
 ]
+pygments = [
+    {file = "Pygments-2.11.0-py3-none-any.whl", hash = "sha256:ac8098bfc40b8e1091ad7c13490c7f4797e401d0972e8fcfadde90ffb3ed4ea9"},
+    {file = "Pygments-2.11.0.tar.gz", hash = "sha256:51130f778a028f2d19c143fce00ced6f8b10f726e17599d7e91b290f6cbcda0c"},
+]
 pygtrie = [
     {file = "pygtrie-2.4.2.tar.gz", hash = "sha256:43205559d28863358dbbf25045029f58e2ab357317a59b11f11ade278ac64692"},
+]
+pymdown-extensions = [
+    {file = "pymdown-extensions-9.1.tar.gz", hash = "sha256:74247f2c80f1d9e3c7242abe1c16317da36c6f26c7ad4b8a7f457f0ec20f0365"},
+    {file = "pymdown_extensions-9.1-py3-none-any.whl", hash = "sha256:b03e66f91f33af4a6e7a0e20c740313522995f69a03d86316b1449766c473d0e"},
 ]
 pyperclip = [
     {file = "pyperclip-1.8.2.tar.gz", hash = "sha256:105254a8b04934f0bc84e9c24eb360a591aaf6535c9def5f29d92af107a9bf57"},
@@ -3092,6 +3148,10 @@ python-levenshtein-wheels = [
     {file = "python_Levenshtein_wheels-0.13.2-pp37-pypy37_pp73-manylinux1_x86_64.whl", hash = "sha256:5f37c055dcf8ea3fa88bb62c63195cbb05619236ae289aefa1cb0720fa01373e"},
     {file = "python_Levenshtein_wheels-0.13.2-pp37-pypy37_pp73-manylinux2010_x86_64.whl", hash = "sha256:4c55f77ac0b9c87152a409824f9880c8abebe0a7381956a260a4c52e16e32b6b"},
     {file = "python_Levenshtein_wheels-0.13.2-pp37-pypy37_pp73-win32.whl", hash = "sha256:150852c3851659fc95a3435331e9c980ebde6729f2cb0cf5ed4a33f98b0f0839"},
+]
+python-markdown-math = [
+    {file = "python-markdown-math-0.8.tar.gz", hash = "sha256:8564212af679fc18d53f38681f16080fcd3d186073f23825c7ce86fadd3e3635"},
+    {file = "python_markdown_math-0.8-py3-none-any.whl", hash = "sha256:c685249d84b5b697e9114d7beb352bd8ca2e07fd268fd4057ffca888c14641e5"},
 ]
 python-slugify = [
     {file = "python-slugify-5.0.2.tar.gz", hash = "sha256:f13383a0b9fcbe649a1892b9c8eb4f8eab1d6d84b84bb7a624317afa98159cab"},
@@ -3267,8 +3327,8 @@ starlette = [
     {file = "starlette-0.14.2.tar.gz", hash = "sha256:7d49f4a27f8742262ef1470608c59ddbc66baf37c148e938c7038e6bc7a998aa"},
 ]
 tencentcloud-sdk-python = [
-    {file = "tencentcloud-sdk-python-3.0.556.tar.gz", hash = "sha256:4ed48da64798e81ba74934e1b68ade5ab55b1eb47f7a40c60dcbb9e6c3fe06a4"},
-    {file = "tencentcloud_sdk_python-3.0.556-py2.py3-none-any.whl", hash = "sha256:1025dabd7e855fe8fe696e46192054d369f2e5a3f5004876ea81514ef153b388"},
+    {file = "tencentcloud-sdk-python-3.0.557.tar.gz", hash = "sha256:c4c6a058c4fa09fa147179b0196ad9af2f929e21cf199f0e0878f02b4848f12d"},
+    {file = "tencentcloud_sdk_python-3.0.557-py2.py3-none-any.whl", hash = "sha256:093cbfb7f1d0f1da6162925fcf331faefb9721210da26735a72181e6f4697dfd"},
 ]
 text-unidecode = [
     {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},

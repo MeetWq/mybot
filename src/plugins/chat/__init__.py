@@ -6,7 +6,7 @@ from nonebot.permission import Permission
 from nonebot.rule import to_me, Rule
 from nonebot.typing import T_State
 from nonebot.matcher import Matcher
-from nonebot.adapters.cqhttp import Bot, Event, GroupMessageEvent, PrivateMessageEvent
+from nonebot.adapters.cqhttp import Bot, MessageEvent, GroupMessageEvent, PrivateMessageEvent
 
 from .data_source import chat_bot, get_anime_thesaurus
 from .config import Config
@@ -51,9 +51,8 @@ end_word = [
 
 
 @chat.handle()
-async def first_receive(bot: Bot, event: Event, state: T_State):
-    match_reply = re.search(r"\[CQ:reply,id=(-?\d*)]", event.raw_message)
-    if match_reply:
+async def first_receive(bot: Bot, event: MessageEvent, state: T_State):
+    if event.reply:
         await chat.finish()
 
     msg = event.get_plaintext().strip()
@@ -66,7 +65,7 @@ async def first_receive(bot: Bot, event: Event, state: T_State):
     await handle_reply(reply, event)
 
 
-async def continue_receive(bot: Bot, event: Event, state: T_State):
+async def continue_receive(bot: Bot, event: MessageEvent, state: T_State):
     msg = event.get_plaintext().strip()
     msg = filter_msg(msg)
     if msg:
@@ -81,7 +80,7 @@ async def continue_receive(bot: Bot, event: Event, state: T_State):
     await chat.finish()
 
 
-async def handle_reply(reply: str, event: Event):
+async def handle_reply(reply: str, event: MessageEvent):
     if not reply:
         await chat.finish()
     if isinstance(event, PrivateMessageEvent):
@@ -92,15 +91,15 @@ async def handle_reply(reply: str, event: Event):
         await chat.finish()
 
 
-def get_event_id(event: Event):
+def get_event_id(event: MessageEvent):
     if isinstance(event, GroupMessageEvent):
         return f'group_{event.group_id}'
     else:
         return f'private_{event.user_id}'
 
 
-def new_matcher(event: Event):
-    async def check_event_id(bot: "Bot", new_event: "Event") -> bool:
+def new_matcher(event: MessageEvent):
+    async def check_event_id(bot: "Bot", new_event: "MessageEvent") -> bool:
         return get_event_id(event) == get_event_id(new_event) and await chat.permission(bot, new_event)
 
     Matcher.new(chat.type,
@@ -143,7 +142,7 @@ def filter_no_reply(msg: str):
     return msg
 
 
-async def get_reply(msg: str, event: Event):
+async def get_reply(msg: str, event: MessageEvent):
     prefix = event.group_id if isinstance(
         event, GroupMessageEvent) else 'private'
     user_id = f'{prefix}_{event.user_id}'
