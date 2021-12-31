@@ -1,4 +1,23 @@
 [[package]]
+name = "aiocache"
+version = "0.11.1"
+description = "multi backend asyncio cache"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+dev = ["asynctest (>=0.11.0)", "codecov", "coverage", "flake8", "ipdb", "marshmallow", "pystache", "pytest", "pytest-asyncio", "pytest-mock", "sphinx", "sphinx-autobuild", "sphinx-rtd-theme", "black"]
+memcached = ["aiomcache (>=0.5.2)"]
+msgpack = ["msgpack (>=0.5.5)"]
+redis = ["aioredis (>=0.3.3)", "aioredis (>=1.0.0)"]
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "aiofiles"
 version = "0.7.0"
 description = "File support for asyncio."
@@ -1196,13 +1215,14 @@ reference = "tsinghua"
 
 [[package]]
 name = "nonebot-plugin-memes"
-version = "0.1.2"
+version = "0.1.3"
 description = "Nonebot2 plugin for making memes"
 category = "main"
 optional = false
 python-versions = ">=3.7.3,<4.0.0"
 
 [package.dependencies]
+aiocache = ">=0.11.0"
 httpx = ">=0.19.0"
 imageio = ">=2.12.0,<3.0.0"
 Jinja2 = ">=3.0.0,<4.0.0"
@@ -1217,7 +1237,7 @@ reference = "tsinghua"
 
 [[package]]
 name = "nonebot-plugin-petpet"
-version = "0.1.13"
+version = "0.1.14"
 description = "Nonebot2 plugin for making fun pictures"
 category = "main"
 optional = false
@@ -2268,15 +2288,15 @@ reference = "tsinghua"
 
 [[package]]
 name = "zipp"
-version = "3.6.0"
+version = "3.7.0"
 description = "Backport of pathlib-compatible object wrapper for zip files"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [package.extras]
 docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
-testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-cov", "pytest-enabler (>=1.0.1)", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
+testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-cov", "pytest-enabler (>=1.0.1)", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
 [package.source]
 type = "legacy"
@@ -2289,6 +2309,10 @@ python-versions = "^3.7.3"
 content-hash = "b8eda9a6d331c16e034594f45add7e47a112eb02959d968823a83bcaa5f96963"
 
 [metadata.files]
+aiocache = [
+    {file = "aiocache-0.11.1-py2.py3-none-any.whl", hash = "sha256:e55c7caaa5753794fd301c3a2e592737fa1d036db9f8d04ae154facdfb48a157"},
+    {file = "aiocache-0.11.1.tar.gz", hash = "sha256:f2ebe0b05cec45782e7b5ea0bb74640f157dd4bb1028b4565364dda9fe33be7f"},
+]
 aiofiles = [
     {file = "aiofiles-0.7.0-py3-none-any.whl", hash = "sha256:c67a6823b5f23fcab0a2595a289cec7d8c863ffcb4322fb8cd6b90400aedfdbc"},
     {file = "aiofiles-0.7.0.tar.gz", hash = "sha256:a1c4fc9b2ff81568c83e21392a82f344ea9d23da906e4f6a52662764545e19d4"},
@@ -2948,12 +2972,12 @@ nonebot-plugin-manager = [
     {file = "nonebot_plugin_manager-0.5.5.tar.gz", hash = "sha256:da616cbf09d0b87c54bfba6e8e7431ab13f71f42d6bed6b504373f3066226f6a"},
 ]
 nonebot-plugin-memes = [
-    {file = "nonebot_plugin_memes-0.1.2-py3-none-any.whl", hash = "sha256:8aeb0aea94ba8da50ae4ef5f6820eeb8277ba60f06721b82cc1c426d08bf1976"},
-    {file = "nonebot_plugin_memes-0.1.2.tar.gz", hash = "sha256:df2703d0a63c68939d60197b7a4331220881f00692968890d6a5ff4e4d2e7d3a"},
+    {file = "nonebot_plugin_memes-0.1.3-py3-none-any.whl", hash = "sha256:938d205022773b4da288061a51835182d7e4020c4edd117878350824b32a329a"},
+    {file = "nonebot_plugin_memes-0.1.3.tar.gz", hash = "sha256:5451cb311a83b214241b4f9dc0771a686f43aaf26bcd03a57a3133568e674e11"},
 ]
 nonebot-plugin-petpet = [
-    {file = "nonebot_plugin_petpet-0.1.13-py3-none-any.whl", hash = "sha256:a92914d87e330c14fd9188e07c8d0654e721dbd0e14cd204795037a463093daa"},
-    {file = "nonebot_plugin_petpet-0.1.13.tar.gz", hash = "sha256:95150fd889f7f07709f090f66b991511c36ddbeff781dca972ff34d4fda39dec"},
+    {file = "nonebot_plugin_petpet-0.1.14-py3-none-any.whl", hash = "sha256:ce7f88ca07ac492e94fd9ab9195f634d0d3ccadbdbb32294a2370725a771a7de"},
+    {file = "nonebot_plugin_petpet-0.1.14.tar.gz", hash = "sha256:cbf1b32580ea3459e7e4b29708ce996fa5ceac90c3286ff7a9e6a4182289d67f"},
 ]
 nonebot-plugin-shindan = [
     {file = "nonebot_plugin_shindan-0.1.8-py3-none-any.whl", hash = "sha256:43307780033d2b4d64a4dcc5fe36bd3c9d2aa6fb7f3bfc5ae2ca08f13bd38e29"},
@@ -3620,6 +3644,6 @@ yarl = [
     {file = "yarl-1.7.2.tar.gz", hash = "sha256:45399b46d60c253327a460e99856752009fcee5f5d3c80b2f7c0cae1c38d56dd"},
 ]
 zipp = [
-    {file = "zipp-3.6.0-py3-none-any.whl", hash = "sha256:9fe5ea21568a0a70e50f273397638d39b03353731e6cbbb3fd8502a33fec40bc"},
-    {file = "zipp-3.6.0.tar.gz", hash = "sha256:71c644c5369f4a6e07636f0aa966270449561fcea2e3d6747b8d23efaa9d7832"},
+    {file = "zipp-3.7.0-py3-none-any.whl", hash = "sha256:b47250dd24f92b7dd6a0a8fc5244da14608f3ca90a5efcd37a3b1642fac9a375"},
+    {file = "zipp-3.7.0.tar.gz", hash = "sha256:9f50f446828eb9d45b267433fd3e9da8d801f614129124863f9c51ebceafb87d"},
 ]
