@@ -1215,7 +1215,7 @@ reference = "tsinghua"
 
 [[package]]
 name = "nonebot-plugin-memes"
-version = "0.1.3"
+version = "0.1.4"
 description = "Nonebot2 plugin for making memes"
 category = "main"
 optional = false
@@ -1237,7 +1237,7 @@ reference = "tsinghua"
 
 [[package]]
 name = "nonebot-plugin-petpet"
-version = "0.1.14"
+version = "0.1.16"
 description = "Nonebot2 plugin for making fun pictures"
 category = "main"
 optional = false
@@ -1545,7 +1545,7 @@ reference = "tsinghua"
 
 [[package]]
 name = "pygments"
-version = "2.11.0"
+version = "2.11.1"
 description = "Pygments is a syntax highlighting package written in Python."
 category = "main"
 optional = false
@@ -2972,12 +2972,12 @@ nonebot-plugin-manager = [
     {file = "nonebot_plugin_manager-0.5.5.tar.gz", hash = "sha256:da616cbf09d0b87c54bfba6e8e7431ab13f71f42d6bed6b504373f3066226f6a"},
 ]
 nonebot-plugin-memes = [
-    {file = "nonebot_plugin_memes-0.1.3-py3-none-any.whl", hash = "sha256:938d205022773b4da288061a51835182d7e4020c4edd117878350824b32a329a"},
-    {file = "nonebot_plugin_memes-0.1.3.tar.gz", hash = "sha256:5451cb311a83b214241b4f9dc0771a686f43aaf26bcd03a57a3133568e674e11"},
+    {file = "nonebot_plugin_memes-0.1.4-py3-none-any.whl", hash = "sha256:e46c1512890c7c744c8a95526178e05c8f898400f5a356ec10f5c416da86dc42"},
+    {file = "nonebot_plugin_memes-0.1.4.tar.gz", hash = "sha256:c4fa4d47349e50df137b6345f149b05b7d1c56346d593f12c865914cd9f01e8b"},
 ]
 nonebot-plugin-petpet = [
-    {file = "nonebot_plugin_petpet-0.1.14-py3-none-any.whl", hash = "sha256:ce7f88ca07ac492e94fd9ab9195f634d0d3ccadbdbb32294a2370725a771a7de"},
-    {file = "nonebot_plugin_petpet-0.1.14.tar.gz", hash = "sha256:cbf1b32580ea3459e7e4b29708ce996fa5ceac90c3286ff7a9e6a4182289d67f"},
+    {file = "nonebot_plugin_petpet-0.1.16-py3-none-any.whl", hash = "sha256:3ae514cdb69a1d72a8cb634b9fd91d0b1fb5189e44fbbb9e2724ca64dfc4ce48"},
+    {file = "nonebot_plugin_petpet-0.1.16.tar.gz", hash = "sha256:1e821055c42133ff4c357ffcd6d671b64d738f72613752e35d95017b03fb112e"},
 ]
 nonebot-plugin-shindan = [
     {file = "nonebot_plugin_shindan-0.1.8-py3-none-any.whl", hash = "sha256:43307780033d2b4d64a4dcc5fe36bd3c9d2aa6fb7f3bfc5ae2ca08f13bd38e29"},
@@ -3169,8 +3169,8 @@ pyfiglet = [
     {file = "pyfiglet-0.8.post1.tar.gz", hash = "sha256:c6c2321755d09267b438ec7b936825a4910fec696292139e664ca8670e103639"},
 ]
 pygments = [
-    {file = "Pygments-2.11.0-py3-none-any.whl", hash = "sha256:ac8098bfc40b8e1091ad7c13490c7f4797e401d0972e8fcfadde90ffb3ed4ea9"},
-    {file = "Pygments-2.11.0.tar.gz", hash = "sha256:51130f778a028f2d19c143fce00ced6f8b10f726e17599d7e91b290f6cbcda0c"},
+    {file = "Pygments-2.11.1-py3-none-any.whl", hash = "sha256:9135c1af61eec0f650cd1ea1ed8ce298e54d56bcd8cc2ef46edd7702c171337c"},
+    {file = "Pygments-2.11.1.tar.gz", hash = "sha256:59b895e326f0fb0d733fd28c6839bd18ad0687ba20efc26d4277fd1d30b971f4"},
 ]
 pygtrie = [
     {file = "pygtrie-2.4.2.tar.gz", hash = "sha256:43205559d28863358dbbf25045029f58e2ab357317a59b11f11ade278ac64692"},
