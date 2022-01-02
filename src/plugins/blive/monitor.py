@@ -11,6 +11,7 @@ from .data_source import get_live_info_by_uids, get_play_url, get_user_dynamics,
 from .uid_list import get_sub_uids, get_sub_users, get_dynamic_users, get_record_users
 from .dynamic import Dynamic
 from .recorder import Recorder
+from .aliyun import update_refresh_token
 
 from .config import Config
 global_config = get_driver().config
@@ -236,4 +237,19 @@ scheduler.add_job(
     id='bilibili_dynamic_cron',
     coalesce=True,
     misfire_grace_time=30
+)
+
+token_cron = blive_config.aliyunpan_update_token_cron
+scheduler.add_job(
+    update_refresh_token,
+    'cron',
+    second=token_cron[0],
+    minute=token_cron[1],
+    hour=token_cron[2],
+    day=token_cron[3],
+    month=token_cron[4],
+    year=token_cron[5],
+    id='aliyunpan_update_token_cron',
+    coalesce=True,
+    misfire_grace_time=3600
 )

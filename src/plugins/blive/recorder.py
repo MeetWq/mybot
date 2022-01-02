@@ -1,25 +1,14 @@
-import os
 import time
 import requests
 import traceback
+from typing import List
 from pathlib import Path
-from nonebot import get_driver
 from nonebot.log import logger
 
 from .flv_checker import FlvChecker
-
-from .config import Config
-global_config = get_driver().config
-blive_config = Config(**global_config.dict())
+from .aliyun import upload_and_share
 
 data_path = Path() / 'data' / 'blive'
-
-try:
-    os.environ['ALIYUNPAN_ROOT'] = str((Path('log')).absolute())
-    from aliyunpan.cli.cli import Commander
-    commander = Commander(refresh_token=blive_config.aliyunpan_refresh_token, filter_file=set())
-except:
-    commander = None
 
 
 class Recorder:
@@ -83,7 +72,7 @@ class Recorder:
                         f'Error while download live stream! retry {i}/{retry}' + traceback.format_exc())
         return False
 
-    def check_files(self, files):
+    def check_files(self, files: List[Path]) -> List[Path]:
         files_checked = []
         for file in files:
             if not file.exists() or file.stat().st_size < 10 * 1024 * 1024:
@@ -97,9 +86,17 @@ class Recorder:
             # file.unlink(missing_ok=True)
         return files_checked
 
-    def upload_files(self, files_checked):
+    def upload_files(self, files_checked: List[Path]):
         for file in files_checked:
-            url = self.upload_file(file)
+            if not file.exists():
+                continue
+            try:
+                url = upload_and_share(file, f'records/{self.up_name}')
+            except:
+                logger.warning(f'upload {file} failed')
+                logger.warning(traceback.format_exc())
+                continue
+
             if url:
                 logger.info(f'upload {file} done, url: {url}')
                 self.urls.append(url)
@@ -107,31 +104,3 @@ class Recorder:
             else:
                 logger.warning(f'upload {file} failed!')
         self.uploading = False
-
-    def upload_file(self, path: Path):
-        if not commander:
-            return ''
-        if not path.exists():
-            return ''
-        try:
-            upload_path = f'records/{self.up_name}'
-            commander.mkdir(upload_path)
-
-            logger.info(f'upload {path} to {upload_path} ...')
-            commander.upload(str(path.absolute()), upload_path)
-            logger.info(f'upload {path} to {upload_path} successfully')
-            time.sleep(30)
-            expiration = 24 * 3600
-            upload_name = f'{upload_path}/{path.name}'
-            file_id_list = [commander._path_list.get_path_fid(
-                upload_name, update=False)]
-            if file_id_list:
-                url = commander._disk.share_link(
-                    file_id_list, time.time() + expiration)
-                logger.info(f'create share link for {upload_name}, url: {url}')
-                return url
-            return ''
-        except:
-            logger.warning(traceback.format_exc())
-            logger.warning(f'upload to aliyunpan failed')
-            return ''
