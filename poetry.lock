@@ -399,7 +399,7 @@ reference = "tsinghua"
 
 [[package]]
 name = "charset-normalizer"
-version = "2.0.9"
+version = "2.0.10"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
 category = "main"
 optional = false
@@ -713,7 +713,7 @@ reference = "tsinghua"
 
 [[package]]
 name = "httpcore"
-version = "0.14.3"
+version = "0.14.4"
 description = "A minimal low-level HTTP client."
 category = "main"
 optional = false
@@ -751,7 +751,7 @@ reference = "tsinghua"
 
 [[package]]
 name = "httpx"
-version = "0.21.1"
+version = "0.21.3"
 description = "The next generation HTTP client."
 category = "main"
 optional = false
@@ -1155,8 +1155,8 @@ reference = "tsinghua"
 
 [[package]]
 name = "nonebot-plugin-htmlrender"
-version = "0.0.3.1"
-description = ""
+version = "0.0.4"
+description = "通过浏览器渲染图片"
 category = "main"
 optional = false
 python-versions = ">=3.7.3,<4.0"
@@ -1215,7 +1215,7 @@ reference = "tsinghua"
 
 [[package]]
 name = "nonebot-plugin-memes"
-version = "0.1.4"
+version = "0.1.4.3"
 description = "Nonebot2 plugin for making memes"
 category = "main"
 optional = false
@@ -1225,7 +1225,6 @@ python-versions = ">=3.7.3,<4.0.0"
 aiocache = ">=0.11.0"
 httpx = ">=0.19.0"
 imageio = ">=2.12.0,<3.0.0"
-Jinja2 = ">=3.0.0,<4.0.0"
 nonebot-adapter-cqhttp = ">=2.0.0-alpha.15,<3.0.0"
 nonebot2 = ">=2.0.0-alpha.15,<3.0.0"
 Pillow = ">=8.4.0,<9.0.0"
@@ -1237,17 +1236,19 @@ reference = "tsinghua"
 
 [[package]]
 name = "nonebot-plugin-petpet"
-version = "0.1.16"
+version = "0.1.19"
 description = "Nonebot2 plugin for making fun pictures"
 category = "main"
 optional = false
 python-versions = ">=3.7.3,<4.0.0"
 
 [package.dependencies]
+aiocache = ">=0.11.0"
 httpx = ">=0.19.0"
 imageio = ">=2.12.0,<3.0.0"
 nonebot-adapter-cqhttp = ">=2.0.0-alpha.15,<3.0.0"
 nonebot2 = ">=2.0.0-alpha.15,<3.0.0"
+numpy = ">=1.20.0,<2.0.0"
 Pillow = ">=8.4.0,<9.0.0"
 
 [package.source]
@@ -1545,7 +1546,7 @@ reference = "tsinghua"
 
 [[package]]
 name = "pygments"
-version = "2.11.1"
+version = "2.11.2"
 description = "Pygments is a syntax highlighting package written in Python."
 category = "main"
 optional = false
@@ -1835,7 +1836,7 @@ reference = "tsinghua"
 
 [[package]]
 name = "ruamel.yaml"
-version = "0.17.19"
+version = "0.17.20"
 description = "ruamel.yaml is a YAML parser/emitter that supports roundtrip preservation of comments, seq/map flow style, and map key order"
 category = "main"
 optional = false
@@ -1936,7 +1937,7 @@ reference = "tsinghua"
 
 [[package]]
 name = "tencentcloud-sdk-python"
-version = "3.0.557"
+version = "3.0.559"
 description = "Tencent Cloud SDK for Python"
 category = "main"
 optional = false
@@ -2481,8 +2482,8 @@ chardet = [
     {file = "chardet-4.0.0.tar.gz", hash = "sha256:0d6f53a15db4120f2b08c94f11e7d93d2c911ee118b6b30a04ec3ee8310179fa"},
 ]
 charset-normalizer = [
-    {file = "charset-normalizer-2.0.9.tar.gz", hash = "sha256:b0b883e8e874edfdece9c28f314e3dd5badf067342e42fb162203335ae61aa2c"},
-    {file = "charset_normalizer-2.0.9-py3-none-any.whl", hash = "sha256:1eecaa09422db5be9e29d7fc65664e6c33bd06f9ced7838578ba40d58bdf3721"},
+    {file = "charset-normalizer-2.0.10.tar.gz", hash = "sha256:876d180e9d7432c5d1dfd4c5d26b72f099d503e8fcc0feb7532c9289be60fcbd"},
+    {file = "charset_normalizer-2.0.10-py3-none-any.whl", hash = "sha256:cb957888737fc0bbcd78e3df769addb41fd1ff8cf950dc9e7ad7793f1bf44455"},
 ]
 click = [
     {file = "click-8.0.3-py3-none-any.whl", hash = "sha256:353f466495adaeb40b6b5f592f9f91cb22372351c84caeb068132442a4518ef3"},
@@ -2672,8 +2673,8 @@ hpack = [
     {file = "hpack-4.0.0.tar.gz", hash = "sha256:fc41de0c63e687ebffde81187a948221294896f6bdc0ae2312708df339430095"},
 ]
 httpcore = [
-    {file = "httpcore-0.14.3-py3-none-any.whl", hash = "sha256:9a98d2416b78976fc5396ff1f6b26ae9885efbb3105d24eed490f20ab4c95ec1"},
-    {file = "httpcore-0.14.3.tar.gz", hash = "sha256:d10162a63265a0228d5807964bd964478cbdb5178f9a2eedfebb2faba27eef5d"},
+    {file = "httpcore-0.14.4-py3-none-any.whl", hash = "sha256:9410fe352bea732311f2b2bee0555c8cc5e62b9a73b9d3272fe125a2aa6eb28e"},
+    {file = "httpcore-0.14.4.tar.gz", hash = "sha256:d4305811f604d3c2e22869147392f134796976ff946c96a8cfba87f4e0171d83"},
 ]
 httptools = [
     {file = "httptools-0.2.0-cp35-cp35m-macosx_10_14_x86_64.whl", hash = "sha256:79dbc21f3612a78b28384e989b21872e2e3cf3968532601544696e4ed0007ce5"},
@@ -2693,8 +2694,8 @@ httptools = [
     {file = "httptools-0.2.0.tar.gz", hash = "sha256:94505026be56652d7a530ab03d89474dc6021019d6b8682281977163b3471ea0"},
 ]
 httpx = [
-    {file = "httpx-0.21.1-py3-none-any.whl", hash = "sha256:208e5ef2ad4d105213463cfd541898ed9d11851b346473539a8425e644bb7c66"},
-    {file = "httpx-0.21.1.tar.gz", hash = "sha256:02af20df486b78892a614a7ccd4e4e86a5409ec4981ab0e422c579a887acad83"},
+    {file = "httpx-0.21.3-py3-none-any.whl", hash = "sha256:df9a0fd43fa79dbab411d83eb1ea6f7a525c96ad92e60c2d7f40388971b25777"},
+    {file = "httpx-0.21.3.tar.gz", hash = "sha256:7a3eb67ef0b8abbd6d9402248ef2f84a76080fa1c839f8662e6eb385640e445a"},
 ]
 hyperframe = [
     {file = "hyperframe-6.0.1-py3-none-any.whl", hash = "sha256:0ec6bafd80d8ad2195c4f03aacba3a8265e57bc4cff261e802bf39970ed02a15"},
@@ -2960,8 +2961,8 @@ nonebot-plugin-asoulcnki = [
     {file = "nonebot_plugin_asoulcnki-0.1.3.tar.gz", hash = "sha256:4d5fadc2cd8b30d13c1ab7d5e64f1ecc76bbbe557c5c9ec3730c462385555ebb"},
 ]
 nonebot-plugin-htmlrender = [
-    {file = "nonebot-plugin-htmlrender-0.0.3.1.tar.gz", hash = "sha256:c56a7908ab74965608b8e8726ca6ed415102c54161f4a25057bc38946081e2e3"},
-    {file = "nonebot_plugin_htmlrender-0.0.3.1-py3-none-any.whl", hash = "sha256:26af48dc9872436fff6d4e8a288822c5be54f32a137c913d337ddbfa155fb5c5"},
+    {file = "nonebot-plugin-htmlrender-0.0.4.tar.gz", hash = "sha256:2cee910d13b5c997be45294b062284e27db4931a5d58e825d1e603bd835f7d35"},
+    {file = "nonebot_plugin_htmlrender-0.0.4-py3-none-any.whl", hash = "sha256:4694c3c8ce7ce2406c151e1df11924ffe5b8eda1d132cef352c77adf656d81e7"},
 ]
 nonebot-plugin-logo = [
     {file = "nonebot_plugin_logo-0.1.1-py3-none-any.whl", hash = "sha256:f7020d2abdc9130d873f5cd54d3e259c132448994d9715bfe2b1efdb1f5dcf80"},
@@ -2972,12 +2973,12 @@ nonebot-plugin-manager = [
     {file = "nonebot_plugin_manager-0.5.5.tar.gz", hash = "sha256:da616cbf09d0b87c54bfba6e8e7431ab13f71f42d6bed6b504373f3066226f6a"},
 ]
 nonebot-plugin-memes = [
-    {file = "nonebot_plugin_memes-0.1.4-py3-none-any.whl", hash = "sha256:e46c1512890c7c744c8a95526178e05c8f898400f5a356ec10f5c416da86dc42"},
-    {file = "nonebot_plugin_memes-0.1.4.tar.gz", hash = "sha256:c4fa4d47349e50df137b6345f149b05b7d1c56346d593f12c865914cd9f01e8b"},
+    {file = "nonebot_plugin_memes-0.1.4.3-py3-none-any.whl", hash = "sha256:aef8ef1de325c0ea8f32f6acd46dfb52c8ee991f29f9408576418bb14e3d81c6"},
+    {file = "nonebot_plugin_memes-0.1.4.3.tar.gz", hash = "sha256:b4868abfeeff30a7411b53e61cbc9eccc7245541e774387b51939a951c64b022"},
 ]
 nonebot-plugin-petpet = [
-    {file = "nonebot_plugin_petpet-0.1.16-py3-none-any.whl", hash = "sha256:3ae514cdb69a1d72a8cb634b9fd91d0b1fb5189e44fbbb9e2724ca64dfc4ce48"},
-    {file = "nonebot_plugin_petpet-0.1.16.tar.gz", hash = "sha256:1e821055c42133ff4c357ffcd6d671b64d738f72613752e35d95017b03fb112e"},
+    {file = "nonebot_plugin_petpet-0.1.19-py3-none-any.whl", hash = "sha256:f553926f743124078bd1ae6e0381eeb3b11f85b499a0829d940399f8b7dc366e"},
+    {file = "nonebot_plugin_petpet-0.1.19.tar.gz", hash = "sha256:0b48ebfe025b34f5aa4103581785351303560ae9971d2bd0941782352be6bccf"},
 ]
 nonebot-plugin-shindan = [
     {file = "nonebot_plugin_shindan-0.1.8-py3-none-any.whl", hash = "sha256:43307780033d2b4d64a4dcc5fe36bd3c9d2aa6fb7f3bfc5ae2ca08f13bd38e29"},
@@ -3169,8 +3170,8 @@ pyfiglet = [
     {file = "pyfiglet-0.8.post1.tar.gz", hash = "sha256:c6c2321755d09267b438ec7b936825a4910fec696292139e664ca8670e103639"},
 ]
 pygments = [
-    {file = "Pygments-2.11.1-py3-none-any.whl", hash = "sha256:9135c1af61eec0f650cd1ea1ed8ce298e54d56bcd8cc2ef46edd7702c171337c"},
-    {file = "Pygments-2.11.1.tar.gz", hash = "sha256:59b895e326f0fb0d733fd28c6839bd18ad0687ba20efc26d4277fd1d30b971f4"},
+    {file = "Pygments-2.11.2-py3-none-any.whl", hash = "sha256:44238f1b60a76d78fc8ca0528ee429702aae011c265fe6a8dd8b63049ae41c65"},
+    {file = "Pygments-2.11.2.tar.gz", hash = "sha256:4e426f72023d88d03b2fa258de560726ce890ff3b630f88c21cbb8b2503b8c6a"},
 ]
 pygtrie = [
     {file = "pygtrie-2.4.2.tar.gz", hash = "sha256:43205559d28863358dbbf25045029f58e2ab357317a59b11f11ade278ac64692"},
@@ -3314,8 +3315,8 @@ rsa = [
     {file = "ruamel.base-1.0.0.tar.gz", hash = "sha256:c041333a0f0f00cd6593eb36aa83abb1a9e7544e83ba7a42aa7ac7476cee5cf3"},
 ]
 "ruamel.yaml" = [
-    {file = "ruamel.yaml-0.17.19-py3-none-any.whl", hash = "sha256:92ac00b312c9a83ff3253a8f7b86dfe6f9996b4082b103af84b8df99175945bc"},
-    {file = "ruamel.yaml-0.17.19.tar.gz", hash = "sha256:b9ce9a925d0f0c35a1dbba56b40f253c53cd526b0fa81cf7b1d24996f28fb1d7"},
+    {file = "ruamel.yaml-0.17.20-py3-none-any.whl", hash = "sha256:810eef9c46523a3f77479c66267a4708255ebe806a2d540078408c2227f011af"},
+    {file = "ruamel.yaml-0.17.20.tar.gz", hash = "sha256:4b8a33c1efb2b443a93fcaafcfa4d2e445f8e8c29c528d9f5cdafb7cc9e4004c"},
 ]
 "ruamel.yaml.clib" = [
     {file = "ruamel.yaml.clib-0.2.6-cp35-cp35m-macosx_10_6_intel.whl", hash = "sha256:cfdb9389d888c5b74af297e51ce357b800dd844898af9d4a547ffc143fa56751"},
@@ -3419,8 +3420,8 @@ starlette = [
     {file = "starlette-0.14.2.tar.gz", hash = "sha256:7d49f4a27f8742262ef1470608c59ddbc66baf37c148e938c7038e6bc7a998aa"},
 ]
 tencentcloud-sdk-python = [
-    {file = "tencentcloud-sdk-python-3.0.557.tar.gz", hash = "sha256:c4c6a058c4fa09fa147179b0196ad9af2f929e21cf199f0e0878f02b4848f12d"},
-    {file = "tencentcloud_sdk_python-3.0.557-py2.py3-none-any.whl", hash = "sha256:093cbfb7f1d0f1da6162925fcf331faefb9721210da26735a72181e6f4697dfd"},
+    {file = "tencentcloud-sdk-python-3.0.559.tar.gz", hash = "sha256:56f5a950dd88e4dabd8c76c81b7cfcfe1377cf7634cc9286f2c251c4d6c8f68e"},
+    {file = "tencentcloud_sdk_python-3.0.559-py2.py3-none-any.whl", hash = "sha256:f629d6e9b0674df60b74ff8035b2ed0ba7602b7446de2887ed83a42544bc19de"},
 ]
 text-unidecode = [
     {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
