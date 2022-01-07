@@ -10,14 +10,14 @@ httpx_proxy = {
 }
 
 
-async def get_setu(key_word='', r18=False) -> Message:
+async def get_setu(keyword='', r18=False) -> Message:
     url = 'https://api.lolicon.app/setu/v2'
     params = {
         'r18': 1 if r18 else 0,
         'num': 1,
         'size': ['regular'],
         'proxy': 'i.pixiv.re',
-        'keyword': key_word
+        'keyword': keyword
     }
     try:
         async with httpx.AsyncClient() as client:
@@ -40,5 +40,5 @@ async def get_setu(key_word='', r18=False) -> Message:
         else:
             return '找不到相关的涩图'
     except Exception as e:
-        logger.warning(f"Error in get_setu({key_word}): {e}")
+        logger.warning(f"Error in get_setu({keyword}): {e}")
         return None

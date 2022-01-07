@@ -1,5 +1,5 @@
 .image {
-  background-image: url("{{'autumn.jpg' | load_jpg}}");
+  background-image: url("./autumn.jpg");
   background-position: right -930px center;
 }
 .face {

@@ -96,20 +96,6 @@ def get_face(luck):
     return f'cc98{face_id}.png'
 
 
-def load_jpg(name):
-    with (template_path / name).open('rb') as f:
-        return 'data:image/jpeg;base64,' + base64.b64encode(f.read()).decode()
-
-
-def load_png(name):
-    with (template_path / name).open('rb') as f:
-        return 'data:image/png;base64,' + base64.b64encode(f.read()).decode()
-
-
-env.filters['load_jpg'] = load_jpg
-env.filters['load_png'] = load_png
-
-
 async def create_image(username, luck, fortune, content, face):
     if len(username) > 50:
         username = username[:50] + '...'
@@ -121,4 +107,5 @@ async def create_image(username, luck, fortune, content, face):
                                        content=content,
                                        face=face,
                                        style=fortune_config.fortune_style)
-    return await html_to_pic(html, wait=0, viewport={"width": 100, "height": 100})
+    return await html_to_pic(html, viewport={"width": 100, "height": 100},
+                             template_path=f"file://{template_path.absolute()}")

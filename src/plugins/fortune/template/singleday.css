@@ -1,5 +1,5 @@
 .image {
-  background-image: url("{{'singleday.jpg' | load_jpg}}");
+  background-image: url("./singleday.jpg");
   background-position: right -830px center;
 }
 .face {

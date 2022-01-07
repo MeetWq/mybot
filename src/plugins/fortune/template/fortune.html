@@ -3,7 +3,7 @@
     <style>
       @font-face {
         font-family: "sakura";
-        src: local("樱酥体 蔷薇微光静谧时"), url("sakura.ttf");
+        src: url("./fonts/sakura.ttf");
       }
       body {
         margin: 0;
@@ -37,13 +37,13 @@
         display: inline-block;
         margin: 20px;
       }
-      {% include style + '.css' %}
     </style>
+    <link rel="stylesheet" type="text/css" href="./{{style}}.css" />
   </head>
   <body>
     <div class="image">
       <div class="face">
-        <img src="{{('faces/' + face) | load_png}}" width="240" height="240" />
+        <img src="./faces/{{face}}" width="240" height="240" />
       </div>
       <div class="box">
         <div class="content">

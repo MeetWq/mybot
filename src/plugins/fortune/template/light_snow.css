@@ -1,5 +1,5 @@
 .image {
-  background-image: url("{{'light_snow.jpg' | load_jpg}}");
+  background-image: url("./light_snow.jpg");
   background-position: left -1070px center;
 }
 .face {

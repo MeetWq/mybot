@@ -1,5 +1,5 @@
 .image {
-  background-image: url("{{'dragon_boat_festival.jpg' | load_jpg}}");
+  background-image: url("./dragon_boat_festival.jpg");
   background-position: left -1280px center;
 }
 .face {
