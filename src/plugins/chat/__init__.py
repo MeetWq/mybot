@@ -63,12 +63,14 @@ def filter_msg(msg: str = EventPlainText()):
     return True
 
 
-chat = on_message(rule=to_me() and Rule(filter_msg), block=True, priority=40)
+chat = on_message(rule=to_me(), block=True, priority=40)
 
 
 @chat.handle()
-async def first_receive(matcher: Matcher, event: MessageEvent, msg: str = EventPlainText()):
+async def first_receive(event: MessageEvent, msg: str = EventPlainText()):
     if event.reply:
+        await chat.finish()
+    if not filter_msg(msg):
         await chat.finish()
 
     if msg:
@@ -76,7 +78,7 @@ async def first_receive(matcher: Matcher, event: MessageEvent, msg: str = EventP
     else:
         reply = random.choice(null_reply)
 
-    await handle_reply(matcher, reply, event)
+    await handle_reply(chat, reply, event)
 
 
 async def continue_receive(matcher: Matcher, event: MessageEvent, msg: str = EventPlainText()):
@@ -86,7 +88,7 @@ async def continue_receive(matcher: Matcher, event: MessageEvent, msg: str = Eve
                 await matcher.finish()
         if msg:
             reply = await get_reply(msg, event)
-            await handle_reply(reply, event)
+            await handle_reply(matcher, reply, event)
 
 
 async def handle_reply(matcher: Matcher, reply: str, event: MessageEvent):
@@ -118,6 +120,7 @@ def new_matcher(event: MessageEvent):
                 temp=True,
                 priority=chat.priority - 1,
                 block=True,
+                plugin=chat.plugin,
                 module=chat.module,
                 expire_time=datetime.now() + timedelta(seconds=chat_config.chat_expire_time))
 

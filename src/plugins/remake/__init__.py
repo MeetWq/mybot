@@ -4,8 +4,9 @@ import traceback
 from typing import List, Union
 from nonebot import on_command
 from nonebot.rule import to_me
-from nonebot.params import Arg, ArgPlainText
-from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent, MessageSegment
+from nonebot.typing import T_State
+from nonebot.params import ArgPlainText, State
+from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent, Message, MessageSegment
 from nonebot.log import logger
 
 from .life import Life
@@ -28,11 +29,11 @@ remake = on_command('remake', aliases={'liferestart', '人生重开'},
 
 
 @remake.handle()
-async def first_receive():
+async def first_receive(state: T_State = State()):
     life = Life()
     talents = life.rand_talents(10)
-    remake.set_arg('life', life)
-    remake.set_arg('talents', talents)
+    state['life'] = life
+    state['talents'] = talents
     msg = '请发送编号选择3个天赋，如“0 1 2”，或发送“随机”随机选择；发送“结束”结束会话'
     des = [f'{i}.{t.name}（{t.description}）' for i, t in enumerate(talents)]
     des = '\n'.join(des)
@@ -40,7 +41,7 @@ async def first_receive():
 
 
 @remake.got('nums')
-async def _(reply: str = ArgPlainText(), talents: List[Talent] = Arg('talents')):
+async def _(reply: str = ArgPlainText('nums'), state: T_State = State()):
     match = re.fullmatch(r'\s*(\d)\s*(\d)\s*(\d)\s*', reply)
     if match:
         nums = list(match.groups())
@@ -53,14 +54,14 @@ async def _(reply: str = ArgPlainText(), talents: List[Talent] = Arg('talents'))
         await remake.finish()
     else:
         await remake.reject()
-    remake.set_arg('talents_selected', [talents[n] for n in nums])
+    talents: List[Talent] = state.get('talents')
+    state['talents_selected'] = [talents[n] for n in nums]
     msg = '请发送4个数字分配“颜值、智力、体质、家境”4个属性，如“5 5 5 5”，属性之和需为20，每个属性不能超过10；或发送“随机”随机选择；发送“结束”结束会话'
     await remake.send(msg)
 
 
 @remake.got('prop')
-async def _(bot: Bot, event: GroupMessageEvent, reply: str = ArgPlainText(),
-            life: Life = Arg('life'), talents: List[Talent] = Arg('talents_selected')):
+async def _(bot: Bot, event: GroupMessageEvent, reply: str = ArgPlainText('prop'), state: T_State = State()):
     match = re.fullmatch(
         r'\s*(\d{1,2})\s+(\d{1,2})\s+(\d{1,2})\s+(\d{1,2})\s*', reply)
     if match:
@@ -80,6 +81,9 @@ async def _(bot: Bot, event: GroupMessageEvent, reply: str = ArgPlainText(),
     else:
         await remake.reject()
 
+    life: Life = state.get('life')
+    talents: List[Talent] = state.get('talents_selected')
+
     prop = {'CHR': nums[0], 'INT': nums[1], 'STR': nums[2], 'MNY': nums[3]}
     life.set_talents(talents)
     life.apply_property(prop)
@@ -94,8 +98,17 @@ async def _(bot: Bot, event: GroupMessageEvent, reply: str = ArgPlainText(),
     prop_des = f'已设置如下属性：\n颜值{nums[0]} 智力{nums[1]} 体质{nums[2]} 家境{nums[3]}'
     msgs.append(prop_des)
     try:
+        count = 0
+        msg = ''
         for s in life.run():
-            msgs.append('\n'.join(s))
+            msg += '\n\n' + '\n'.join(s)
+            count += 1
+            if count >= 10:
+                msgs.append(msg.strip())
+                msg = ''
+                count = 0
+        if msg:
+            msgs.append(msg.strip())
         msgs.append(life.gen_summary())
     except:
         logger.warning(traceback.format_exc())

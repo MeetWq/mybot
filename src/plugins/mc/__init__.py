@@ -182,7 +182,7 @@ async def _(args: Namespace = ShellCommandArgs(), user_id: str = Depends(get_id)
     args.user_id = user_id
 
     if hasattr(args, 'func'):
-        await args.func(**args)
+        await args.func(**vars(args))
 
 
 async def _poke_status(event: Event) -> bool:

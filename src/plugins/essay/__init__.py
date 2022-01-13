@@ -25,7 +25,9 @@ __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 async def handle(matcher: Matcher, type: str, text: str):
     arg_num = commands[type].get('arg_num', 1)
     texts = shlex.split(text) if arg_num > 1 else [text]
-    if arg_num != len(texts):
+    if not arg_num:
+        texts = []
+    elif arg_num != len(texts):
         await matcher.finish(f"Usage:\n{commands[type]['help']}")
     res = await get_essay(type, texts)
     if res:

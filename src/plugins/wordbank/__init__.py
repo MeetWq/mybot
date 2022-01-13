@@ -68,12 +68,12 @@ add_cmd_gl = on_command('添加全局词条', block=True, priority=14, permissio
 
 
 @add_cmd.handle()
-async def _(msg: Message = EventMessage(), user_id: str = Depends(get_id)):
+async def _(msg: Message = CommandArg(), user_id: str = Depends(get_id)):
     await wb_add(add_cmd, msg, user_id)
 
 
 @add_cmd_gl.handle()
-async def _(msg: Message = EventMessage()):
+async def _(msg: Message = CommandArg()):
     await wb_add(add_cmd_gl, msg, user_id='0')
 
 
@@ -86,7 +86,7 @@ async def wb_add(matcher: Matcher, msg: Message, user_id: str):
         key = key.strip()
         value = value.lstrip()
         flag = 0 if not type else 2 if '模糊' in type else 1 if '正则' in type else 0
-        key = '@' + key if '@' in type else key
+        key = '@' + key if (type and '@' in type) else key
         res = wb.add(user_id, key, value, flag)
         if res:
             await matcher.finish('我记住了~')

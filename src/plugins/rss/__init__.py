@@ -95,4 +95,4 @@ async def _(args: Namespace = ShellCommandArgs(), user_id: str = Depends(get_id)
     args.matcher = rss
     args.user_id = user_id
     if hasattr(args, 'func'):
-        await args.func(**args)
+        await args.func(**vars(args))

@@ -78,14 +78,16 @@ commands = {
         'arg_num': 3
     },
     'chickensoup': {
-        'aliases': {'鸡汤', '毒鸡汤'},
+        'aliases': {'毒鸡汤'},
         'func': get_chicken_soup,
-        'help': '毒鸡汤'
+        'help': '毒鸡汤',
+        'arg_num': 0
     },
     'headpoem': {
         'aliases': {'藏头诗'},
         'func': get_head_poem,
-        'help': '藏头诗 {keyword}'
+        'help': '藏头诗 {keyword}',
+        'arg_num': 1
     }
 }
 

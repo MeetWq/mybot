@@ -4,9 +4,9 @@ import traceback
 from typing import List, Union
 from nonebot.rule import to_me
 from nonebot.matcher import Matcher
-from nonebot.typing import T_Handler
 from nonebot import on_regex, on_command
-from nonebot.params import CommandArg, ArgPlainText, EventPlainText
+from nonebot.typing import T_Handler, T_State
+from nonebot.params import CommandArg, ArgPlainText, EventPlainText, State
 from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent, Message, MessageSegment
 from nonebot.log import logger
 
@@ -46,32 +46,32 @@ show = on_command('cc98看帖', aliases={'98看帖', 'CC98看帖'},
 
 
 @cc98.handle()
-async def _(msg: Message = CommandArg()):
+async def _(matcher: Matcher, msg: Message = CommandArg()):
     keyword = msg.extract_plain_text().strip()
     if not keyword:
         await cc98.finish()
-    cc98.set_arg('keyword', keyword)
+    matcher.set_arg('keyword', Message(keyword))
 
 
 @cc98.got('keyword')
-async def _(keyword: str = ArgPlainText()):
-    keyword = keyword.strip()
+async def _(matcher: Matcher, keyword: str = ArgPlainText(), state: T_State = State()):
     try:
         board_name, score = await get_board_name(keyword)
     except:
         logger.warning(traceback.format_exc())
         await cc98.finish('出错了，请稍后再试')
 
-    cc98.set_arg('board_name', board_name)
+    state['board_name'] = board_name
     if score >= 70:
-        cc98.set_arg('confirm', 'y')
+        matcher.set_arg('confirm', Message('y'))
     else:
         await cc98.send(f'你要看的是不是[{board_name}]?\n[y]是 [其他]结束')
 
 
 @cc98.got('confirm')
 async def _(bot: Bot, event: GroupMessageEvent,
-            confirm: str = ArgPlainText(), board_name: str = ArgPlainText('board_name')):
+            state: T_State = State(), confirm: str = ArgPlainText()):
+    board_name: str = state.get('board_name')
     if confirm not in ['y', 'Y', 'yes', 'Yes', '是']:
         await cc98.finish()
     try:
@@ -85,16 +85,17 @@ async def _(bot: Bot, event: GroupMessageEvent,
 
 
 @show.handle()
-async def _(msg: Message = CommandArg()):
+async def _(matcher: Matcher, msg: Message = CommandArg()):
     keyword = msg.extract_plain_text().strip()
     if keyword and keyword.isdigit():
-        show.set_arg('topic_id', keyword)
+        matcher.set_arg('topic_id', Message(keyword))
     else:
         await show.finish()
 
 
 @show.got('topic_id')
-async def _(bot: Bot, event: GroupMessageEvent, topic_id: str = ArgPlainText()):
+async def _(bot: Bot, event: GroupMessageEvent,
+            state: T_State = State(), topic_id: str = ArgPlainText()):
     page = 1
     try:
         topic = await cc98_api.topic(topic_id)
@@ -103,15 +104,17 @@ async def _(bot: Bot, event: GroupMessageEvent, topic_id: str = ArgPlainText()):
         logger.warning(traceback.format_exc())
         await show.finish('出错了，请稍后再试')
 
-    show.set_arg('topic', topic)
-    show.set_arg('page', page)
+    state['topic'] = topic
+    state['page'] = page
     msgs = [await str_to_message(post) for post in posts]
     await send_forward_msg(bot, event, msgs)
 
 
 @show.got('reply')
-async def _(bot: Bot, event: GroupMessageEvent, reply: str = ArgPlainText(),
-            topic: str = ArgPlainText('topic'), page: str = ArgPlainText('page')):
+async def _(bot: Bot, event: GroupMessageEvent,
+            state: T_State = State(), reply: str = ArgPlainText()):
+    topic: dict = state.get('topic')
+    page: int = state.get('page')
     reply_num = topic["replyCount"] + 1
 
     if reply == '结束':
@@ -137,7 +140,7 @@ async def _(bot: Bot, event: GroupMessageEvent, reply: str = ArgPlainText(),
         logger.warning(traceback.format_exc())
         await show.finish('出错了，请稍后再试')
 
-    show.set_arg('page', page)
+    state['page'] = page
     msgs = [await str_to_message(post) for post in posts]
     await send_forward_msg(bot, event, msgs)
     await show.reject()

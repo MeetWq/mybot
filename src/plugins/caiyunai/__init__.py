@@ -2,7 +2,9 @@ import re
 from typing import List, Union
 from nonebot import on_command
 from nonebot.rule import to_me
-from nonebot.params import CommandArg, Arg, ArgPlainText
+from nonebot.typing import T_State
+from nonebot.matcher import Matcher
+from nonebot.params import CommandArg, ArgPlainText, State
 from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent, Message, MessageSegment
 
 from .data_source import CaiyunAi, model_list
@@ -24,16 +26,18 @@ novel = on_command('caiyunai', aliases={'续写', '彩云小梦'},
 
 
 @novel.handle()
-async def first_receive(msg: Message = CommandArg()):
-    novel.set_arg('caiyunai', CaiyunAi())
+async def first_receive(matcher: Matcher, msg: Message = CommandArg()):
     content = msg.extract_plain_text().strip()
     if content:
-        novel.set_arg('content', content)
+        matcher.set_arg('content', msg)
 
 
 @novel.got('content', prompt='请发送要续写的内容')
 async def _(bot: Bot, event: GroupMessageEvent,
-            content: str = ArgPlainText(), caiyunai: CaiyunAi = Arg()):
+            state: T_State = State(), content: str = ArgPlainText()):
+    caiyunai = CaiyunAi()
+    state['caiyunai'] = caiyunai
+
     content = content.strip()
     if not content:
         await novel.reject()
@@ -48,7 +52,8 @@ async def _(bot: Bot, event: GroupMessageEvent,
 
 @novel.got('input')
 async def _(bot: Bot, event: GroupMessageEvent,
-            input: str = ArgPlainText(), caiyunai: CaiyunAi = Arg()):
+            state: T_State = State(), input: str = ArgPlainText()):
+    caiyunai: CaiyunAi = state.get('caiyunai')
     input = input.strip()
     match_continue = re.fullmatch(r'续写\s*(\d+)', input)
     match_model = re.fullmatch(r'切换模型(.*?)', input)

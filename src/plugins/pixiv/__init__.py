@@ -1,6 +1,7 @@
 import re
 from typing import Union
 from nonebot import on_command
+from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, EventToMe, Arg
 from nonebot.adapters.onebot.v11 import Message, MessageEvent
 
@@ -42,14 +43,13 @@ pic_search = on_command('搜图', block=True, priority=14)
 
 
 @pic_search.handle()
-async def _(event: MessageEvent, msg: Message = CommandArg()):
+async def _(matcher: Matcher, event: MessageEvent, msg: Message = CommandArg()):
     if event.reply:
         reply = event.reply.message
-        img_url = parse_url(reply)
-        if img_url:
-            pic_search.set_arg('img_url', img_url)
+        if parse_url(reply):
+            matcher.set_arg('img_url', reply)
     else:
-        pic_search.set_arg('img_url', msg)
+        matcher.set_arg('img_url', msg)
 
 
 @pic_search.got('img_url', prompt='请发送一张图片或图片链接')

@@ -158,4 +158,4 @@ async def _(args: Namespace = ShellCommandArgs(), user_id: str = Depends(get_id)
         args.info = info
 
     if hasattr(args, 'func'):
-        await args.func(**args)
+        await args.func(**vars(args))

@@ -20,14 +20,14 @@ __notice__ = '来源为菜鸟教程的网络编译器，不要试图搞事情'
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}\nNotice:\n{__notice__}'
 
 
-compiler = on_regex(r'^lang\s+(?P<language>\S+)[;；\s]+(?P<code>\S+.*)',
+compiler = on_regex(r'^lang\s+(?P<language>[^;；\s]+)[;；\s]+(?P<code>[^;；\s]+.*)',
                     block=True, priority=13)
 
 
 @compiler.handle()
 async def _(msg: dict = RegexDict()):
-    language = msg['language']
-    code = msg['code']
+    language = str(msg['language']).strip()
+    code = str(msg['code']).strip()
     if language not in legal_language:
         await compiler.finish(f"支持的语言：{', '.join(list(legal_language.keys()))}")
 

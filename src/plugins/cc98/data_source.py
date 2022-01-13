@@ -114,7 +114,7 @@ async def replace_emoji(emoji: str) -> Union[str, MessageSegment]:
     dir_name = ''
     for _, params in emoji_list.items():
         if re.fullmatch(params['pattern'], emoji):
-            dir_name = params['dir_name']
+            dir_name = params['dirname']
     if dir_name:
         data = get_emoji(dir_name, emoji)
         if data:
