@@ -111,7 +111,7 @@ class Property:
                 continue
             setattr(self, key, getattr(self, key) + effect[key])
 
-    def gen_summary(self):
+    def gen_summary(self) -> str:
         def summary(name: str, key: str):
             attr = getattr(self, key)
             judge = sum_data[key][0]['judge']

@@ -1,4 +1,5 @@
 import json
+from typing import Dict
 from pathlib import Path
 
 from .uid_list import add_sub_user, del_sub_user, add_record_user, del_record_user, add_dynamic_user, del_dynamic_user
@@ -6,7 +7,11 @@ from .uid_list import add_sub_user, del_sub_user, add_record_user, del_record_us
 data_path = Path() / 'data' / 'blive' / 'sub_list.json'
 
 
-def load_sub_list() -> dict:
+class DupeError(Exception):
+    pass
+
+
+def load_sub_list() -> Dict[str, Dict[str, dict]]:
     try:
         return json.load(data_path.open('r', encoding='utf-8'))
     except FileNotFoundError:
@@ -27,16 +32,16 @@ def dump_sub_list():
     )
 
 
-def get_sub_list(user_id: str) -> dict:
+def get_sub_list(user_id: str) -> Dict[str, dict]:
     if user_id not in _sub_list:
         return {}
     return _sub_list[user_id]
 
 
-def add_sub_list(user_id: str, uid: str, info: dict) -> str:
+def add_sub_list(user_id: str, uid: str, info: dict):
     sub_list = get_sub_list(user_id)
     if uid in sub_list:
-        return 'dupe'
+        raise DupeError
     sub_list[uid] = {
         'up_name': info['uname'],
         'room_id': info['room_id'],
@@ -46,13 +51,12 @@ def add_sub_list(user_id: str, uid: str, info: dict) -> str:
     _sub_list[user_id] = sub_list
     dump_sub_list()
     add_sub_user(user_id, uid)
-    return 'success'
 
 
-def del_sub_list(user_id: str, uid: str) -> str:
+def del_sub_list(user_id: str, uid: str):
     sub_list = get_sub_list(user_id)
     if uid not in sub_list:
-        return 'dupe'
+        raise DupeError
     sub_list.pop(uid)
     if sub_list:
         _sub_list[user_id] = sub_list
@@ -60,53 +64,47 @@ def del_sub_list(user_id: str, uid: str) -> str:
         _sub_list.pop(user_id)
     dump_sub_list()
     del_sub_user(user_id, uid)
-    return 'success'
 
 
-def clear_sub_list(user_id: str) -> str:
+def clear_sub_list(user_id: str):
     if user_id in _sub_list:
         for uid in _sub_list[user_id].keys():
             del_sub_user(user_id, uid)
         _sub_list.pop(user_id)
     dump_sub_list()
-    return 'success'
 
 
-def open_dynamic(user_id: str, uid: str) -> str:
+def open_dynamic(user_id: str, uid: str):
     sub_list = get_sub_list(user_id)
     if uid not in sub_list:
-        return 'dupe'
+        raise DupeError
     _sub_list[user_id][uid]['dynamic'] = True
     dump_sub_list()
     add_dynamic_user(user_id, uid)
-    return 'success'
 
 
-def close_dynamic(user_id: str, uid: str) -> str:
+def close_dynamic(user_id: str, uid: str):
     sub_list = get_sub_list(user_id)
     if uid not in sub_list:
-        return 'dupe'
+        raise DupeError
     _sub_list[user_id][uid]['dynamic'] = False
     dump_sub_list()
     del_dynamic_user(user_id, uid)
-    return 'success'
 
 
-def open_record(user_id: str, uid: str) -> str:
+def open_record(user_id: str, uid: str):
     sub_list = get_sub_list(user_id)
     if uid not in sub_list:
-        return 'dupe'
+        raise DupeError
     _sub_list[user_id][uid]['record'] = True
     dump_sub_list()
     add_record_user(user_id, uid)
-    return 'success'
 
 
-def close_record(user_id: str, uid: str) -> str:
+def close_record(user_id: str, uid: str):
     sub_list = get_sub_list(user_id)
     if uid not in sub_list:
-        return 'dupe'
+        raise DupeError
     _sub_list[user_id][uid]['record'] = False
     dump_sub_list()
     del_record_user(user_id, uid)
-    return 'success'

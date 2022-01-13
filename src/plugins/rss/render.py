@@ -1,17 +1,20 @@
 import re
+import httpx
 import base64
 import jinja2
-import aiohttp
 import mimetypes
 from pathlib import Path
 from nonebot import get_driver
-from nonebot.adapters.cqhttp import Message, MessageSegment
+from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot_plugin_htmlrender import html_to_pic
 
 from .rss_class import RSS
 
 global_config = get_driver().config
-proxy = global_config.http_proxy
+httpx_proxy = {
+    'http://': global_config.http_proxy,
+    'https://': global_config.http_proxy
+}
 
 dir_path = Path(__file__).parent
 template_path = dir_path / 'template'
@@ -62,17 +65,17 @@ async def url_to_b64(url: str) -> str:
     return f'data:{type};base64,{base64.b64encode(result).decode()}'
 
 
-async def download_img(url: str) -> bytearray:
+async def download_img(url: str) -> bytes:
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url, proxy=proxy) as resp:
-                result = await resp.read()
+        async with httpx.AsyncClient(proxies=httpx_proxy) as client:
+            resp = await client.get(url, timeout=20)
+            result = resp.read()
         return result
     except:
         return None
 
 
-def split_nhd_title(text, url):
+def split_nhd_title(text, url) -> dict:
     text = text.strip()
     pattern = r''
     pattern_fail = r''
@@ -103,7 +106,7 @@ def split_nhd_title(text, url):
         return match.groupdict()
 
 
-def load_category_img(category):
+def load_category_img(category) -> str:
     img_path = template_path / 'catsprites' / f'{category}.png'
     if not img_path.exists():
         return category

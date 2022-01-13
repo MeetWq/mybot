@@ -1,13 +1,14 @@
 import httpx
 import requests
+from typing import Union
 from http.cookies import SimpleCookie
 from nonebot.log import logger
-from nonebot.adapters.cqhttp import MessageSegment
+from nonebot.adapters.onebot.v11 import MessageSegment
 
-from .qcloud_client import qcloud_client
+from .qcloud_client import QCloudClient
 
 
-async def search_qq(keyword, page=1, pagesize=1, number=1):
+async def search_qq(keyword, page=1, pagesize=1, number=1) -> Union[str, MessageSegment]:
     url = 'https://c.y.qq.com/soso/fcgi-bin/client_search_cp'
     params = {
         'p': page,
@@ -24,7 +25,7 @@ async def search_qq(keyword, page=1, pagesize=1, number=1):
     return MessageSegment.music('qq', songid)
 
 
-async def search_netease(keyword, page=1, pagesize=1, number=1):
+async def search_netease(keyword, page=1, pagesize=1, number=1) -> Union[str, MessageSegment]:
     url = 'https://music.163.com/api/cloudsearch/pc'
     params = {
         's': keyword,
@@ -41,7 +42,7 @@ async def search_netease(keyword, page=1, pagesize=1, number=1):
     return MessageSegment.music('163', songid)
 
 
-async def search_kugou(keyword, page=1, pagesize=1, number=1):
+async def search_kugou(keyword, page=1, pagesize=1, number=1) -> Union[str, MessageSegment]:
     search_url = 'http://mobilecdn.kugou.com/api/v3/search/song'
     params = {
         'format': 'json',
@@ -86,7 +87,7 @@ async def search_kugou(keyword, page=1, pagesize=1, number=1):
     return MessageSegment.music_custom(url=url, audio=audio, title=title, content=content, img_url=img_url)
 
 
-async def search_migu(keyword, page=1, pagesize=1, number=1):
+async def search_migu(keyword, page=1, pagesize=1, number=1) -> Union[str, MessageSegment]:
     url = 'https://m.music.migu.cn/migu/remoting/scr_search_tag'
     params = {
         'rows': pagesize,
@@ -111,7 +112,7 @@ async def search_migu(keyword, page=1, pagesize=1, number=1):
     return MessageSegment.music_custom(url=url, audio=audio, title=title, content=content, img_url=img_url)
 
 
-async def search_bilibili(keyword, page=1, pagesize=1, number=1):
+async def search_bilibili(keyword, page=1, pagesize=1, number=1) -> Union[str, MessageSegment]:
     search_url = 'https://api.bilibili.com/audio/music-service-c/s'
     params = {
         'page': page,
@@ -136,6 +137,7 @@ async def search_bilibili(keyword, page=1, pagesize=1, number=1):
         'referer': 'https://www.bilibili.com/'
     }
     stream = requests.get(audio, headers=headers)
+    qcloud_client = QCloudClient()
     audio = qcloud_client.put_object(
         stream, f"bilibili_music/{info['id']}.m4a")
 
@@ -166,7 +168,7 @@ sources = {
 }
 
 
-async def search_song(keyword, source):
+async def search_song(source: str, keyword: str) -> Union[str, MessageSegment]:
     try:
         func = sources[source]['func']
         return await func(keyword)

@@ -1,13 +1,13 @@
 import re
 import math
-from typing import Type, List, Union
-from nonebot.rule import to_me
-from nonebot import on_regex, on_command
-from nonebot.matcher import Matcher
-from nonebot.typing import T_Handler, T_State
-from nonebot.adapters.cqhttp import Bot, Event, Message, MessageSegment, unescape
 import traceback
-
+from typing import List, Union
+from nonebot.rule import to_me
+from nonebot.matcher import Matcher
+from nonebot.typing import T_Handler
+from nonebot import on_regex, on_command
+from nonebot.params import CommandArg, ArgPlainText, EventPlainText
+from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent, Message, MessageSegment
 from nonebot.log import logger
 
 from .emoji import emoji_list, get_emoji
@@ -15,9 +15,8 @@ from .data_source import cc98_api, get_board_name, get_topics, \
     replace_emoji, replace_url, print_topics, print_posts
 
 
-async def handle_emoji(matcher: Type[Matcher], event: Event, dir_name: str):
-    file_name = unescape(event.get_plaintext()).strip().strip('[').strip(']')
-    img = get_emoji(dir_name, file_name)
+async def handle_emoji(matcher: Matcher, dirname: str, filename: str):
+    img = get_emoji(dirname, filename)
     if img:
         await matcher.send(MessageSegment.image(img))
     else:
@@ -26,101 +25,93 @@ async def handle_emoji(matcher: Type[Matcher], event: Event, dir_name: str):
 
 def create_emoji_matchers():
 
-    def create_handler(dir_name: str) -> T_Handler:
-        async def handler(bot: Bot, event: Event, state: T_State):
-            await handle_emoji(matcher, event, dir_name)
+    def create_handler(dirname: str) -> T_Handler:
+        async def handler(filename: str = EventPlainText()):
+            filename = filename.strip().strip('[').strip(']')
+            await handle_emoji(matcher, dirname, filename)
         return handler
 
     for _, params in emoji_list.items():
-        matcher = on_regex(params['pattern'], priority=14)
-        matcher.append_handler(create_handler(params['dir_name']))
+        matcher = on_regex(params['pattern'], block=True, priority=14)
+        matcher.append_handler(create_handler(params['dirname']))
 
 
 create_emoji_matchers()
 
 
-cc98 = on_command('cc98', aliases={'98', 'CC98'}, rule=to_me(), priority=13)
+cc98 = on_command('cc98', aliases={'98', 'CC98'},
+                  block=True, rule=to_me(), priority=13)
 show = on_command('cc98看帖', aliases={'98看帖', 'CC98看帖'},
-                  rule=to_me(), priority=13)
+                  block=True, rule=to_me(), priority=13)
 
 
 @cc98.handle()
-async def _(bot: Bot, event: Event, state: T_State):
-    keyword = event.get_plaintext().strip()
+async def _(msg: Message = CommandArg()):
+    keyword = msg.extract_plain_text().strip()
     if not keyword:
         await cc98.finish()
-    state['keyword'] = keyword
+    cc98.set_arg('keyword', keyword)
 
 
 @cc98.got('keyword')
-async def _(bot: Bot, event: Event, state: T_State):
-    keyword = state['keyword']
+async def _(keyword: str = ArgPlainText()):
+    keyword = keyword.strip()
     try:
         board_name, score = await get_board_name(keyword)
-    except Exception as e:
-        logger.warning(f"Error in get_board_name({keyword}): {e}")
-        logger.info(traceback.format_exc())
+    except:
+        logger.warning(traceback.format_exc())
         await cc98.finish('出错了，请稍后再试')
 
+    cc98.set_arg('board_name', board_name)
     if score >= 70:
-        state['board_name'] = board_name
-        state['confirm'] = 'y'
+        cc98.set_arg('confirm', 'y')
     else:
-        state['board_name'] = board_name
         await cc98.send(f'你要看的是不是[{board_name}]?\n[y]是 [其他]结束')
 
 
 @cc98.got('confirm')
-async def _(bot: Bot, event: Event, state: T_State):
-    if state['confirm'] not in ['y', 'Y', 'yes', 'Yes', '是']:
+async def _(bot: Bot, event: GroupMessageEvent,
+            confirm: str = ArgPlainText(), board_name: str = ArgPlainText('board_name')):
+    if confirm not in ['y', 'Y', 'yes', 'Yes', '是']:
         await cc98.finish()
-    board_name = state['board_name']
     try:
         topics = await get_topics(board_name)
         msgs = await print_topics(topics)
-    except Exception as e:
-        logger.warning(
-            f"Error in get_topics or print_topics, board_name [{board_name}]: {e}")
-        logger.info(traceback.format_exc())
+    except:
+        logger.warning(traceback.format_exc())
         await cc98.finish('出错了，请稍后再试')
 
     await send_forward_msg(bot, event, msgs)
 
 
 @show.handle()
-async def _(bot: Bot, event: Event, state: T_State):
-    keyword = event.get_plaintext().strip()
+async def _(msg: Message = CommandArg()):
+    keyword = msg.extract_plain_text().strip()
     if keyword and keyword.isdigit():
-        state['topic_id'] = keyword
+        show.set_arg('topic_id', keyword)
     else:
         await show.finish()
 
 
 @show.got('topic_id')
-async def _(bot: Bot, event: Event, state: T_State):
-    topic_id = int(state['topic_id'])
+async def _(bot: Bot, event: GroupMessageEvent, topic_id: str = ArgPlainText()):
     page = 1
-
     try:
         topic = await cc98_api.topic(topic_id)
         posts = await print_posts(topic, page)
-    except Exception as e:
-        logger.warning(
-            f"Error in topic or print_posts, topic_id: {topic_id}: {e}")
-        logger.info(traceback.format_exc())
+    except:
+        logger.warning(traceback.format_exc())
         await show.finish('出错了，请稍后再试')
 
-    state['topic'] = topic
-    state['page'] = page
+    show.set_arg('topic', topic)
+    show.set_arg('page', page)
     msgs = [await str_to_message(post) for post in posts]
     await send_forward_msg(bot, event, msgs)
 
 
 @show.got('reply')
-async def _(bot: Bot, event: Event, state: T_State):
-    reply = str(state['reply'])
-    topic = state['topic']
-    page = state['page']
+async def _(bot: Bot, event: GroupMessageEvent, reply: str = ArgPlainText(),
+            topic: str = ArgPlainText('topic'), page: str = ArgPlainText('page')):
     reply_num = topic["replyCount"] + 1
 
     if reply == '结束':
@@ -142,12 +133,11 @@ async def _(bot: Bot, event: Event, state: T_State):
 
     try:
         posts = await print_posts(topic, page)
-    except Exception as e:
-        logger.warning(
-            f"Error in print_posts, topic_id: {topic['id']}, page: {page}: {e}")
+    except:
+        logger.warning(traceback.format_exc())
         await show.finish('出错了，请稍后再试')
 
-    state['page'] = page
+    show.set_arg('page', page)
     msgs = [await str_to_message(post) for post in posts]
     await send_forward_msg(bot, event, msgs)
     await show.reject()
@@ -182,7 +172,7 @@ async def split_msg(text: str, split_pattern: str, pattern: str, func) -> Messag
     return msgs
 
 
-async def send_forward_msg(bot: Bot, event: Event, msgs: List[Union[str, MessageSegment]]):
+async def send_forward_msg(bot: Bot, event: GroupMessageEvent, msgs: List[Union[str, MessageSegment]]):
     if not msgs:
         return
 

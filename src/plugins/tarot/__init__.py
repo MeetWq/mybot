@@ -1,6 +1,5 @@
 from nonebot import on_command
-from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, Event, Message, MessageSegment
+from nonebot.adapters.onebot.v11 import MessageEvent, Message, MessageSegment
 
 from .data_source import get_tarot
 
@@ -16,11 +15,12 @@ __notice__ = '''
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nNotice:\n{__notice__}'
 
 
-tarot = on_command('tarot', aliases={'单张塔罗牌', '塔罗牌占卜'}, priority=13)
+tarot = on_command('tarot', aliases={'单张塔罗牌', '塔罗牌占卜'},
+                   block=True, priority=13)
 
 
 @tarot.handle()
-async def _(bot: Bot, event: Event, state: T_State):
+async def _(event: MessageEvent):
     username = event.sender.card or event.sender.nickname
     message = Message(f'来看看 {username} 抽到了什么：')
     img = await get_tarot()

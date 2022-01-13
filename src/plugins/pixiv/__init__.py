@@ -1,7 +1,8 @@
 import re
+from typing import Union
 from nonebot import on_command
-from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, Event, Message
+from nonebot.params import CommandArg, EventToMe, Arg
+from nonebot.adapters.onebot.v11 import Message, MessageEvent
 
 from .data_source import get_pixiv, search_by_image
 
@@ -18,17 +19,17 @@ pixiv 日榜
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 
-pixiv = on_command('pixiv', priority=12)
+pixiv = on_command('pixiv', block=True, priority=12)
 
 
 @pixiv.handle()
-async def _(bot: Bot, event: Event, state: T_State):
-    keyword = event.get_plaintext().strip()
+async def _(msg: Message = CommandArg(), tome: bool = EventToMe()):
+    keyword = msg.extract_plain_text().strip()
     if not keyword:
         await pixiv.finish()
 
-    if not keyword.isdigit() and keyword not in ['日榜', 'day', '周榜', 'week', '月榜', 'month', '月榜', 'month']:
-        if not event.is_tome():
+    if not keyword.isdigit() and keyword not in ['日榜', '周榜', '月榜']:
+        if not tome:
             await pixiv.finish()
 
     msg = await get_pixiv(keyword)
@@ -37,19 +38,23 @@ async def _(bot: Bot, event: Event, state: T_State):
     await pixiv.finish(msg)
 
 
-pic_search = on_command('搜图', priority=25)
+pic_search = on_command('搜图', block=True, priority=14)
 
 
 @pic_search.handle()
-async def _(bot: Bot, event: Event, state: T_State):
-    msg = event.get_message()
-    if msg:
-        state['img_url'] = msg
+async def _(event: MessageEvent, msg: Message = CommandArg()):
+    if event.reply:
+        reply = event.reply.message
+        img_url = parse_url(reply)
+        if img_url:
+            pic_search.set_arg('img_url', img_url)
+    else:
+        pic_search.set_arg('img_url', msg)
 
 
 @pic_search.got('img_url', prompt='请发送一张图片或图片链接')
-async def _(bot: Bot, event: Event, state: T_State):
-    img_url = parse_url(state['img_url'])
+async def _(img_url: Union[str, Message] = Arg()):
+    img_url = parse_url(img_url)
     if not img_url:
         await pic_search.reject()
     msg = await search_by_image(img_url)
@@ -58,19 +63,19 @@ async def _(bot: Bot, event: Event, state: T_State):
     await pic_search.finish(msg)
 
 
-def parse_url(msg):
+def parse_url(msg: Union[str, Message]):
     img_url = ''
     if isinstance(msg, Message):
         for msg_seg in msg:
             if msg_seg.type == 'image':
                 img_url = msg_seg.data['url']
             elif msg_seg.type == 'text':
-                text = msg_seg.data['text']
+                text: str = msg_seg.data['text']
                 if text.startswith('http'):
-                    img_url = text.split(' ')[0]
+                    img_url = text.split()[0]
     elif isinstance(msg, str):
         if msg.startswith('http'):
-            img_url = msg.split(' ')[0]
+            img_url = msg.split()[0]
         else:
             match = re.search(r'\[CQ:image.*?url=(.*?)\]', msg)
             if match:

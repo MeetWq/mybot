@@ -1,7 +1,7 @@
 from nonebot import on_command
 from nonebot.rule import to_me
-from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, Event
+from nonebot.params import CommandArg
+from nonebot.adapters.onebot.v11 import Message, MessageSegment
 
 from .data_source import get_voice
 
@@ -16,17 +16,18 @@ __example__ = '''
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 
-speak = on_command('speak', aliases={'说'}, rule=to_me(), priority=11)
+speak = on_command('speak', aliases={'说'},
+                   block=True, rule=to_me(), priority=11)
 
 
 @speak.handle()
-async def _(bot: Bot, event: Event, state: T_State):
-    msg = event.get_plaintext().strip()
+async def _(msg: Message = CommandArg()):
+    msg = msg.extract_plain_text().strip()
     if not msg:
         await speak.finish()
 
     voice = await get_voice(msg)
     if voice:
-        await speak.finish(voice)
+        await speak.finish(MessageSegment.record(voice))
     else:
         await speak.finish('出错了，请稍后再试')

@@ -1,12 +1,12 @@
 import re
 from typing import Dict
+from nonebot.params import EventMessage
 from nonebot import on_message, get_driver
-from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, Event, GroupMessageEvent, Message, MessageSegment, unescape
+from nonebot.adapters.onebot.v11 import GroupMessageEvent, Message, MessageSegment, unescape
 
 from .config import Config
-global_config = get_driver().config
-repeat_config = Config(**global_config.dict())
+
+repeat_config = Config.parse_obj(get_driver().config.dict())
 
 
 __des__ = '复读机'
@@ -58,9 +58,9 @@ class Counter:
         if msg_type == 'text':
             text = msg2.data['text']
             if not text \
-                or '此处消息的转义尚未被插件支持' in text \
-                or '请使用最新版手机QQ体验新功能' in text \
-                or re.fullmatch(r'\[\S+\]', text):
+                    or '此处消息的转义尚未被插件支持' in text \
+                    or '请使用最新版手机QQ体验新功能' in text \
+                    or re.fullmatch(r'\[\S+\]', text):
                 return False
             return msg1.data['text'] == msg2.data['text']
         elif msg_type == 'face':
@@ -71,17 +71,12 @@ class Counter:
             return msg1.data['file'] == msg2.data['file']
 
 
-async def repeat_rule(bot: Bot, event: Event, state: T_State) -> bool:
-    return isinstance(event, GroupMessageEvent) and not event.to_me
-
-
 msgs: Dict[int, Counter] = {}
-repeat = on_message(rule=repeat_rule, priority=41, block=False)
+repeat = on_message(block=False, priority=41)
 
 
 @repeat.handle()
-async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
-    msg = event.get_message()
+async def _(event: GroupMessageEvent, msg: Message = EventMessage()):
     if not msg:
         await repeat.finish()
 

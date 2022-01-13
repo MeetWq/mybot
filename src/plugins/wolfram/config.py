@@ -1,8 +1,5 @@
-from pydantic import BaseSettings
+from pydantic import BaseModel, Extra
 
 
-class Config(BaseSettings):
+class Config(BaseModel, extra=Extra.ignore):
     wolframalpha_appid = ''
-
-    class Config:
-        extra = "ignore"

@@ -1,12 +1,12 @@
 import httpx
+import traceback
 from typing import List
 from nonebot import get_driver
+from nonebot.log import logger
 
 from .config import Config
 
-global_config = get_driver().config
-caiyun_config = Config(**global_config.dict())
-token = caiyun_config.caiyunai_apikey
+caiyun_config = Config.parse_obj(get_driver().config.dict())
 
 model_list = {
     '小梦0号': {
@@ -48,98 +48,105 @@ class ContentError(CaiyunError):
     pass
 
 
-async def post(url: str, **kwargs):
-    resp = None
-    async with httpx.AsyncClient() as client:
-        for i in range(3):
-            try:
-                resp = await client.post(url, timeout=60, **kwargs)
-                if resp:
-                    break
-            except:
-                continue
-    if not resp:
-        raise NetworkError('网络错误')
-    result = resp.json()
-    if result['status'] == 0:
-        return result
-    elif result['status'] == -1:
-        raise AccountError('账号不存在，请更换apikey！')
-    elif result['status'] == -6:
-        raise AccountError('账号已被封禁，请更换apikey！')
-    elif result['status'] == -5:
-        raise ContentError(
-            f"存在不和谐内容，类型：{result['data']['label']}，\
-                剩余血量：{result['data']['total_count']-result['data']['shut_count']}")
-    else:
-        raise CaiyunError(result['msg'])
+class CaiyunAi:
+    def __init__(self):
+        self.model: str = '小梦0号'
+        self.token: str = caiyun_config.caiyunai_apikey
+        self.nid: str = ''
+        self.branchid: str = ''
+        self.nodeid: str = ''
+        self.nodeids: List[str] = []
+        self.result: str = ''
+        self.content: str = ''
+        self.contents: List[str] = []
+        self.err_msg: str = ''
 
+    async def get_contents(self):
+        self.err_msg = ''
+        try:
+            if not self.nid:
+                await self.novel_save()
+            await self.add_node()
+            self.result += self.content
+            await self.novel_ai()
+        except CaiyunError as e:
+            self.err_msg = str(e)
+            logger.warning(traceback.format_exc())
+        except:
+            self.err_msg = '未知错误'
+            logger.warning(traceback.format_exc())
 
-async def novel_save(content: str) -> dict:
-    url = f'http://if.caiyunai.com/v2/novel/{token}/novel_save'
-    params = {
-        'content': content,
-        'title': '',
-        'ostype': ''
-    }
-    result = await post(url, json=params)
-    data = result['data']
-    return {
-        'nid': data['nid'],
-        'branchid': data['novel']['branchid'],
-        'firstnode': data['novel']['firstnode']
-    }
+    async def novel_save(self):
+        url = f'http://if.caiyunai.com/v2/novel/{self.token}/novel_save'
+        params = {
+            'content': self.content,
+            'title': '',
+            'ostype': ''
+        }
+        result = await self.post(url, json=params)
+        data = result['data']
+        self.nid = data['nid']
+        self.branchid = data['novel']['branchid']
+        self.nodeid = data['novel']['firstnode']
+        self.nodeids = [self.nodeid]
 
+    async def add_node(self):
+        url = f'http://if.caiyunai.com/v2/novel/{self.token}/add_node'
+        params = {
+            'nodeids': self.nodeids,
+            'choose': self.nodeid,
+            'nid': self.nid,
+            'value': self.content,
+            'ostype': '',
+            'lang': 'zh'
+        }
+        await self.post(url, json=params)
 
-async def novel_ai(content: str, nid: str, branchid: str, lastnode: str,
-                   model: str = '小梦0号') -> List[dict]:
-    url = f'http://if.caiyunai.com/v2/novel/{token}/novel_ai'
-    params = {
-        'nid': nid,
-        'content': content,
-        'uid': token,
-        'mid': model_list[model]['id'],
-        'title': '',
-        'ostype': '',
-        'status': 'http',
-        'lang': 'zh',
-        'branchid': branchid,
-        'lastnode': lastnode
-    }
-    result = await post(url, json=params)
-    nodes = result['data']['nodes']
-    return [{
-            'nodeid': node['nodeid'],
-            'content': node['content']
-            } for node in nodes]
+    async def novel_ai(self) -> List[dict]:
+        url = f'http://if.caiyunai.com/v2/novel/{self.token}/novel_ai'
+        params = {
+            'nid': self.nid,
+            'content': self.content,
+            'uid': self.token,
+            'mid': model_list[self.model]['id'],
+            'title': '',
+            'ostype': '',
+            'status': 'http',
+            'lang': 'zh',
+            'branchid': self.branchid,
+            'lastnode': self.nodeid
+        }
+        result = await self.post(url, json=params)
+        nodes = result['data']['nodes']
+        self.nodeids = [node['nodeid'] for node in nodes]
+        self.contents = [node['content'] for node in nodes]
 
-
-async def add_node(content: str, nid: str, nodeid: str, nodeids: List[str]):
-    url = f'http://if.caiyunai.com/v2/novel/{token}/add_node'
-    params = {
-        'nodeids': nodeids,
-        'choose': nodeid,
-        'nid': nid,
-        'value': content,
-        'ostype': '',
-        'lang': 'zh'
-    }
-    await post(url, json=params)
-
-
-async def get_contents(state: dict, first=False):
-    if first:
-        novel = await novel_save(state['content'])
-        state['model'] = '小梦0号'
-        state['nid'] = novel['nid']
-        state['branchid'] = novel['branchid']
-        state['result'] = ''
-        state['nodeid'] = novel['firstnode']
-        state['nodeids'] = [state['nodeid']]
-
-    await add_node(state['content'], state['nid'], state['nodeid'], state['nodeids'])
-    state['result'] = state['result'] + state['content']
-    nodes = await novel_ai(state['result'], state['nid'], state['branchid'],
-                           state['nodeid'], state['model'])
-    state['nodeids'] = [node['nodeid'] for node in nodes]
-    state['contents'] = [node['content'] for node in nodes]
+    async def post(self, url: str, **kwargs):
+        resp = None
+        async with httpx.AsyncClient() as client:
+            for i in range(3):
+                try:
+                    resp = await client.post(url, timeout=60, **kwargs)
+                    if resp:
+                        break
+                except:
+                    logger.warning(f"Error in post {url}, retry {i}/3")
+                    continue
+        if not resp:
+            raise NetworkError('网络错误')
+        result = resp.json()
+        if result['status'] == 0:
+            return result
+        elif result['status'] == -1:
+            raise AccountError('账号不存在，请更换apikey！')
+        elif result['status'] == -6:
+            raise AccountError('账号已被封禁，请更换apikey！')
+        elif result['status'] == -5:
+            raise ContentError(
+                "存在不和谐内容，类型：{}，剩余血量：{}".format(
+                    result['data']['label'],
+                    result['data']['total_count']-result['data']['shut_count']
+                )
+            )
+        else:
+            raise CaiyunError(result['msg'])

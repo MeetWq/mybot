@@ -57,19 +57,18 @@ class Event:
             yield self.post_event
 
 
-event_path: Path = Path(__file__).parent / 'resources/events.json'
-event_data: dict = json.load(event_path.open('r', encoding='utf8'))
-events: Dict[int, Event] = {int(k): Event(v) for k, v in event_data.items()}
-
-
 class EventManager:
     def __init__(self, prop: Property):
         self.prop = prop
         self.triggered: Set[int] = set()
+        event_path: Path = Path(__file__).parent / 'resources/events.json'
+        event_data: dict = json.load(event_path.open('r', encoding='utf8'))
+        self.events: Dict[int, Event] = \
+            {int(k): Event(v) for k, v in event_data.items()}
 
     def rand_event(self, weighted_events: List[WeightedEvent]) -> int:
         events_checked = [e for e in weighted_events
-                          if events[e.event_id].check_condition(self.prop)]
+                          if self.events[e.event_id].check_condition(self.prop)]
         total = sum(e.weight for e in events_checked)
         rnd = random.random() * total
         for e in events_checked:
@@ -80,7 +79,7 @@ class EventManager:
 
     def run_event(self, event_id: int) -> Iterator[str]:
         self.triggered.add(event_id)
-        return events[event_id].run(self.prop, self.run_event)
+        return self.events[event_id].run(self.prop, self.run_event)
 
     def run_events(self, weighted_events: List[WeightedEvent]) -> Iterator[str]:
         event_id = self.rand_event(weighted_events)

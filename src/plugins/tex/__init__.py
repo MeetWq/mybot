@@ -1,6 +1,6 @@
 from nonebot import on_command
-from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, unescape, Event, MessageSegment
+from nonebot.params import CommandArg
+from nonebot.adapters.onebot.v11 import Message, MessageSegment
 
 from .data_source import tex2pic
 
@@ -18,12 +18,12 @@ tex \\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix}
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 
-tex = on_command('tex', priority=12)
+tex = on_command('tex', block=True, priority=12)
 
 
 @tex.handle()
-async def _(bot: Bot, event: Event, state: T_State):
-    equation = unescape(event.get_plaintext()).strip().strip('$')
+async def _(msg: Message = CommandArg()):
+    equation = msg.extract_plain_text().strip().strip('$')
     if not equation:
         await tex.finish()
 

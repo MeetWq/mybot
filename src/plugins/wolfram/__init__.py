@@ -1,8 +1,8 @@
 import re
 import subprocess
 from nonebot import on_command
-from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, Event, unescape
+from nonebot.params import CommandArg
+from nonebot.adapters.onebot.v11 import Message
 
 from .data_source import get_wolframalpha_simple, get_wolframalpha_text
 
@@ -18,12 +18,13 @@ wolfram int x
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 
-wolfram = on_command('wolfram', aliases={'wolframalpha'}, priority=12)
+wolfram = on_command('wolfram', aliases={'wolframalpha'},
+                     block=True, priority=12)
 
 
 @wolfram.handle()
-async def _(bot: Bot, event: Event, state: T_State):
-    text = unescape(event.get_plaintext()).strip()
+async def _(msg: Message = CommandArg()):
+    text = msg.extract_plain_text().strip()
 
     plaintext = False
     pattern = [r'-p +.*?', r'.*? +-p',
@@ -45,10 +46,10 @@ async def _(bot: Bot, event: Event, state: T_State):
             await wolfram.finish('出错了，请稍后再试')
 
     if plaintext:
-        msg = await get_wolframalpha_text(text)
+        res = await get_wolframalpha_text(text)
     else:
-        msg = await get_wolframalpha_simple(text)
-    if not msg:
+        res = await get_wolframalpha_simple(text)
+    if not res:
         await wolfram.finish('出错了，请稍后再试')
 
-    await wolfram.finish(msg)
+    await wolfram.finish(res)

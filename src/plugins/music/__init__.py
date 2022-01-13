@@ -1,8 +1,8 @@
-from typing import Type
 from nonebot import on_command
 from nonebot.matcher import Matcher
-from nonebot.typing import T_Handler, T_State
-from nonebot.adapters.cqhttp import Bot, Event
+from nonebot.typing import T_Handler
+from nonebot.params import CommandArg
+from nonebot.adapters.onebot.v11 import Message
 
 from .data_source import search_song, sources
 
@@ -20,9 +20,8 @@ b站点歌 勾指起誓
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 
-async def handle(matcher: Type[Matcher], event: Event, source: str):
-    keyword = event.get_plaintext().strip()
-    msg = await search_song(keyword, source)
+async def handle(matcher: Matcher, source: str, keyword: str):
+    msg = await search_song(source, keyword)
     if msg:
         await matcher.finish(msg)
     else:
@@ -32,13 +31,14 @@ async def handle(matcher: Type[Matcher], event: Event, source: str):
 def create_matchers():
 
     def create_handler(source: str) -> T_Handler:
-        async def handler(bot: Bot, event: Event, state: T_State):
-            await handle(matcher, event, source)
+        async def handler(msg: Message = CommandArg()):
+            keyword = msg.extract_plain_text().strip()
+            await handle(matcher, source, keyword)
         return handler
 
     for source, params in sources.items():
-        matcher = on_command(
-            f'music {source}', aliases=params['aliases'], priority=13)
+        matcher = on_command(f'{source}music', aliases=params['aliases'],
+                             block=True, priority=13)
         matcher.append_handler(create_handler(source))
 
 

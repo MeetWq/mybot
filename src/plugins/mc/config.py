@@ -1,8 +1,5 @@
-from pydantic import BaseSettings
+from pydantic import BaseModel, Extra
 
 
-class Config(BaseSettings):
+class Config(BaseModel, extra=Extra.ignore):
     dynmap_cron: list = ['*/20', '*', '*', '*', '*', '*']
-
-    class Config:
-        extra = "ignore"

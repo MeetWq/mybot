@@ -6,8 +6,8 @@ from .render import rss_to_msg
 from .rss_list import get_rss_list, get_user_ids, dump_rss_list
 
 from .config import Config
-global_config = get_driver().config
-rss_config = Config(**global_config.dict())
+
+rss_config = Config.parse_obj(get_driver().config.dict())
 
 
 def user_type(user_id: str):

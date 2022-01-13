@@ -1,8 +1,7 @@
+from argparse import Namespace
 from nonebot import on_shell_command
-from nonebot.typing import T_State
-from nonebot.rule import ArgumentParser
-from nonebot.adapters.cqhttp.bot import Bot
-from nonebot.adapters.cqhttp.event import Event
+from nonebot.rule import ArgumentParser, to_me
+from nonebot.params import ShellCommandArgs
 
 from .data_source import translate
 
@@ -29,14 +28,12 @@ parser.add_argument('-s', '--source', default='auto')
 parser.add_argument('-t', '--target', default='zh')
 parser.add_argument('text')
 
-trans = on_shell_command(
-    'trans', aliases={'translate', '翻译'}, parser=parser, priority=11)
+trans = on_shell_command('trans', aliases={'translate', '翻译'},
+                         parser=parser, rule=to_me(), block=True, priority=11)
 
 
 @trans.handle()
-async def _(bot: Bot, event: Event, state: T_State):
-    args = state['args']
-
+async def _(args: Namespace = ShellCommandArgs()):
     if not hasattr(args, 'text') or not args.text:
         await trans.finish()
 

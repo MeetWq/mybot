@@ -37,42 +37,40 @@ class Talent:
         return []
 
 
-grade_count = 4
-grade_prob = [0.889, 0.1, 0.01, 0.001]
-talent_path: Path = Path(__file__).parent / 'resources/talents.json'
-talent_data: dict = json.load(talent_path.open('r', encoding='utf8'))
-talent_list: List[Talent] = [Talent(data) for data in talent_data.values()]
-talent_dict: Dict[int, List[Talent]] = \
-    {i: [t for t in talent_list if t.grade == i] for i in range(grade_count)}
-
-
 class TalentManager:
-
     def __init__(self, prop: Property):
         self.prop = prop
         self.talents: List[Talent] = []
         self.triggered: Set[int] = set()
+        self.grade_count = 4
+        self.grade_prob = [0.889, 0.1, 0.01, 0.001]
+        talent_path: Path = Path(__file__).parent / 'resources/talents.json'
+        talent_data: dict = json.load(talent_path.open('r', encoding='utf8'))
+        talent_list: List[Talent] = \
+            [Talent(data) for data in talent_data.values()]
+        self.talent_dict: Dict[int, List[Talent]] = \
+            {i: [t for t in talent_list if t.grade == i]
+                for i in range(self.grade_count)}
 
-    @staticmethod
-    def rand_talents(count: int) -> Iterator[Talent]:
+    def rand_talents(self, count: int) -> Iterator[Talent]:
         def rand_grade():
             rnd = random.random()
-            result = grade_count
+            result = self.grade_count
             while rnd > 0:
                 result -= 1
-                rnd -= grade_prob[result]
+                rnd -= self.grade_prob[result]
             return result
 
-        counts = dict([(i, 0) for i in range(grade_count)])
+        counts = dict([(i, 0) for i in range(self.grade_count)])
         for _ in range(count):
             counts[rand_grade()] += 1
-        for grade in range(grade_count - 1, -1, -1):
+        for grade in range(self.grade_count - 1, -1, -1):
             count = counts[grade]
-            n = len(talent_dict[grade])
+            n = len(self.talent_dict[grade])
             if count > n:
                 counts[grade - 1] += count - n
                 count = n
-            for talent in random.sample(talent_dict[grade], k=count):
+            for talent in random.sample(self.talent_dict[grade], k=count):
                 yield talent
 
     def update_talent(self) -> Iterator[str]:

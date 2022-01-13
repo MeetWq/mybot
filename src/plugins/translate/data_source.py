@@ -6,8 +6,7 @@ from nonebot.log import logger
 
 from .config import Config
 
-global_config = get_driver().config
-trans_config = Config(**global_config.dict())
+trans_config = Config.parse_obj(get_driver().config.dict())
 
 
 async def trans_baidu(text: str, lang_from: str, lang_to: str):

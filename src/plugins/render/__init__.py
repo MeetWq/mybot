@@ -1,6 +1,6 @@
 from nonebot import on_command
-from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment, unescape
+from nonebot.params import CommandArg
+from nonebot.adapters.onebot.v11 import Message, MessageSegment
 
 from .data_source import t2p, m2p
 
@@ -17,13 +17,15 @@ m2p $test$ test `test`
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 
-text2pic = on_command('text2pic', aliases={'t2p'}, priority=12)
-md2pic = on_command('md2pic', aliases={'markdown', 'm2p'}, priority=12)
+text2pic = on_command('text2pic', aliases={'t2p'},
+                      block=True, priority=12)
+md2pic = on_command('md2pic', aliases={'markdown', 'm2p'},
+                    block=True, priority=12)
 
 
 @text2pic.handle()
-async def _(bot: Bot, event: MessageEvent, state: T_State):
-    msg = unescape(event.get_plaintext().strip())
+async def _(msg: Message = CommandArg()):
+    msg = msg.extract_plain_text().strip()
     if not msg:
         await text2pic.finish()
 
@@ -33,8 +35,8 @@ async def _(bot: Bot, event: MessageEvent, state: T_State):
 
 
 @md2pic.handle()
-async def _(bot: Bot, event: MessageEvent, state: T_State):
-    msg = unescape(event.get_plaintext().strip())
+async def _(msg: Message = CommandArg()):
+    msg = msg.extract_plain_text().strip()
     if not msg:
         await md2pic.finish()
 

@@ -1,21 +1,20 @@
 import re
-import time
 import threading
 from typing import Dict
 from datetime import datetime, timedelta
 from nonebot import require, get_driver, get_bots
-from nonebot.adapters.cqhttp import Message, MessageSegment
 from nonebot.log import logger
 
-from .data_source import get_live_info_by_uids, get_play_url, get_user_dynamics, get_dynamic_screenshot
+from .data_source import get_live_info_by_uids, get_play_url, get_user_dynamics
 from .uid_list import get_sub_uids, get_sub_users, get_dynamic_users, get_record_users
 from .dynamic import Dynamic
+from .live_info import LiveInfo
 from .recorder import Recorder
 from .aliyun import update_refresh_token
 
 from .config import Config
-global_config = get_driver().config
-blive_config = Config(**global_config.dict())
+
+blive_config = Config.parse_obj(get_driver().config.dict())
 
 recorders: Dict[str, Recorder] = {}
 live_status = {}
@@ -74,13 +73,6 @@ async def check_recorder(uid: str, info: dict):
                         recorders.pop(uid)
 
 
-def remove_unused_recorders(uids: list):
-    for uid in recorders.keys():
-        if uid not in uids:
-            recorder = recorders.pop(uid)
-            recorder.recording = False
-
-
 async def check_dynamic(uid: str):
     users = get_dynamic_users(uid)
     if not users:
@@ -98,11 +90,16 @@ async def check_dynamic(uid: str):
     for dynamic in dynamics[4::-1]:  # 从旧到新取最近5条动态
         dynamic = Dynamic(dynamic)
         if dynamic.time > last_time[uid] and dynamic.time > datetime.now().timestamp() - timedelta(minutes=10).seconds:
-            img = await get_dynamic_screenshot(dynamic.url)
-            if img:
-                msg = dynamic.format_msg(img)
+            msg = await dynamic.format_msg()
+            if msg:
                 await send_dynamic_msg(uid, msg)
-                last_time[uid] = dynamic.time
+            last_time[uid] = dynamic.time
+
+
+async def dynamic_monitor():
+    uids = get_sub_uids()
+    for uid in uids:
+        await check_dynamic(uid)
 
 
 async def live_monitor():
@@ -123,7 +120,7 @@ async def live_monitor():
             if status != 1 and live_status[uid] != 1:
                 pass
             else:
-                msg = live_msg(info)
+                msg = await LiveInfo(info).format_msg()
                 if msg:
                     await send_live_msg(uid, msg)
             live_status[uid] = status
@@ -131,36 +128,11 @@ async def live_monitor():
     remove_unused_recorders(uids)
 
 
-def live_msg(info: dict):
-    msg = None
-    up_name = info['uname']
-    status = info['live_status']
-    if status == 1:
-        start_time = time.strftime(
-            "%y/%m/%d %H:%M:%S", time.localtime(info['live_time']))
-        live_url = 'https://live.bilibili.com/' + str(info['room_id'])
-        title = info['title']
-        msg = Message()
-        msg.append(
-            f"{start_time}\n"
-            f"{up_name} 开播啦！\n"
-            f"{title}\n"
-            f"直播间链接：{live_url}"
-        )
-        cover = info['cover_from_user']
-        if cover:
-            msg.append(MessageSegment.image(file=cover))
-    elif status == 0:
-        msg = f"{up_name} 下播了"
-    elif status == 2:
-        msg = f"{up_name} 下播了（轮播中）"
-    return msg
-
-
-async def dynamic_monitor():
-    uids = get_sub_uids()
-    for uid in uids:
-        await check_dynamic(uid)
+def remove_unused_recorders(uids: list):
+    for uid in recorders.keys():
+        if uid not in uids:
+            recorder = recorders.pop(uid)
+            recorder.recording = False
 
 
 async def send_live_msg(uid: str, msg):

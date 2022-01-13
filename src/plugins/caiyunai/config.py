@@ -1,8 +1,5 @@
-from pydantic import BaseSettings
+from pydantic import BaseModel, Extra
 
 
-class Config(BaseSettings):
+class Config(BaseModel, extra=Extra.ignore):
     caiyunai_apikey: str = ''
-
-    class Config:
-        extra = "ignore"

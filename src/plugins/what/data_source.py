@@ -4,7 +4,7 @@ from lxml import etree
 from thefuzz import fuzz
 from urllib.parse import quote
 from nonebot.log import logger
-from nonebot.adapters.cqhttp import Message, MessageSegment
+from nonebot.adapters.onebot.v11 import Message, MessageSegment
 
 from baike import getBaike
 

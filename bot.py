@@ -3,7 +3,7 @@
 
 import nonebot
 from pathlib import Path
-from nonebot.adapters.cqhttp import Bot as CQHTTPBot
+from nonebot.adapters.onebot.v11 import Adapter as OneBot_V11_Adapter
 
 from nonebot.log import logger, Filter, default_format
 
@@ -27,9 +27,8 @@ nonebot.init()
 app = nonebot.get_asgi()
 
 driver = nonebot.get_driver()
-driver.register_adapter('cqhttp', CQHTTPBot)
+driver.register_adapter(OneBot_V11_Adapter)
 
-nonebot.load_builtin_plugins()
 nonebot.load_plugin('nonebot_plugin_apscheduler')
 nonebot.load_plugin('nonebot_plugin_manager')
 nonebot.load_plugin('nonebot_plugin_alias')

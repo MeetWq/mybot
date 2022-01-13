@@ -4,8 +4,8 @@ from nonebot import get_driver
 from nonebot.log import logger
 
 from .config import Config
-global_config = get_driver().config
-qcloud_config = Config(**global_config.dict())
+
+qcloud_config = Config.parse_obj(get_driver().config.dict())
 
 
 class QCloudClient:
@@ -31,6 +31,3 @@ class QCloudClient:
         except CosException:
             logger.warning('upload file to qcloud cos failed: ' + filename)
             return ''
-
-
-qcloud_client = QCloudClient()

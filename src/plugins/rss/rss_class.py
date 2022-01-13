@@ -1,11 +1,11 @@
 import re
 import time
 from datetime import datetime
+from typing import Union
 import pytz
 from pytz import timezone
 
 TZ = timezone('Asia/Shanghai')
-time_type = datetime or time.struct_time or str
 RSSHUB_PREFIX = 'https://rsshub.app'
 
 
@@ -18,7 +18,7 @@ class RSS:
                  logo: str = '',
                  rights: str = '',
                  style: str = 'main',
-                 last_update: time_type = None):
+                 last_update: Union[datetime, time.struct_time, str] = None):
         self.name = name
         self.url = self.parse_url(url, RSSHUB_PREFIX) if url else ''
         self.title = title
@@ -30,7 +30,7 @@ class RSS:
             last_update) if last_update else self.time_now()
 
     @staticmethod
-    def parse_url(url: str, base_url: str):
+    def parse_url(url: str, base_url: str) -> str:
         if re.match(r'https?://', url, re.IGNORECASE):
             return url
         if url[0] == '/':
@@ -40,7 +40,7 @@ class RSS:
         return url
 
     @staticmethod
-    def parse_time(raw_time: time_type):
+    def parse_time(raw_time: Union[datetime, time.struct_time, str]) -> datetime:
         if isinstance(raw_time, datetime):
             return raw_time.astimezone(TZ)
         elif isinstance(raw_time, time.struct_time):
@@ -50,7 +50,7 @@ class RSS:
         return raw_time
 
     @staticmethod
-    def time_now():
+    def time_now() -> datetime:
         return datetime.now().astimezone(TZ)
 
     @classmethod
@@ -75,7 +75,7 @@ class RSS:
                    style=style,
                    last_update=last_update)
 
-    def to_json(self):
+    def to_json(self) -> dict:
         return {
             'name': self.name,
             'url': self.url,

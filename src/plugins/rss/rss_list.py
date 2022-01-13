@@ -1,5 +1,7 @@
 import json
 from pathlib import Path
+from typing import List, Dict
+
 from .rss_class import RSS
 
 data_path = Path('data/rss')
@@ -8,10 +10,14 @@ if not data_path.exists():
 rss_path = data_path / 'rss_list.json'
 
 
-def _load_rss_list() -> dict:
+class DupeError(Exception):
+    pass
+
+
+def _load_rss_list() -> Dict[str, List[RSS]]:
     try:
         rss_list = {}
-        json_list = json.load(rss_path.open('r', encoding='utf-8'))
+        json_list: dict = json.load(rss_path.open('r', encoding='utf-8'))
         for user_id, user_rss_list in json_list.items():
             rss_list[user_id] = [RSS.from_json(rss) for rss in user_rss_list]
         return rss_list
@@ -36,42 +42,36 @@ def dump_rss_list():
     )
 
 
-def get_user_ids() -> list:
+def get_user_ids() -> List[str]:
     return list(_rss_list.keys())
 
 
-def get_rss_list(user_id: str) -> list:
-    return _rss_list.get(user_id, {})
+def get_rss_list(user_id: str) -> List[RSS]:
+    return _rss_list.get(user_id, {}).copy()
 
 
-def add_rss_list(user_id: str, new_rss: RSS) -> str:
+def add_rss_list(user_id: str, new_rss: RSS):
     user_sub_list = get_rss_list(user_id)
     names = [rss.name for rss in user_sub_list]
     if new_rss.name in names:
-        return 'dupe'
+        raise DupeError
     if user_id not in _rss_list:
         _rss_list[user_id] = []
     _rss_list[user_id].append(new_rss)
     dump_rss_list()
-    return 'success'
 
 
-def del_rss_list(user_id: str, name: str) -> str:
+def del_rss_list(user_id: str, name: str):
     user_sub_list = get_rss_list(user_id)
-    index = -1
     for rss in user_sub_list:
         if rss.name == name:
-            index = user_sub_list.index(rss)
-            break
-    if index == -1:
-        return 'dupe'
-    user_sub_list.pop(index)
-    dump_rss_list()
-    return 'success'
+            _rss_list[user_id].remove(rss)
+            dump_rss_list()
+            return
+    raise DupeError
 
 
-def clear_rss_list(user_id: str) -> str:
+def clear_rss_list(user_id: str):
     if user_id in _rss_list:
         _rss_list.pop(user_id)
     dump_rss_list()
-    return 'success'

@@ -4,14 +4,14 @@ import math
 from thefuzz import process
 from typing import List, Tuple, Union
 from nonebot import get_driver
-from nonebot.adapters.cqhttp.message import MessageSegment
+from nonebot.adapters.onebot.v11 import MessageSegment
 
 from .cc98api import CC98_API_V2
 from .emoji import get_emoji, emoji_list
 from .config import Config
 
 global_config = get_driver().config
-cc98_config = Config(**global_config.dict())
+cc98_config = Config.parse_obj(global_config.dict())
 proxy = global_config.http_proxy
 httpx_proxy = {
     'http://': global_config.http_proxy,

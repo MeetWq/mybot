@@ -105,7 +105,7 @@ commands = {
 }
 
 
-async def get_text(text: str, type: str) -> str:
+async def get_text(type: str, text: str) -> str:
     try:
         func = commands[type]['func']
         return await func(text)

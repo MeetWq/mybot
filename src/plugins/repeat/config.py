@@ -1,8 +1,5 @@
-from pydantic import BaseSettings
+from pydantic import BaseModel, Extra
 
 
-class Config(BaseSettings):
+class Config(BaseModel, extra=Extra.ignore):
     repeat_count: int = 2
-
-    class Config:
-        extra = "ignore"

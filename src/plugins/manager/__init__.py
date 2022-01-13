@@ -1,12 +1,11 @@
 from typing import Dict, List
 from nonebot import on_command
-from nonebot.typing import T_State
+from nonebot.rule import Rule
+from nonebot.params import CommandArg, Depends
 from nonebot.plugin import Plugin, get_loaded_plugins
-from nonebot.adapters.cqhttp import Bot, Event, GroupMessageEvent
+from nonebot.adapters.onebot.v11 import Bot, MessageEvent, GroupMessageEvent, Message
 
 from nonebot_plugin_manager import PluginManager
-
-Conv = Dict[str, List[int]]
 
 
 __des__ = '插件管理'
@@ -21,7 +20,7 @@ __notice__ = '此功能仅群管理员或超级用户可用'
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}\nNotice:\n{__notice__}'
 
 
-async def manager_rule(bot: Bot, event: Event, state: T_State) -> bool:
+def manager_rule(bot: Bot, event: MessageEvent) -> bool:
     return (
         isinstance(event, GroupMessageEvent)
         and event.is_tome()
@@ -32,16 +31,26 @@ async def manager_rule(bot: Bot, event: Event, state: T_State) -> bool:
     )
 
 
-block = on_command('block', rule=manager_rule, aliases={'禁用'})
-unblock = on_command('unblock',  rule=manager_rule, aliases={'启用'})
+block = on_command('block', aliases={'禁用'},
+                   block=True, rule=Rule(manager_rule))
+unblock = on_command('unblock', aliases={'启用'},
+                     block=True, rule=Rule(manager_rule))
+
+Conv = Dict[str, List[int]]
+
+
+def get_conv(event: MessageEvent) -> Conv:
+    return {
+        "user": [event.user_id],
+        "group": [event.group_id] if isinstance(event, GroupMessageEvent) else []
+    }
 
 
 @block.handle()
-async def _(bot: Bot, event: Event, state: T_State):
-    keyword = event.get_plaintext().strip()
+async def _(msg: Message = CommandArg(), conv: Conv = Depends(get_conv)):
+    keyword = msg.extract_plain_text().strip()
     if not keyword:
         return
-    conv = get_conv(event)
     plugin_name, short_name = get_plugin_name(conv, keyword)
     if not plugin_name:
         await block.finish(f'插件 {keyword} 不存在!')
@@ -57,11 +66,10 @@ async def _(bot: Bot, event: Event, state: T_State):
 
 
 @unblock.handle()
-async def _(bot: Bot, event: Event, state: T_State):
-    keyword = event.get_plaintext().strip()
+async def _(msg: Message = CommandArg(), conv: Conv = Depends(get_conv)):
+    keyword = msg.extract_plain_text().strip()
     if not keyword:
         return
-    conv = get_conv(event)
     plugin_name, short_name = get_plugin_name(conv, keyword)
     if not plugin_name:
         await unblock.finish(f'插件 {keyword} 不存在！')
@@ -81,13 +89,6 @@ def get_plugin_attr(plugin: Plugin, attr: str):
         return plugin.module.__getattribute__(attr)
     except:
         return ''
-
-
-def get_conv(event: Event):
-    return {
-        "user": [event.user_id] if hasattr(event, "user_id") else [],
-        "group": [event.group_id] if hasattr(event, "group_id") else []
-    }
 
 
 def get_plugin_name(conv: Conv, name: str):

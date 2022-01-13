@@ -1,5 +1,5 @@
 from nonebot.plugin import Plugin, get_loaded_plugins
-from nonebot.adapters.cqhttp import Event
+from nonebot.adapters.onebot.v11 import MessageEvent, GroupMessageEvent
 
 from nonebot_plugin_manager import PluginManager
 
@@ -31,11 +31,11 @@ def get_plugin_attr(plugin: Plugin, attr: str):
         return ''
 
 
-def get_plugins(event: Event):
+def get_plugins(event: MessageEvent):
     plugins = [PluginInfo(p) for p in get_loaded_plugins()]
     conv = {
-        "user": [event.user_id] if hasattr(event, "user_id") else [],
-        "group": [event.group_id] if hasattr(event, "group_id") else []
+        "user": [event.user_id],
+        "group": [event.group_id] if isinstance(event, GroupMessageEvent) else []
     }
     plugin_manager = PluginManager()
     plugins_read = plugin_manager.get_plugin(conv, 4)

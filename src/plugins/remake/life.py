@@ -17,7 +17,7 @@ class Life:
     def prefix(self) -> Iterator[str]:
         yield f'【{self.property.AGE}岁/颜{self.property.CHR}智{self.property.INT}体{self.property.STR}钱{self.property.MNY}乐{self.property.SPR}】'
 
-    def alive(self):
+    def alive(self) -> bool:
         return self.property.LIF > 0
 
     def run(self) -> Iterator[List[str]]:
@@ -27,7 +27,7 @@ class Life:
             event_log = self.event.run_events(self.age.get_events())
             yield list(itertools.chain(self.prefix(), event_log, talent_log))
 
-    def rand_talents(self, num: int):
+    def rand_talents(self, num: int) -> List[Talent]:
         return list(self.talent.rand_talents(num))
 
     def set_talents(self, talents: List[Talent]):
@@ -37,5 +37,5 @@ class Life:
     def apply_property(self, effect: Dict[str, int]):
         self.property.apply(effect)
 
-    def gen_summary(self):
+    def gen_summary(self) -> str:
         return self.property.gen_summary()

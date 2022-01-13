@@ -1,16 +1,9 @@
 import httpx
-from nonebot import get_driver
+from typing import Union
 from nonebot.log import logger
-from nonebot.adapters.cqhttp import Message, MessageSegment
-
-global_config = get_driver().config
-httpx_proxy = {
-    'http://': global_config.http_proxy,
-    'https://': global_config.http_proxy
-}
 
 
-async def get_setu(keyword='', r18=False) -> Message:
+async def get_setu(keyword='', r18=False) -> Union[str, bytes]:
     url = 'https://api.lolicon.app/setu/v2'
     params = {
         'r18': 1 if r18 else 0,
@@ -33,10 +26,7 @@ async def get_setu(keyword='', r18=False) -> Message:
             async with httpx.AsyncClient() as client:
                 resp = await client.get(setu_url, timeout=20)
                 result = resp.content
-
-            if result:
-                return MessageSegment.image(result)
-            return None
+            return result
         else:
             return '找不到相关的涩图'
     except Exception as e:

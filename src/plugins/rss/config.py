@@ -1,9 +1,6 @@
-from pydantic import BaseSettings
+from pydantic import BaseModel, Extra
 
 
-class Config(BaseSettings):
+class Config(BaseModel, extra=Extra.ignore):
     rss_update_cron: list = ['0', '*/5', '*', '*', '*', '*']
     rss_info_update_cron: list = ['0', '0', '5', '*', '*', '*']
-
-    class Config:
-        extra = "ignore"

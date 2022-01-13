@@ -1,11 +1,11 @@
 import re
 import random
-from nonebot import on_command, on_message
 from nonebot.matcher import Matcher
-from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, Message, MessageEvent, GroupMessageEvent, unescape
+from nonebot import on_command, on_message
+from nonebot.params import CommandArg, EventMessage, Depends
+from nonebot.adapters.onebot.v11 import Message, MessageEvent, GroupMessageEvent, unescape
 from nonebot.permission import SUPERUSER
-from nonebot.adapters.cqhttp.permission import GROUP_OWNER, GROUP_ADMIN, PRIVATE_FRIEND
+from nonebot.adapters.onebot.v11.permission import GROUP_OWNER, GROUP_ADMIN, PRIVATE_FRIEND
 
 from .data_source import WordBank
 from .util import parse
@@ -30,6 +30,10 @@ __notice__ = '仅群管理员或超级用户可增删词条'
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}\nNotice:\n{__notice__}'
 
 
+PEM_RW = SUPERUSER | GROUP_OWNER | GROUP_ADMIN | PRIVATE_FRIEND
+PEM_GL = SUPERUSER
+
+
 def get_id(event: MessageEvent):
     if isinstance(event, GroupMessageEvent):
         return 'group_' + str(event.group_id)
@@ -43,37 +47,38 @@ wordbank = on_message(priority=39)
 
 
 @wordbank.handle()
-async def _(bot: Bot, event: MessageEvent, state: T_State):
+async def _(event: MessageEvent, msg: Message = EventMessage()):
+    msg = unescape(str(msg)).strip()
     user_id = get_id(event)
-    msg = unescape(unescape(str(event.get_message()).strip()))
-    msgs = wb.match(user_id, msg, event.is_tome())
-    if msgs:
+    results = wb.match(user_id, msg, event.is_tome())
+    if results:
         wordbank.block = True
-        msg = random.choice(msgs)
-        await wordbank.finish(Message(unescape(parse(msg, event))))
+        res = random.choice(results)
+        nickname = event.sender.card or event.sender.nickname
+        sender_id = event.sender.user_id
+        res = parse(res, nickname, sender_id)
+        await wordbank.finish(Message(unescape(res)))
     else:
         wordbank.block = False
         await wordbank.finish()
 
 
-add_cmd = on_command('添加词条', priority=14,
-                     permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN | PRIVATE_FRIEND)
-add_cmd_gl = on_command('添加全局词条', priority=14, permission=SUPERUSER)
+add_cmd = on_command('添加词条', block=True, priority=14, permission=PEM_RW)
+add_cmd_gl = on_command('添加全局词条', block=True, priority=14, permission=PEM_GL)
 
 
 @add_cmd.handle()
-async def _(bot: Bot, event: MessageEvent, state: T_State):
-    await wb_add(add_cmd, event)
+async def _(msg: Message = EventMessage(), user_id: str = Depends(get_id)):
+    await wb_add(add_cmd, msg, user_id)
 
 
 @add_cmd_gl.handle()
-async def _(bot: Bot, event: MessageEvent, state: T_State):
-    await wb_add(add_cmd_gl, event, gl=True)
+async def _(msg: Message = EventMessage()):
+    await wb_add(add_cmd_gl, msg, user_id='0')
 
 
-async def wb_add(matcher: Matcher, event: MessageEvent, gl: bool = False):
-    user_id = '0' if gl else get_id(event)
-    msg = unescape(unescape(str(event.get_message())))
+async def wb_add(matcher: Matcher, msg: Message, user_id: str):
+    msg = unescape(str(msg))
     pattern = r"\s*(@|模糊|正则)*\s*问(.+?)答(.+)"
     match = re.match(pattern, msg, re.S)
     if match:
@@ -87,46 +92,42 @@ async def wb_add(matcher: Matcher, event: MessageEvent, gl: bool = False):
             await matcher.finish('我记住了~')
 
 
-rm_cmd = on_command('删除词条', priority=14,
-                    permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN | PRIVATE_FRIEND)
-rm_cmd_gl = on_command('删除全局词条', priority=14, permission=SUPERUSER)
+rm_cmd = on_command('删除词条', block=True, priority=14, permission=PEM_RW)
+rm_cmd_gl = on_command('删除全局词条', block=True, priority=14, permission=PEM_GL)
 
 
 @rm_cmd.handle()
-async def _(bot: Bot, event: MessageEvent, state: T_State):
-    await wb_rm(rm_cmd, event)
+async def _(msg: Message = CommandArg(), user_id: str = Depends(get_id)):
+    await wb_rm(rm_cmd, msg, user_id)
 
 
 @rm_cmd_gl.handle()
-async def _(bot: Bot, event: MessageEvent, state: T_State):
-    await wb_rm(rm_cmd_gl, event, gl=True)
+async def _(msg: Message = CommandArg()):
+    await wb_rm(rm_cmd_gl, msg, user_id='0')
 
 
-async def wb_rm(matcher: Matcher, event: MessageEvent, gl: bool = False):
-    user_id = '0' if gl else get_id(event)
-    msg = unescape(unescape(str(event.get_message()).strip()))
+async def wb_rm(matcher: Matcher, msg: Message, user_id: str):
+    msg = unescape(str(msg)).strip()
     res = wb.remove(user_id, msg)
     if res:
         await matcher.send('删除成功~')
 
 
-clear_cmd = on_command('清空词库', priority=14,
-                       permission=SUPERUSER | GROUP_OWNER | PRIVATE_FRIEND)
-clear_cmd_gl = on_command('清空全局词库', priority=14, permission=SUPERUSER)
+clear_cmd = on_command('清空词库', block=True, priority=14, permission=PEM_RW)
+clear_cmd_gl = on_command('清空全局词库', block=True, priority=14, permission=PEM_GL)
 
 
 @clear_cmd.handle()
-async def _(bot: Bot, event: MessageEvent, state: T_State):
-    await wb_rm(clear_cmd, event)
+async def _(user_id: str = Depends(get_id)):
+    await wb_rm(clear_cmd, user_id)
 
 
 @clear_cmd_gl.handle()
-async def _(bot: Bot, event: MessageEvent, state: T_State):
-    await wb_rm(clear_cmd_gl, event, gl=True)
+async def _():
+    await wb_rm(clear_cmd_gl, user_id='0')
 
 
-async def wb_clear(matcher: Matcher, event: MessageEvent, gl: bool = False):
-    user_id = '0' if gl else get_id(event)
+async def wb_clear(matcher: Matcher, user_id: str):
     res = wb.clear(user_id)
     if res:
         await matcher.send('清空成功~')

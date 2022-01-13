@@ -3,11 +3,13 @@ from lxml import etree
 from nonebot import require, get_bots, get_driver
 
 from .dynmap_source import get_dynmap_updates
-from .dynmap_list import get_dynmap_list, dump_dynmap_list, set_last_update
+from .dynmap_list import get_dynmap_list
 
 from .config import Config
-global_config = get_driver().config
-mc_config = Config(**global_config.dict())
+
+mc_config = Config.parse_obj(get_driver().config.dict())
+
+last_time = {}
 
 
 def user_type(user_id: str):
@@ -44,17 +46,19 @@ async def dynmap_monitor():
             continue
 
         updates = result['updates']
+        if not updates:
+            continue
+
+        if user_id not in last_time:
+            last_time[user_id] = updates[-1]['timestamp']
+            continue
+
         chats = []
-        last_update = config['last_update']
         for update in updates:
-            if update['timestamp'] > last_update:
-                last_update = update['timestamp']
-            if update['type'] != 'chat':
-                continue
-            if update['timestamp'] <= config['last_update']:
-                continue
-            chats.append(update)
-        set_last_update(user_id, last_update)
+            if update['type'] == 'chat' and update['timestamp'] > last_time[user_id]:
+                chats.append(update)
+        last_time[user_id] = updates[-1]['timestamp']
+
         if not chats:
             continue
 
@@ -66,7 +70,6 @@ async def dynmap_monitor():
             msgs.append(f'[dynmap] {name}: {message}')
         msg = '\n'.join(msgs)
         await send_bot_msg(user_id, msg)
-    dump_dynmap_list()
 
 
 scheduler = require("nonebot_plugin_apscheduler").scheduler

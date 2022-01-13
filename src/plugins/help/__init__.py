@@ -1,6 +1,7 @@
+from typing import Union
 from nonebot import on_command
-from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, Event, Message, MessageSegment
+from nonebot.params import CommandArg
+from nonebot.adapters.onebot.v11 import MessageEvent, GroupMessageEvent, Message, MessageSegment
 
 from .data_source import get_help_img, get_plugin_img
 from .plugin import get_plugins
@@ -18,30 +19,31 @@ help logo
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 
-help = on_command('help', aliases={'帮助', '功能'})
+help = on_command('help', aliases={'帮助', '功能'}, block=True)
 
 
 @help.handle()
-async def _(bot: Bot, event: Event, state: T_State):
-    plugin_name = event.get_plaintext().strip()
+async def _(event: MessageEvent, msg: Message = CommandArg()):
+    plugin_name = msg.extract_plain_text().strip()
 
     help_msg = None
     if plugin_name:
         help_msg = await get_help_msg(event, plugin_name)
-    else:
-        if event.is_tome():
-            help_msg = await get_help_msg(event)
+    elif event.is_tome():
+        help_msg = await get_help_msg(event)
     if help_msg:
         await help.finish(help_msg)
 
 
-async def get_help_msg(event: Event, plugin_name: str = '') -> Message:
+async def get_help_msg(event: MessageEvent, plugin_name: str = '') -> Union[str, MessageSegment]:
     plugins = get_plugins(event)
 
     if not plugin_name:
         if not plugins:
             return '暂时没有可用的功能'
-        img = await get_help_img(event, plugins)
+        event_type = 'group' if isinstance(
+            event, GroupMessageEvent) else 'private'
+        img = await get_help_img(event_type, plugins)
         return MessageSegment.image(img) if img else '出错了，请稍后再试'
     else:
         for p in plugins:

@@ -9,8 +9,7 @@ from nonebot.log import logger
 
 from .config import Config
 
-global_config = get_driver().config
-chat_config = Config(**global_config.dict())
+chat_config = Config.parse_obj(get_driver().config.dict())
 
 dir_path = Path(__file__).parent
 data_path = dir_path / 'resources'

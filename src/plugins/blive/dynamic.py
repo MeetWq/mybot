@@ -1,8 +1,10 @@
-from nonebot.adapters.cqhttp import Message, MessageSegment
+from nonebot.adapters.onebot.v11 import Message, MessageSegment
+
+from .data_source import get_dynamic_screenshot
 
 
 class Dynamic():
-    def __init__(self, dynamic):
+    def __init__(self, dynamic: dict):
         self.dynamic = dynamic
         self.type = dynamic['desc']['type']
         self.id = dynamic['desc']['dynamic_id']
@@ -11,7 +13,10 @@ class Dynamic():
         self.uid = dynamic['desc']['user_profile']['info']['uid']
         self.name = dynamic['desc']['user_profile']['info'].get('uname')
 
-    def format_msg(self, img):
+    async def format_msg(self) -> Message:
+        img = await get_dynamic_screenshot(self.url)
+        if not img:
+            return None
         type_msg = {
             0: "发布了新动态",
             1: "转发了一条动态",

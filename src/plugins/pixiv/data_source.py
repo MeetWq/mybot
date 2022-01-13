@@ -1,15 +1,15 @@
 import httpx
-import base64
 import random
+from typing import Union
 from pixivpy_async import PixivClient, AppPixivAPI
 from nonebot import get_driver
-from nonebot.adapters.cqhttp import MessageSegment, Message
+from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot.log import logger
 
 from .config import Config
 
 global_config = get_driver().config
-pixiv_config = Config(**global_config.dict())
+pixiv_config = Config.parse_obj(global_config.dict())
 proxy = global_config.http_proxy
 httpx_proxy = {
     'http://': global_config.http_proxy,
@@ -17,18 +17,18 @@ httpx_proxy = {
 }
 
 
-async def get_pixiv(keyword: str):
+async def get_pixiv(keyword: str) -> Union[str, Message]:
     try:
         if keyword.isdigit():
             illust = await get_by_id(int(keyword))
             if not illust:
                 return '找不到该id的作品'
             illusts = [illust['illust']]
-        elif keyword in ['日榜', 'day']:
+        elif keyword == '日榜':
             illusts = await get_by_ranking(mode='day')
-        elif keyword in ['周榜', 'week']:
+        elif keyword == '周榜':
             illusts = await get_by_ranking(mode='week')
-        elif keyword in ['月榜', 'month']:
+        elif keyword == '月榜':
             illusts = await get_by_ranking(mode='month')
         else:
             illusts = await get_by_search(keyword)
@@ -43,14 +43,14 @@ async def get_pixiv(keyword: str):
         return '出错了，请稍后再试'
 
 
-async def to_msg(illusts):
+async def to_msg(illusts) -> Message:
     msg = Message()
     async with PixivClient(proxy=proxy, timeout=20) as client:
         aapi = AppPixivAPI(client=client, proxy=proxy)
         await aapi.login(refresh_token=pixiv_config.pixiv_token)
         for illust in illusts:
             try:
-                url = illust['image_urls']['large']
+                url: str = illust['image_urls']['large']
                 url = url.replace('_webp', '').replace(
                     'i.pximg.net', 'i.pixiv.re')
                 async with httpx.AsyncClient() as client:
@@ -58,14 +58,13 @@ async def to_msg(illusts):
                     result = resp.content
                 if result:
                     msg.append('{} ({})'.format(illust['title'], illust['id']))
-                    msg.append(MessageSegment.image(
-                        f"base64://{base64.b64encode(result).decode()}"))
+                    msg.append(MessageSegment.image(result))
             except Exception as e:
                 logger.warning(f"Error downloading {url}: {e}")
         return msg
 
 
-async def get_by_ranking(mode='day', num=3):
+async def get_by_ranking(mode='day', num=3) -> dict:
     async with PixivClient(proxy=proxy, timeout=20) as client:
         aapi = AppPixivAPI(client=client, proxy=proxy)
         await aapi.login(refresh_token=pixiv_config.pixiv_token)
@@ -75,7 +74,7 @@ async def get_by_ranking(mode='day', num=3):
         return illusts[0:num]
 
 
-async def get_by_search(keyword, num=3):
+async def get_by_search(keyword, num=3) -> dict:
     async with PixivClient(proxy=proxy, timeout=20) as client:
         aapi = AppPixivAPI(client=client, proxy=proxy)
         await aapi.login(refresh_token=pixiv_config.pixiv_token)
@@ -89,7 +88,7 @@ async def get_by_search(keyword, num=3):
         return illusts[0:min(num, len(illusts))]
 
 
-async def get_by_id(work_id):
+async def get_by_id(work_id) -> dict:
     async with PixivClient(proxy=proxy, timeout=20) as client:
         aapi = AppPixivAPI(client=client, proxy=proxy)
         await aapi.login(refresh_token=pixiv_config.pixiv_token)
@@ -97,7 +96,7 @@ async def get_by_id(work_id):
         return illust
 
 
-async def search_by_image(img_url):
+async def search_by_image(img_url) -> Union[str, Message]:
     url = 'https://saucenao.com/search.php'
     params = {
         'url': img_url,

@@ -4,12 +4,11 @@ import urllib.parse
 import wolframalpha
 from nonebot import get_driver
 from nonebot.log import logger
-from nonebot.adapters.cqhttp import MessageSegment
+from nonebot.adapters.onebot.v11 import MessageSegment
 
 from .config import Config
 
-global_config = get_driver().config
-wolframalpha_config = Config(**global_config.dict())
+wolframalpha_config = Config.parse_obj(get_driver().config.dict())
 
 
 async def get_wolframalpha_simple(input, params=(), **kwargs):

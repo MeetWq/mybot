@@ -1,4 +1,3 @@
-import io
 import httpx
 import base64
 import jinja2
@@ -6,10 +5,11 @@ import asyncio
 import imageio
 import traceback
 from PIL import Image
+from io import BytesIO
 from pathlib import Path
 from mcstatus import MinecraftServer
 from nonebot_plugin_htmlrender import get_new_page
-from nonebot.adapters.cqhttp import Message, MessageSegment
+from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot.log import logger
 
 dir_path = Path(__file__).parent
@@ -31,14 +31,7 @@ async def get_mc_uuid(username: str) -> str:
         return ''
 
 
-async def get_crafatar(type: str, uuid: str) -> Message:
-    result = await _get_crafatar(type, uuid)
-    if result:
-        return MessageSegment.image(f'base64://{base64.b64encode(result).decode()}')
-    return None
-
-
-async def _get_crafatar(type: str, uuid: str) -> bytes:
+async def get_crafatar(type: str, uuid: str) -> bytes:
     path = ''
     if type == 'avatar':
         path = 'avatars'
@@ -70,9 +63,9 @@ def load_file(name):
 env.filters['load_file'] = load_file
 
 
-async def get_mcmodel(uuid: str) -> Message:
-    skin_bytes = await _get_crafatar('skin', uuid)
-    cape_bytes = await _get_crafatar('cape', uuid)
+async def get_mcmodel(uuid: str) -> BytesIO:
+    skin_bytes = await get_crafatar('skin', uuid)
+    cape_bytes = await get_crafatar('cape', uuid)
     if not skin_bytes:
         return None
     skin = f'data:image/png;base64,{base64.b64encode(skin_bytes).decode()}'
@@ -88,17 +81,17 @@ async def get_mcmodel(uuid: str) -> Message:
             await asyncio.sleep(0.1)
             for i in range(60):
                 image = await page.screenshot(full_page=True)
-                images.append(Image.open(io.BytesIO(image)))
+                images.append(Image.open(BytesIO(image)))
 
-        output = io.BytesIO()
+        output = BytesIO()
         imageio.mimsave(output, images, format='gif', duration=0.05)
-        return MessageSegment.image(f'base64://{base64.b64encode(output.getvalue()).decode()}')
+        return output
     except:
         logger.warning(traceback.format_exc())
         return None
 
 
-async def get_mcstatus(addr: str) -> str:
+async def get_mcstatus(addr: str) -> Message:
     try:
         server = MinecraftServer.lookup(addr)
         status = await server.async_status()

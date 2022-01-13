@@ -1,7 +1,7 @@
-from pydantic import BaseSettings
+from pydantic import BaseModel, Extra
 
 
-class Config(BaseSettings):
+class Config(BaseModel, extra=Extra.ignore):
     baidu_trans_app_id: str = ''
     baidu_trans_api_key: str = ''
     youdao_trans_app_id: str = ''
@@ -9,6 +9,3 @@ class Config(BaseSettings):
     google_trans_api_key: str = ''
     bing_trans_region: str = ''
     bing_trans_api_key: str = ''
-
-    class Config:
-        extra = "ignore"

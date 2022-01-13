@@ -1,10 +1,11 @@
 import re
 import random
+import traceback
 from typing import List, Union
 from nonebot import on_command
 from nonebot.rule import to_me
-from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, Event, MessageSegment
+from nonebot.params import Arg, ArgPlainText
+from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent, MessageSegment
 from nonebot.log import logger
 
 from .life import Life
@@ -23,15 +24,15 @@ __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 
 remake = on_command('remake', aliases={'liferestart', '人生重开'},
-                    rule=to_me(), priority=11)
+                    block=True, rule=to_me(), priority=11)
 
 
 @remake.handle()
-async def first_receive(bot: Bot, event: Event, state: T_State):
+async def first_receive():
     life = Life()
     talents = life.rand_talents(10)
-    state['life'] = life
-    state['talents'] = talents
+    remake.set_arg('life', life)
+    remake.set_arg('talents', talents)
     msg = '请发送编号选择3个天赋，如“0 1 2”，或发送“随机”随机选择；发送“结束”结束会话'
     des = [f'{i}.{t.name}（{t.description}）' for i, t in enumerate(talents)]
     des = '\n'.join(des)
@@ -39,8 +40,7 @@ async def first_receive(bot: Bot, event: Event, state: T_State):
 
 
 @remake.got('nums')
-async def _(bot: Bot, event: Event, state: T_State):
-    reply = state['nums']
+async def _(reply: str = ArgPlainText(), talents: List[Talent] = Arg('talents')):
     match = re.fullmatch(r'\s*(\d)\s*(\d)\s*(\d)\s*', reply)
     if match:
         nums = list(match.groups())
@@ -53,16 +53,14 @@ async def _(bot: Bot, event: Event, state: T_State):
         await remake.finish()
     else:
         await remake.reject()
-
-    talents: List[Talent] = state['talents']
-    state['talents_selected'] = [talents[n] for n in nums]
+    remake.set_arg('talents_selected', [talents[n] for n in nums])
     msg = '请发送4个数字分配“颜值、智力、体质、家境”4个属性，如“5 5 5 5”，属性之和需为20，每个属性不能超过10；或发送“随机”随机选择；发送“结束”结束会话'
     await remake.send(msg)
 
 
 @remake.got('prop')
-async def _(bot: Bot, event: Event, state: T_State):
-    reply = state['prop']
+async def _(bot: Bot, event: GroupMessageEvent, reply: str = ArgPlainText(),
+            life: Life = Arg('life'), talents: List[Talent] = Arg('talents_selected')):
     match = re.fullmatch(
         r'\s*(\d{1,2})\s+(\d{1,2})\s+(\d{1,2})\s+(\d{1,2})\s*', reply)
     if match:
@@ -82,8 +80,6 @@ async def _(bot: Bot, event: Event, state: T_State):
     else:
         await remake.reject()
 
-    life: Life = state['life']
-    talents: List[Talent] = state['talents_selected']
     prop = {'CHR': nums[0], 'INT': nums[1], 'STR': nums[2], 'MNY': nums[3]}
     life.set_talents(talents)
     life.apply_property(prop)
@@ -101,15 +97,15 @@ async def _(bot: Bot, event: Event, state: T_State):
         for s in life.run():
             msgs.append('\n'.join(s))
         msgs.append(life.gen_summary())
-    except Exception as e:
-        logger.warning(f'Error in remake: {e}')
+    except:
+        logger.warning(traceback.format_exc())
         await remake.finish('出错了，请稍后再试')
 
     await send_forward_msg(bot, event, '人生重开模拟器', bot.self_id, msgs)
     await remake.finish()
 
 
-async def send_forward_msg(bot: Bot, event: Event, name: str, uin: str,
+async def send_forward_msg(bot: Bot, event: GroupMessageEvent, name: str, uin: str,
                            msgs: List[Union[str, MessageSegment]]):
     if not msgs:
         return

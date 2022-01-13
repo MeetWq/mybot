@@ -1,7 +1,5 @@
-import re
-from nonebot import on_command
-from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot, Event, unescape
+from nonebot import on_regex
+from nonebot.params import RegexDict
 
 from .data_source import legal_language, network_compile
 
@@ -22,22 +20,14 @@ __notice__ = '来源为菜鸟教程的网络编译器，不要试图搞事情'
 __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}\nNotice:\n{__notice__}'
 
 
-compiler = on_command('lang', priority=13)
+compiler = on_regex(r'^lang\s+(?P<language>\S+)[;；\s]+(?P<code>\S+.*)',
+                    block=True, priority=13)
 
 
 @compiler.handle()
-async def _(bot: Bot, event: Event, state: T_State):
-    msg = unescape(event.get_plaintext()).strip()
-
-    match_obj = re.match(r'(.*?)[;；\s]+(.*)', msg, re.S)
-    if not match_obj:
-        await compiler.finish()
-
-    code = match_obj.group(2)
-    if not code:
-        return
-
-    language = match_obj.group(1)
+async def _(msg: dict = RegexDict()):
+    language = msg['language']
+    code = msg['code']
     if language not in legal_language:
         await compiler.finish(f"支持的语言：{', '.join(list(legal_language.keys()))}")
 

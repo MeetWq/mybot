@@ -1,11 +1,10 @@
-import io
 import re
 import json
 import uuid
 import httpx
-import base64
-
 import langid
+from io import BytesIO
+from typing import Union
 from pydub import AudioSegment
 from pydub.silence import detect_silence
 
@@ -16,15 +15,13 @@ from tencentcloud.tts.v20190823 import tts_client, models
 
 from nonebot import get_driver
 from nonebot.log import logger
-from nonebot.adapters.cqhttp import MessageSegment
 
 from .config import Config
 
-global_config = get_driver().config
-tts_config = Config(**global_config.dict())
+tts_config = Config.parse_obj(get_driver().config.dict())
 
 
-async def get_voice(text, type=0):
+async def get_voice(text, type=0) -> Union[str, BytesIO]:
     try:
         if langid.classify(text)[0] == 'ja':
             voice = await get_ai_voice(text, type)
@@ -36,7 +33,7 @@ async def get_voice(text, type=0):
         return None
 
 
-async def get_tx_voice(text, type=0):
+async def get_tx_voice(text, type=0) -> str:
     cred = credential.Credential(
         tts_config.tencent_secret_id, tts_config.tencent_secret_key)
     http_profile = HttpProfile()
@@ -62,10 +59,10 @@ async def get_tx_voice(text, type=0):
     }
     req.from_json_string(json.dumps(params))
     resp = client.TextToVoice(req)
-    return MessageSegment.record(f"base64://{resp.Audio}")
+    return f"base64://{resp.Audio}"
 
 
-async def get_ai_voice(text, type=0):
+async def get_ai_voice(text, type=0) -> BytesIO:
     mp3_url = await get_ai_voice_url(text, type)
     if not mp3_url:
         return None
@@ -74,13 +71,10 @@ async def get_ai_voice(text, type=0):
         resp = await client.get(mp3_url)
         result = resp.content
 
-    output = await split_voice(io.BytesIO(result))
-    if output:
-        return MessageSegment.record(f"base64://{base64.b64encode(output.getvalue()).decode()}")
-    return None
+    return await split_voice(BytesIO(result))
 
 
-async def get_ai_voice_url(text, type=0):
+async def get_ai_voice_url(text, type=0) -> str:
     url = 'https://cloud.ai-j.jp/demo/aitalk_demo.php'
     if type == 0:
         params = {
@@ -121,14 +115,14 @@ async def get_ai_voice_url(text, type=0):
     return ''
 
 
-async def split_voice(input):
+async def split_voice(input) -> BytesIO:
     sound = AudioSegment.from_file(input)
     silent_ranges = detect_silence(
         sound, min_silence_len=500, silence_thresh=-40)
     if len(silent_ranges) >= 1:
         first_silent_end = silent_ranges[0][1] - 300
         result = sound[first_silent_end:] + AudioSegment.silent(300)
-        output = io.BytesIO()
+        output = BytesIO()
         result.export(output, format='mp3')
         return output
     return None
