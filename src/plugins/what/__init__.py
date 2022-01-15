@@ -23,7 +23,7 @@ __usage__ = f'{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}'
 
 commands = {'是啥', '是什么', '是谁'}
 what = on_keyword(commands, priority=14)
-baike = on_command('baike', aliases={'百科'}, block=True, priority=13)
+baike = on_command('baike', aliases={'what', '百科'}, block=True, priority=13)
 nbnhhsh = on_command('nbnhhsh', aliases={'缩写'}, block=True, priority=13)
 
 
