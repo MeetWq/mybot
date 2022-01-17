@@ -1,0 +1,17 @@
+.image {
+  background-image: url("./spring_festival_light.png");
+  background-position: left -900px center;
+}
+.face {
+  float: right;
+}
+.box {
+  background-color: rgba(204, 11, 29, 0.8);
+  margin: 30px 0px 30px 300px;
+}
+.good {
+  color: #EE82EE;
+}
+.bad {
+  color: #32CD32;
+}

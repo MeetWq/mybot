@@ -569,7 +569,7 @@ tifffile = ["tifffile"]
 
 [[package]]
 name = "importlib-metadata"
-version = "4.10.0"
+version = "4.10.1"
 description = "Read metadata from Python packages"
 category = "main"
 optional = false
@@ -870,7 +870,7 @@ nonebot2 = ">=2.0.0-beta.1,<3.0.0"
 
 [[package]]
 name = "nonebot-plugin-memes"
-version = "0.2.0.1"
+version = "0.2.1"
 description = "Nonebot2 plugin for making memes"
 category = "main"
 optional = false
@@ -903,7 +903,7 @@ Pillow = ">=9.0.0,<10.0.0"
 
 [[package]]
 name = "nonebot-plugin-remake"
-version = "0.2.1"
+version = "0.2.3"
 description = "适用于 Nonebot2 的人生重开模拟器插件"
 category = "main"
 optional = false
@@ -1341,7 +1341,7 @@ full = ["itsdangerous", "jinja2", "python-multipart", "pyyaml", "requests", "gra
 
 [[package]]
 name = "tencentcloud-sdk-python"
-version = "3.0.565"
+version = "3.0.566"
 description = "Tencent Cloud SDK for Python"
 category = "main"
 optional = false
@@ -1995,8 +1995,8 @@ imageio = [
     {file = "imageio-2.13.5.tar.gz", hash = "sha256:c7ec2be58e401b6eaa838f8eaf8368ed54b2de4a1b001fe6551644f1a30a843d"},
 ]
 importlib-metadata = [
-    {file = "importlib_metadata-4.10.0-py3-none-any.whl", hash = "sha256:b7cf7d3fef75f1e4c80a96ca660efbd51473d7e8f39b5ab9210febc7809012a4"},
-    {file = "importlib_metadata-4.10.0.tar.gz", hash = "sha256:92a8b58ce734b2a4494878e0ecf7d79ccd7a128b5fc6014c401e0b61f006f0f6"},
+    {file = "importlib_metadata-4.10.1-py3-none-any.whl", hash = "sha256:899e2a40a8c4a1aec681feef45733de8a6c58f3f6a0dbed2eb6574b4387a77b6"},
+    {file = "importlib_metadata-4.10.1.tar.gz", hash = "sha256:951f0d8a5b7260e9db5e41d429285b5f451e928479f19d80818878527d36e95e"},
 ]
 itsdangerous = [
     {file = "itsdangerous-2.0.1-py3-none-any.whl", hash = "sha256:5174094b9637652bdb841a3029700391451bd092ba3db90600dea710ba28e97c"},
@@ -2266,16 +2266,16 @@ nonebot-plugin-manager = [
     {file = "nonebot_plugin_manager-0.5.7.tar.gz", hash = "sha256:a0e14644ccab4c8a3139feaab8c6432a64795bdd8009a93117fbe097e79f32d3"},
 ]
 nonebot-plugin-memes = [
-    {file = "nonebot_plugin_memes-0.2.0.1-py3-none-any.whl", hash = "sha256:46db5cd5208aa8cd09f8233d751f72cd98e00d05cbfdc8c8a65613f121a7205b"},
-    {file = "nonebot_plugin_memes-0.2.0.1.tar.gz", hash = "sha256:59e7f34776dbbe5336d26cd5c66fb72d29c7e1c99452b73a6d6f896d4b4588e2"},
+    {file = "nonebot_plugin_memes-0.2.1-py3-none-any.whl", hash = "sha256:f848bcf33c8b295b149d8a4d70476d35de38f05aa7a50e06c86b5da9c71cdbd8"},
+    {file = "nonebot_plugin_memes-0.2.1.tar.gz", hash = "sha256:8250ce058e29024b67a65b22275eb35e6eed852108bc6d3a1817d3e2be3a194a"},
 ]
 nonebot-plugin-petpet = [
     {file = "nonebot_plugin_petpet-0.2.0.2-py3-none-any.whl", hash = "sha256:b723d53d8d0a91bf1f579bde56320869e88b60b9ceeaaf00426dc14f56a0d351"},
     {file = "nonebot_plugin_petpet-0.2.0.2.tar.gz", hash = "sha256:9993a89d6a9af5b90f353c4759278635c0dbb4d379c329d4d37199564fcbfdff"},
 ]
 nonebot-plugin-remake = [
-    {file = "nonebot_plugin_remake-0.2.1-py3-none-any.whl", hash = "sha256:3f663343253d65addcf87af21ece548e9d0f5b5862bd7d00bd1254934a501393"},
-    {file = "nonebot_plugin_remake-0.2.1.tar.gz", hash = "sha256:c0c3614ed03491802d8ee3fa58d4b7244c0fdaacb03076e44e1cd3b3a4286fdd"},
+    {file = "nonebot_plugin_remake-0.2.3-py3-none-any.whl", hash = "sha256:b431dd98c6b768694670702e1b987937657cc5534dc4b16932ca9e1c2a07a2b4"},
+    {file = "nonebot_plugin_remake-0.2.3.tar.gz", hash = "sha256:22f963842e7a839274937a5e3fcce410cfb7863ee1bea2b6105eef1173aabc96"},
 ]
 nonebot-plugin-shindan = [
     {file = "nonebot_plugin_shindan-0.2.0-py3-none-any.whl", hash = "sha256:f83039c76bfe344f8049d75f63311bb67d348d4fcbaf83c0c1318f9c4326224e"},
@@ -2724,8 +2724,8 @@ starlette = [
     {file = "starlette-0.16.0.tar.gz", hash = "sha256:e1904b5d0007aee24bdd3c43994be9b3b729f4f58e740200de1d623f8c3a8870"},
 ]
 tencentcloud-sdk-python = [
-    {file = "tencentcloud-sdk-python-3.0.565.tar.gz", hash = "sha256:0be82241b0a1a74bc7cb9141cbde06b32429b3941259fdd3c296d2d319191b44"},
-    {file = "tencentcloud_sdk_python-3.0.565-py2.py3-none-any.whl", hash = "sha256:b4e35fc1858e24b057de8fdde2c3c598a082093adde493bee1301fdefec374ab"},
+    {file = "tencentcloud-sdk-python-3.0.566.tar.gz", hash = "sha256:0e4024edcbd0fa86211884ef2b60095890930240819fcda94fbc71143d405e30"},
+    {file = "tencentcloud_sdk_python-3.0.566-py2.py3-none-any.whl", hash = "sha256:4c534a62c18cdaedd01a1311c3cf1f9f26782c0f2b7a26fb90171ee0c5224dad"},
 ]
 text-unidecode = [
     {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
