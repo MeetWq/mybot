@@ -33,7 +33,8 @@ def create_matchers():
     def create_handler(type: str) -> T_Handler:
         async def handler(msg: Message = CommandArg()):
             text = msg.extract_plain_text().strip()
-            await handle(matcher, type, text)
+            if text:
+                await handle(matcher, type, text)
         return handler
 
     for type, params in commands.items():

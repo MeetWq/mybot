@@ -33,7 +33,8 @@ def create_matchers():
     def create_handler(source: str) -> T_Handler:
         async def handler(msg: Message = CommandArg()):
             keyword = msg.extract_plain_text().strip()
-            await handle(matcher, source, keyword)
+            if keyword:
+                await handle(matcher, source, keyword)
         return handler
 
     for source, params in sources.items():
