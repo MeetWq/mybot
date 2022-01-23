@@ -41,6 +41,7 @@ nonebot.load_plugin('nonebot_plugin_asoulcnki')
 nonebot.load_plugin('nonebot_plugin_shindan')
 nonebot.load_plugin('nonebot_plugin_remake')
 nonebot.load_plugin('nonebot_plugin_caiyunai')
+nonebot.load_plugin('nonebot_plugin_emojimix')
 nonebot.load_plugins('src/plugins')
 
 # Modify some config / config depends on loaded configs
