@@ -22,6 +22,7 @@ nonebot-plugin-shindan = "^0.2.0"
 nonebot-plugin-remake = "^0.2.0"
 nonebot-plugin-caiyunai = "^0.2.0"
 nonebot-plugin-emojimix = "^0.1.0"
+nonebot-plugin-chess = "^0.1.0"
 aliyunpan = "^2.10.0"
 baike = "^1.5.0"
 cachetools = "^4.2.0"
@@ -46,6 +47,7 @@ wolframalpha = "^5.0.0"
 [tool.poetry.dev-dependencies]
 nb-cli = "^0.6.0"
 autopep8 = "^1.6.0"
+black = {version = "^21.12b0", allow-prereleases = true}
 
 [build-system]
 requires = ["poetry>=0.12"]
