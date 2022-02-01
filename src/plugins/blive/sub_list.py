@@ -2,7 +2,7 @@ import json
 from typing import Dict
 from pathlib import Path
 
-from .uid_list import add_sub_user, del_sub_user, add_record_user, del_record_user, add_dynamic_user, del_dynamic_user
+from .uid_list import update_uid_list
 
 data_path = Path() / 'data' / 'blive' / 'sub_list.json'
 
@@ -50,7 +50,7 @@ def add_sub_list(user_id: str, uid: str, info: dict):
     }
     _sub_list[user_id] = sub_list
     dump_sub_list()
-    add_sub_user(user_id, uid)
+    update_uid_list(_sub_list)
 
 
 def del_sub_list(user_id: str, uid: str):
@@ -63,15 +63,14 @@ def del_sub_list(user_id: str, uid: str):
     else:
         _sub_list.pop(user_id)
     dump_sub_list()
-    del_sub_user(user_id, uid)
+    update_uid_list(_sub_list)
 
 
 def clear_sub_list(user_id: str):
     if user_id in _sub_list:
-        for uid in _sub_list[user_id].keys():
-            del_sub_user(user_id, uid)
         _sub_list.pop(user_id)
     dump_sub_list()
+    update_uid_list(_sub_list)
 
 
 def open_dynamic(user_id: str, uid: str):
@@ -80,7 +79,7 @@ def open_dynamic(user_id: str, uid: str):
         raise DupeError
     _sub_list[user_id][uid]['dynamic'] = True
     dump_sub_list()
-    add_dynamic_user(user_id, uid)
+    update_uid_list(_sub_list)
 
 
 def close_dynamic(user_id: str, uid: str):
@@ -89,7 +88,7 @@ def close_dynamic(user_id: str, uid: str):
         raise DupeError
     _sub_list[user_id][uid]['dynamic'] = False
     dump_sub_list()
-    del_dynamic_user(user_id, uid)
+    update_uid_list(_sub_list)
 
 
 def open_record(user_id: str, uid: str):
@@ -98,7 +97,7 @@ def open_record(user_id: str, uid: str):
         raise DupeError
     _sub_list[user_id][uid]['record'] = True
     dump_sub_list()
-    add_record_user(user_id, uid)
+    update_uid_list(_sub_list)
 
 
 def close_record(user_id: str, uid: str):
@@ -107,4 +106,4 @@ def close_record(user_id: str, uid: str):
         raise DupeError
     _sub_list[user_id][uid]['record'] = False
     dump_sub_list()
-    del_record_user(user_id, uid)
+    update_uid_list(_sub_list)
