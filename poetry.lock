@@ -562,7 +562,7 @@ python-versions = ">=3.6.1"
 
 [[package]]
 name = "httpcore"
-version = "0.14.5"
+version = "0.14.6"
 description = "A minimal low-level HTTP client."
 category = "main"
 optional = false
@@ -918,7 +918,7 @@ nonebot2 = ">=2.0.0-beta.1,<3.0.0"
 
 [[package]]
 name = "nonebot-plugin-chatrecorder"
-version = "0.1.2"
+version = "0.1.5"
 description = "适用于 Nonebot2 的聊天记录插件"
 category = "main"
 optional = false
@@ -926,9 +926,10 @@ python-versions = ">=3.7.3,<4.0.0"
 
 [package.dependencies]
 nonebot-adapter-onebot = ">=2.0.0-beta.1,<3.0.0"
-nonebot-plugin-datastore = ">=0.2.0,<0.3.0"
+nonebot-plugin-datastore = ">=0.3.0,<0.4.0"
 nonebot2 = ">=2.0.0-beta.1,<3.0.0"
 sqlmodel = ">=0.0.6,<0.0.7"
+typing-extensions = ">=3.10.0,<5.0.0"
 
 [[package]]
 name = "nonebot-plugin-chess"
@@ -945,7 +946,7 @@ nonebot2 = ">=2.0.0-beta.1,<3.0.0"
 
 [[package]]
 name = "nonebot-plugin-datastore"
-version = "0.2.0"
+version = "0.3.0"
 description = "适用于 Nonebot2 的数据存储插件"
 category = "main"
 optional = false
@@ -1187,17 +1188,17 @@ test = ["appdirs (==1.4.4)", "pytest (>=6)", "pytest-cov (>=2.7)", "pytest-mock 
 
 [[package]]
 name = "playwright"
-version = "1.18.1"
+version = "1.18.2"
 description = "A high-level API to automate web browsers"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 
 [package.dependencies]
-greenlet = ">=1.0.0"
-pyee = ">=8.0.1"
+greenlet = "1.1.2"
+pyee = "8.1.0"
 typing-extensions = {version = "*", markers = "python_version <= \"3.8\""}
-websockets = ">=8.1"
+websockets = "10.1"
 
 [[package]]
 name = "poyo"
@@ -1268,14 +1269,11 @@ python-versions = "*"
 
 [[package]]
 name = "pyee"
-version = "9.0.3"
+version = "8.1.0"
 description = "A port of node.js's EventEmitter to python."
 category = "main"
 optional = false
 python-versions = "*"
-
-[package.dependencies]
-typing-extensions = "*"
 
 [[package]]
 name = "pyfiglet"
@@ -1862,7 +1860,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.3"
-content-hash = "5c8b348c741e84549c075d55729f2f35c2d3e440b36b8689516647ce6302ae9c"
+content-hash = "8d6957917eeb8eb15f2e8d30b695f635c32c205b4891ffbdda057ff1d59d69bb"
 
 [metadata.files]
 aiocache = [
@@ -2235,8 +2233,8 @@ hpack = [
     {file = "hpack-4.0.0.tar.gz", hash = "sha256:fc41de0c63e687ebffde81187a948221294896f6bdc0ae2312708df339430095"},
 ]
 httpcore = [
-    {file = "httpcore-0.14.5-py3-none-any.whl", hash = "sha256:2621ee769d0236574df51b305c5f4c69ca8f0c7b215221ad247b1ee42a9a9de1"},
-    {file = "httpcore-0.14.5.tar.gz", hash = "sha256:435ab519628a6e2393f67812dea3ca5c6ad23b457412cd119295d9f906d96a2b"},
+    {file = "httpcore-0.14.6-py3-none-any.whl", hash = "sha256:508401ab24060cfa1e959feda1c38eaa09ccf9074c928f9c3d2864f8921373ce"},
+    {file = "httpcore-0.14.6.tar.gz", hash = "sha256:d1ba9926a7b761bfb92d171df81ac9f87f549533cc8fcbcffca6943d3fccabf7"},
 ]
 httptools = [
     {file = "httptools-0.2.0-cp35-cp35m-macosx_10_14_x86_64.whl", hash = "sha256:79dbc21f3612a78b28384e989b21872e2e3cf3968532601544696e4ed0007ce5"},
@@ -2537,16 +2535,16 @@ nonebot-plugin-caiyunai = [
     {file = "nonebot_plugin_caiyunai-0.2.1.tar.gz", hash = "sha256:21db369c598c3b59896b2f0511595e4a5ebb28d232eb224b96d752d85d90d084"},
 ]
 nonebot-plugin-chatrecorder = [
-    {file = "nonebot_plugin_chatrecorder-0.1.2-py3-none-any.whl", hash = "sha256:94bda72d2a105f84934af30f97173d43ae3bca967b33f50aded485be3e946b44"},
-    {file = "nonebot_plugin_chatrecorder-0.1.2.tar.gz", hash = "sha256:7bdbc2d8889c59229a7681d90179285552a0d0bf3324689362d5afb9ce3286f4"},
+    {file = "nonebot_plugin_chatrecorder-0.1.5-py3-none-any.whl", hash = "sha256:4d1089506a8826a33445b8213e43ab39df6cab11660ab2b1f47d82167701e82f"},
+    {file = "nonebot_plugin_chatrecorder-0.1.5.tar.gz", hash = "sha256:82e9b870756c4c5b0d33a11f932340e369cd28d35cf25ac364c8f886be4fbfa0"},
 ]
 nonebot-plugin-chess = [
     {file = "nonebot_plugin_chess-0.1.0-py3-none-any.whl", hash = "sha256:3437840382e139cdf86a29316f7809d030c6d9d898b5ea2f713cc63636833370"},
     {file = "nonebot_plugin_chess-0.1.0.tar.gz", hash = "sha256:dbedd9f1f5676855c7b65995fd62c82e7ecd322e12b89493eb2047fd8646176e"},
 ]
 nonebot-plugin-datastore = [
-    {file = "nonebot-plugin-datastore-0.2.0.tar.gz", hash = "sha256:fcadf938e4801679f4c624c08bedeaea6d8eec48d24659baff4ff0dc24f5f0c0"},
-    {file = "nonebot_plugin_datastore-0.2.0-py3-none-any.whl", hash = "sha256:8480a116db9e8e121663330365fac76513ff1fd09cfdbacbb2df7ad109e2cd0d"},
+    {file = "nonebot-plugin-datastore-0.3.0.tar.gz", hash = "sha256:5ec19151774ae9fc78451633a7620b4529d703e3b3c2a45dd0ed757e00ddc64b"},
+    {file = "nonebot_plugin_datastore-0.3.0-py3-none-any.whl", hash = "sha256:fe423c0c0edfc9a8cdfd84b1ae037e9fa7e3266e9286dd81d18c3d2e9c6cf41a"},
 ]
 nonebot-plugin-emojimix = [
     {file = "nonebot_plugin_emojimix-0.1.2-py3-none-any.whl", hash = "sha256:dbb8dc4e7ce8e164ee0c581c4e755a4f777055898f1214e9c1d5bdb76c64a801"},
@@ -2672,13 +2670,10 @@ platformdirs = [
     {file = "platformdirs-2.4.1.tar.gz", hash = "sha256:440633ddfebcc36264232365d7840a970e75e1018d15b4327d11f91909045fda"},
 ]
 playwright = [
-    {file = "playwright-1.18.1-py3-none-macosx_10_13_x86_64.whl", hash = "sha256:e47ebe9d55a3d8e320b63aa688b671d9e40e50c906315cb225f20ffe7503b35d"},
-    {file = "playwright-1.18.1-py3-none-macosx_11_0_arm64.whl", hash = "sha256:528470e89827b09524acb197634381f62483c15b78dcbedc85528e0b727e705f"},
-    {file = "playwright-1.18.1-py3-none-macosx_11_0_universal2.whl", hash = "sha256:a5ce9c42e6108b5aeb63fdfefe2adbb9d0d85c1cba389bf7da0c56d1a6aa874e"},
-    {file = "playwright-1.18.1-py3-none-manylinux1_x86_64.whl", hash = "sha256:d8a8d944da91f77c0a66d23e51bf8aa142a38820da8e70cf13b68636ee343346"},
-    {file = "playwright-1.18.1-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7ae5f8e6ae820d44b6fe04f94c261047536ee75724a032f2dd2be94c952303ed"},
-    {file = "playwright-1.18.1-py3-none-win32.whl", hash = "sha256:917b8472cab589cece536ae97491b4f124b324642190985440737d1fe8a55764"},
-    {file = "playwright-1.18.1-py3-none-win_amd64.whl", hash = "sha256:84572ba1d04cb3e31e30181fa4fa09ca64d7841af19e98ff221259e2d6a108e6"},
+    {file = "playwright-1.18.2-py3-none-macosx_10_13_x86_64.whl", hash = "sha256:5b512d0d734a2b6bc001461fdf1cc65e5ef1c8489187d03f6a7c0ed3552fe469"},
+    {file = "playwright-1.18.2-py3-none-macosx_11_0_arm64.whl", hash = "sha256:75aacc73bdfb6c6832e7a09f3e9d356db0e2bd8f18d719b068c17c841c0a5507"},
+    {file = "playwright-1.18.2-py3-none-macosx_11_0_universal2.whl", hash = "sha256:0d69764ea9a216ce933eb5679ff6aa6399e7e9e43360809ec261549741e1b8d6"},
+    {file = "playwright-1.18.2-py3-none-manylinux1_x86_64.whl", hash = "sha256:425c475b65562a6a2f7d46c5dcaa13d8ff098da101a100600016d320325ec436"},
 ]
 poyo = [
     {file = "poyo-0.5.0-py2.py3-none-any.whl", hash = "sha256:3e2ca8e33fdc3c411cd101ca395668395dd5dc7ac775b8e809e3def9f9fe041a"},
@@ -2781,8 +2776,8 @@ pydub = [
     {file = "pydub-0.25.1.tar.gz", hash = "sha256:980a33ce9949cab2a569606b65674d748ecbca4f0796887fd6f46173a7b0d30f"},
 ]
 pyee = [
-    {file = "pyee-9.0.3-py2.py3-none-any.whl", hash = "sha256:581efd42af562ebd42bcf13b0eac5341d3d887f37661cf965744fe2135fee3bb"},
-    {file = "pyee-9.0.3.tar.gz", hash = "sha256:ab60ed0f00eb465b32e527df2159d4f32cf06f2239b511a45f5e80184ceb9d6f"},
+    {file = "pyee-8.1.0-py2.py3-none-any.whl", hash = "sha256:383973b63ad7ed5e3c0311f8b179c52981f9e7b3eaea0e9a830d13ec34dde65f"},
+    {file = "pyee-8.1.0.tar.gz", hash = "sha256:92dacc5bd2bdb8f95aa8dd2585d47ca1c4840e2adb95ccf90034d64f725bfd31"},
 ]
 pyfiglet = [
     {file = "pyfiglet-0.8.post1-py2.py3-none-any.whl", hash = "sha256:d555bcea17fbeaf70eaefa48bb119352487e629c9b56f30f383e2c62dd67a01c"},
