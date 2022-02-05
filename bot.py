@@ -30,8 +30,6 @@ driver = nonebot.get_driver()
 driver.register_adapter(OneBot_V11_Adapter)
 
 nonebot.load_plugin('nonebot_plugin_apscheduler')
-nonebot.load_plugin('nonebot_plugin_localstore')
-nonebot.load_plugin('nonebot_plugin_datastore')
 nonebot.load_plugin('nonebot_plugin_chatrecorder')
 nonebot.load_plugin('nonebot_plugin_manager')
 nonebot.load_plugin('nonebot_plugin_alias')
@@ -46,6 +44,7 @@ nonebot.load_plugin('nonebot_plugin_remake')
 nonebot.load_plugin('nonebot_plugin_caiyunai')
 nonebot.load_plugin('nonebot_plugin_emojimix')
 nonebot.load_plugin('nonebot_plugin_chess')
+nonebot.load_plugin('nonebot_plugin_wordcloud')
 nonebot.load_plugins('src/plugins')
 
 # Modify some config / config depends on loaded configs
