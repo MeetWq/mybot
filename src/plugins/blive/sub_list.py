@@ -28,7 +28,7 @@ def dump_sub_list():
         data_path.open('w', encoding='utf-8'),
         indent=4,
         separators=(',', ': '),
-        ensure_ascii=False
+        ensure_ascii=False,
     )
 
 
@@ -46,7 +46,7 @@ def add_sub_list(user_id: str, uid: str, info: dict):
         'up_name': info['uname'],
         'room_id': info['room_id'],
         'record': False,
-        'dynamic': False
+        'dynamic': False,
     }
     _sub_list[user_id] = sub_list
     dump_sub_list()

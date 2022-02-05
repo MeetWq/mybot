@@ -22,7 +22,7 @@ def dump_uid_list():
         uid_list_path.open('w', encoding='utf-8'),
         indent=4,
         separators=(',', ': '),
-        ensure_ascii=False
+        ensure_ascii=False,
     )
 
 
@@ -48,6 +48,28 @@ def get_record_users(uid: str) -> list:
     return _uid_list[uid].get('record_users', [])
 
 
+def get_sub_info_by_uid(uid: str) -> dict:
+    if uid in _uid_list:
+        info = _uid_list[uid]
+        return {
+            'uid': uid,
+            'up_name': info['up_name'],
+            'room_id': info['room_id'],
+        }
+    return {}
+
+
+def get_sub_info_by_roomid(room_id: int) -> dict:
+    for uid, info in _uid_list.items():
+        if info['room_id'] == room_id:
+            return {
+                'uid': uid,
+                'up_name': info['up_name'],
+                'room_id': info['room_id'],
+            }
+    return {}
+
+
 def update_uid_list(sub_list: Dict[str, Dict[str, dict]]):
     _uid_list.clear()
     for user, user_sub_list in sub_list.items():
@@ -55,9 +77,10 @@ def update_uid_list(sub_list: Dict[str, Dict[str, dict]]):
             if uid not in _uid_list:
                 _uid_list[uid] = {
                     'up_name': info['up_name'],
+                    'room_id': info['room_id'],
                     'sub_users': [],
                     'record_users': [],
-                    'dynamic_users': []
+                    'dynamic_users': [],
                 }
             _uid_list[uid]['sub_users'].append(user)
             if info.get('record', False):
