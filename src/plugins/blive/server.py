@@ -33,7 +33,9 @@ async def blrec_error_handler(event: ErrorEvent):
 
 @app.post("/blive/uploader")
 async def uploader_handler(event: UploaderEvent):
-    if event.data.share_url:
+    if event.data.err_msg:
+        await send_superuser_msg(f"uploader error: {event.data.err_msg}")
+    elif event.data.share_url:
         room_id = event.data.room_id
         info = get_sub_info_by_roomid(room_id)
         if info:
