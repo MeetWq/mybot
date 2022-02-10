@@ -1,5 +1,6 @@
 import nonebot
 from typing import Union
+from nonebot.log import logger
 
 from .models import (
     LiveBeganEvent,
@@ -11,7 +12,7 @@ from .models import (
 from .send_msg import send_live_msg, send_record_msg, send_superuser_msg
 from .uid_list import get_sub_info_by_roomid
 
-app = nonebot.get_asgi()
+app = nonebot.get_app()
 
 
 @app.post("/blive/blrec")
@@ -23,7 +24,9 @@ async def blrec_handler(event: Union[LiveBeganEvent, LiveEndedEvent]):
     uid = str(event.data.user_info.uid)
     up_name = event.data.user_info.name
     await send_live_msg(uid, live_msg)
-    await send_record_msg(uid, f"{up_name} 录播启动...")
+    if event.type == "LiveBeganEvent":
+        await send_record_msg(uid, f"{up_name} 录播启动...")
+    logger.info(str(event))
 
 
 @app.post("/blive/blrec/error")
@@ -40,5 +43,5 @@ async def uploader_handler(event: UploaderEvent):
         info = get_sub_info_by_roomid(room_id)
         if info:
             await send_record_msg(
-                info['uid'], f"{info['up_name']} 的录播文件：\n{event.data.share_url}"
+                info["uid"], f"{info['up_name']} 的录播文件：\n{event.data.share_url}"
             )

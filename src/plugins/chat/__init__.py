@@ -63,7 +63,7 @@ def filter_msg(msg: str = EventPlainText()):
     return True
 
 
-chat = on_message(rule=to_me(), block=True, priority=40)
+chat = on_message(rule=to_me(), block=True, priority=100)
 
 
 @chat.handle()

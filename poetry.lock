@@ -1003,7 +1003,7 @@ Pillow = ">=9.0.0,<10.0.0"
 
 [[package]]
 name = "nonebot-plugin-petpet"
-version = "0.2.0.2"
+version = "0.2.2"
 description = "Nonebot2 plugin for making fun pictures"
 category = "main"
 optional = false
@@ -1059,6 +1059,20 @@ python-versions = ">=3.7.3,<4.0.0"
 [package.dependencies]
 nonebot-adapter-onebot = ">=2.0.0-beta.1,<3.0.0"
 nonebot2 = ">=2.0.0-beta.1,<3.0.0"
+
+[[package]]
+name = "nonebot-plugin-word-bank2"
+version = "0.1.0"
+description = "无数据问答插件"
+category = "main"
+optional = false
+python-versions = ">=3.7.3,<4.0.0"
+
+[package.dependencies]
+aiofiles = ">=0.8.0,<0.9.0"
+httpx = ">=0.18.0,<1.0.0"
+nonebot-adapter-onebot = "2.0.0-beta.1"
+nonebot2 = "2.0.0-beta.1"
 
 [[package]]
 name = "nonebot-plugin-wordcloud"
@@ -1761,7 +1775,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "808953106b4ddbc4a03f35488e99d538e55aaca5b50d70c0dbdd0383c25637ac"
+content-hash = "76e20926caec143ff731644ff5c6a7a00d87fdea330b6c1704fe63ffdf1486e6"
 
 [metadata.files]
 aiocache = [
@@ -2539,8 +2553,8 @@ nonebot-plugin-memes = [
     {file = "nonebot_plugin_memes-0.2.2.1.tar.gz", hash = "sha256:2c296cc13b1cbfd3c22e2db982f71011b24f38ebb578031b6f764a1d55de93af"},
 ]
 nonebot-plugin-petpet = [
-    {file = "nonebot_plugin_petpet-0.2.0.2-py3-none-any.whl", hash = "sha256:b723d53d8d0a91bf1f579bde56320869e88b60b9ceeaaf00426dc14f56a0d351"},
-    {file = "nonebot_plugin_petpet-0.2.0.2.tar.gz", hash = "sha256:9993a89d6a9af5b90f353c4759278635c0dbb4d379c329d4d37199564fcbfdff"},
+    {file = "nonebot_plugin_petpet-0.2.2-py3-none-any.whl", hash = "sha256:265528a0c7276cb79859785c91158c1cee8268a866a31feab178605550cd33e2"},
+    {file = "nonebot_plugin_petpet-0.2.2.tar.gz", hash = "sha256:aa1776f79cce42849df87174249f8d7e6ba00e797bf6d8c38b3fa83fca312ccc"},
 ]
 nonebot-plugin-remake = [
     {file = "nonebot_plugin_remake-0.2.3-py3-none-any.whl", hash = "sha256:b431dd98c6b768694670702e1b987937657cc5534dc4b16932ca9e1c2a07a2b4"},
@@ -2553,6 +2567,10 @@ nonebot-plugin-shindan = [
 nonebot-plugin-withdraw = [
     {file = "nonebot_plugin_withdraw-0.2.0-py3-none-any.whl", hash = "sha256:15cfe2a40416ce52f9a110c103cac32697e57f8b79296c452146486ce95b7438"},
     {file = "nonebot_plugin_withdraw-0.2.0.tar.gz", hash = "sha256:0d9a13e9e9abd7795aba01b21e7e5edb72488209ccf7fb5c179bc3a198263212"},
+]
+nonebot-plugin-word-bank2 = [
+    {file = "nonebot-plugin-word-bank2-0.1.0.tar.gz", hash = "sha256:9972b6d291bc7fbc88b6d546466354c0ac5a445b261d65783484352de94a5aae"},
+    {file = "nonebot_plugin_word_bank2-0.1.0-py3-none-any.whl", hash = "sha256:1dc974b412bea5912149eaf71176429090ad44c4947797a21550e5d77afa8f7a"},
 ]
 nonebot-plugin-wordcloud = [
     {file = "nonebot-plugin-wordcloud-0.0.6.tar.gz", hash = "sha256:86c0d99c35bd5ff470ca62e08e3342cc4717fb7ae2871983d7d6e0359c2b0bf3"},
@@ -2592,6 +2610,9 @@ pathspec = [
     {file = "pathspec-0.9.0.tar.gz", hash = "sha256:e564499435a2673d586f6b2130bb5b95f04a3ba06f81b8f895b651a3c76aabb1"},
 ]
 pillow = [
+    {file = "Pillow-9.0.1-1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:a5d24e1d674dd9d72c66ad3ea9131322819ff86250b30dc5821cbafcfa0b96b4"},
+    {file = "Pillow-9.0.1-1-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:2632d0f846b7c7600edf53c48f8f9f1e13e62f66a6dbc15191029d950bfed976"},
+    {file = "Pillow-9.0.1-1-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:b9618823bd237c0d2575283f2939655f54d51b4527ec3972907a927acbcc5bfc"},
     {file = "Pillow-9.0.1-cp310-cp310-macosx_10_10_universal2.whl", hash = "sha256:9bfdb82cdfeccec50aad441afc332faf8606dfa5e8efd18a6692b5d6e79f00fd"},
     {file = "Pillow-9.0.1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:5100b45a4638e3c00e4d2320d3193bdabb2d75e79793af7c3eb139e4f569f16f"},
     {file = "Pillow-9.0.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:528a2a692c65dd5cafc130de286030af251d2ee0483a5bf50c9348aefe834e8a"},

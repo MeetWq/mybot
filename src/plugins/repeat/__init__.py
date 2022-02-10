@@ -72,7 +72,7 @@ class Counter:
 
 
 msgs: Dict[int, Counter] = {}
-repeat = on_message(block=False, priority=41)
+repeat = on_message(block=False, priority=101)
 
 
 @repeat.handle()
