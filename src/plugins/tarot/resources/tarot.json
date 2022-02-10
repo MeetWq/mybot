@@ -1,6 +1,7 @@
 {
   "major": [
     {
+      "type": "major",
       "num": 0,
       "num-roman": "0",
       "name": "愚者",
@@ -12,6 +13,7 @@
       }
     },
     {
+      "type": "major",
       "num": 1,
       "num-roman": "I",
       "name": "魔术师",
@@ -23,6 +25,7 @@
       }
     },
     {
+      "type": "major",
       "num": 2,
       "num-roman": "II",
       "name": "女祭司",
@@ -34,6 +37,7 @@
       }
     },
     {
+      "type": "major",
       "num": 3,
       "num-roman": "III",
       "name": "女皇",
@@ -45,6 +49,7 @@
       }
     },
     {
+      "type": "major",
       "num": 4,
       "num-roman": "IV",
       "name": "皇帝",
@@ -56,6 +61,7 @@
       }
     },
     {
+      "type": "major",
       "num": 5,
       "num-roman": "V",
       "name": "教皇",
@@ -67,6 +73,7 @@
       }
     },
     {
+      "type": "major",
       "num": 6,
       "num-roman": "VI",
       "name": "恋人",
@@ -78,6 +85,7 @@
       }
     },
     {
+      "type": "major",
       "num": 7,
       "num-roman": "VII",
       "name": "战车",
@@ -89,6 +97,7 @@
       }
     },
     {
+      "type": "major",
       "num": 8,
       "num-roman": "VIII",
       "name": "力量",
@@ -100,6 +109,7 @@
       }
     },
     {
+      "type": "major",
       "num": 9,
       "num-roman": "IX",
       "name": "隐者",
@@ -111,6 +121,7 @@
       }
     },
     {
+      "type": "major",
       "num": 10,
       "num-roman": "X",
       "name": "命运之轮",
@@ -122,6 +133,7 @@
       }
     },
     {
+      "type": "major",
       "num": 11,
       "num-roman": "XI",
       "name": "正义",
@@ -133,6 +145,7 @@
       }
     },
     {
+      "type": "major",
       "num": 12,
       "num-roman": "XII",
       "name": "倒吊人",
@@ -144,6 +157,7 @@
       }
     },
     {
+      "type": "major",
       "num": 13,
       "num-roman": "XIII",
       "name": "死神",
@@ -155,6 +169,7 @@
       }
     },
     {
+      "type": "major",
       "num": 14,
       "num-roman": "XIV",
       "name": "节制",
@@ -166,6 +181,7 @@
       }
     },
     {
+      "type": "major",
       "num": 15,
       "num-roman": "XV",
       "name": "恶魔",
@@ -177,6 +193,7 @@
       }
     },
     {
+      "type": "major",
       "num": 16,
       "num-roman": "XVI",
       "name": "塔",
@@ -188,6 +205,7 @@
       }
     },
     {
+      "type": "major",
       "num": 17,
       "num-roman": "XVII",
       "name": "星星",
@@ -199,6 +217,7 @@
       }
     },
     {
+      "type": "major",
       "num": 18,
       "num-roman": "XVIII",
       "name": "月亮",
@@ -210,6 +229,7 @@
       }
     },
     {
+      "type": "major",
       "num": 19,
       "num-roman": "XIX",
       "name": "太阳",
@@ -221,6 +241,7 @@
       }
     },
     {
+      "type": "major",
       "num": 20,
       "num-roman": "XX",
       "name": "审判",
@@ -232,6 +253,7 @@
       }
     },
     {
+      "type": "major",
       "num": 21,
       "num-roman": "XXI",
       "name": "世界",
@@ -245,6 +267,7 @@
   ],
   "pentacles": [
     {
+      "type": "pentacles",
       "num": 1,
       "name": "星币一",
       "name-en": "Ace of Pentacles",
@@ -254,6 +277,7 @@
       }
     },
     {
+      "type": "pentacles",
       "num": 2,
       "name": "星币二",
       "name-en": "II of Pentacles",
@@ -263,6 +287,7 @@
       }
     },
     {
+      "type": "pentacles",
       "num": 3,
       "name": "星币三",
       "name-en": "III of Pentacles",
@@ -272,6 +297,7 @@
       }
     },
     {
+      "type": "pentacles",
       "num": 4,
       "name": "星币四",
       "name-en": "IV of Pentacles",
@@ -281,6 +307,7 @@
       }
     },
     {
+      "type": "pentacles",
       "num": 5,
       "name": "星币五",
       "name-en": "V of Pentacles",
@@ -290,6 +317,7 @@
       }
     },
     {
+      "type": "pentacles",
       "num": 6,
       "name": "星币六",
       "name-en": "VI of Pentacles",
@@ -299,6 +327,7 @@
       }
     },
     {
+      "type": "pentacles",
       "num": 7,
       "name": "星币七",
       "name-en": "VII of Pentacles",
@@ -308,6 +337,7 @@
       }
     },
     {
+      "type": "pentacles",
       "num": 8,
       "name": "星币八",
       "name-en": "VIII of Pentacles",
@@ -317,6 +347,7 @@
       }
     },
     {
+      "type": "pentacles",
       "num": 9,
       "name": "星币九",
       "name-en": "IX of Pentacles",
@@ -326,6 +357,7 @@
       }
     },
     {
+      "type": "pentacles",
       "num": 10,
       "name": "星币十",
       "name-en": "X of Pentacles",
@@ -335,6 +367,7 @@
       }
     },
     {
+      "type": "pentacles",
       "num": 11,
       "name": "星币随从",
       "name-en": "Page of Pentacles",
@@ -344,6 +377,7 @@
       }
     },
     {
+      "type": "pentacles",
       "num": 12,
       "name": "星币骑士",
       "name-en": "Knight of Pentacles",
@@ -353,6 +387,7 @@
       }
     },
     {
+      "type": "pentacles",
       "num": 13,
       "name": "星币皇后",
       "name-en": "Queen of Pentacles",
@@ -362,6 +397,7 @@
       }
     },
     {
+      "type": "pentacles",
       "num": 14,
       "name": "星币国王",
       "name-en": "King of Pentacles",
@@ -373,6 +409,7 @@
   ],
   "wands": [
     {
+      "type": "wands",
       "num": 1,
       "name": "权杖一",
       "name-en": "Ace of Wands",
@@ -382,6 +419,7 @@
       }
     },
     {
+      "type": "wands",
       "num": 2,
       "name": "权杖二",
       "name-en": "II of Wands",
@@ -391,6 +429,7 @@
       }
     },
     {
+      "type": "wands",
       "num": 3,
       "name": "权杖三",
       "name-en": "III of Wands",
@@ -400,6 +439,7 @@
       }
     },
     {
+      "type": "wands",
       "num": 4,
       "name": "权杖四",
       "name-en": "IV of Wands",
@@ -409,6 +449,7 @@
       }
     },
     {
+      "type": "wands",
       "num": 5,
       "name": "权杖五",
       "name-en": "V of Wands",
@@ -418,6 +459,7 @@
       }
     },
     {
+      "type": "wands",
       "num": 6,
       "name": "权杖六",
       "name-en": "VI of Wands",
@@ -427,6 +469,7 @@
       }
     },
     {
+      "type": "wands",
       "num": 7,
       "name": "权杖七",
       "name-en": "VII of Wands",
@@ -436,6 +479,7 @@
       }
     },
     {
+      "type": "wands",
       "num": 8,
       "name": "权杖八",
       "name-en": "VIII of Wands",
@@ -445,6 +489,7 @@
       }
     },
     {
+      "type": "wands",
       "num": 9,
       "name": "权杖九",
       "name-en": "IX of Wands",
@@ -454,6 +499,7 @@
       }
     },
     {
+      "type": "wands",
       "num": 10,
       "name": "权杖十",
       "name-en": "X of Wands",
@@ -463,6 +509,7 @@
       }
     },
     {
+      "type": "wands",
       "num": 11,
       "name": "权杖随从",
       "name-en": "Page of Wands",
@@ -472,6 +519,7 @@
       }
     },
     {
+      "type": "wands",
       "num": 12,
       "name": "权杖骑士",
       "name-en": "Knight of Wands",
@@ -481,6 +529,7 @@
       }
     },
     {
+      "type": "wands",
       "num": 13,
       "name": "权杖皇后",
       "name-en": "Queen of Wands",
@@ -490,6 +539,7 @@
       }
     },
     {
+      "type": "wands",
       "num": 14,
       "name": "权杖国王",
       "name-en": "King of Wands",
@@ -501,6 +551,7 @@
   ],
   "cups": [
     {
+      "type": "cups",
       "num": 1,
       "name": "圣杯一",
       "name-en": "Ace of Cups",
@@ -510,6 +561,7 @@
       }
     },
     {
+      "type": "cups",
       "num": 2,
       "name": "圣杯二",
       "name-en": "II of Cups",
@@ -519,6 +571,7 @@
       }
     },
     {
+      "type": "cups",
       "num": 3,
       "name": "圣杯三",
       "name-en": "III of Cups",
@@ -528,6 +581,7 @@
       }
     },
     {
+      "type": "cups",
       "num": 4,
       "name": "圣杯四",
       "name-en": "IV of Cups",
@@ -537,6 +591,7 @@
       }
     },
     {
+      "type": "cups",
       "num": 5,
       "name": "圣杯五",
       "name-en": "V of Cups",
@@ -546,6 +601,7 @@
       }
     },
     {
+      "type": "cups",
       "num": 6,
       "name": "圣杯六",
       "name-en": "VI of Cups",
@@ -555,6 +611,7 @@
       }
     },
     {
+      "type": "cups",
       "num": 7,
       "name": "圣杯七",
       "name-en": "VII of Cups",
@@ -564,6 +621,7 @@
       }
     },
     {
+      "type": "cups",
       "num": 8,
       "name": "圣杯八",
       "name-en": "VIII of Cups",
@@ -573,6 +631,7 @@
       }
     },
     {
+      "type": "cups",
       "num": 9,
       "name": "圣杯九",
       "name-en": "IX of Cups",
@@ -582,6 +641,7 @@
       }
     },
     {
+      "type": "cups",
       "num": 10,
       "name": "圣杯十",
       "name-en": "X of Cups",
@@ -591,6 +651,7 @@
       }
     },
     {
+      "type": "cups",
       "num": 11,
       "name": "圣杯随从",
       "name-en": "Page of Cups",
@@ -600,6 +661,7 @@
       }
     },
     {
+      "type": "cups",
       "num": 12,
       "name": "圣杯骑士",
       "name-en": "Knight of Cups",
@@ -609,6 +671,7 @@
       }
     },
     {
+      "type": "cups",
       "num": 13,
       "name": "圣杯皇后",
       "name-en": "Queen of Cups",
@@ -618,6 +681,7 @@
       }
     },
     {
+      "type": "cups",
       "num": 14,
       "name": "圣杯国王",
       "name-en": "King of Cups",
@@ -629,6 +693,7 @@
   ],
   "swords": [
     {
+      "type": "swords",
       "num": 1,
       "name": "宝剑一",
       "name-en": "Ace of Swords",
@@ -638,6 +703,7 @@
       }
     },
     {
+      "type": "swords",
       "num": 2,
       "name": "宝剑二",
       "name-en": "II of Swords",
@@ -647,6 +713,7 @@
       }
     },
     {
+      "type": "swords",
       "num": 3,
       "name": "宝剑三",
       "name-en": "III of Swords",
@@ -656,6 +723,7 @@
       }
     },
     {
+      "type": "swords",
       "num": 4,
       "name": "宝剑四",
       "name-en": "IV of Swords",
@@ -665,6 +733,7 @@
       }
     },
     {
+      "type": "swords",
       "num": 5,
       "name": "宝剑五",
       "name-en": "V of Swords",
@@ -674,6 +743,7 @@
       }
     },
     {
+      "type": "swords",
       "num": 6,
       "name": "宝剑六",
       "name-en": "VI of Swords",
@@ -683,6 +753,7 @@
       }
     },
     {
+      "type": "swords",
       "num": 7,
       "name": "宝剑七",
       "name-en": "VII of Swords",
@@ -692,6 +763,7 @@
       }
     },
     {
+      "type": "swords",
       "num": 8,
       "name": "宝剑八",
       "name-en": "VIII of Swords",
@@ -701,6 +773,7 @@
       }
     },
     {
+      "type": "swords",
       "num": 9,
       "name": "宝剑九",
       "name-en": "IX of Swords",
@@ -710,6 +783,7 @@
       }
     },
     {
+      "type": "swords",
       "num": 10,
       "name": "宝剑十",
       "name-en": "X of Swords",
@@ -719,6 +793,7 @@
       }
     },
     {
+      "type": "swords",
       "num": 11,
       "name": "宝剑随从",
       "name-en": "Page of Swords",
@@ -728,6 +803,7 @@
       }
     },
     {
+      "type": "swords",
       "num": 12,
       "name": "宝剑骑士",
       "name-en": "Knight of Swords",
@@ -737,6 +813,7 @@
       }
     },
     {
+      "type": "swords",
       "num": 13,
       "name": "宝剑皇后",
       "name-en": "Queen of Swords",
@@ -746,6 +823,7 @@
       }
     },
     {
+      "type": "swords",
       "num": 14,
       "name": "宝剑国王",
       "name-en": "King of Swords",

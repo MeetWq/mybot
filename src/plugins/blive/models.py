@@ -2,7 +2,7 @@ import time
 from enum import Enum, IntEnum
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Dict, Literal, Optional, Union
 from pydantic import BaseModel
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 
@@ -136,11 +136,11 @@ class UploaderEvent(BaseModel):
 
 
 class RunningStatus(str, Enum):
-    STOPPED = 'stopped'
-    WAITING = 'waiting'
-    RECORDING = 'recording'
-    REMUXING = 'remuxing'
-    INJECTING = 'injecting'
+    STOPPED = "stopped"
+    WAITING = "waiting"
+    RECORDING = "recording"
+    REMUXING = "remuxing"
+    INJECTING = "injecting"
 
 
 class TaskStatus(BaseModel):
@@ -167,14 +167,14 @@ class TaskInfo(BaseModel):
 class Dynamic:
     def __init__(self, dynamic: dict):
         self.dynamic = dynamic
-        self.type = dynamic['desc']['type']
-        self.id = dynamic['desc']['dynamic_id']
+        self.type = dynamic["desc"]["type"]
+        self.id = dynamic["desc"]["dynamic_id"]
         self.url = f"https://m.bilibili.com/dynamic/{self.id}"
-        self.time = dynamic['desc']['timestamp']
-        self.uid = dynamic['desc']['user_profile']['info']['uid']
-        self.name = dynamic['desc']['user_profile']['info'].get('uname')
+        self.time = dynamic["desc"]["timestamp"]
+        self.uid = dynamic["desc"]["user_profile"]["info"]["uid"]
+        self.name = dynamic["desc"]["user_profile"]["info"].get("uname")
 
-    async def format_msg(self) -> Message:
+    async def format_msg(self) -> Optional[Message]:
         img = await get_dynamic_screenshot(self.url)
         if not img:
             return None
@@ -203,7 +203,7 @@ class LiveInfo:
         self.title = room_info.title
         self.cover = room_info.cover
 
-    async def format_msg(self) -> Message:
+    async def format_msg(self) -> Optional[Union[str, Message]]:
         msg = None
         if self.status == LiveStatus.LIVE:
             msg = Message()
@@ -214,8 +214,8 @@ class LiveInfo:
                 f"直播间链接：{self.url}"
             )
             msg.append(MessageSegment.image(self.cover))
+            return msg
         elif self.status == LiveStatus.PREPARING:
-            msg = f"{self.up_name} 下播了"
+            return f"{self.up_name} 下播了"
         elif self.status == LiveStatus.ROUND:
-            msg = f"{self.up_name} 下播了（轮播中）"
-        return msg
+            return f"{self.up_name} 下播了（轮播中）"

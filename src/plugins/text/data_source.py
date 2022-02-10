@@ -9,16 +9,15 @@ from .bug import bug_code, bug_level
 
 
 async def get_cxh_text(text: str):
-
     def get_pinyin(s):
         if s in pinyin:
             return pinyin[s]
-        return ''
+        return ""
 
-    result = ''
+    result = ""
     for i in range(len(text)):
         pinyin1 = get_pinyin(text[i])
-        pinyin2 = get_pinyin(text[i + 1]) if i < len(text) - 1 else ''
+        pinyin2 = get_pinyin(text[i + 1]) if i < len(text) - 1 else ""
         if pinyin1 + pinyin2 in emoji:
             result += emoji[pinyin1 + pinyin2]
         elif pinyin1 in emoji:
@@ -29,7 +28,7 @@ async def get_cxh_text(text: str):
 
 
 async def get_hxw_text(text: str):
-    result = ''
+    result = ""
     for s in text:
         c = s
         if s in enchars:
@@ -43,7 +42,7 @@ async def get_hxw_text(text: str):
 
 
 async def get_ant_text(text: str):
-    result = ''
+    result = ""
     for s in text:
         result += s + chr(1161)
     return result
@@ -51,16 +50,15 @@ async def get_ant_text(text: str):
 
 async def get_flip_text(text: str):
     text = text.lower()
-    result = ''
+    result = ""
     for s in text[::-1]:
         result += flip_table[s] if s in flip_table else s
     return result
 
 
 async def get_bug_text(text: str):
-
     def bug(p, n):
-        result = ''
+        result = ""
         if isinstance(n, list):
             n = math.floor(random.random() * (n[1] - n[0] + 1)) + n[0]
         for i in range(n):
@@ -69,46 +67,33 @@ async def get_bug_text(text: str):
 
     level = 12
     u = bug_level[level]
-    result = ''
+    result = ""
     for s in text:
         result += s
-        if s != ' ':
-            result += bug('mid', u['mid']) + \
-                bug('above', u['above']) + \
-                bug('under', u['under']) + \
-                bug('up', u['up']) + \
-                bug('down', u['down'])
+        if s != " ":
+            result += (
+                bug("mid", u["mid"])
+                + bug("above", u["above"])
+                + bug("under", u["under"])
+                + bug("up", u["up"])
+                + bug("down", u["down"])
+            )
     return result
 
 
 commands = {
-    'cxh': {
-        'aliases': {'抽象话'},
-        'func': get_cxh_text
-    },
-    'hxw': {
-        'aliases': {'火星文'},
-        'func': get_hxw_text
-    },
-    'ant': {
-        'aliases': {'蚂蚁文'},
-        'func': get_ant_text
-    },
-    'flip': {
-        'aliases': {'翻转文字'},
-        'func': get_flip_text
-    },
-    'bug': {
-        'aliases': {'故障文字'},
-        'func': get_bug_text
-    }
+    "cxh": {"aliases": {"抽象话"}, "func": get_cxh_text},
+    "hxw": {"aliases": {"火星文"}, "func": get_hxw_text},
+    "ant": {"aliases": {"蚂蚁文"}, "func": get_ant_text},
+    "flip": {"aliases": {"翻转文字"}, "func": get_flip_text},
+    "bug": {"aliases": {"故障文字"}, "func": get_bug_text},
 }
 
 
 async def get_text(type: str, text: str) -> str:
     try:
-        func = commands[type]['func']
+        func = commands[type]["func"]
         return await func(text)
     except Exception as e:
         logger.warning(f"Error in get_text({text}, {type}): {e}")
-        return ''
+        return ""

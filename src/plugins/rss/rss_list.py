@@ -1,13 +1,13 @@
 import json
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Union
 
 from .rss_class import RSS
 
-data_path = Path('data/rss')
+data_path = Path("data/rss")
 if not data_path.exists():
     data_path.mkdir(parents=True)
-rss_path = data_path / 'rss_list.json'
+rss_path = data_path / "rss_list.json"
 
 
 class DupeError(Exception):
@@ -17,7 +17,7 @@ class DupeError(Exception):
 def _load_rss_list() -> Dict[str, List[RSS]]:
     try:
         rss_list = {}
-        json_list: dict = json.load(rss_path.open('r', encoding='utf-8'))
+        json_list: dict = json.load(rss_path.open("r", encoding="utf-8"))
         for user_id, user_rss_list in json_list.items():
             rss_list[user_id] = [RSS.from_json(rss) for rss in user_rss_list]
         return rss_list
@@ -35,10 +35,10 @@ def dump_rss_list():
         json_list[user_id] = [rss.to_json() for rss in user_rss_list]
     json.dump(
         json_list,
-        rss_path.open('w', encoding='utf-8'),
+        rss_path.open("w", encoding="utf-8"),
         indent=4,
-        separators=(',', ': '),
-        ensure_ascii=False
+        separators=(",", ": "),
+        ensure_ascii=False,
     )
 
 
@@ -46,7 +46,7 @@ def get_user_ids() -> List[str]:
     return list(_rss_list.keys())
 
 
-def get_rss_list(user_id: str) -> List[RSS]:
+def get_rss_list(user_id: str) -> Union[List[RSS], dict]:
     return _rss_list.get(user_id, {}).copy()
 
 

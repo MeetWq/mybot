@@ -24,7 +24,7 @@ legal_language = {
     "java": 8,
     "py3": 15,
     "py": 0,
-    "php": 3
+    "php": 3,
 }
 
 
@@ -35,7 +35,7 @@ async def network_compile(language: str, code: str):
         "token": "4381fe197827ec87cbac9552f14ec62a",
         "stdin": "",
         "language": legal_language[language],
-        "fileext": language
+        "fileext": language,
     }
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36"
@@ -44,10 +44,7 @@ async def network_compile(language: str, code: str):
         async with httpx.AsyncClient() as client:
             resp = await client.post(url=url, headers=headers, data=payload)
             result = resp.json()
-        return {
-            "output": result.get('output', ''),
-            "errors": result.get('errors', '')
-        }
+        return {"output": result.get("output", ""), "errors": result.get("errors", "")}
     except Exception as e:
-        logger.warning(f'Error in network_compile({language}, {code}): {e}')
+        logger.warning(f"Error in network_compile({language}, {code}): {e}")
         return {}

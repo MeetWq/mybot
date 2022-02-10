@@ -1,7 +1,6 @@
 import time
 import httpx
 import asyncio
-from functools import wraps
 
 
 class LoginError(Exception):
@@ -12,8 +11,24 @@ class NoContent(Exception):
     pass
 
 
-class CC98_API_V2():
+def auth(func):
+    """
+    auth: 装饰器，如果登录状态已经过期会自动登录
+    """
 
+    async def wrapper(*args, **kwargs):
+        self: CC98_API_V2 = args[0]
+        if time.time() >= self.expiretime:
+            try:
+                await self.login()
+            except Exception as e:
+                raise LoginError(e)
+        return await func(*args, **kwargs)
+
+    return wrapper
+
+
+class CC98_API_V2:
     def __init__(self, username, password, proxies=None):
         self.ENDPOINT = "https://api-v2.cc98.org/"
         self.s = httpx.AsyncClient(proxies=proxies)
@@ -21,21 +36,6 @@ class CC98_API_V2():
         self.password = password
         self.token = ""
         self.expiretime = -1
-
-    def auth(func):
-        """
-        auth: 装饰器，如果登录状态已经过期会自动登录
-        """
-        @wraps(func)
-        async def wrapper(*args, **kwargs):
-            self = args[0]
-            if time.time() >= self.expiretime:
-                try:
-                    await self.login()
-                except Exception as e:
-                    raise LoginError(e)
-            return await func(*args, **kwargs)
-        return wrapper
 
     @auth
     async def ping(self):
@@ -62,8 +62,11 @@ class CC98_API_V2():
             if trytimes > 0:
                 sleeptime = 3 + 5 * trytimes
                 print(
-                    "Error {statuscode} in url: {url}, sleep {sleeptime}s".format(**locals()))
-                asyncio.sleep(sleeptime)
+                    "Error {statuscode} in url: {url}, sleep {sleeptime}s".format(
+                        **locals()
+                    )
+                )
+                await asyncio.sleep(sleeptime)
                 return await self.fetch_real_real(url, trytimes - 1)
             else:
                 raise
@@ -90,14 +93,14 @@ class CC98_API_V2():
         并将过期时间写入self.expiretime
         """
         print(f"Login! {self.username}")
-        url = 'https://openid.cc98.org/connect/token'
+        url = "https://openid.cc98.org/connect/token"
         params = {
-            'client_id': '9a1fd200-8687-44b1-4c20-08d50a96e5cd',
-            'client_secret': '8b53f727-08e2-4509-8857-e34bf92b27f2',
-            'grant_type': 'password',
-            'username': self.username,
-            'password': self.password,
-            'scope': 'cc98-api openid'
+            "client_id": "9a1fd200-8687-44b1-4c20-08d50a96e5cd",
+            "client_secret": "8b53f727-08e2-4509-8857-e34bf92b27f2",
+            "grant_type": "password",
+            "username": self.username,
+            "password": self.password,
+            "scope": "cc98-api openid",
         }
         x = await self.s.post(url, data=params)
         data = x.json()
@@ -148,22 +151,38 @@ class CC98_API_V2():
         追踪用户的回复（如只看楼主） 返回回复的数组
         """
         return await self.fetch_real(
-            f"Post/topic/user?topicid={id}&userid={userid}&from={from_}&size={size}")
+            f"Post/topic/user?topicid={id}&userid={userid}&from={from_}&size={size}"
+        )
 
     async def topic_post_certain_user_182(self, id, postid, from_=0, size=20):
         """
         心灵帖子的追踪用户的回复 返回回复的数组
         """
         return await self.fetch_real(
-            f"Post/topic/anonymous/user?topicid={id}&postid={postid}&from={from_}&size={size}")
+            f"Post/topic/anonymous/user?topicid={id}&postid={postid}&from={from_}&size={size}"
+        )
 
     @auth
-    async def post_edit(self, id, content, title, contenttype=0, type=0, tag1=None, tag2=None, notifyPoster=None):
+    async def post_edit(
+        self,
+        id,
+        content,
+        title,
+        contenttype=0,
+        type=0,
+        tag1=None,
+        tag2=None,
+        notifyPoster=None,
+    ):
         """
         编辑一条回复
         """
-        data = {"content": content, "contentType": contenttype,
-                "title": title, "type": type}
+        data = {
+            "content": content,
+            "contentType": contenttype,
+            "title": title,
+            "type": type,
+        }
         if tag1 and tag1 > 0:
             data["tag1"] = tag1
         if tag2 and tag2 > 0:
@@ -182,9 +201,11 @@ class CC98_API_V2():
         上传一张图片
         """
         if filename is None:
-            filename = 'filename.gif'
-        x = await self.s.post(self.ENDPOINT + "file?compressImage=false",
-                              files=[('files', (filename, fp, 'image/jpeg')), ('contentType', 'multipart/form-data')])
+            filename = "filename.gif"
+        x = await self.s.post(
+            self.ENDPOINT + "file?compressImage=false",
+            files=[("files", (filename, fp, "image/jpeg"))],
+        )
         return x.json()
 
     @auth
@@ -192,8 +213,10 @@ class CC98_API_V2():
         """
         上传一张头像
         """
-        x = await self.s.post(self.ENDPOINT + "file/portrait",
-                              files=[('files', ('头像.png', fp, 'image/png')), ('contentType', 'multipart/form-data')])
+        x = await self.s.post(
+            self.ENDPOINT + "file/portrait",
+            files=[("files", ("头像.png", fp, "image/png"))],
+        )
         return x.json()
 
     @auth
@@ -201,8 +224,11 @@ class CC98_API_V2():
         """
         签到
         """
-        x = await self.s.post(self.ENDPOINT + "me/signin", data=data,
-                              headers={"Content-Type": "application/json"})
+        x = await self.s.post(
+            self.ENDPOINT + "me/signin",
+            data=data,
+            headers={"Content-Type": "application/json"},
+        )
         return x.status_code == 200
 
     @auth
@@ -214,14 +240,19 @@ class CC98_API_V2():
         try:
             return await self.fetch_real_real("me/signin")
         except NoContent:
-            return {"lastSignInTime": None, "lastSignInCount": 0, "hasSignedInToday": False}
+            return {
+                "lastSignInTime": None,
+                "lastSignInCount": 0,
+                "hasSignedInToday": False,
+            }
 
     @auth
     async def get_wealth(self):
         """
         获取当前财富值
         """
-        return await self.fetch_real("me")["wealth"]
+        res = await self.fetch_real("me")
+        return res["wealth"]
 
     async def userinfos(self, userids):
         """
@@ -230,10 +261,12 @@ class CC98_API_V2():
         """
         try:
             data = await self.fetch_real(
-                "user?id=" + "&id=".join([str(i) for i in userids]))
+                "user?id=" + "&id=".join([str(i) for i in userids])
+            )
         except:
             data = await self.fetch_real(
-                "user/basic?id=" + "&id=".join([str(i) for i in userids]))
+                "user/basic?id=" + "&id=".join([str(i) for i in userids])
+            )
         return {item["id"]: item for item in data}
 
     @auth
@@ -241,7 +274,9 @@ class CC98_API_V2():
         """
         获取用户最近的发帖
         """
-        return await self.fetch_real(f"user/{userid}/recent-topic?from={_from}&size={size}")
+        return await self.fetch_real(
+            f"user/{userid}/recent-topic?from={_from}&size={size}"
+        )
 
     async def userinfobyname(self, username):
         """
@@ -255,7 +290,7 @@ class CC98_API_V2():
         if parentId != 0:
             data["parentId"] = parentId
         x = await self.s.post(self.ENDPOINT + f"topic/{id}/post", json=data)
-        ret = (x.status_code == 200)
+        ret = x.status_code == 200
         if not ret:
             print(x.status_code)
             print(x.text)
@@ -310,8 +345,10 @@ class CC98_API_V2():
         返回评分是否成功 以及 返回的页面内容（在出错时可以显示给用户）
         """
         value = str(value)
-        x = await self.s.put(self.ENDPOINT + f"post/{postid}/rating",
-                             json={"value": {value}, "reason": {reason}})
+        x = await self.s.put(
+            self.ENDPOINT + f"post/{postid}/rating",
+            json={"value": {value}, "reason": {reason}},
+        )
         return x.status_code == 200, x.text
 
     async def board_all(self):
@@ -345,8 +382,10 @@ class CC98_API_V2():
         """
         对一条回复进行发米
         """
-        x = await self.s.post(self.ENDPOINT + f"post/{id}/operation",
-                              json={"operationType": 0, "reason": reason, "wealth": wealth})
+        x = await self.s.post(
+            self.ENDPOINT + f"post/{id}/operation",
+            json={"operationType": 0, "reason": reason, "wealth": wealth},
+        )
         return x.status_code == 200
 
     @auth
@@ -373,14 +412,29 @@ class CC98_API_V2():
         return await self.fetch_real_real("me/unread-count")
 
     @auth
-    async def new_topic(self, board, title, content, contentType=0, type=0, tag1=None, tag2=None, notifyPoster=True):
+    async def new_topic(
+        self,
+        board,
+        title,
+        content,
+        contentType=0,
+        type=0,
+        tag1=None,
+        tag2=None,
+        notifyPoster=True,
+    ):
         """
         在board板块发新帖
         notifyPoster 是否接收回复的消息提醒 默认值为True接收
         返回新帖的topicid int类型，如4770672
         """
-        data = {"content": content, "contentType": contentType,
-                "title": title, "type": type, "notifyPoster": notifyPoster}
+        data = {
+            "content": content,
+            "contentType": contentType,
+            "title": title,
+            "type": type,
+            "notifyPoster": notifyPoster,
+        }
         if tag1 is not None:
             data["tag1"] = int(tag1)
         if tag2 is not None:
@@ -417,8 +471,10 @@ class CC98_API_V2():
         返回数组或错误字符串 如["username1", "username2"] 再如 "parameter_error"
         建议调用时将错误转为异常 assert isinstance(result, list), "transfer failed: "+result
         """
-        x = await self.s.put(self.ENDPOINT + "me/transfer-wealth",
-                             json={"userNames": usernames, "wealth": amount, "reason": reason})
+        x = await self.s.put(
+            self.ENDPOINT + "me/transfer-wealth",
+            json={"userNames": usernames, "wealth": amount, "reason": reason},
+        )
         try:
             return x.json()
         except:
@@ -431,7 +487,10 @@ class CC98_API_V2():
         返回{likeCount: 4, dislikeCount: 1, likeState: 2}
         """
         assert action in ["like", "dislike"]
-        x = await self.s.put(self.ENDPOINT + f"post/{postid}/like", data="1" if action == "like" else "2")
+        x = await self.s.put(
+            self.ENDPOINT + f"post/{postid}/like",
+            data={"action": "1" if action == "like" else "2"},
+        )
         assert x.status_code == 200, "like PUT failed"
         x = await self.s.get(self.ENDPOINT + f"post/{postid}/like")
         return x.json()
@@ -464,7 +523,7 @@ class CC98_API_V2():
         """
         if url.startswith("//"):
             url = "https:" + url
-        x = await self.s.put(self.ENDPOINT + "me/portrait", data=f"{url}")
+        x = await self.s.put(self.ENDPOINT + "me/portrait", data={"url": url})
         return x.status_code == 200
 
     async def message_post(self, receiverId, content):
@@ -473,5 +532,7 @@ class CC98_API_V2():
         返回是否成功，错误信息
         """
         id = int(receiverId)
-        x = await self.s.post(self.ENDPOINT + "message", json={"receiverId": id, "content": content})
+        x = await self.s.post(
+            self.ENDPOINT + "message", json={"receiverId": id, "content": content}
+        )
         return x.status_code == 200, x.text

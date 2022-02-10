@@ -1,10 +1,15 @@
 from pathlib import Path
 from nonebot import on_notice
 from nonebot.rule import Rule
-from nonebot.adapters.onebot.v11 import MessageSegment, Bot, Event, GroupIncreaseNoticeEvent
+from nonebot.adapters.onebot.v11 import (
+    MessageSegment,
+    Bot,
+    Event,
+    GroupIncreaseNoticeEvent,
+)
 
 dir_path = Path(__file__).parent
-welcome_path = dir_path / 'resources' / 'welcome.jpg'
+welcome_path = dir_path / "resources" / "welcome.jpg"
 
 
 async def welcome_rule(bot: Bot, event: Event) -> bool:

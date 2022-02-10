@@ -4,7 +4,7 @@ from pathlib import Path
 
 from .uid_list import update_uid_list
 
-data_path = Path() / 'data' / 'blive' / 'sub_list.json'
+data_path = Path() / "data" / "blive" / "sub_list.json"
 
 
 class DupeError(Exception):
@@ -13,7 +13,7 @@ class DupeError(Exception):
 
 def load_sub_list() -> Dict[str, Dict[str, dict]]:
     try:
-        return json.load(data_path.open('r', encoding='utf-8'))
+        return json.load(data_path.open("r", encoding="utf-8"))
     except FileNotFoundError:
         return {}
 
@@ -25,9 +25,9 @@ def dump_sub_list():
     data_path.parent.mkdir(parents=True, exist_ok=True)
     json.dump(
         _sub_list,
-        data_path.open('w', encoding='utf-8'),
+        data_path.open("w", encoding="utf-8"),
         indent=4,
-        separators=(',', ': '),
+        separators=(",", ": "),
         ensure_ascii=False,
     )
 
@@ -43,10 +43,10 @@ def add_sub_list(user_id: str, uid: str, info: dict):
     if uid in sub_list:
         raise DupeError
     sub_list[uid] = {
-        'up_name': info['uname'],
-        'room_id': info['room_id'],
-        'record': False,
-        'dynamic': False,
+        "up_name": info["uname"],
+        "room_id": info["room_id"],
+        "record": False,
+        "dynamic": False,
     }
     _sub_list[user_id] = sub_list
     dump_sub_list()
@@ -77,7 +77,7 @@ def open_dynamic(user_id: str, uid: str):
     sub_list = get_sub_list(user_id)
     if uid not in sub_list:
         raise DupeError
-    _sub_list[user_id][uid]['dynamic'] = True
+    _sub_list[user_id][uid]["dynamic"] = True
     dump_sub_list()
     update_uid_list(_sub_list)
 
@@ -86,7 +86,7 @@ def close_dynamic(user_id: str, uid: str):
     sub_list = get_sub_list(user_id)
     if uid not in sub_list:
         raise DupeError
-    _sub_list[user_id][uid]['dynamic'] = False
+    _sub_list[user_id][uid]["dynamic"] = False
     dump_sub_list()
     update_uid_list(_sub_list)
 
@@ -95,7 +95,7 @@ def open_record(user_id: str, uid: str):
     sub_list = get_sub_list(user_id)
     if uid not in sub_list:
         raise DupeError
-    _sub_list[user_id][uid]['record'] = True
+    _sub_list[user_id][uid]["record"] = True
     dump_sub_list()
     update_uid_list(_sub_list)
 
@@ -104,6 +104,6 @@ def close_record(user_id: str, uid: str):
     sub_list = get_sub_list(user_id)
     if uid not in sub_list:
         raise DupeError
-    _sub_list[user_id][uid]['record'] = False
+    _sub_list[user_id][uid]["record"] = False
     dump_sub_list()
     update_uid_list(_sub_list)

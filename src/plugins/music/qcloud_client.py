@@ -15,19 +15,17 @@ class QCloudClient:
         self.region = qcloud_config.qcloud_region
         self.bucket = qcloud_config.qcloud_bucket
         self.config = CosConfig(
-            Region=self.region, SecretId=self.secret_id, SecretKey=self.secret_key)
+            Region=self.region, SecretId=self.secret_id, SecretKey=self.secret_key
+        )
         self.client = CosS3Client(self.config)
 
     def put_object(self, stream, filename) -> str:
         try:
             self.client.put_object(
-                Bucket=self.bucket,
-                Body=stream,
-                Key=filename,
-                EnableMD5=False
+                Bucket=self.bucket, Body=stream, Key=filename, EnableMD5=False
             )
             url = self.config.uri(self.bucket, path=filename)
             return url
         except CosException:
-            logger.warning('upload file to qcloud cos failed: ' + filename)
-            return ''
+            logger.warning("upload file to qcloud cos failed: " + filename)
+            return ""

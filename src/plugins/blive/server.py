@@ -21,11 +21,12 @@ async def blrec_handler(event: Union[LiveBeganEvent, LiveEndedEvent]):
     room_info = event.data.room_info
     live_info = LiveInfo(user_info, room_info)
     live_msg = await live_info.format_msg()
-    uid = str(event.data.user_info.uid)
-    up_name = event.data.user_info.name
-    await send_live_msg(uid, live_msg)
-    if event.type == "LiveBeganEvent":
-        await send_record_msg(uid, f"{up_name} 录播启动...")
+    if live_msg:
+        uid = str(event.data.user_info.uid)
+        await send_live_msg(uid, live_msg)
+        up_name = event.data.user_info.name
+        if event.type == "LiveBeganEvent":
+            await send_record_msg(uid, f"{up_name} 录播启动...")
     logger.info(str(event))
 
 
