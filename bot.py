@@ -46,6 +46,7 @@ nonebot.load_plugin('nonebot_plugin_emojimix')
 nonebot.load_plugin('nonebot_plugin_chess')
 nonebot.load_plugin('nonebot_plugin_wordcloud')
 nonebot.load_plugin('nonebot_plugin_word_bank2')
+nonebot.load_plugin('nonebot_plugin_gamedraw')
 nonebot.load_plugins('src/plugins')
 
 # Modify some config / config depends on loaded configs
