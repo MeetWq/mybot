@@ -1,4 +1,7 @@
 import httpx
+import random
+from PIL import Image
+from io import BytesIO
 from typing import Optional, Union
 from nonebot.log import logger
 
@@ -26,7 +29,15 @@ async def get_setu(keyword="", r18=False) -> Optional[Union[str, bytes]]:
             async with httpx.AsyncClient() as client:
                 resp = await client.get(setu_url, timeout=20)
                 result = resp.content
-            return result
+
+            # 随机涂黑一个像素点
+            image = Image.open(BytesIO(result)).convert("RGB")
+            x = random.randint(0, image.width - 1)
+            y = random.randint(0, image.height - 1)
+            image.putpixel((x, y), (0, 0, 0))
+            output = BytesIO()
+            image.save(output, format="jpeg")
+            return output.getvalue()
         else:
             return "找不到相关的涩图"
     except Exception as e:
