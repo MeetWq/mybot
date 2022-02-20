@@ -48,7 +48,16 @@ class BlrecEvent(BaseModel):
         "LiveBeganEvent",
         "LiveEndedEvent",
         "RoomChangeEvent",
-        "FileCompletedEvent",
+        "RecordingStartedEvent",
+        "RecordingFinishedEvent",
+        "RecordingCancelledEvent",
+        "VideoFileCreatedEvent",
+        "VideoFileCompletedEvent",
+        "DanmakuFileCreatedEvent",
+        "DanmakuFileCompletedEvent",
+        "RawDanmakuFileCreatedEvent",
+        "RawDanmakuFileCompletedEvent",
+        "VideoPostprocessingCompletedEvent",
         "SpaceNoEnoughEvent",
         "Error",
     ]
@@ -83,6 +92,33 @@ class RoomChangeEvent(BlrecEvent):
     data: RoomChangeEventData
 
 
+class RecordingStartedEventData(BaseModel):
+    room_info: RoomInfo
+
+
+class RecordingStartedEvent(BlrecEvent):
+    type: str = "RecordingStartedEvent"
+    data: RecordingStartedEventData
+
+
+class RecordingFinishedEventData(RecordingStartedEventData):
+    pass
+
+
+class RecordingFinishedEvent(BlrecEvent):
+    type: str = "RecordingFinishedEvent"
+    data: RecordingFinishedEventData
+
+
+class RecordingCancelledEventData(RecordingStartedEventData):
+    pass
+
+
+class RecordingCancelledEvent(BlrecEvent):
+    type: str = "RecordingCancelledEvent"
+    data: RecordingCancelledEventData
+
+
 class DiskUsage(BaseModel):
     total: int
     used: int
@@ -98,16 +134,6 @@ class SpaceNoEnoughEventData(BaseModel):
 class SpaceNoEnoughEvent(BlrecEvent):
     type: str = "SpaceNoEnoughEvent"
     data: SpaceNoEnoughEventData
-
-
-class FileCompletedEventData(BaseModel):
-    room_id: int
-    path: Path
-
-
-class FileCompletedEvent(BlrecEvent):
-    type: str = "FileCompletedEvent"
-    data: FileCompletedEventData
 
 
 class ErrorData(BaseModel):
