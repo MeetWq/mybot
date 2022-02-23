@@ -1,5 +1,7 @@
 import re
 from lxml import etree
+from typing import List, Dict
+from dataclasses import dataclass, field
 from nonebot import get_bot, get_driver
 from nonebot.adapters.onebot.v11 import Bot
 from nonebot_plugin_apscheduler import scheduler
@@ -11,7 +13,15 @@ from .config import Config
 
 mc_config = Config.parse_obj(get_driver().config.dict())
 
-last_time = {}
+
+@dataclass
+class Recorder:
+    count: int = 0
+    last_time: int = 0
+    chats: List[dict] = field(default_factory=list)
+
+
+chat_recorders: Dict[str, Recorder] = {}
 
 
 def user_type(user_id: str):
@@ -36,7 +46,7 @@ async def send_bot_msg(user_id: str, msg):
         await bot.send_private_msg(user_id=int(id), message=msg)
 
 
-async def dynmap_monitor():
+async def update_dynmap():
     dynmap_list = get_dynmap_list()
     for user_id, config in dynmap_list.items():
         if not config["chat"]:
@@ -51,27 +61,42 @@ async def dynmap_monitor():
         if not updates:
             continue
 
-        if user_id not in last_time:
-            last_time[user_id] = updates[-1]["timestamp"]
+        if user_id not in chat_recorders:
+            chat_recorders[user_id] = Recorder(
+                count=1, last_time=updates[-1]["timestamp"]
+            )
             continue
+        recorder = chat_recorders[user_id]
+        recorder.count += 1
 
         chats = []
         for update in updates:
-            if update["type"] == "chat" and update["timestamp"] > last_time[user_id]:
+            if update["type"] == "chat" and update["timestamp"] > recorder.last_time:
                 chats.append(update)
-        last_time[user_id] = updates[-1]["timestamp"]
+        recorder.last_time = updates[-1]["timestamp"]
 
         if not chats:
             continue
+        recorder.chats.extend(chats)
 
+
+async def dynmap_monitor():
+    await update_dynmap()
+    for user_id, recorder in chat_recorders.items():
+        if recorder.count < 30:
+            continue
+        else:
+            recorder.count = 0
         msgs = []
-        for chat in chats:
+        for chat in recorder.chats:
             name = chat["playerName"]
-            name = etree.HTML(name, etree.HTMLParser).xpath("string(.)").strip()
+            name = etree.HTML(name, etree.HTMLParser()).xpath("string(.)").strip()
             message = chat["message"]
             msgs.append(f"[dynmap] {name}: {message}")
-        msg = "\n".join(msgs)
-        await send_bot_msg(user_id, msg)
+        recorder.chats = []
+        if msgs:
+            msg = "\n".join(msgs)
+            await send_bot_msg(user_id, msg)
 
 
 dynmap_cron = mc_config.dynmap_cron
@@ -86,5 +111,4 @@ scheduler.add_job(
     year=dynmap_cron[5],
     id="dynmap_monitor",
     coalesce=True,
-    misfire_grace_time=30,
 )

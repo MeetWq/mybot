@@ -74,12 +74,12 @@ class LiveEndedEventData(LiveBeganEventData):
 
 
 class LiveBeganEvent(BlrecEvent):
-    type: str = "LiveBeganEvent"
+    type: Literal["LiveBeganEvent"]
     data: LiveBeganEventData
 
 
 class LiveEndedEvent(BlrecEvent):
-    type: str = "LiveEndedEvent"
+    type: Literal["LiveEndedEvent"]
     data: LiveEndedEventData
 
 
@@ -88,7 +88,7 @@ class RoomChangeEventData(BaseModel):
 
 
 class RoomChangeEvent(BlrecEvent):
-    type: str = "RoomChangeEvent"
+    type: Literal["RoomChangeEvent"]
     data: RoomChangeEventData
 
 
@@ -97,7 +97,7 @@ class RecordingStartedEventData(BaseModel):
 
 
 class RecordingStartedEvent(BlrecEvent):
-    type: str = "RecordingStartedEvent"
+    type: Literal["RecordingStartedEvent"]
     data: RecordingStartedEventData
 
 
@@ -106,7 +106,7 @@ class RecordingFinishedEventData(RecordingStartedEventData):
 
 
 class RecordingFinishedEvent(BlrecEvent):
-    type: str = "RecordingFinishedEvent"
+    type: Literal["RecordingFinishedEvent"]
     data: RecordingFinishedEventData
 
 
@@ -115,7 +115,7 @@ class RecordingCancelledEventData(RecordingStartedEventData):
 
 
 class RecordingCancelledEvent(BlrecEvent):
-    type: str = "RecordingCancelledEvent"
+    type: Literal["RecordingCancelledEvent"]
     data: RecordingCancelledEventData
 
 
@@ -132,7 +132,7 @@ class SpaceNoEnoughEventData(BaseModel):
 
 
 class SpaceNoEnoughEvent(BlrecEvent):
-    type: str = "SpaceNoEnoughEvent"
+    type: Literal["SpaceNoEnoughEvent"]
     data: SpaceNoEnoughEventData
 
 
@@ -142,7 +142,7 @@ class ErrorData(BaseModel):
 
 
 class ErrorEvent(BlrecEvent):
-    type: str = "Error"
+    type: Literal["Error"]
     data: ErrorData
 
 
@@ -157,7 +157,7 @@ class UploaderEventData(BaseModel):
 class UploaderEvent(BaseModel):
     id: str
     date: datetime
-    type: str = "UploadCompleted"
+    type: Literal["UploadCompleted"]
     data: UploaderEventData
 
 

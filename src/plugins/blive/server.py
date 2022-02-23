@@ -1,5 +1,6 @@
 import nonebot
 from typing import Union
+from cachetools import TTLCache
 from nonebot.log import logger
 
 from .models import (
@@ -16,23 +17,42 @@ from .uid_list import get_sub_info_by_uid, get_sub_info_by_roomid
 app = nonebot.get_app()
 
 
+uid_cache = TTLCache(maxsize=100, ttl=60 * 5)
+
+
 @app.post("/blive/blrec")
 async def blrec_handler(
     event: Union[LiveBeganEvent, LiveEndedEvent, RecordingStartedEvent]
 ):
     logger.info(str(event))
+    room_info = event.data.room_info
+    uid = str(room_info.uid)
+
     if isinstance(event, RecordingStartedEvent):
-        uid = str(event.data.room_info.uid)
-        info = get_sub_info_by_uid(str(uid))
+
+        key = f"{uid}_record"
+        if key in uid_cache:
+            logger.warning(f"skip send msg for {key}")
+            return
+        else:
+            uid_cache[key] = True
+
+        info = get_sub_info_by_uid(uid)
         if info:
             await send_record_msg(uid, f"{info['up_name']} 录播启动...")
     else:
+
+        key = f"{uid}_live"
+        if key in uid_cache:
+            logger.warning(f"skip send msg for {key}")
+            return
+        else:
+            uid_cache[key] = True
+
         user_info = event.data.user_info
-        room_info = event.data.room_info
         live_info = LiveInfo(user_info, room_info)
         live_msg = await live_info.format_msg()
         if live_msg:
-            uid = str(event.data.user_info.uid)
             await send_live_msg(uid, live_msg)
 
 
