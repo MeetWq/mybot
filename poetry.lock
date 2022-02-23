@@ -932,7 +932,7 @@ nonebot2 = ">=2.0.0-beta.1,<3.0.0"
 
 [[package]]
 name = "nonebot-plugin-gamedraw"
-version = "0.2.8"
+version = "0.3.0"
 description = "nonebot2 实现自动更新的 原神/明日方舟/赛马娘/坎公骑冠剑/公主连结/碧蓝航线/FGO/阴阳师 抽卡插件"
 category = "main"
 optional = false
@@ -1041,7 +1041,7 @@ Pillow = ">=8.2.0"
 
 [[package]]
 name = "nonebot-plugin-petpet"
-version = "0.2.5"
+version = "0.2.6"
 description = "Nonebot2 plugin for making fun pictures"
 category = "main"
 optional = false
@@ -1114,19 +1114,19 @@ nonebot2 = ">=2.0.0-beta.1,<=2.0.0-beta.2"
 
 [[package]]
 name = "nonebot-plugin-wordcloud"
-version = "0.0.6"
+version = "0.0.8"
 description = "适用于 NoneBot2 的词云插件"
 category = "main"
 optional = false
 python-versions = ">=3.7.3,<4.0.0"
 
 [package.dependencies]
-"backports.zoneinfo" = {version = ">=0.2.1,<0.3.0", markers = "python_version <= \"3.8\""}
+"backports.zoneinfo" = {version = ">=0.2.1,<0.3.0", markers = "python_version < \"3.9\""}
 emoji = ">=1.6.3,<2.0.0"
 jieba = ">=0.42.1,<0.43.0"
 nonebot-adapter-onebot = ">=2.0.0-beta.1,<3.0.0"
 nonebot-plugin-chatrecorder = ">=0.1.5,<0.2.0"
-nonebot2 = {version = ">=2.0.0-beta.1,<3.0.0", extras = ["httpx"]}
+nonebot2 = {version = ">=2.0.0-beta.2,<3.0.0", extras = ["httpx"]}
 numpy = {version = ">=1.22.1,<2.0.0", markers = "python_version >= \"3.8\""}
 typing-extensions = ">=4.0.1,<5.0.0"
 tzdata = ">=2021.5,<2022.0"
@@ -1838,7 +1838,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "8b8cd0291fda601cc8d3092ad7f79d1d271a706fef047d46996f1b3c9602b8ac"
+content-hash = "2dedf8906854636e8249e73b20505058f30885e17e92395ad6b1dd9490089cf0"
 
 [metadata.files]
 aiocache = [
@@ -2577,8 +2577,8 @@ nonebot-plugin-emojimix = [
     {file = "nonebot_plugin_emojimix-0.1.3.tar.gz", hash = "sha256:b67d61c7e1dddeb5a06a33acdf60b1bb12aab3340729e000f8cbfea401ca5378"},
 ]
 nonebot-plugin-gamedraw = [
-    {file = "nonebot_plugin_gamedraw-0.2.8-py3-none-any.whl", hash = "sha256:9137801c98634550a2d3b9137dca955868f8863c3c5078e2174f3f33f19d6df3"},
-    {file = "nonebot_plugin_gamedraw-0.2.8.tar.gz", hash = "sha256:3ec605f9a41c784cb43503b1a4a8572b996b34f285bebf58c7057bff65d96b69"},
+    {file = "nonebot_plugin_gamedraw-0.3.0-py3-none-any.whl", hash = "sha256:cc9d261596fbc1314e3ced2aaf83bec87c7580b8757d3bf4d3d711d8c9555c83"},
+    {file = "nonebot_plugin_gamedraw-0.3.0.tar.gz", hash = "sha256:10f5e48fa5fa3b44ca0ea153d1218b99c249e5158724819b2f7ce2c120828dd8"},
 ]
 nonebot-plugin-heweather = [
     {file = "nonebot-plugin-heweather-0.5.2.tar.gz", hash = "sha256:02a88c93bf517f454917cbe5967f06ef3f6c9803405198056f6e39d742ec0291"},
@@ -2605,8 +2605,8 @@ nonebot-plugin-memes = [
     {file = "nonebot_plugin_memes-0.2.2.2.tar.gz", hash = "sha256:f5b39719b0bb8469977ad3f63eb7d0b29a5010d5732ca54e09d3e038b33bb7cc"},
 ]
 nonebot-plugin-petpet = [
-    {file = "nonebot_plugin_petpet-0.2.5-py3-none-any.whl", hash = "sha256:2372e2a16139afa22bdc722cdbbbce0e6fb65e62b51531da53d009701d60bc36"},
-    {file = "nonebot_plugin_petpet-0.2.5.tar.gz", hash = "sha256:e6f89df05ff149787c4b03703dca16a7c4220bf6dc6abe508a45f03bf9ed5552"},
+    {file = "nonebot_plugin_petpet-0.2.6-py3-none-any.whl", hash = "sha256:f19544c70b1cff161cbee6890db473e35353bd289d5ea4f32458e2c50d61f966"},
+    {file = "nonebot_plugin_petpet-0.2.6.tar.gz", hash = "sha256:f546a754d0618c55f0f54c321f89533ab1544151bb4d2979827600358f19a7eb"},
 ]
 nonebot-plugin-remake = [
     {file = "nonebot_plugin_remake-0.2.4-py3-none-any.whl", hash = "sha256:28a1b6ce7a41a78cb125b96ccfb929bdc0ff4c389590201b1c1c8c7a9708183b"},
@@ -2625,8 +2625,8 @@ nonebot-plugin-word-bank2 = [
     {file = "nonebot_plugin_word_bank2-0.1.3.1-py3-none-any.whl", hash = "sha256:86d22eb85b1c2c89dcd48a9d58d7a396819c754c336789d36714678c8e5f9ac5"},
 ]
 nonebot-plugin-wordcloud = [
-    {file = "nonebot-plugin-wordcloud-0.0.6.tar.gz", hash = "sha256:86c0d99c35bd5ff470ca62e08e3342cc4717fb7ae2871983d7d6e0359c2b0bf3"},
-    {file = "nonebot_plugin_wordcloud-0.0.6-py3-none-any.whl", hash = "sha256:26dbd527844b7a5eb36d31fe9f14581f8e93f5d8640f54180a96c14acc5cc163"},
+    {file = "nonebot-plugin-wordcloud-0.0.8.tar.gz", hash = "sha256:1b32aed95cc3efd0febeed8d2ae47159d9b1389cb91f898e395ddbccee96955e"},
+    {file = "nonebot_plugin_wordcloud-0.0.8-py3-none-any.whl", hash = "sha256:d55fd2bba6b09c255065f2dfe3d7986109a49e92b6e68782e31ee3b1cdd6fbcc"},
 ]
 nonebot2 = [
     {file = "nonebot2-2.0.0b2-py3-none-any.whl", hash = "sha256:8166490311b607f8fbf5e31934b005e29f6d39ff222a6771ec36c9456ec337ec"},
