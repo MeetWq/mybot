@@ -1,27 +1,88 @@
+import json
+from pathlib import Path
+from typing import List, Any
+from pydantic import BaseModel, ValidationError
+from nonebot import get_driver
 from nonebot.plugin import Plugin, get_loaded_plugins
 from nonebot.adapters.onebot.v11 import MessageEvent, GroupMessageEvent
 
 from nonebot_plugin_manager import PluginManager
 
 
-class PluginInfo:
-    def __init__(self, plugin: Plugin):
-        self.name = plugin.name
-        short_name = get_plugin_attr(plugin, "__help__plugin_name__")
-        if not short_name:
-            short_name = self.name
-        self.short_name = short_name
-        self.description = get_plugin_attr(plugin, "__des__")
-        self.command = get_plugin_attr(plugin, "__cmd__")
-        self.usage = get_plugin_attr(plugin, "__usage__")
-        short_command = get_plugin_attr(plugin, "__short_cmd__")
-        if not short_command:
-            short_command = f'发送 "help {self.short_name}" 查看详情' if self.usage else ""
-        self.short_command = short_command
-        self.example = get_plugin_attr(plugin, "__example__")
-        self.notice = get_plugin_attr(plugin, "__notice__")
-        self.status = True
-        self.locked = False
+info_path = Path("data/help/info.json")
+
+
+class PluginInfo(BaseModel):
+    name: str
+    short_name: str = ""
+    description: str = ""
+    command: str = ""
+    short_command: str = ""
+    example: str = ""
+    notice: str = ""
+    usage: str = ""
+    status: bool = True
+    locked: bool = False
+
+    def __eq__(self, other: "PluginInfo"):
+        return self.name == other.name
+
+    def __hash__(self):
+        return hash(self.name)
+
+
+def load_plugin_info() -> List[PluginInfo]:
+    if not info_path.exists():
+        return []
+    infos = []
+    with info_path.open("r", encoding="utf8") as fp:
+        data = json.load(fp)
+    for p in data["plugins"]:
+        try:
+            infos.append(PluginInfo.parse_obj(p))
+        except ValidationError:
+            pass
+    return sorted(infos, key=lambda i: i.short_name or i.name)
+
+
+def dump_plugin_info(infos: List[PluginInfo]):
+    info_path.parent.mkdir(parents=True, exist_ok=True)
+    infos_dict = {
+        "plugins": [info.dict(exclude={"status", "locked"}) for info in infos]
+    }
+    with info_path.open("w", encoding="utf8") as fp:
+        json.dump(
+            infos_dict,
+            fp,
+            indent=4,
+            ensure_ascii=False,
+        )
+
+
+driver = get_driver()
+
+
+@driver.on_startup
+def update_plugin_info():
+    plugins = get_loaded_plugins()
+    infos = []
+    for p in plugins:
+        infos.append(
+            PluginInfo(
+                name=p.name,
+                short_name=get_plugin_attr(p, "__help__plugin_name__"),
+                description=get_plugin_attr(p, "__des__"),
+                command=get_plugin_attr(p, "__cmd__"),
+                short_command=get_plugin_attr(p, "__short_cmd__"),
+                example=get_plugin_attr(p, "__example__"),
+                notice=get_plugin_attr(p, "__notice__"),
+                usage=get_plugin_attr(p, "__usage__"),
+            )
+        )
+    loaded_infos = set(load_plugin_info())
+    for info in infos:
+        loaded_infos.add(info)
+    dump_plugin_info(list(loaded_infos))
 
 
 def get_plugin_attr(plugin: Plugin, attr: str):
@@ -31,21 +92,22 @@ def get_plugin_attr(plugin: Plugin, attr: str):
         return ""
 
 
-def get_plugins(event: MessageEvent):
-    plugins = [PluginInfo(p) for p in get_loaded_plugins()]
+def get_plugins(event: MessageEvent) -> List[PluginInfo]:
+    infos = load_plugin_info()
     conv = {
         "user": [event.user_id],
         "group": [event.group_id] if isinstance(event, GroupMessageEvent) else [],
     }
     plugin_manager = PluginManager()
     plugins_read = plugin_manager.get_plugin(conv, 4)
-    plugins = [p for p in plugins if plugins_read.get(p.name, False)]
-
     plugins_write = plugin_manager.get_plugin(conv, 2)
     plugins_exec = plugin_manager.get_plugin(conv, 1)
-    for p in plugins:
-        p.locked = not plugins_write.get(p.name, False)
-        p.status = plugins_exec.get(p.name, False)
-
-    plugins.sort(key=lambda p: p.short_name)
+    plugins = []
+    for info in infos:
+        if plugins_read.get(info.name, False):
+            info.status = plugins_exec.get(info.name, False)
+            info.locked = not plugins_write.get(info.name, False)
+            if not info.short_command:
+                info.short_command = f"发送 help {info.short_name or info.name} 查看详情"
+            plugins.append(info)
     return plugins

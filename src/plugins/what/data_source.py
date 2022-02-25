@@ -24,6 +24,8 @@ async def get_nbnhhsh(keyword: str) -> Tuple[str, str]:
                 title = i["name"]
                 result.append(f"{i['name']} => {'，'.join(i['trans'])}")
     result = "\n".join(result)
+    if fuzz.ratio(title.lower(), keyword.lower()) < 90:
+        return "", ""
     return title, result
 
 
@@ -37,7 +39,7 @@ async def get_jiki(keyword: str) -> Tuple[str, Union[str, Message]]:
     if "对不起！小鸡词典暂未收录该词条" in result:
         return "", ""
 
-    dom = etree.HTML(result, etree.HTMLParser)
+    dom = etree.HTML(result, etree.HTMLParser())
     card_urls = dom.xpath(
         "//div[contains(@class, 'masonry')]/div/div/div/a[contains(@class, 'title-container')]/@href"
     )
@@ -49,7 +51,7 @@ async def get_jiki(keyword: str) -> Tuple[str, Union[str, Message]]:
         resp = await client.get(url=card_url)
         result = resp.text
 
-    dom = etree.HTML(result, etree.HTMLParser)
+    dom = etree.HTML(result, etree.HTMLParser())
     title = dom.xpath(
         "//div[@class='section card-middle']/div[@class='title-container']/div/h1/text()"
     )[0]
@@ -60,6 +62,8 @@ async def get_jiki(keyword: str) -> Tuple[str, Union[str, Message]]:
     img_urls = dom.xpath(
         "//div[@class='section card-middle']/div/div/div[@class='show-images']/img/@src"
     )
+    if fuzz.ratio(str(title).lower(), keyword.lower()) < 90:
+        return "", ""
 
     msg = Message()
     msg.append(title + ":\n---------------\n")
@@ -74,14 +78,14 @@ async def get_baidu(keyword: str) -> Tuple[str, str]:
     if not content:
         return "", ""
 
-    match_obj = re.match(r"(.*?)(（.*?）)?\n(.*)", content)
+    match_obj = re.match(r"(.*?)(（.*?）?)\n(.*)", content)
     if not match_obj:
         return "", ""
 
     title = match_obj.group(1)
     subtitle = match_obj.group(2)
     text = match_obj.group(3)
-    if fuzz.ratio(title, keyword) < 90:
+    if fuzz.ratio(title.lower(), keyword.lower()) < 90:
         return "", ""
 
     msg = title

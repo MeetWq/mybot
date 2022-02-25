@@ -78,6 +78,8 @@ async def _(msg: Message = CommandArg()):
     keyword = msg.extract_plain_text().strip()
     if not keyword:
         await nbnhhsh.finish()
+    if not re.fullmatch(r"[a-zA-Z]+", keyword):
+        await nbnhhsh.finish()
 
     res = await get_content(keyword, sources=["nbnhhsh"])
     if res:
