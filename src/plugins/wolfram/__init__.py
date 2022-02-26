@@ -1,5 +1,4 @@
 import re
-import subprocess
 from nonebot import on_command
 from nonebot.params import CommandArg
 from nonebot.adapters.onebot.v11 import Message
@@ -34,13 +33,6 @@ async def _(msg: Message = CommandArg()):
     text = text.replace("-p", "").replace("--plaintext", "").strip()
     if not text:
         await wolfram.finish()
-
-    if not re.fullmatch(r"[\x00-\x7F]+", text):
-        text = subprocess.getoutput(f'trans -t en -brief -no-warn "{text}"').strip()
-        if text:
-            await wolfram.send("使用如下翻译进行搜索：\n" + text)
-        else:
-            await wolfram.finish("出错了，请稍后再试")
 
     if plaintext:
         res = await get_wolframalpha_text(text)

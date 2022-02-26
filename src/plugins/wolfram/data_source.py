@@ -22,7 +22,7 @@ async def get_wolframalpha_simple(input, params=(), **kwargs):
 
     try:
         async with httpx.AsyncClient() as client:
-            resp = await client.get(url)
+            resp = await client.get(url, timeout=10)
             result = resp.content
         return MessageSegment.image(result)
     except Exception as e:
