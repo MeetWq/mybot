@@ -1,0 +1,17 @@
+.image {
+  background-image: url("./spring.jpg");
+  background-position: right -920px center;
+}
+.face {
+  float: left;
+}
+.box {
+  background-color: rgba(178, 212, 153, 0.8);
+  margin: 30px 400px 30px 0px;
+}
+.good {
+  color: #d02090;
+}
+.bad {
+  color: #228b22;
+}
