@@ -4,8 +4,9 @@ import subprocess
 from pathlib import Path
 from threading import Thread
 from datetime import datetime
+from cachetools import TTLCache
 from dataclasses import dataclass
-from typing import Optional, Union, Dict
+from typing import Optional, Union, TYPE_CHECKING
 from nonebot import get_driver
 from nonebot.log import logger
 
@@ -68,7 +69,10 @@ class CutTask:
         logger.info(f"run hook {url} successfully")
 
 
-cut_tasks: Dict[str, CutTask] = {}
+if TYPE_CHECKING:
+    cut_tasks: TTLCache[str, CutTask] = TTLCache(maxsize=100, ttl=60 * 60 * 1)
+else:
+    cut_tasks = TTLCache(maxsize=100, ttl=60 * 60 * 1)
 
 
 def check_sub(user_id: str, uid: str) -> Optional[str]:
@@ -146,6 +150,10 @@ async def cut_stop(user_id: str, uid: str, offset: float) -> Optional[str]:
     path = await check_task(room_id)
     if isinstance(path, str):
         return path
+
+    if str(path.absolute()) != str(cut_tasks[key].file_path.absolute()):
+        cut_tasks.pop(key)
+        return "录播文件路径发生变动，切片失败..."
 
     time = await get_keyframe(room_id, offset)
     if isinstance(time, str):

@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import List, Any
+from typing import List
 from pydantic import BaseModel, ValidationError
 from nonebot import get_driver
 from nonebot.plugin import Plugin, get_loaded_plugins
@@ -65,7 +65,7 @@ driver = get_driver()
 @driver.on_startup
 def update_plugin_info():
     plugins = get_loaded_plugins()
-    infos = []
+    infos: List[PluginInfo] = []
     for p in plugins:
         infos.append(
             PluginInfo(
@@ -79,10 +79,11 @@ def update_plugin_info():
                 usage=get_plugin_attr(p, "__usage__"),
             )
         )
-    loaded_infos = set(load_plugin_info())
-    for info in infos:
-        loaded_infos.add(info)
-    dump_plugin_info(list(loaded_infos))
+    infos = [info for info in infos if info.name and info.usage]
+    infos_set = set(infos)
+    for info in load_plugin_info():
+        infos_set.add(info)
+    dump_plugin_info(list(infos_set))
 
 
 def get_plugin_attr(plugin: Plugin, attr: str):

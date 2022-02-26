@@ -83,7 +83,7 @@
         </tr>
         {% for plugin in plugins %}
         <tr>
-          <td><b>{{plugin.short_name}}</b></td>
+          <td><b>{{plugin.short_name or plugin.name}}</b></td>
           <td>{{plugin.description}}</td>
           <td>{{plugin.short_command}}</td>
           <td>
