@@ -6,3 +6,4 @@ class Config(BaseModel, extra=Extra.ignore):
     bilibili_dynamic_cron: List[str] = ["0", "*", "*", "*", "*", "*"]
     blrec_ip: str = "localhost"
     blrec_port: str = "2233"
+    cut_file_webhooks: List[str] = []

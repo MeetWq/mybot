@@ -1,6 +1,5 @@
-import json
-from typing import Optional
 import httpx
+from typing import Optional
 from nonebot.log import logger
 from nonebot_plugin_htmlrender import get_new_page
 
@@ -111,8 +110,9 @@ async def get_dynamic_screenshot(url: str) -> Optional[bytes]:
             card = await page.query_selector(".dyn-card")
             if card:
                 clip = await card.bounding_box()
-                img = await page.screenshot(clip=clip, full_page=True)
-                return img
+                if clip:
+                    img = await page.screenshot(clip=clip, full_page=True)
+                    return img
     except Exception as e:
         logger.warning(f"Error in get_dynamic_screenshot({url}): {e}")
         return None

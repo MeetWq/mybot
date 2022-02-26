@@ -50,14 +50,14 @@ dynamic_cron = blive_config.bilibili_dynamic_cron
 
 scheduler.add_job(
     dynamic_monitor,
-    'cron',
+    "cron",
     second=dynamic_cron[0],
     minute=dynamic_cron[1],
     hour=dynamic_cron[2],
     day=dynamic_cron[3],
     month=dynamic_cron[4],
     year=dynamic_cron[5],
-    id='bilibili_dynamic_cron',
+    id="bilibili_dynamic_cron",
     coalesce=True,
     misfire_grace_time=30,
 )

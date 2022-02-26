@@ -2,8 +2,8 @@ import time
 from enum import Enum, IntEnum
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Literal, Optional, Union
-from pydantic import BaseModel
+from typing import Any, Dict, List, Literal, Optional, Union
+from pydantic import BaseModel, Extra
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 
 from .data_source import get_dynamic_screenshot
@@ -15,7 +15,7 @@ class LiveStatus(IntEnum):
     ROUND = 2
 
 
-class RoomInfo(BaseModel):
+class RoomInfo(BaseModel, extra=Extra.ignore):
     uid: int
     room_id: int
     short_room_id: int
@@ -32,7 +32,7 @@ class RoomInfo(BaseModel):
     description: str
 
 
-class UserInfo(BaseModel):
+class UserInfo(BaseModel, extra=Extra.ignore):
     name: str
     gender: str
     face: str
@@ -41,7 +41,7 @@ class UserInfo(BaseModel):
     sign: str
 
 
-class BlrecEvent(BaseModel):
+class BlrecEvent(BaseModel, extra=Extra.ignore):
     id: str
     date: datetime
     type: Literal[
@@ -64,7 +64,7 @@ class BlrecEvent(BaseModel):
     data: Dict[str, Any]
 
 
-class LiveBeganEventData(BaseModel):
+class LiveBeganEventData(BaseModel, extra=Extra.ignore):
     user_info: UserInfo
     room_info: RoomInfo
 
@@ -83,7 +83,7 @@ class LiveEndedEvent(BlrecEvent):
     data: LiveEndedEventData
 
 
-class RoomChangeEventData(BaseModel):
+class RoomChangeEventData(BaseModel, extra=Extra.ignore):
     room_info: RoomInfo
 
 
@@ -92,7 +92,7 @@ class RoomChangeEvent(BlrecEvent):
     data: RoomChangeEventData
 
 
-class RecordingStartedEventData(BaseModel):
+class RecordingStartedEventData(BaseModel, extra=Extra.ignore):
     room_info: RoomInfo
 
 
@@ -119,13 +119,13 @@ class RecordingCancelledEvent(BlrecEvent):
     data: RecordingCancelledEventData
 
 
-class DiskUsage(BaseModel):
+class DiskUsage(BaseModel, extra=Extra.ignore):
     total: int
     used: int
     free: int
 
 
-class SpaceNoEnoughEventData(BaseModel):
+class SpaceNoEnoughEventData(BaseModel, extra=Extra.ignore):
     path: str
     threshold: int
     usage: DiskUsage
@@ -136,7 +136,7 @@ class SpaceNoEnoughEvent(BlrecEvent):
     data: SpaceNoEnoughEventData
 
 
-class ErrorData(BaseModel):
+class ErrorData(BaseModel, extra=Extra.ignore):
     name: str
     detail: str
 
@@ -146,7 +146,7 @@ class ErrorEvent(BlrecEvent):
     data: ErrorData
 
 
-class UploaderEventData(BaseModel):
+class UploaderEventData(BaseModel, extra=Extra.ignore):
     room_id: int
     file_path: Path
     upload_dir: str
@@ -154,7 +154,7 @@ class UploaderEventData(BaseModel):
     err_msg: str
 
 
-class UploaderEvent(BaseModel):
+class UploaderEvent(BaseModel, extra=Extra.ignore):
     id: str
     date: datetime
     type: Literal["UploadCompleted"]
@@ -169,7 +169,18 @@ class RunningStatus(str, Enum):
     INJECTING = "injecting"
 
 
-class TaskStatus(BaseModel):
+QualityNumber = Literal[
+    20000,  # 4K
+    10000,  # 原画
+    401,  # 蓝光(杜比)
+    400,  # 蓝光
+    250,  # 超清
+    150,  # 高清
+    80,  # 流畅
+]
+
+
+class TaskStatus(BaseModel, extra=Extra.ignore):
     monitor_enabled: bool
     recorder_enabled: bool
     running_status: RunningStatus
@@ -178,16 +189,49 @@ class TaskStatus(BaseModel):
     data_rate: float  # Number of Bytes per second
     danmu_count: int  # Number of Danmu in total
     danmu_rate: float  # Number of Danmu per minutes
-    real_quality_number: int
-    postprocessor_status: Optional[Any] = None
-    postprocessing_path: Optional[str] = None
-    postprocessing_progress: Optional[Any] = None
+    real_quality_number: QualityNumber
+    recording_path: Optional[Path] = None
 
 
-class TaskInfo(BaseModel):
+class TaskInfo(BaseModel, extra=Extra.ignore):
     user_info: UserInfo
     room_info: RoomInfo
     task_status: TaskStatus
+
+
+class KeyFrames(BaseModel, extra=Extra.ignore):
+    times: List[float]
+    filepositions: List[float]
+
+
+class MetaData(BaseModel, extra=Extra.ignore):
+    hasAudio: bool
+    hasVideo: bool
+    hasMetadata: bool
+    hasKeyframes: bool
+    canSeekToEnd: bool
+    duration: float
+    datasize: float
+    filesize: float
+
+    audiosize: Optional[float] = None
+    audiocodecid: Optional[float] = None
+    audiodatarate: Optional[float] = None
+    audiosamplerate: Optional[float] = None
+    audiosamplesize: Optional[float] = None
+    stereo: Optional[bool] = None
+
+    videosize: float
+    framerate: float
+    videocodecid: float
+    videodatarate: float
+    width: float
+    height: float
+
+    lasttimestamp: float
+    lastkeyframelocation: float
+    lastkeyframetimestamp: float
+    keyframes: KeyFrames
 
 
 class Dynamic:

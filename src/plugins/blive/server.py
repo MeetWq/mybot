@@ -11,8 +11,10 @@ from .models import (
     UploaderEvent,
     LiveInfo,
 )
-from .send_msg import send_live_msg, send_record_msg, send_superuser_msg
+from .send_msg import send_live_msg, send_record_msg, send_superuser_msg, send_bot_msg
 from .uid_list import get_sub_info_by_uid, get_sub_info_by_roomid
+from .blrec import get_task
+from .models import LiveStatus
 
 app = nonebot.get_app()
 
@@ -67,10 +69,23 @@ async def uploader_handler(event: UploaderEvent):
     logger.info(str(event))
     if event.data.err_msg:
         await send_superuser_msg(f"uploader error: {event.data.err_msg}")
-    elif event.data.share_url:
-        room_id = event.data.room_id
-        info = get_sub_info_by_roomid(room_id)
-        if info:
-            await send_record_msg(
-                info["uid"], f"{info['up_name']} 的录播文件：\n{event.data.share_url}"
-            )
+        return
+
+    if not event.data.share_url:
+        return
+
+    room_id = event.data.room_id
+    info = get_sub_info_by_roomid(room_id)
+    if not info:
+        return
+    user_id = event.id
+    if user_id.startswith("private") or user_id.startswith("group"):
+        await send_bot_msg(user_id, f"{info['up_name']} 的切片文件：\n{event.data.share_url}")
+    else:
+        task_info = await get_task(room_id)
+        if task_info and task_info.room_info.live_status == LiveStatus.LIVE:
+            logger.info("当前直播尚未结束，取消发送录播文件链接")
+            return
+        await send_record_msg(
+            info["uid"], f"{info['up_name']} 的录播文件：\n{event.data.share_url}"
+        )

@@ -15,8 +15,8 @@ from .sub_list import (
     close_record,
     open_dynamic,
     close_dynamic,
-    DupeError,
 )
+from .clipper import cut_start, cut_stop
 from .blrec import sync_tasks
 from .server import blrec_handler, blrec_error_handler, uploader_handler
 
@@ -31,31 +31,32 @@ __cmd__ = """
 关闭动态：blive dynoff {用户名/UID}
 开启录播：blive recon {用户名/UID}
 关闭录播：blive recoff {用户名/UID}
+开始切片：blive cuton {用户名/UID} [偏移量]
+结束切片：blive cutoff {用户名/UID} [偏移量]
 """.strip()
 __example__ = """
 blive d 282994
 blive d 泠鸢yousa
+blive recon 泠鸢yousa
+blive cuton 泠鸢yousa 60
+blive cutoff 泠鸢yousa
 """.strip()
-__notice__ = "注意是UID不是房间号"
+__notice__ = "注意是UID不是房间号\n偏移量只能是正数，指前向偏移，单位为秒"
 __usage__ = (
     f"{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}\nNotice:\n{__notice__}"
 )
 
 
 async def add_sub(args: Namespace):
-    try:
-        add_sub_list(args.user_id, args.uid, args.info)
-    except DupeError:
-        await blive.finish("已经订阅该主播")
+    if res := add_sub_list(args.user_id, args.uid, args.info):
+        await blive.finish(res)
     await sync_tasks()
     await blive.finish(f"成功订阅 {args.up_name} 的直播间")
 
 
 async def del_sub(args: Namespace):
-    try:
-        del_sub_list(args.user_id, args.uid)
-    except DupeError:
-        await blive.finish("尚未订阅该主播")
+    if res := del_sub_list(args.user_id, args.uid):
+        await blive.finish(res)
     await sync_tasks()
     await blive.finish(f"成功取消订阅 {args.up_name} 的直播间")
 
@@ -81,37 +82,39 @@ async def clear_sub(args: Namespace):
 
 
 async def dynon(args: Namespace):
-    try:
-        open_dynamic(args.user_id, args.uid)
-    except DupeError:
-        await blive.finish("尚未订阅该主播")
+    if res := open_dynamic(args.user_id, args.uid):
+        await blive.finish(res)
     await blive.finish(f"{args.up_name} 动态推送已打开")
 
 
 async def dynoff(args: Namespace):
-    try:
-        close_dynamic(args.user_id, args.uid)
-    except DupeError:
-        await blive.finish("尚未订阅该主播")
+    if res := close_dynamic(args.user_id, args.uid):
+        await blive.finish(res)
     await blive.finish(f"{args.up_name} 动态推送已关闭")
 
 
 async def recon(args: Namespace):
-    try:
-        open_record(args.user_id, args.uid)
-    except DupeError:
-        await blive.finish("尚未订阅该主播")
+    if res := open_record(args.user_id, args.uid):
+        await blive.finish(res)
     await sync_tasks()
     await blive.finish(f"{args.up_name} 自动录播已打开")
 
 
 async def recoff(args: Namespace):
-    try:
-        close_record(args.user_id, args.uid)
-    except DupeError:
-        await blive.finish("尚未订阅该主播")
+    if res := close_record(args.user_id, args.uid):
+        await blive.finish(res)
     await sync_tasks()
     await blive.finish(f"{args.up_name} 自动录播已关闭")
+
+
+async def cuton(args: Namespace):
+    if res := await cut_start(args.user_id, args.uid, float(args.offset)):
+        await blive.finish(res)
+
+
+async def cutoff(args: Namespace):
+    if res := await cut_stop(args.user_id, args.uid, float(args.offset)):
+        await blive.finish(res)
 
 
 blive_parser = ArgumentParser("blive")
@@ -147,6 +150,17 @@ recon_parser.set_defaults(func=recon)
 recoff_parser = blive_subparsers.add_parser("recoff", aliases=("关闭录播"))
 recoff_parser.add_argument("name")
 recoff_parser.set_defaults(func=recoff)
+
+cuton_parser = blive_subparsers.add_parser("cuton", aliases=("开始切片"))
+cuton_parser.add_argument("name")
+cuton_parser.add_argument("offset", type=float, nargs="?", default=0)
+cuton_parser.set_defaults(func=cuton)
+
+cutoff_parser = blive_subparsers.add_parser("cutoff", aliases=("结束切片"))
+cutoff_parser.add_argument("name")
+cutoff_parser.add_argument("offset", type=float, nargs="?", default=0)
+cutoff_parser.set_defaults(func=cutoff)
+
 
 blive = on_shell_command(
     "blive",
