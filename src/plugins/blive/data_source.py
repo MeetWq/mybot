@@ -60,10 +60,10 @@ async def get_user_info_by_name(up_name: str) -> dict:
         return {}
 
 
-async def get_play_url(room_id: int) -> str:
+async def get_play_url(room_id: str) -> str:
     try:
         url = "http://api.live.bilibili.com/room/v1/Room/playUrl"
-        params = {"cid": room_id, "platform": "web", "qn": 10000}
+        params = {"cid": int(room_id), "platform": "web", "qn": 10000}
         async with httpx.AsyncClient() as client:
             resp = await client.get(url, params=params)
             result = resp.json()

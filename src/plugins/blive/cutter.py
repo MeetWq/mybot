@@ -23,7 +23,7 @@ blive_config = Config.parse_obj(get_driver().config.dict())
 @dataclass
 class CutTask:
     user_id: str
-    room_id: int
+    room_id: str
     file_path: Path
     start_time: float = 0
     stop_time: float = 0
@@ -63,7 +63,7 @@ class CutTask:
             "id": self.user_id,
             "date": str(datetime.now()),
             "type": "CutFileCompletedEvent",
-            "data": {"room_id": self.room_id, "path": str(self.out_path)},
+            "data": {"room_id": int(self.room_id), "path": str(self.out_path)},
         }
         httpx.post(url, json=data)
         logger.info(f"run hook {url} successfully")
@@ -83,7 +83,7 @@ def check_sub(user_id: str, uid: str) -> Optional[str]:
         return "未开启该主播的自动录播"
 
 
-async def check_task(room_id: int) -> Union[str, Path]:
+async def check_task(room_id: str) -> Union[str, Path]:
     task_info = await get_task(room_id)
     if not task_info:
         return "获取录播状态出错..."
@@ -97,7 +97,7 @@ async def check_task(room_id: int) -> Union[str, Path]:
     return path
 
 
-async def get_keyframe(room_id: int, offset: float) -> Union[str, float]:
+async def get_keyframe(room_id: str, offset: float) -> Union[str, float]:
     if offset < 0:
         return "偏移量只能是正数，指前向偏移，单位为秒"
     metadata = await get_metadata(room_id)
@@ -125,7 +125,7 @@ async def cut_start(user_id: str, uid: str, offset: float) -> Optional[str]:
     if key in cut_tasks:
         return "当前有未结束的切片任务"
 
-    room_id = int(get_sub_info_by_uid(uid)["room_id"])
+    room_id = get_sub_info_by_uid(uid)["room_id"]
     path = await check_task(room_id)
     if isinstance(path, str):
         return path
@@ -135,7 +135,7 @@ async def cut_start(user_id: str, uid: str, offset: float) -> Optional[str]:
         return time
 
     cut_tasks[key] = CutTask(user_id, room_id, file_path=path, start_time=time)
-    return f"成功添加切片任务，切片开始时间：{round(time)}s"
+    return f"成功记录切片任务，切片开始时间：{round(time)}s"
 
 
 async def cut_stop(user_id: str, uid: str, offset: float) -> Optional[str]:
@@ -146,7 +146,7 @@ async def cut_stop(user_id: str, uid: str, offset: float) -> Optional[str]:
     if key not in cut_tasks:
         return "不存在未结束的切片任务"
 
-    room_id = int(get_sub_info_by_uid(uid)["room_id"])
+    room_id = get_sub_info_by_uid(uid)["room_id"]
     path = await check_task(room_id)
     if isinstance(path, str):
         return path

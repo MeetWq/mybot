@@ -1,4 +1,6 @@
+from typing import Protocol
 from argparse import Namespace
+from dataclasses import dataclass
 from nonebot import on_shell_command
 from nonebot.rule import ArgumentParser
 from nonebot.params import ShellCommandArgs, Depends
@@ -16,8 +18,9 @@ from .sub_list import (
     open_dynamic,
     close_dynamic,
 )
-from .clipper import cut_start, cut_stop
 from .blrec import sync_tasks
+from .cutter import cut_start, cut_stop
+from .uid_list import get_sub_info_by_uid, get_sub_info_by_name
 from .server import blrec_handler, blrec_error_handler, uploader_handler
 
 
@@ -47,21 +50,36 @@ __usage__ = (
 )
 
 
-async def add_sub(args: Namespace):
-    if res := add_sub_list(args.user_id, args.uid, args.info):
+class Func(Protocol):
+    async def __call__(self, args: "Args"):
+        ...
+
+
+@dataclass
+class Args:
+    user_id: str
+    func: Func
+    uid: str = ""
+    up_name: str = ""
+    room_id: str = ""
+    offset: float = 0
+
+
+async def add_sub(args: Args):
+    if res := add_sub_list(args.user_id, args.uid, args.up_name, args.room_id):
         await blive.finish(res)
     await sync_tasks()
     await blive.finish(f"成功订阅 {args.up_name} 的直播间")
 
 
-async def del_sub(args: Namespace):
+async def del_sub(args: Args):
     if res := del_sub_list(args.user_id, args.uid):
         await blive.finish(res)
     await sync_tasks()
     await blive.finish(f"成功取消订阅 {args.up_name} 的直播间")
 
 
-async def list_sub(args: Namespace):
+async def list_sub(args: Args):
     sub_list = get_sub_list(args.user_id)
     if not sub_list:
         await blive.finish("目前还没有任何订阅")
@@ -75,44 +93,44 @@ async def list_sub(args: Namespace):
     await blive.finish(msg)
 
 
-async def clear_sub(args: Namespace):
+async def clear_sub(args: Args):
     clear_sub_list(args.user_id)
     await sync_tasks()
     await blive.finish("订阅列表已清空")
 
 
-async def dynon(args: Namespace):
+async def dynon(args: Args):
     if res := open_dynamic(args.user_id, args.uid):
         await blive.finish(res)
     await blive.finish(f"{args.up_name} 动态推送已打开")
 
 
-async def dynoff(args: Namespace):
+async def dynoff(args: Args):
     if res := close_dynamic(args.user_id, args.uid):
         await blive.finish(res)
     await blive.finish(f"{args.up_name} 动态推送已关闭")
 
 
-async def recon(args: Namespace):
+async def recon(args: Args):
     if res := open_record(args.user_id, args.uid):
         await blive.finish(res)
     await sync_tasks()
     await blive.finish(f"{args.up_name} 自动录播已打开")
 
 
-async def recoff(args: Namespace):
+async def recoff(args: Args):
     if res := close_record(args.user_id, args.uid):
         await blive.finish(res)
     await sync_tasks()
     await blive.finish(f"{args.up_name} 自动录播已关闭")
 
 
-async def cuton(args: Namespace):
+async def cuton(args: Args):
     if res := await cut_start(args.user_id, args.uid, float(args.offset)):
         await blive.finish(res)
 
 
-async def cutoff(args: Namespace):
+async def cutoff(args: Args):
     if res := await cut_stop(args.user_id, args.uid, float(args.offset)):
         await blive.finish(res)
 
@@ -179,20 +197,33 @@ def get_id(event: MessageEvent):
 
 
 @blive.handle()
-async def _(args: Namespace = ShellCommandArgs(), user_id: str = Depends(get_id)):
-    args.user_id = user_id
+async def _(ns: Namespace = ShellCommandArgs(), user_id: str = Depends(get_id)):
+    args = Args(user_id, ns.func)
 
-    if hasattr(args, "name"):
-        name = str(args.name)
+    if hasattr(ns, "name"):
+        name = str(ns.name)
         if name.isdigit():
-            info = await get_live_info(uid=name)
+            args.uid = name
+            if info := get_sub_info_by_uid(name):
+                args.up_name = info["up_name"]
+                args.room_id = info["room_id"]
+            elif info := await get_live_info(uid=name):
+                args.up_name = info["uname"]
+                args.room_id = str(info["room_id"])
+            else:
+                await blive.finish("获取直播间信息失败，请检查名称或稍后再试")
         else:
-            info = await get_live_info(up_name=name)
-        if not info:
-            await blive.finish("获取直播间信息失败，请检查名称或稍后再试")
-        args.uid = str(info["uid"])
-        args.up_name = info["uname"]
-        args.info = info
+            args.up_name = name
+            if info := get_sub_info_by_name(name):
+                args.uid = info["uid"]
+                args.room_id = info["room_id"]
+            elif info := await get_live_info(up_name=name):
+                args.uid = str(info["uid"])
+                args.room_id = str(info["room_id"])
+            else:
+                await blive.finish("获取直播间信息失败，请检查名称或稍后再试")
 
-    if hasattr(args, "func"):
-        await args.func(args)
+    if hasattr(ns, "offset"):
+        args.offset = ns.offset
+
+    await args.func(args)

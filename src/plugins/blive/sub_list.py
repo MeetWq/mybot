@@ -34,13 +34,13 @@ def get_sub_list(user_id: str) -> Dict[str, dict]:
     return _sub_list[user_id]
 
 
-def add_sub_list(user_id: str, uid: str, info: dict) -> Optional[str]:
+def add_sub_list(user_id: str, uid: str, up_name: str, room_id: str) -> Optional[str]:
     sub_list = get_sub_list(user_id)
     if uid in sub_list:
         return "已经订阅该主播"
     sub_list[uid] = {
-        "up_name": info["uname"],
-        "room_id": info["room_id"],
+        "up_name": up_name,
+        "room_id": room_id,
         "record": False,
         "dynamic": False,
     }

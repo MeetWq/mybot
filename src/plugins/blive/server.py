@@ -36,26 +36,24 @@ async def blrec_handler(
         if key in uid_cache:
             logger.warning(f"skip send msg for {key}")
             return
-        else:
-            uid_cache[key] = True
 
         info = get_sub_info_by_uid(uid)
         if info:
             await send_record_msg(uid, f"{info['up_name']} 录播启动...")
+            uid_cache[key] = True
     else:
 
         key = f"{uid}_live"
         if key in uid_cache:
             logger.warning(f"skip send msg for {key}")
             return
-        else:
-            uid_cache[key] = True
 
         user_info = event.data.user_info
         live_info = LiveInfo(user_info, room_info)
         live_msg = await live_info.format_msg()
         if live_msg:
             await send_live_msg(uid, live_msg)
+            uid_cache[key] = True
 
 
 @app.post("/blive/blrec/error")
@@ -74,7 +72,7 @@ async def uploader_handler(event: UploaderEvent):
     if not event.data.share_url:
         return
 
-    room_id = event.data.room_id
+    room_id = str(event.data.room_id)
     info = get_sub_info_by_roomid(room_id)
     if not info:
         return

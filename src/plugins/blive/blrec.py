@@ -20,7 +20,7 @@ async def get_tasks() -> List[TaskInfo]:
     return tasks
 
 
-async def get_task(room_id: int) -> Optional[TaskInfo]:
+async def get_task(room_id: str) -> Optional[TaskInfo]:
     url = f"{BLREC_API}/tasks/{room_id}/data"
     async with httpx.AsyncClient() as client:
         resp = await client.get(url)
@@ -28,7 +28,7 @@ async def get_task(room_id: int) -> Optional[TaskInfo]:
     return TaskInfo.parse_obj(result) if result else None
 
 
-async def get_metadata(room_id: int) -> Optional[MetaData]:
+async def get_metadata(room_id: str) -> Optional[MetaData]:
     url = f"{BLREC_API}/tasks/{room_id}/metadata"
     async with httpx.AsyncClient() as client:
         resp = await client.get(url)
@@ -36,7 +36,7 @@ async def get_metadata(room_id: int) -> Optional[MetaData]:
     return MetaData.parse_obj(result) if result else None
 
 
-async def add_task(room_id: int) -> bool:
+async def add_task(room_id: str) -> bool:
     url = f"{BLREC_API}/tasks/{room_id}"
     async with httpx.AsyncClient() as client:
         resp = await client.post(url)
@@ -44,7 +44,7 @@ async def add_task(room_id: int) -> bool:
     return result and result.get("code", -1) == 0
 
 
-async def delete_task(room_id: int) -> bool:
+async def delete_task(room_id: str) -> bool:
     url = f"{BLREC_API}/tasks/{room_id}"
     async with httpx.AsyncClient() as client:
         resp = await client.delete(url)
@@ -52,7 +52,7 @@ async def delete_task(room_id: int) -> bool:
     return result and result.get("code", -1) == 0
 
 
-async def enable_recorder(room_id: int) -> bool:
+async def enable_recorder(room_id: str) -> bool:
     url = f"{BLREC_API}/tasks/{room_id}/recorder/enable"
     async with httpx.AsyncClient() as client:
         resp = await client.post(url)
@@ -60,7 +60,7 @@ async def enable_recorder(room_id: int) -> bool:
     return result and result.get("code", -1) == 0
 
 
-async def disable_recorder(room_id: int) -> bool:
+async def disable_recorder(room_id: str) -> bool:
     url = f"{BLREC_API}/tasks/{room_id}/recorder/disable"
     async with httpx.AsyncClient() as client:
         resp = await client.post(url)
@@ -78,7 +78,7 @@ async def sync_tasks():
 
     for task in tasks:
         if str(task.user_info.uid) not in sub_uids:
-            await delete_task(task.room_info.room_id)
+            await delete_task(str(task.room_info.room_id))
 
     for uid in sub_uids:
         room_id = get_sub_info_by_uid(uid)["room_id"]

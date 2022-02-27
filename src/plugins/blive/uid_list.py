@@ -59,9 +59,20 @@ def get_sub_info_by_uid(uid: str) -> dict:
     return {}
 
 
-def get_sub_info_by_roomid(room_id: int) -> dict:
+def get_sub_info_by_roomid(room_id: str) -> dict:
     for uid, info in _uid_list.items():
         if info["room_id"] == room_id:
+            return {
+                "uid": uid,
+                "up_name": info["up_name"],
+                "room_id": info["room_id"],
+            }
+    return {}
+
+
+def get_sub_info_by_name(up_name: str) -> dict:
+    for uid, info in _uid_list.items():
+        if info["up_name"] == up_name:
             return {
                 "uid": uid,
                 "up_name": info["up_name"],

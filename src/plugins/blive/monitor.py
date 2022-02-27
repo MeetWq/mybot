@@ -58,6 +58,4 @@ scheduler.add_job(
     month=dynamic_cron[4],
     year=dynamic_cron[5],
     id="bilibili_dynamic_cron",
-    coalesce=True,
-    misfire_grace_time=30,
 )
