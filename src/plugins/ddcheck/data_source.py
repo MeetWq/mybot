@@ -92,7 +92,7 @@ async def get_medals(uid: int, cookie: str) -> List[dict]:
 
 
 def format_color(color: int) -> str:
-    return hex(color).replace("0x", "#")
+    return f"#{color:06X}"
 
 
 async def get_reply(name: str) -> Optional[Union[str, bytes]]:
