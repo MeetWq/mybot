@@ -37,11 +37,7 @@ async def get_tx_voice(text, type=0) -> str:
     cred = credential.Credential(
         tts_config.tencent_secret_id, tts_config.tencent_secret_key
     )
-    http_profile = HttpProfile()
-    http_profile.endpoint = "tts.tencentcloudapi.com"
-    client_profile = ClientProfile()
-    client_profile.httpProfile = http_profile
-    client = tts_client.TtsClient(cred, "ap-shanghai", client_profile)
+    client = tts_client.TtsClient(cred, "ap-shanghai")
     req = models.TextToVoiceRequest()
 
     if type == 0:
@@ -111,7 +107,7 @@ async def get_ai_voice_url(text, type=0) -> str:
 
     match_obj = re.search(r'"url":"(.*?)"', result)
     if match_obj:
-        mp3_url = "https:" + match_obj.group(1).replace("\/", "/")
+        mp3_url = "https:" + match_obj.group(1).replace(r"\/", "/")
         return mp3_url
     return ""
 
