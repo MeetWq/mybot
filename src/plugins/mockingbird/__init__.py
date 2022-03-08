@@ -17,6 +17,9 @@ async def _(msg: Message = CommandArg()):
 
     voice = await get_voice(text)
     if voice:
-        await speak.finish(MessageSegment.record(voice))
+        if isinstance(voice, str):
+            await speak.finish(voice)
+        else:
+            await speak.finish(MessageSegment.record(voice))
     else:
         await speak.finish("出错了，请稍后再试")
