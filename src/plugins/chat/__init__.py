@@ -1,6 +1,5 @@
 import re
 import random
-from typing import Type
 from datetime import datetime, timedelta
 from nonebot.matcher import Matcher
 from nonebot.rule import to_me, Rule
@@ -74,6 +73,7 @@ async def first_receive(
 async def continue_receive(
     matcher: Matcher, event: MessageEvent, msg: str = EventPlainText()
 ):
+    msg = msg.strip()
     if msg:
         for word in end_word:
             if word in msg.lower():
@@ -121,19 +121,17 @@ def new_matcher(event: MessageEvent):
     )
 
 
-async def get_reply(msg: str, event: MessageEvent):
+async def get_reply(msg: str, event: MessageEvent) -> str:
     prefix = event.group_id if isinstance(event, GroupMessageEvent) else "private"
     user_id = f"{prefix}_{event.user_id}"
     event_id = get_event_id(event)
-    username = event.sender.card or event.sender.nickname
+    username = event.sender.card or event.sender.nickname or ""
 
     reply = await get_anime_thesaurus(msg)
     if reply:
         return reply
 
     reply = await chat_bot.get_reply(msg, event_id, user_id)
-    reply = reply.replace("<USER-NAME>", username)
     if reply:
-        return reply
-
-    return random.choice(error_reply)
+        return reply.replace("<USER-NAME>", username)
+    return ""
