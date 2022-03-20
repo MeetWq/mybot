@@ -27,7 +27,7 @@ async def rss_to_msg(rss: RSS, info: dict) -> Optional[Message]:
     if not img:
         return None
     msg.append(MessageSegment.image(img))
-    msg.append(info["link"])
+    # msg.append(info["link"])
     return msg
 
 

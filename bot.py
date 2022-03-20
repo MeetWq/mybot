@@ -48,6 +48,7 @@ nonebot.load_plugin('nonebot_plugin_wordcloud')
 nonebot.load_plugin('nonebot_plugin_word_bank2')
 nonebot.load_plugin('nonebot_plugin_gamedraw')
 nonebot.load_plugin('nonebot_plugin_heweather')
+nonebot.load_plugin('nonebot_plugin_ddcheck')
 nonebot.load_plugins('src/plugins')
 
 # Modify some config / config depends on loaded configs

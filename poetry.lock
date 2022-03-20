@@ -949,6 +949,22 @@ nonebot2 = {version = ">=2.0.0-beta.1,<3.0.0", extras = ["httpx"]}
 sqlmodel = ">=0.0.6,<0.0.7"
 
 [[package]]
+name = "nonebot-plugin-ddcheck"
+version = "0.1.1"
+description = "Nonebot2 成分姬插件"
+category = "main"
+optional = false
+python-versions = ">=3.7.3,<4.0.0"
+
+[package.dependencies]
+httpx = ">=0.19.0"
+Jinja2 = ">=3.0.0,<4.0.0"
+nonebot-adapter-onebot = ">=2.0.0-beta.1,<3.0.0"
+nonebot-plugin-apscheduler = ">=0.1.2,<0.2.0"
+nonebot-plugin-htmlrender = ">=0.0.4"
+nonebot2 = ">=2.0.0-beta.1,<3.0.0"
+
+[[package]]
 name = "nonebot-plugin-emojimix"
 version = "0.1.4"
 description = "Nonebot2 plugin for emojimix"
@@ -1033,7 +1049,7 @@ nonebot2 = ">=2.0.0-alpha.8,<3.0.0"
 
 [[package]]
 name = "nonebot-plugin-logo"
-version = "0.2.0"
+version = "0.2.1"
 description = "Nonebot2 plugin for making logo in PornHub or other styles"
 category = "main"
 optional = false
@@ -1944,7 +1960,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "8cf8c42f814338a3a14aae127d94f4188a8446bbb191d129798381c02583a2b6"
+content-hash = "31881e107954721943a94b4c4dfde0363f56d83771632a10164738940699b24f"
 
 [metadata.files]
 aiocache = [
@@ -2695,6 +2711,10 @@ nonebot-plugin-datastore = [
     {file = "nonebot-plugin-datastore-0.3.0.tar.gz", hash = "sha256:5ec19151774ae9fc78451633a7620b4529d703e3b3c2a45dd0ed757e00ddc64b"},
     {file = "nonebot_plugin_datastore-0.3.0-py3-none-any.whl", hash = "sha256:fe423c0c0edfc9a8cdfd84b1ae037e9fa7e3266e9286dd81d18c3d2e9c6cf41a"},
 ]
+nonebot-plugin-ddcheck = [
+    {file = "nonebot_plugin_ddcheck-0.1.1-py3-none-any.whl", hash = "sha256:95cdcbb3f4dacba00feaf9dcdd3823930ada7910387970bf1adcaaaf309ba812"},
+    {file = "nonebot_plugin_ddcheck-0.1.1.tar.gz", hash = "sha256:9fd78d4502aa9cf9ce91f192b60e2686546737231d61d478323d9710c632e651"},
+]
 nonebot-plugin-emojimix = [
     {file = "nonebot_plugin_emojimix-0.1.4-py3-none-any.whl", hash = "sha256:fdea5c09216c89bc6a5cbaed020af3291a0be424cc46664263025824758e6759"},
     {file = "nonebot_plugin_emojimix-0.1.4.tar.gz", hash = "sha256:61a46968c26ea9fc905304fa4b8b27f96be6d303f9e6ba81974831d09c33ad5d"},
@@ -2716,8 +2736,8 @@ nonebot-plugin-localstore = [
     {file = "nonebot_plugin_localstore-0.1.0-py3-none-any.whl", hash = "sha256:a5be70a32f24d92561120881b883e4583c7aecec9703399cc6eef4618e5ee933"},
 ]
 nonebot-plugin-logo = [
-    {file = "nonebot_plugin_logo-0.2.0-py3-none-any.whl", hash = "sha256:5b3a41f137694e1960a9214475bd978e9db275a609306e171f534533f8f6f30c"},
-    {file = "nonebot_plugin_logo-0.2.0.tar.gz", hash = "sha256:a631edeb7d13336e800750cf532b20d05934828db453c14760746adb1d8877de"},
+    {file = "nonebot_plugin_logo-0.2.1-py3-none-any.whl", hash = "sha256:4c3a8494710896c41435e5103ba61baaf29a1a8349145134652fa49d89fcc5e5"},
+    {file = "nonebot_plugin_logo-0.2.1.tar.gz", hash = "sha256:b8a962c4f17c329a11026603cf199ee59543e6c1949f061e4d1dd74b7bc2e4e1"},
 ]
 nonebot-plugin-manager = [
     {file = "nonebot_plugin_manager-0.5.9-py3-none-any.whl", hash = "sha256:701bd8ecb1f24ca0b027746745b54f79e9297c9b9f15953a4841f91cc5720b6a"},

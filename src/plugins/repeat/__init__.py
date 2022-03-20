@@ -1,5 +1,6 @@
 import re
 from typing import Dict
+from nonebot.typing import T_State
 from nonebot.params import EventMessage
 from nonebot import on_message, get_driver
 from nonebot.adapters.onebot.v11 import (
@@ -79,13 +80,13 @@ class Counter:
 
 
 msgs: Dict[int, Counter] = {}
-repeat = on_message(block=False, priority=101)
 
 
-@repeat.handle()
-async def _(event: GroupMessageEvent, msg: Message = EventMessage()):
+def repeat_rule(
+    event: GroupMessageEvent, state: T_State, msg: Message = EventMessage()
+) -> bool:
     if not msg:
-        await repeat.finish()
+        return False
 
     group_id = event.group_id
     if group_id not in msgs.keys():
@@ -98,6 +99,16 @@ async def _(event: GroupMessageEvent, msg: Message = EventMessage()):
         counter.add_msg(msg)
 
     if counter.count == repeat_config.repeat_count:
-        message = counter.msg
-        if message:
-            await repeat.finish(message)
+        state["msg"] = counter.msg
+        return True
+    return False
+
+
+repeat = on_message(repeat_rule, block=False, priority=101)
+
+
+@repeat.handle()
+async def _(state: T_State):
+    msg: Message = state["msg"]
+    if msg:
+        await repeat.finish(msg)
