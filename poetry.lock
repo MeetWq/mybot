@@ -469,7 +469,7 @@ sgmllib3k = "*"
 
 [[package]]
 name = "fonttools"
-version = "4.31.1"
+version = "4.31.2"
 description = "Tools to manipulate font files"
 category = "main"
 optional = false
@@ -923,7 +923,7 @@ typing-extensions = ">=3.10.0,<5.0.0"
 
 [[package]]
 name = "nonebot-plugin-chess"
-version = "0.1.1"
+version = "0.1.2"
 description = "适用于 Nonebot2 的棋类游戏插件"
 category = "main"
 optional = false
@@ -1017,6 +1017,19 @@ nonebot2 = ">=2.0.0-beta.1,<3.0.0"
 pydantic = ">=1.5.0,<2.0.0"
 
 [[package]]
+name = "nonebot-plugin-hikarisearch"
+version = "0.1.1"
+description = "基于 HikariSearch 的又一个 Nonebot2 搜图插件"
+category = "main"
+optional = false
+python-versions = ">=3.8,<4.0"
+
+[package.dependencies]
+httpx = ">=0.19.0"
+nonebot-adapter-onebot = ">=2.0.0-beta.1,<3.0.0"
+nonebot2 = ">=2.0.0-beta.1,<3.0.0"
+
+[[package]]
 name = "nonebot-plugin-htmlrender"
 version = "0.0.4.5"
 description = "通过浏览器渲染图片"
@@ -1093,7 +1106,7 @@ Pillow = ">=8.2.0"
 
 [[package]]
 name = "nonebot-plugin-petpet"
-version = "0.2.11"
+version = "0.2.12"
 description = "Nonebot2 plugin for making fun pictures"
 category = "main"
 optional = false
@@ -1101,6 +1114,9 @@ python-versions = ">=3.7.3,<4.0.0"
 
 [package.dependencies]
 aiocache = ">=0.11.0"
+aiofiles = ">=0.8.0,<0.9.0"
+emoji = ">=1.7.0,<2.0.0"
+fonttools = ">=4.0.0,<5.0.0"
 httpx = ">=0.19.0"
 imageio = ">=2.12.0,<3.0.0"
 nonebot-adapter-onebot = ">=2.0.0-beta.1,<3.0.0"
@@ -1166,7 +1182,7 @@ nonebot2 = ">=2.0.0-beta.1,<3.0.0"
 
 [[package]]
 name = "nonebot-plugin-word-bank2"
-version = "0.1.4.0"
+version = "0.1.4.1"
 description = "无数据问答插件"
 category = "main"
 optional = false
@@ -1674,7 +1690,7 @@ sqlcipher = ["sqlcipher3-binary"]
 
 [[package]]
 name = "sqlalchemy2-stubs"
-version = "0.0.2a20"
+version = "0.0.2a21"
 description = "Typing Stubs for SQLAlchemy 1.4"
 category = "main"
 optional = false
@@ -1712,7 +1728,7 @@ full = ["itsdangerous", "jinja2", "python-multipart", "pyyaml", "requests"]
 
 [[package]]
 name = "tencentcloud-sdk-python"
-version = "3.0.603"
+version = "3.0.605"
 description = "Tencent Cloud SDK for Python"
 category = "main"
 optional = false
@@ -1856,7 +1872,7 @@ test = ["aiohttp", "flake8 (>=3.9.2,<3.10.0)", "psutil", "pycodestyle (>=2.7.0,<
 
 [[package]]
 name = "watchgod"
-version = "0.8"
+version = "0.8.1"
 description = "Simple, modern file watching and code reload in python."
 category = "main"
 optional = false
@@ -1973,7 +1989,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "444b991f176fec661025061a29a5977d7401eb1efb23cd65ee7249550dc4265f"
+content-hash = "b3f5b3bfc43b5d5846b842828bbd9c36bfcadfaedb1ff8ea63c32e69bea2942a"
 
 [metadata.files]
 aiocache = [
@@ -2209,8 +2225,8 @@ feedparser = [
     {file = "feedparser-6.0.8.tar.gz", hash = "sha256:5ce0410a05ab248c8c7cfca3a0ea2203968ee9ff4486067379af4827a59f9661"},
 ]
 fonttools = [
-    {file = "fonttools-4.31.1-py3-none-any.whl", hash = "sha256:2b288eae806800668cb5cdf52a37b5ac701c5adda2dd5c88b685581ce3385285"},
-    {file = "fonttools-4.31.1.zip", hash = "sha256:f8b35ed9ba189710994cec2c86b8eb5f0c49336698575e439a0d5671d3ca1ace"},
+    {file = "fonttools-4.31.2-py3-none-any.whl", hash = "sha256:2df636a3f402ef14593c6811dac0609563b8c374bd7850e76919eb51ea205426"},
+    {file = "fonttools-4.31.2.zip", hash = "sha256:236b29aee6b113e8f7bee28779c1230a86ad2aac9a74a31b0aedf57e7dfb62a4"},
 ]
 frozenlist = [
     {file = "frozenlist-1.3.0-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:d2257aaba9660f78c7b1d8fea963b68f3feffb1a9d5d05a18401ca9eb3e8d0a3"},
@@ -2717,8 +2733,8 @@ nonebot-plugin-chatrecorder = [
     {file = "nonebot_plugin_chatrecorder-0.1.5.tar.gz", hash = "sha256:82e9b870756c4c5b0d33a11f932340e369cd28d35cf25ac364c8f886be4fbfa0"},
 ]
 nonebot-plugin-chess = [
-    {file = "nonebot_plugin_chess-0.1.1-py3-none-any.whl", hash = "sha256:3887343b9b51ca1dbc02a9188145ed9e3676eb853700a8fe8cb4d34221c654de"},
-    {file = "nonebot_plugin_chess-0.1.1.tar.gz", hash = "sha256:a1f232508313d3cba334b901676cdd12f4276ef7165f515f44bbf9c50f2befcd"},
+    {file = "nonebot_plugin_chess-0.1.2-py3-none-any.whl", hash = "sha256:b748afd069b320fc5d7a8535340c9ac19b28ee140a6d6d6d73c0e31e52efa813"},
+    {file = "nonebot_plugin_chess-0.1.2.tar.gz", hash = "sha256:2d3b84a4e6e89b32b025df8790605e9b1438577fb58fb5821510cfdbc69e9619"},
 ]
 nonebot-plugin-datastore = [
     {file = "nonebot-plugin-datastore-0.3.0.tar.gz", hash = "sha256:5ec19151774ae9fc78451633a7620b4529d703e3b3c2a45dd0ed757e00ddc64b"},
@@ -2739,6 +2755,10 @@ nonebot-plugin-gamedraw = [
 nonebot-plugin-heweather = [
     {file = "nonebot-plugin-heweather-0.5.5.tar.gz", hash = "sha256:2a39a738c38f7b0da96406227238a5b4b0c3eba7002c5ae6d83d018d43875bee"},
     {file = "nonebot_plugin_heweather-0.5.5-py3-none-any.whl", hash = "sha256:ce007b4306e1198383bf38111f1f96ea4c2b782b0547e7cbdbdac80b44a4f6d8"},
+]
+nonebot-plugin-hikarisearch = [
+    {file = "nonebot_plugin_hikarisearch-0.1.1-py3-none-any.whl", hash = "sha256:f42a2752f9ae85bf6fd985127be86b5a3a918d4ef9f4a2df5c3c2f63d41867b8"},
+    {file = "nonebot_plugin_hikarisearch-0.1.1.tar.gz", hash = "sha256:f2a6d78a931dccf8276abb013d82a17db42b42e19d9f5fd975729bba2565f470"},
 ]
 nonebot-plugin-htmlrender = [
     {file = "nonebot-plugin-htmlrender-0.0.4.5.tar.gz", hash = "sha256:75e59af0d4e71038c0aab17824d37ec9cdf3b121b84659d352fe70c8176a9ac8"},
@@ -2761,8 +2781,8 @@ nonebot-plugin-memes = [
     {file = "nonebot_plugin_memes-0.2.2.2.tar.gz", hash = "sha256:f5b39719b0bb8469977ad3f63eb7d0b29a5010d5732ca54e09d3e038b33bb7cc"},
 ]
 nonebot-plugin-petpet = [
-    {file = "nonebot_plugin_petpet-0.2.11-py3-none-any.whl", hash = "sha256:5c41a9f5c82b88d6d63453be6be96c1545785f19991af011f35081157ebb4823"},
-    {file = "nonebot_plugin_petpet-0.2.11.tar.gz", hash = "sha256:83b3c9c75ffcf497f915146cbf86999af619c23616651e412cf2f0a636ebfdf6"},
+    {file = "nonebot_plugin_petpet-0.2.12-py3-none-any.whl", hash = "sha256:e14a8188e626f39ef5050c28da6e6bfedc634d4492e6acbc2007fecaa42b72fe"},
+    {file = "nonebot_plugin_petpet-0.2.12.tar.gz", hash = "sha256:0ec4c0fae7cb967541103769622ad88e9f8adda0b29c8ea2b635c7b08bc3e3cb"},
 ]
 nonebot-plugin-remake = [
     {file = "nonebot_plugin_remake-0.2.4-py3-none-any.whl", hash = "sha256:28a1b6ce7a41a78cb125b96ccfb929bdc0ff4c389590201b1c1c8c7a9708183b"},
@@ -2781,8 +2801,8 @@ nonebot-plugin-withdraw = [
     {file = "nonebot_plugin_withdraw-0.2.0.tar.gz", hash = "sha256:0d9a13e9e9abd7795aba01b21e7e5edb72488209ccf7fb5c179bc3a198263212"},
 ]
 nonebot-plugin-word-bank2 = [
-    {file = "nonebot-plugin-word-bank2-0.1.4.0.tar.gz", hash = "sha256:d5742caec6445422cbe185736cd19090364c5dc351049dc80d520b7e1e733a43"},
-    {file = "nonebot_plugin_word_bank2-0.1.4.0-py3-none-any.whl", hash = "sha256:76938eeafb4e32562044560c0c54c5e099c9b5bd487162315b47a85b13fdd004"},
+    {file = "nonebot-plugin-word-bank2-0.1.4.1.tar.gz", hash = "sha256:697f7210c6d365c48d89ccb7b5afc68ed3590474467aca5d5ff849ee38109d37"},
+    {file = "nonebot_plugin_word_bank2-0.1.4.1-py3-none-any.whl", hash = "sha256:2bdfc89a4469ecb7f184c5b8867527caf528c75c7e46cbd9055147686f0c1f6a"},
 ]
 nonebot-plugin-wordcloud = [
     {file = "nonebot-plugin-wordcloud-0.1.0.tar.gz", hash = "sha256:56fefd9c59671921a2d6a66b4e5ef629f60ff1878d324792613acd4889711622"},
@@ -3285,8 +3305,8 @@ sqlalchemy = [
     {file = "SQLAlchemy-1.4.32.tar.gz", hash = "sha256:6fdd2dc5931daab778c2b65b03df6ae68376e028a3098eb624d0909d999885bc"},
 ]
 sqlalchemy2-stubs = [
-    {file = "sqlalchemy2-stubs-0.0.2a20.tar.gz", hash = "sha256:3e96a5bb7d46a368c780ba57dcf2afbe2d3efdd75f7724ae7a859df0b0625f38"},
-    {file = "sqlalchemy2_stubs-0.0.2a20-py3-none-any.whl", hash = "sha256:da31d0e30a2af2e5ad83dbce5738543a9f488089774f506de5ec7d28d425a202"},
+    {file = "sqlalchemy2-stubs-0.0.2a21.tar.gz", hash = "sha256:207e3d8a36fc032d325f4eec89e0c6760efe81d07e978513d8c9b14f108dcd0c"},
+    {file = "sqlalchemy2_stubs-0.0.2a21-py3-none-any.whl", hash = "sha256:bd4a3d5ca7ff9d01b2245e1b26304d6b2ec4daf43a01faf40db9e09245679433"},
 ]
 sqlmodel = [
     {file = "sqlmodel-0.0.6-py3-none-any.whl", hash = "sha256:c5fd8719e09da348cd32ce2a5b6a44f289d3029fa8f1c9818229b6f34f1201b4"},
@@ -3297,8 +3317,8 @@ starlette = [
     {file = "starlette-0.17.1.tar.gz", hash = "sha256:57eab3cc975a28af62f6faec94d355a410634940f10b30d68d31cb5ec1b44ae8"},
 ]
 tencentcloud-sdk-python = [
-    {file = "tencentcloud-sdk-python-3.0.603.tar.gz", hash = "sha256:aaae2dacd1186ccd65715eafdcbc586480d00f45f2655278ca181546a0772e5f"},
-    {file = "tencentcloud_sdk_python-3.0.603-py2.py3-none-any.whl", hash = "sha256:7c86d362bcbe61d8f9b5b4f1aaad8b6ede91a1ec029fc085a762234596635d32"},
+    {file = "tencentcloud-sdk-python-3.0.605.tar.gz", hash = "sha256:ae3fab865ffaf18e5b092a33176c7073f7ace93d12ab4abcee1529e11c900492"},
+    {file = "tencentcloud_sdk_python-3.0.605-py2.py3-none-any.whl", hash = "sha256:001b2e463a18b833fec8136f230ad7d1af732b32a08965549b1d2f36808c6b04"},
 ]
 text-unidecode = [
     {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
@@ -3405,8 +3425,8 @@ uvloop = [
     {file = "uvloop-0.16.0.tar.gz", hash = "sha256:f74bc20c7b67d1c27c72601c78cf95be99d5c2cdd4514502b4f3eb0933ff1228"},
 ]
 watchgod = [
-    {file = "watchgod-0.8-py3-none-any.whl", hash = "sha256:339c2cfede1ccc1e277bbf5e82e42886f3c80801b01f45ab10d9461c4118b5eb"},
-    {file = "watchgod-0.8.tar.gz", hash = "sha256:29a1d8f25e1721ddb73981652ca318c47387ffb12ec4171ddd7b9d01540033b1"},
+    {file = "watchgod-0.8.1-py3-none-any.whl", hash = "sha256:4ba20c2fa3e63df706ab50e694b9453b05395fadb7cbbfd984d71fb1547d485d"},
+    {file = "watchgod-0.8.1.tar.gz", hash = "sha256:c12d15f3df7d11e740704e45398277f75f1d78f46ad59ca9d7505bfd8b8d3086"},
 ]
 wcwidth = [
     {file = "wcwidth-0.2.5-py2.py3-none-any.whl", hash = "sha256:beb4802a9cebb9144e99086eff703a642a13d6a0052920003a230f3294bbe784"},

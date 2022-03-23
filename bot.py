@@ -50,6 +50,7 @@ nonebot.load_plugin('nonebot_plugin_gamedraw')
 nonebot.load_plugin('nonebot_plugin_heweather')
 nonebot.load_plugin('nonebot_plugin_ddcheck')
 nonebot.load_plugin('nonebot_plugin_simplemusic')
+nonebot.load_plugin('nonebot_plugin_hikarisearch')
 nonebot.load_plugins('src/plugins')
 
 # Modify some config / config depends on loaded configs
