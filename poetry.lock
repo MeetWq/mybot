@@ -1018,7 +1018,7 @@ pydantic = ">=1.5.0,<2.0.0"
 
 [[package]]
 name = "nonebot-plugin-hikarisearch"
-version = "0.1.1"
+version = "0.1.2"
 description = "基于 HikariSearch 的又一个 Nonebot2 搜图插件"
 category = "main"
 optional = false
@@ -1215,6 +1215,20 @@ tzdata = ">=2021.5,<2022.0"
 wordcloud = ">=1.8.1,<2.0.0"
 
 [[package]]
+name = "nonebot-plugin-wordle"
+version = "0.1.0"
+description = "Nonebot2 wordle猜单词插件"
+category = "main"
+optional = false
+python-versions = ">=3.7.3,<4.0.0"
+
+[package.dependencies]
+nonebot-adapter-onebot = ">=2.0.0-beta.1,<3.0.0"
+nonebot2 = ">=2.0.0-beta.1,<3.0.0"
+Pillow = ">=8.0.0"
+pyenchant = ">=3.2.2,<4.0.0"
+
+[[package]]
 name = "nonebot2"
 version = "2.0.0b2"
 description = "An asynchronous python bot framework."
@@ -1407,6 +1421,14 @@ description = "A port of node.js's EventEmitter to python."
 category = "main"
 optional = false
 python-versions = "*"
+
+[[package]]
+name = "pyenchant"
+version = "3.2.2"
+description = "Python bindings for the Enchant spellchecking system"
+category = "main"
+optional = false
+python-versions = ">=3.5"
 
 [[package]]
 name = "pyfiglet"
@@ -1989,7 +2011,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "b3f5b3bfc43b5d5846b842828bbd9c36bfcadfaedb1ff8ea63c32e69bea2942a"
+content-hash = "6c4afeb18cbce2970eff7d085acd169d1c17fa4c72a4eade1513839a95eda7bb"
 
 [metadata.files]
 aiocache = [
@@ -2757,8 +2779,8 @@ nonebot-plugin-heweather = [
     {file = "nonebot_plugin_heweather-0.5.5-py3-none-any.whl", hash = "sha256:ce007b4306e1198383bf38111f1f96ea4c2b782b0547e7cbdbdac80b44a4f6d8"},
 ]
 nonebot-plugin-hikarisearch = [
-    {file = "nonebot_plugin_hikarisearch-0.1.1-py3-none-any.whl", hash = "sha256:f42a2752f9ae85bf6fd985127be86b5a3a918d4ef9f4a2df5c3c2f63d41867b8"},
-    {file = "nonebot_plugin_hikarisearch-0.1.1.tar.gz", hash = "sha256:f2a6d78a931dccf8276abb013d82a17db42b42e19d9f5fd975729bba2565f470"},
+    {file = "nonebot_plugin_hikarisearch-0.1.2-py3-none-any.whl", hash = "sha256:47d64c788036b2854652c1df8b1ac32d8286465dfad115cfdaf5c7a54b90fecf"},
+    {file = "nonebot_plugin_hikarisearch-0.1.2.tar.gz", hash = "sha256:248b4e705e5008fe4731c3bb379cb3657bb5941fd08090d798698dde0f5b7435"},
 ]
 nonebot-plugin-htmlrender = [
     {file = "nonebot-plugin-htmlrender-0.0.4.5.tar.gz", hash = "sha256:75e59af0d4e71038c0aab17824d37ec9cdf3b121b84659d352fe70c8176a9ac8"},
@@ -2807,6 +2829,10 @@ nonebot-plugin-word-bank2 = [
 nonebot-plugin-wordcloud = [
     {file = "nonebot-plugin-wordcloud-0.1.0.tar.gz", hash = "sha256:56fefd9c59671921a2d6a66b4e5ef629f60ff1878d324792613acd4889711622"},
     {file = "nonebot_plugin_wordcloud-0.1.0-py3-none-any.whl", hash = "sha256:deb7a518bd925f19fe81106cfc49557a929d292a431bcd1e2e16089292711c74"},
+]
+nonebot-plugin-wordle = [
+    {file = "nonebot_plugin_wordle-0.1.0-py3-none-any.whl", hash = "sha256:b1f6164b4d735000a6b0ad941fcde4b49dc1a6ae855048e1d19349020b9315fb"},
+    {file = "nonebot_plugin_wordle-0.1.0.tar.gz", hash = "sha256:d9aeac5fe30f8f5beabc3542404b5ede7b686f6b997e1e3f0bcdd064219357f0"},
 ]
 nonebot2 = [
     {file = "nonebot2-2.0.0b2-py3-none-any.whl", hash = "sha256:8166490311b607f8fbf5e31934b005e29f6d39ff222a6771ec36c9456ec337ec"},
@@ -3003,6 +3029,12 @@ pydub = [
 pyee = [
     {file = "pyee-8.1.0-py2.py3-none-any.whl", hash = "sha256:383973b63ad7ed5e3c0311f8b179c52981f9e7b3eaea0e9a830d13ec34dde65f"},
     {file = "pyee-8.1.0.tar.gz", hash = "sha256:92dacc5bd2bdb8f95aa8dd2585d47ca1c4840e2adb95ccf90034d64f725bfd31"},
+]
+pyenchant = [
+    {file = "pyenchant-3.2.2-py3-none-any.whl", hash = "sha256:5facc821ece957208a81423af7d6ec7810dad29697cb0d77aae81e4e11c8e5a6"},
+    {file = "pyenchant-3.2.2-py3-none-win32.whl", hash = "sha256:5a636832987eaf26efe971968f4d1b78e81f62bca2bde0a9da210c7de43c3bce"},
+    {file = "pyenchant-3.2.2-py3-none-win_amd64.whl", hash = "sha256:6153f521852e23a5add923dbacfbf4bebbb8d70c4e4bad609a8e0f9faeb915d1"},
+    {file = "pyenchant-3.2.2.tar.gz", hash = "sha256:1cf830c6614362a78aab78d50eaf7c6c93831369c52e1bb64ffae1df0341e637"},
 ]
 pyfiglet = [
     {file = "pyfiglet-0.8.post1-py2.py3-none-any.whl", hash = "sha256:d555bcea17fbeaf70eaefa48bb119352487e629c9b56f30f383e2c62dd67a01c"},
