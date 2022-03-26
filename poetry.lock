@@ -664,11 +664,11 @@ python-versions = "*"
 
 [[package]]
 name = "jinja2"
-version = "3.0.3"
+version = "3.1.1"
 description = "A very fast and expressive template engine."
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [package.dependencies]
 MarkupSafe = ">=2.0"
@@ -923,7 +923,7 @@ typing-extensions = ">=3.10.0,<5.0.0"
 
 [[package]]
 name = "nonebot-plugin-chess"
-version = "0.1.2"
+version = "0.1.3"
 description = "适用于 Nonebot2 的棋类游戏插件"
 category = "main"
 optional = false
@@ -1090,7 +1090,7 @@ nonebot2 = ">=2.0.0-beta.1,<3.0.0"
 
 [[package]]
 name = "nonebot-plugin-memes"
-version = "0.2.2.2"
+version = "0.2.3"
 description = "Nonebot2 plugin for making memes"
 category = "main"
 optional = false
@@ -1098,6 +1098,8 @@ python-versions = ">=3.7.3,<4.0.0"
 
 [package.dependencies]
 aiocache = ">=0.11.0"
+emoji = ">=1.7.0,<2.0.0"
+fonttools = ">=4.31.2,<5.0.0"
 httpx = ">=0.19.0"
 imageio = ">=2.12.0,<3.0.0"
 nonebot-adapter-onebot = ">=2.0.0-beta.1,<3.0.0"
@@ -1106,7 +1108,7 @@ Pillow = ">=8.2.0"
 
 [[package]]
 name = "nonebot-plugin-petpet"
-version = "0.2.12"
+version = "0.2.12.1"
 description = "Nonebot2 plugin for making fun pictures"
 category = "main"
 optional = false
@@ -1216,7 +1218,7 @@ wordcloud = ">=1.8.1,<2.0.0"
 
 [[package]]
 name = "nonebot-plugin-wordle"
-version = "0.1.0"
+version = "0.1.4"
 description = "Nonebot2 wordle猜单词插件"
 category = "main"
 optional = false
@@ -1332,7 +1334,7 @@ test = ["appdirs (==1.4.4)", "pytest (>=6)", "pytest-cov (>=2.7)", "pytest-mock 
 
 [[package]]
 name = "playwright"
-version = "1.20.0"
+version = "1.20.1"
 description = "A high-level API to automate web browsers"
 category = "main"
 optional = false
@@ -1497,7 +1499,7 @@ six = ">=1.5"
 
 [[package]]
 name = "python-dotenv"
-version = "0.19.2"
+version = "0.20.0"
 description = "Read key-value pairs from a .env file and set them as environment variables"
 category = "main"
 optional = false
@@ -1750,7 +1752,7 @@ full = ["itsdangerous", "jinja2", "python-multipart", "pyyaml", "requests"]
 
 [[package]]
 name = "tencentcloud-sdk-python"
-version = "3.0.605"
+version = "3.0.607"
 description = "Tencent Cloud SDK for Python"
 category = "main"
 optional = false
@@ -2448,8 +2450,8 @@ jieba = [
     {file = "jieba-0.42.1.tar.gz", hash = "sha256:055ca12f62674fafed09427f176506079bc135638a14e23e25be909131928db2"},
 ]
 jinja2 = [
-    {file = "Jinja2-3.0.3-py3-none-any.whl", hash = "sha256:077ce6014f7b40d03b47d1f1ca4b0fc8328a692bd284016f806ed0eaca390ad8"},
-    {file = "Jinja2-3.0.3.tar.gz", hash = "sha256:611bb273cd68f3b993fabdc4064fc858c5b47a973cb5aa7999ec1ba405c87cd7"},
+    {file = "Jinja2-3.1.1-py3-none-any.whl", hash = "sha256:539835f51a74a69f41b848a9645dbdc35b4f20a3b601e2d9a7e22947b15ff119"},
+    {file = "Jinja2-3.1.1.tar.gz", hash = "sha256:640bed4bb501cbd17194b3cace1dc2126f5b619cf068a726b98192a0fde74ae9"},
 ]
 jinja2-time = [
     {file = "jinja2-time-0.2.0.tar.gz", hash = "sha256:d14eaa4d315e7688daa4969f616f226614350c48730bfa1692d2caebd8c90d40"},
@@ -2755,8 +2757,8 @@ nonebot-plugin-chatrecorder = [
     {file = "nonebot_plugin_chatrecorder-0.1.5.tar.gz", hash = "sha256:82e9b870756c4c5b0d33a11f932340e369cd28d35cf25ac364c8f886be4fbfa0"},
 ]
 nonebot-plugin-chess = [
-    {file = "nonebot_plugin_chess-0.1.2-py3-none-any.whl", hash = "sha256:b748afd069b320fc5d7a8535340c9ac19b28ee140a6d6d6d73c0e31e52efa813"},
-    {file = "nonebot_plugin_chess-0.1.2.tar.gz", hash = "sha256:2d3b84a4e6e89b32b025df8790605e9b1438577fb58fb5821510cfdbc69e9619"},
+    {file = "nonebot_plugin_chess-0.1.3-py3-none-any.whl", hash = "sha256:5c26bcf48ddf36648c2cd339cbb0573579607cfed7e367b3cc2bebbb740b3fd3"},
+    {file = "nonebot_plugin_chess-0.1.3.tar.gz", hash = "sha256:be2316a32ea03145436365c7242b63152342cb0f3c2b274cf8cf16a51cbdc399"},
 ]
 nonebot-plugin-datastore = [
     {file = "nonebot-plugin-datastore-0.3.0.tar.gz", hash = "sha256:5ec19151774ae9fc78451633a7620b4529d703e3b3c2a45dd0ed757e00ddc64b"},
@@ -2799,12 +2801,12 @@ nonebot-plugin-manager = [
     {file = "nonebot_plugin_manager-0.5.9.tar.gz", hash = "sha256:0380b5c7f64517f1468b61a8baf921311533e906bdb0f476ef678b59730fee8b"},
 ]
 nonebot-plugin-memes = [
-    {file = "nonebot_plugin_memes-0.2.2.2-py3-none-any.whl", hash = "sha256:1e472be5a8489a4f56043b7f62d57992a9b08d569b3979df39292289032161a5"},
-    {file = "nonebot_plugin_memes-0.2.2.2.tar.gz", hash = "sha256:f5b39719b0bb8469977ad3f63eb7d0b29a5010d5732ca54e09d3e038b33bb7cc"},
+    {file = "nonebot_plugin_memes-0.2.3-py3-none-any.whl", hash = "sha256:5b516c2cb4c57ae5d51a08679d9f8cc46605919f947aac84da936331800342a2"},
+    {file = "nonebot_plugin_memes-0.2.3.tar.gz", hash = "sha256:6c3c725fc2931d96692aae2688ef74ef562567477f1ad59e40e64e73987a4a55"},
 ]
 nonebot-plugin-petpet = [
-    {file = "nonebot_plugin_petpet-0.2.12-py3-none-any.whl", hash = "sha256:e14a8188e626f39ef5050c28da6e6bfedc634d4492e6acbc2007fecaa42b72fe"},
-    {file = "nonebot_plugin_petpet-0.2.12.tar.gz", hash = "sha256:0ec4c0fae7cb967541103769622ad88e9f8adda0b29c8ea2b635c7b08bc3e3cb"},
+    {file = "nonebot_plugin_petpet-0.2.12.1-py3-none-any.whl", hash = "sha256:27e151e4e4596de1f147e5f21254df64e618982b498b8cc797a5610c7058c6ff"},
+    {file = "nonebot_plugin_petpet-0.2.12.1.tar.gz", hash = "sha256:7cd750094b671d394e4e9693070993719f485d617e46a2a6f214be388bcfc6a9"},
 ]
 nonebot-plugin-remake = [
     {file = "nonebot_plugin_remake-0.2.4-py3-none-any.whl", hash = "sha256:28a1b6ce7a41a78cb125b96ccfb929bdc0ff4c389590201b1c1c8c7a9708183b"},
@@ -2831,8 +2833,8 @@ nonebot-plugin-wordcloud = [
     {file = "nonebot_plugin_wordcloud-0.1.0-py3-none-any.whl", hash = "sha256:deb7a518bd925f19fe81106cfc49557a929d292a431bcd1e2e16089292711c74"},
 ]
 nonebot-plugin-wordle = [
-    {file = "nonebot_plugin_wordle-0.1.0-py3-none-any.whl", hash = "sha256:b1f6164b4d735000a6b0ad941fcde4b49dc1a6ae855048e1d19349020b9315fb"},
-    {file = "nonebot_plugin_wordle-0.1.0.tar.gz", hash = "sha256:d9aeac5fe30f8f5beabc3542404b5ede7b686f6b997e1e3f0bcdd064219357f0"},
+    {file = "nonebot_plugin_wordle-0.1.4-py3-none-any.whl", hash = "sha256:fa11263b4b7250d18a6e1bb82fece85502607e7f82b6b9a09ce22764fe570383"},
+    {file = "nonebot_plugin_wordle-0.1.4.tar.gz", hash = "sha256:eb6b95d885df6bc4730dc6a14a722e842e43a2592fd420a903f3a55b7dc3af15"},
 ]
 nonebot2 = [
     {file = "nonebot2-2.0.0b2-py3-none-any.whl", hash = "sha256:8166490311b607f8fbf5e31934b005e29f6d39ff222a6771ec36c9456ec337ec"},
@@ -2929,13 +2931,13 @@ platformdirs = [
     {file = "platformdirs-2.5.1.tar.gz", hash = "sha256:7535e70dfa32e84d4b34996ea99c5e432fa29a708d0f4e394bbcb2a8faa4f16d"},
 ]
 playwright = [
-    {file = "playwright-1.20.0-py3-none-macosx_10_13_x86_64.whl", hash = "sha256:444a56049d1de7a770a9d0e9d8ca3846a444e582b46e9ca1db35d6d571926d69"},
-    {file = "playwright-1.20.0-py3-none-macosx_11_0_arm64.whl", hash = "sha256:506d9249f474bd7c5346a875effca3f7790fb308516e668ebcaae034200c3a0b"},
-    {file = "playwright-1.20.0-py3-none-macosx_11_0_universal2.whl", hash = "sha256:6f5ba082f702865e0bac936ae47d2c002f354c4dcebb09b093997ffe96f0778d"},
-    {file = "playwright-1.20.0-py3-none-manylinux1_x86_64.whl", hash = "sha256:8240ef3eda53a827aaba1524873a27a95b4316668adfa1b15fec0b2c390a7bf1"},
-    {file = "playwright-1.20.0-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:768a5d176bc244fe94cea8e71573d84b2794b285f1aaffc201ec1a436212516a"},
-    {file = "playwright-1.20.0-py3-none-win32.whl", hash = "sha256:fa7f3b4b94ae9d0ea8bab6aec53526e571a493341f5bb0c561c8f1cbe6d14228"},
-    {file = "playwright-1.20.0-py3-none-win_amd64.whl", hash = "sha256:84300615ec42ffae3a4950a685f7d3afb0f25f7c7f0c6896213922339ef3acb3"},
+    {file = "playwright-1.20.1-py3-none-macosx_10_13_x86_64.whl", hash = "sha256:7c9422d7d654123cb988fadde0cd46a2eeaaa7e1ce6ac6587aabb0a27b52e17c"},
+    {file = "playwright-1.20.1-py3-none-macosx_11_0_arm64.whl", hash = "sha256:5c2735cba76ef992ea5129eead9da315e45f2a40858fb43dabd1b80fb0fa6749"},
+    {file = "playwright-1.20.1-py3-none-macosx_11_0_universal2.whl", hash = "sha256:220a84b0f35639a9d017d3e82df2e5590b4ad89c93b9d74dbfa90d0d690516fe"},
+    {file = "playwright-1.20.1-py3-none-manylinux1_x86_64.whl", hash = "sha256:0af0632e201fb4327ea7bfc5bf12ad18afd3468b1ee76ca163145bc96ea42be7"},
+    {file = "playwright-1.20.1-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a5ba030f5382a5fa2901173fed5e821fc2c8452810b123c2bf0dfa43251544a8"},
+    {file = "playwright-1.20.1-py3-none-win32.whl", hash = "sha256:4d093488729768b3bf288b5959eb2ad6d5603be5e39a59be1d014e7b2703e90a"},
+    {file = "playwright-1.20.1-py3-none-win_amd64.whl", hash = "sha256:fac22d79d9f3af9a0fdededaae5a95c652ac98ffc7f4afb042c7a6b0f854337e"},
 ]
 poyo = [
     {file = "poyo-0.5.0-py2.py3-none-any.whl", hash = "sha256:3e2ca8e33fdc3c411cd101ca395668395dd5dc7ac775b8e809e3def9f9fe041a"},
@@ -3064,8 +3066,8 @@ python-dateutil = [
     {file = "python_dateutil-2.8.2-py2.py3-none-any.whl", hash = "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9"},
 ]
 python-dotenv = [
-    {file = "python-dotenv-0.19.2.tar.gz", hash = "sha256:a5de49a31e953b45ff2d2fd434bbc2670e8db5273606c1e737cc6b93eff3655f"},
-    {file = "python_dotenv-0.19.2-py2.py3-none-any.whl", hash = "sha256:32b2bdc1873fd3a3c346da1c6db83d0053c3c62f28f1f38516070c4c8971b1d3"},
+    {file = "python-dotenv-0.20.0.tar.gz", hash = "sha256:b7e3b04a59693c42c36f9ab1cc2acc46fa5df8c78e178fc33a8d4cd05c8d498f"},
+    {file = "python_dotenv-0.20.0-py3-none-any.whl", hash = "sha256:d92a187be61fe482e4fd675b6d52200e7be63a12b724abbf931a40ce4fa92938"},
 ]
 python-levenshtein-wheels = [
     {file = "python-Levenshtein-wheels-0.13.2.tar.gz", hash = "sha256:7bd8fc3ceeeaca626848a0d7a01d02f5b93475f2d56eaa37921f1271dec7bfb1"},
@@ -3349,8 +3351,8 @@ starlette = [
     {file = "starlette-0.17.1.tar.gz", hash = "sha256:57eab3cc975a28af62f6faec94d355a410634940f10b30d68d31cb5ec1b44ae8"},
 ]
 tencentcloud-sdk-python = [
-    {file = "tencentcloud-sdk-python-3.0.605.tar.gz", hash = "sha256:ae3fab865ffaf18e5b092a33176c7073f7ace93d12ab4abcee1529e11c900492"},
-    {file = "tencentcloud_sdk_python-3.0.605-py2.py3-none-any.whl", hash = "sha256:001b2e463a18b833fec8136f230ad7d1af732b32a08965549b1d2f36808c6b04"},
+    {file = "tencentcloud-sdk-python-3.0.607.tar.gz", hash = "sha256:b77774c6b910cd74b423561a975f675b0ae773dfa9fd1f5967964323d60c108f"},
+    {file = "tencentcloud_sdk_python-3.0.607-py2.py3-none-any.whl", hash = "sha256:f3ea62a9af357f9f9b99294cd46060e9f7b8f58a9441515e33e37ef1f39f8e46"},
 ]
 text-unidecode = [
     {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
