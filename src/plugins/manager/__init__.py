@@ -63,9 +63,9 @@ async def _(event: MessageEvent, msg: Message = CommandArg()):
         conv["user"] = []
     result = plugin_manager.block_plugin([plugin.name], conv)
     if result.get(plugin.name, False):
-        res = f"插件 {plugin.short_name} 禁用成功"
+        res = f"插件 {plugin.short_name or plugin.name} 禁用成功"
     else:
-        res = f"插件 {plugin.short_name} 不存在或已关闭编辑权限！"
+        res = f"插件 {plugin.short_name or plugin.name} 不存在或已关闭编辑权限！"
     await block.finish(res)
 
 
@@ -90,7 +90,7 @@ async def _(event: MessageEvent, msg: Message = CommandArg()):
         conv["user"] = []
     result = plugin_manager.unblock_plugin([plugin.name], conv)
     if result.get(plugin.name, False):
-        res = f"插件 {plugin.short_name} 启用成功"
+        res = f"插件 {plugin.short_name or plugin.name} 启用成功"
     else:
-        res = f"插件 {plugin.short_name} 不存在或已关闭编辑权限！"
+        res = f"插件 {plugin.short_name or plugin.name} 不存在或已关闭编辑权限！"
     await unblock.finish(res)
