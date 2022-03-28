@@ -690,7 +690,7 @@ jinja2 = "*"
 
 [[package]]
 name = "kiwisolver"
-version = "1.4.0"
+version = "1.4.1"
 description = "A fast implementation of the Cassowary constraint solver"
 category = "main"
 optional = false
@@ -1002,6 +1002,20 @@ typing-extensions = ">=3.10.0,<5.0.0"
 ujson = ">=4.0.2,<5.0.0"
 
 [[package]]
+name = "nonebot-plugin-handle"
+version = "0.1.0"
+description = "Nonebot2 汉字Wordle 插件"
+category = "main"
+optional = false
+python-versions = ">=3.7.3,<4.0.0"
+
+[package.dependencies]
+nonebot-adapter-onebot = ">=2.0.0-beta.1,<3.0.0"
+nonebot2 = ">=2.0.0-beta.1,<3.0.0"
+Pillow = ">=8.0.0"
+pypinyin = ">=0.40.0"
+
+[[package]]
 name = "nonebot-plugin-heweather"
 version = "0.5.5"
 description = "Get Heweather information and convert to pictures"
@@ -1218,7 +1232,7 @@ wordcloud = ">=1.8.1,<2.0.0"
 
 [[package]]
 name = "nonebot-plugin-wordle"
-version = "0.1.4"
+version = "0.1.5.1"
 description = "Nonebot2 wordle猜单词插件"
 category = "main"
 optional = false
@@ -1752,7 +1766,7 @@ full = ["itsdangerous", "jinja2", "python-multipart", "pyyaml", "requests"]
 
 [[package]]
 name = "tencentcloud-sdk-python"
-version = "3.0.607"
+version = "3.0.608"
 description = "Tencent Cloud SDK for Python"
 category = "main"
 optional = false
@@ -2013,7 +2027,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "6c4afeb18cbce2970eff7d085acd169d1c17fa4c72a4eade1513839a95eda7bb"
+content-hash = "bfbeeb3097afa6d1d82c5d1c3f0c2b279fd130db5820276a2cde9ab63966dbc4"
 
 [metadata.files]
 aiocache = [
@@ -2458,49 +2472,49 @@ jinja2-time = [
     {file = "jinja2_time-0.2.0-py2.py3-none-any.whl", hash = "sha256:d3eab6605e3ec8b7a0863df09cc1d23714908fa61aa6986a845c20ba488b4efa"},
 ]
 kiwisolver = [
-    {file = "kiwisolver-1.4.0-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:70e7b7a4ebeddef423115ea31857732fc04e0f38dd1e6385e1af05b6164a3d0f"},
-    {file = "kiwisolver-1.4.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:384b5076b2c0172003abca9ba8b8c5efcaaffd31616f3f5e0a09dcc34772d012"},
-    {file = "kiwisolver-1.4.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:334a7e3d498a0a791245f0964c746d0414e9b13aef73237f0d798a2101fdbae9"},
-    {file = "kiwisolver-1.4.0-cp310-cp310-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:734e943ae519cdb8534d9053f478417c525ec921c06896ec7119e65d9ea4a687"},
-    {file = "kiwisolver-1.4.0-cp310-cp310-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:65cbdbe14dc5988e362eb15e02dd24c6724238cb235132f812f1e3a29a61a3de"},
-    {file = "kiwisolver-1.4.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6bf0080449d6ea39b817d85abd2c20d2d42fd9b1587544d64371d28d93c379cf"},
-    {file = "kiwisolver-1.4.0-cp310-cp310-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:cd0223a3a4ddcc0d0e06c6cfeb0adde2bc19c08b4c7fc79d48dac2486a4b115b"},
-    {file = "kiwisolver-1.4.0-cp310-cp310-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:ed30c5e58e578a2981c67346b2569e04120d1b80fa6906c207fe824d24603313"},
-    {file = "kiwisolver-1.4.0-cp310-cp310-win32.whl", hash = "sha256:ed937691f522cc2362c280c903837a4e35195659b9935b598e3cd448db863605"},
-    {file = "kiwisolver-1.4.0-cp310-cp310-win_amd64.whl", hash = "sha256:576ba51b9f4e4d0d583c1cd257f53397bdc5e66a5e49fe68712f658426115777"},
-    {file = "kiwisolver-1.4.0-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:2467fe5fff6ed2a728e10dca9b1f37e9b911ca5b228a7d8990c8e3abf80c1724"},
-    {file = "kiwisolver-1.4.0-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:caff7ae6fb6dce2f520b2d46efc801605fa1378fb19bb4580aebc6174eab05a0"},
-    {file = "kiwisolver-1.4.0-cp37-cp37m-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:313724e85fd14d581a939fa02424f4dc772fd914bc04499a8a6377d47313b966"},
-    {file = "kiwisolver-1.4.0-cp37-cp37m-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:bb997d1631b20745b18674d68dd6f1d9d45db512efd5fe0f162a5d4a6bbdd211"},
-    {file = "kiwisolver-1.4.0-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:97372c837add54e3e64a811464b14bb01428c4e9256072b6296f04157ea23246"},
-    {file = "kiwisolver-1.4.0-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:4471a48f53d20d49f263ca888aab77b754525ef35e6767657e1a44a724a8b0af"},
-    {file = "kiwisolver-1.4.0-cp37-cp37m-win32.whl", hash = "sha256:1cf8c81e8a5fb4f5dcbd473fdb619b895313d29b7c60e4545827dcc6efbd8efc"},
-    {file = "kiwisolver-1.4.0-cp37-cp37m-win_amd64.whl", hash = "sha256:87367ba1ad3819f7189fe8faff5f75a7603f526576033e7b86e10b598f8790b2"},
-    {file = "kiwisolver-1.4.0-cp38-cp38-macosx_10_9_universal2.whl", hash = "sha256:139c75216e5875ee5f8f4f7adcc3cd339f46f0d66bda2e10d8d21386d635476f"},
-    {file = "kiwisolver-1.4.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:895b2df026006ff7434b03ca495983d0d26da96f6d58414c77d616747ee77e34"},
-    {file = "kiwisolver-1.4.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:cbf9aa926de224af15c974750fecdc7d2c0043428372acaaf61216e202abbf21"},
-    {file = "kiwisolver-1.4.0-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8cd1f81bc35ec24cb82a7d0b805521e3d71b25b8a493d5810d18dc29644c6ef8"},
-    {file = "kiwisolver-1.4.0-cp38-cp38-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:199f32bf6f3d3e2246024326497513c5c49c62aecee86f0ac019f5991978d505"},
-    {file = "kiwisolver-1.4.0-cp38-cp38-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:af6a7c956a45ee721e4263f5823e1a3b2e6b21a7e2b3646b3794e000620609d0"},
-    {file = "kiwisolver-1.4.0-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:3891527ec51b0365bb50de9bf826ce3d5b1adc276685b2779889762437bbd359"},
-    {file = "kiwisolver-1.4.0-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:14f43edc25daa0646d4b4e86c2ebdd32d785ab73a65a570130a3d234a4554b07"},
-    {file = "kiwisolver-1.4.0-cp38-cp38-win32.whl", hash = "sha256:5ecf82bb25cec7df4bfcf37afe49f6f6202b4fa4029be7cb0848ed319c72d356"},
-    {file = "kiwisolver-1.4.0-cp38-cp38-win_amd64.whl", hash = "sha256:34e2e39a219b203fa3a82af5b9f8d386a8718677de7a9b82a9634e292a8f4e0a"},
-    {file = "kiwisolver-1.4.0-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:6c19457f58941da61681efaabd5b1c37893108a2f922b9b19538f6921911186d"},
-    {file = "kiwisolver-1.4.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:a0a6f3d5063e7fd6662e4773778ad2cb36e598abc6eb171af4a072ca86b441d0"},
-    {file = "kiwisolver-1.4.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:676f9fac93f97f529dc80b5d6731099fad337549408e8bdd929343b7cb679797"},
-    {file = "kiwisolver-1.4.0-cp39-cp39-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:4b70f0729947d6327cd659e1b3477ced44a317a4ba441238b2a3642990f0ebd7"},
-    {file = "kiwisolver-1.4.0-cp39-cp39-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:925a32900fc16430ba0dec2c0fca2e776eaf2fdc0930d5552be0a59e23304001"},
-    {file = "kiwisolver-1.4.0-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:17ec8bd4e162fd0a8723467395c5bb16fd665a528b78e9339886c82965ed8efb"},
-    {file = "kiwisolver-1.4.0-cp39-cp39-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:9b4d1db32a4f1682df1480fd68eb1400235ac8f9ad8932e1624fdb23eb891904"},
-    {file = "kiwisolver-1.4.0-cp39-cp39-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:38ebc0cb30ed2f59bd15e23591a53698005123e90e880f1af4600fcdbe4912e1"},
-    {file = "kiwisolver-1.4.0-cp39-cp39-win32.whl", hash = "sha256:8f63b981678ca894bb665bcd5043bde2c9ba600e69df730c1ceeadd73ddbcb8c"},
-    {file = "kiwisolver-1.4.0-cp39-cp39-win_amd64.whl", hash = "sha256:b1ff5582bf55e85728119c5a23f695b8e408e15eee7d0f5effe0ee8ad1f8b523"},
-    {file = "kiwisolver-1.4.0-pp37-pypy37_pp73-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:c29496625c61e18d97a6f6c2f2a55759ca8290fc21a751bc57824599c431c0d2"},
-    {file = "kiwisolver-1.4.0-pp37-pypy37_pp73-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:71d44a6a59ea53d41e5950a42ec496fa821bd86f292fb3e10aa1b3932ecfc65e"},
-    {file = "kiwisolver-1.4.0-pp37-pypy37_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:daf2030bf18c21bf91fa9cf6a403a765519c9168bd7a91ba1d66d5c7f70ded1e"},
-    {file = "kiwisolver-1.4.0-pp37-pypy37_pp73-win_amd64.whl", hash = "sha256:5ca92de8e48678a2cbbd90adb10773e3553bb9fd1c090bf0dfe5fc3337a181ea"},
-    {file = "kiwisolver-1.4.0.tar.gz", hash = "sha256:7508b01e211178a85d21f1f87029846b77b2404a4c68cbd14748d4d4142fa3b8"},
+    {file = "kiwisolver-1.4.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:e91348c46db6e7bcdec778ff8e3d2fc2c7e16f3be72cac204d2f864374f5476f"},
+    {file = "kiwisolver-1.4.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:7f855bda104eb9eff30bf818f6bdaf606db25fa0c55a1bac9091270a0c170908"},
+    {file = "kiwisolver-1.4.1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:ab9a77ef4f135bda3d1665f090dd5ac43044104f110cafb3342c74a55a33b67f"},
+    {file = "kiwisolver-1.4.1-cp310-cp310-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:8750fc3b56c6aee58a852e39903d953f657f68938dfebc6549c6d88b8d517a1b"},
+    {file = "kiwisolver-1.4.1-cp310-cp310-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:72892a97bb4b27488fd9f329670f21ac9b976cc326c16033e102006745e7a655"},
+    {file = "kiwisolver-1.4.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e513e0694ff792173b5ff8e13ac485c309ba6ae6381ae681576657782e284a20"},
+    {file = "kiwisolver-1.4.1-cp310-cp310-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:d425fe1838a63f3dbaecb199d621ebf73ebf6e85d226524d0bee93d1eb427b73"},
+    {file = "kiwisolver-1.4.1-cp310-cp310-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:b8a673c602f421714d6376cacedc3282afca1b60b6c8776df91f6dbb17686c2e"},
+    {file = "kiwisolver-1.4.1-cp310-cp310-win32.whl", hash = "sha256:36847fbd108f160162e549138fe04298fb6112b47a9c19e8318816506d8521ac"},
+    {file = "kiwisolver-1.4.1-cp310-cp310-win_amd64.whl", hash = "sha256:8c619c4e9df2f2f227da1b3d510a51388116cd3a5c6fc25e4c9fe9834fa3e2bb"},
+    {file = "kiwisolver-1.4.1-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:134130b2d325c0c90c1754d5819034784f014f21432dffc977b54ab7099e04b2"},
+    {file = "kiwisolver-1.4.1-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:0862085c5f687fa0cef88cd7a95a3ba038dca050c1997ecff54c0bb904c46bf5"},
+    {file = "kiwisolver-1.4.1-cp37-cp37m-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:d6ba90a4e872ba133eb3ae75101e290f83b5f97374d30f15a7ff15346fda28a0"},
+    {file = "kiwisolver-1.4.1-cp37-cp37m-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:6ac167d66c19f994eb16c31c2267d4b1c4b761811284254bcdc752fb29d24135"},
+    {file = "kiwisolver-1.4.1-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:e39b982ffd3d6756ba748cc907ff015ba73777a94b4cc835c3557b9597c8c707"},
+    {file = "kiwisolver-1.4.1-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:4d84926f60f4602ecc4e70d7e3b4a2addb046bcd842a1908e373ee4eec4e578d"},
+    {file = "kiwisolver-1.4.1-cp37-cp37m-win32.whl", hash = "sha256:2e89de819d1809d0d7cc8fb62c94a1a77ee546c9286d2a11b60da6ea8335684b"},
+    {file = "kiwisolver-1.4.1-cp37-cp37m-win_amd64.whl", hash = "sha256:d1b5ccc832de9be0602695bc78f5f9be427f7014daaa407897ada4e557f62b6e"},
+    {file = "kiwisolver-1.4.1-cp38-cp38-macosx_10_9_universal2.whl", hash = "sha256:7f04aa4fa556c9f615f5c7499c64bec1ccd76a22d106ca381ae741e9c77ff13d"},
+    {file = "kiwisolver-1.4.1-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:c2691c96915e73c492e742580ff744cd9ccd70d841607b1a0ef56c75c890d9c6"},
+    {file = "kiwisolver-1.4.1-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:9266371990847f76d211aa321012b43278da66ee940d129cb1490e307c091f0d"},
+    {file = "kiwisolver-1.4.1-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a67496915fbd0973f11e34ebec4b5c510ca735fec0a2ec8af2a7d673db4bcde8"},
+    {file = "kiwisolver-1.4.1-cp38-cp38-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:cdbda04d2674be914f7237931b44db64eb6d0f510a35e057c920ebeb6679ade8"},
+    {file = "kiwisolver-1.4.1-cp38-cp38-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:98469a96a3a3ce15db480390752ae922a74c41b0edfbc32b943099d4c8b71bd8"},
+    {file = "kiwisolver-1.4.1-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:d1988da8031d60786b775231927ef20a8a6e5d14e6ae720811dc17d8af9ca841"},
+    {file = "kiwisolver-1.4.1-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:c33f30536e014beaaae391367a92632ec68b32cd21a186574c63fea4ba04d795"},
+    {file = "kiwisolver-1.4.1-cp38-cp38-win32.whl", hash = "sha256:96ce02ae6c1b7d68510419071d902bfb7cf4851f25c3f4f828261dda7e7923ab"},
+    {file = "kiwisolver-1.4.1-cp38-cp38-win_amd64.whl", hash = "sha256:34f9608eeb17601da74b0feb3ba079310f8d9f76be976a876f73661611a29dce"},
+    {file = "kiwisolver-1.4.1-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:b4b2a8878ef321a0d065e1e1b25c04d3b8ecf6d3ffd4705453534b83a0e395c9"},
+    {file = "kiwisolver-1.4.1-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:8d3ed8b1b8521452ff3ec20365939c49db50c7ba4e5440f5ad2b8cadc30a6e6a"},
+    {file = "kiwisolver-1.4.1-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:95e4e563341bddf1602b079b0bb88c326ee2a6ac4f1a8adf4331ace072241cf8"},
+    {file = "kiwisolver-1.4.1-cp39-cp39-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:4a623cb8f831759c4fddfc64a1d8261ff459fb5ea6e7cd79f329ea6f08f8bbf4"},
+    {file = "kiwisolver-1.4.1-cp39-cp39-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:b5d2621afdc5189932f39f2bd637a42078ae7f05c6bf135b27d93e218e66befa"},
+    {file = "kiwisolver-1.4.1-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:89aa071d906eab9b4f843793398d2be169498d5de5940542b9683655468e4d20"},
+    {file = "kiwisolver-1.4.1-cp39-cp39-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:c1f6fdfb9d33211b6b6cb654e679dabc5f116b5d04ef931f9534b46184c42424"},
+    {file = "kiwisolver-1.4.1-cp39-cp39-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:57534131861c2382379f669601246691080ca960d038387bacdf6f3a9f088d36"},
+    {file = "kiwisolver-1.4.1-cp39-cp39-win32.whl", hash = "sha256:bd87564e8ca896f00f56e7a2038f3b0b3b05e877f88d6e2c1f0d383611ce6d4d"},
+    {file = "kiwisolver-1.4.1-cp39-cp39-win_amd64.whl", hash = "sha256:8b332388df50ea05da9af32e532c45ef39f2c517780315663433ef1ee0bab107"},
+    {file = "kiwisolver-1.4.1-pp37-pypy37_pp73-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:d2bfc77a3009105266001b9eb10dceb4b7d20b0a6b7a4c2b4f1a992cd52e920b"},
+    {file = "kiwisolver-1.4.1-pp37-pypy37_pp73-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:153beb19b0b560e9312e8ef066705a743897b2e1b8f909bf8204880876d06915"},
+    {file = "kiwisolver-1.4.1-pp37-pypy37_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:2875a564d886369348158abd769970a673160cbcafaf7f04c2627e431009c715"},
+    {file = "kiwisolver-1.4.1-pp37-pypy37_pp73-win_amd64.whl", hash = "sha256:568a207ea82473056a6ad0f30a3312d1a952a260fea35003a5f414e6dbff21f9"},
+    {file = "kiwisolver-1.4.1.tar.gz", hash = "sha256:91bfcd2a14bea6f93c86876c4abccb53dc3f0bcad55e3a0af0b3e57ced6eef11"},
 ]
 langid = [
     {file = "langid-1.1.6.tar.gz", hash = "sha256:044bcae1912dab85c33d8e98f2811b8f4ff1213e5e9a9e9510137b84da2cb293"},
@@ -2776,6 +2790,10 @@ nonebot-plugin-gamedraw = [
     {file = "nonebot_plugin_gamedraw-0.3.5-py3-none-any.whl", hash = "sha256:628378f40d1c4d4d69c6a31b3c33c8726aecd029d87a90aee6df83b19afbd110"},
     {file = "nonebot_plugin_gamedraw-0.3.5.tar.gz", hash = "sha256:6f3cefb05bdbedb980659c7e0c14dda7c86cf7e66e2baf3ca0d28cdfa3ec53b3"},
 ]
+nonebot-plugin-handle = [
+    {file = "nonebot_plugin_handle-0.1.0-py3-none-any.whl", hash = "sha256:c377659a471ba2812ff9c70d65db91631cb71cda9e17130a7f07e87629edff6c"},
+    {file = "nonebot_plugin_handle-0.1.0.tar.gz", hash = "sha256:e845d81e0c4064d9b8312674e2f0e53d38ac1bc10ac062371ffd538ebb296be0"},
+]
 nonebot-plugin-heweather = [
     {file = "nonebot-plugin-heweather-0.5.5.tar.gz", hash = "sha256:2a39a738c38f7b0da96406227238a5b4b0c3eba7002c5ae6d83d018d43875bee"},
     {file = "nonebot_plugin_heweather-0.5.5-py3-none-any.whl", hash = "sha256:ce007b4306e1198383bf38111f1f96ea4c2b782b0547e7cbdbdac80b44a4f6d8"},
@@ -2833,8 +2851,8 @@ nonebot-plugin-wordcloud = [
     {file = "nonebot_plugin_wordcloud-0.1.0-py3-none-any.whl", hash = "sha256:deb7a518bd925f19fe81106cfc49557a929d292a431bcd1e2e16089292711c74"},
 ]
 nonebot-plugin-wordle = [
-    {file = "nonebot_plugin_wordle-0.1.4-py3-none-any.whl", hash = "sha256:fa11263b4b7250d18a6e1bb82fece85502607e7f82b6b9a09ce22764fe570383"},
-    {file = "nonebot_plugin_wordle-0.1.4.tar.gz", hash = "sha256:eb6b95d885df6bc4730dc6a14a722e842e43a2592fd420a903f3a55b7dc3af15"},
+    {file = "nonebot_plugin_wordle-0.1.5.1-py3-none-any.whl", hash = "sha256:df55a5b5b0909591fc2d00c4c8fc3efc29665d8ef9a0c7a608ba746e8bcb5d30"},
+    {file = "nonebot_plugin_wordle-0.1.5.1.tar.gz", hash = "sha256:1da26316e538ed78d24dcf81d600d91fc80c565d3ef67a74f6c38e829d0fc13b"},
 ]
 nonebot2 = [
     {file = "nonebot2-2.0.0b2-py3-none-any.whl", hash = "sha256:8166490311b607f8fbf5e31934b005e29f6d39ff222a6771ec36c9456ec337ec"},
@@ -3351,8 +3369,8 @@ starlette = [
     {file = "starlette-0.17.1.tar.gz", hash = "sha256:57eab3cc975a28af62f6faec94d355a410634940f10b30d68d31cb5ec1b44ae8"},
 ]
 tencentcloud-sdk-python = [
-    {file = "tencentcloud-sdk-python-3.0.607.tar.gz", hash = "sha256:b77774c6b910cd74b423561a975f675b0ae773dfa9fd1f5967964323d60c108f"},
-    {file = "tencentcloud_sdk_python-3.0.607-py2.py3-none-any.whl", hash = "sha256:f3ea62a9af357f9f9b99294cd46060e9f7b8f58a9441515e33e37ef1f39f8e46"},
+    {file = "tencentcloud-sdk-python-3.0.608.tar.gz", hash = "sha256:545e6ab1f61ce436b85194b92d240f929b07fd8c9027b6a8498df3ed12f11c6e"},
+    {file = "tencentcloud_sdk_python-3.0.608-py2.py3-none-any.whl", hash = "sha256:228359e81825b811fdd21f8481db11f04a8202c667489ebdc58c7da81c0a4bb0"},
 ]
 text-unidecode = [
     {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
