@@ -3,14 +3,13 @@ import json
 import uuid
 import httpx
 import langid
+import traceback
 from io import BytesIO
 from typing import Optional, Union
 from pydub import AudioSegment
 from pydub.silence import detect_silence
 
 from tencentcloud.common import credential
-from tencentcloud.common.profile.client_profile import ClientProfile
-from tencentcloud.common.profile.http_profile import HttpProfile
 from tencentcloud.tts.v20190823 import tts_client, models
 
 from nonebot import get_driver
@@ -28,8 +27,8 @@ async def get_voice(text, type=0) -> Optional[Union[str, BytesIO]]:
         else:
             voice = await get_tx_voice(text, type)
         return voice
-    except Exception as e:
-        logger.warning(f"Error in get_voice({text}): {e}")
+    except:
+        logger.warning(traceback.format_exc())
         return None
 
 
@@ -113,7 +112,7 @@ async def get_ai_voice_url(text, type=0) -> str:
 
 
 async def split_voice(input) -> Optional[BytesIO]:
-    sound = list(AudioSegment.from_file(input))
+    sound = AudioSegment.from_file(input)
     silent_ranges = detect_silence(sound, min_silence_len=500, silence_thresh=-40)
     if len(silent_ranges) >= 1:
         first_silent_end = silent_ranges[0][1] - 300
