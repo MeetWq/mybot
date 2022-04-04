@@ -53,6 +53,7 @@ nonebot.load_plugin('nonebot_plugin_simplemusic')
 nonebot.load_plugin('nonebot_plugin_hikarisearch')
 nonebot.load_plugin('nonebot_plugin_wordle')
 nonebot.load_plugin('nonebot_plugin_handle')
+nonebot.load_plugin('nonebot_plugin_minesweeper')
 nonebot.load_plugins('src/plugins')
 
 # Modify some config / config depends on loaded configs
