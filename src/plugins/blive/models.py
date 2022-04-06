@@ -2,7 +2,7 @@ import time
 from enum import Enum, IntEnum
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Dict, Literal, Optional, Union
 from pydantic import BaseModel, Extra
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 
@@ -197,41 +197,6 @@ class TaskInfo(BaseModel, extra=Extra.ignore):
     user_info: UserInfo
     room_info: RoomInfo
     task_status: TaskStatus
-
-
-class KeyFrames(BaseModel, extra=Extra.ignore):
-    times: List[float]
-    filepositions: List[float]
-
-
-class MetaData(BaseModel, extra=Extra.ignore):
-    hasAudio: bool
-    hasVideo: bool
-    hasMetadata: bool
-    hasKeyframes: bool
-    canSeekToEnd: bool
-    duration: float
-    datasize: float
-    filesize: float
-
-    audiosize: Optional[float] = None
-    audiocodecid: Optional[float] = None
-    audiodatarate: Optional[float] = None
-    audiosamplerate: Optional[float] = None
-    audiosamplesize: Optional[float] = None
-    stereo: Optional[bool] = None
-
-    videosize: float
-    framerate: float
-    videocodecid: float
-    videodatarate: float
-    width: float
-    height: float
-
-    lasttimestamp: float
-    lastkeyframelocation: float
-    lastkeyframetimestamp: float
-    keyframes: KeyFrames
 
 
 class Dynamic:

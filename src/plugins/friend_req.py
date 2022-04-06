@@ -15,9 +15,9 @@ friend_req = on_request(_friend_req, priority=5)
 
 @friend_req.handle()
 async def _(bot: Bot, event: FriendRequestEvent):
-    await asyncio.sleep(5)
-    await event.approve(bot)
+    # await asyncio.sleep(5)
+    # await event.approve(bot)
     await bot.send_private_msg(
         user_id=int(list(bot.config.superusers)[0]),
-        message=f"{event.user_id} 请求添加好友，已自动通过",
+        message=f"{event.user_id} 请求添加好友",
     )

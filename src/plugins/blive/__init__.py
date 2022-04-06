@@ -1,3 +1,4 @@
+import asyncio
 from typing import Protocol
 from argparse import Namespace
 from dataclasses import dataclass
@@ -19,7 +20,6 @@ from .sub_list import (
     close_dynamic,
 )
 from .blrec import sync_tasks
-from .cutter import cut_start, cut_stop
 from .uid_list import get_sub_info_by_uid, get_sub_info_by_name
 from .server import blrec_handler, blrec_error_handler, uploader_handler
 
@@ -34,17 +34,13 @@ __cmd__ = """
 关闭动态：blive dynoff {用户名/UID}
 开启录播：blive recon {用户名/UID}
 关闭录播：blive recoff {用户名/UID}
-开始切片：blive cuton {用户名/UID} [偏移量]
-结束切片：blive cutoff {用户名/UID} [偏移量]
 """.strip()
 __example__ = """
 blive d 282994
 blive d 泠鸢yousa
 blive recon 泠鸢yousa
-blive cuton 泠鸢yousa 60
-blive cutoff 泠鸢yousa
 """.strip()
-__notice__ = "注意是UID不是房间号\n偏移量只能是正数，指前向偏移，单位为秒"
+__notice__ = "注意是UID不是房间号"
 __usage__ = (
     f"{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}\nNotice:\n{__notice__}"
 )
@@ -62,20 +58,19 @@ class Args:
     uid: str = ""
     up_name: str = ""
     room_id: str = ""
-    offset: float = 0
 
 
 async def add_sub(args: Args):
     if res := add_sub_list(args.user_id, args.uid, args.up_name, args.room_id):
         await blive.finish(res)
-    await sync_tasks()
+    asyncio.ensure_future(sync_tasks())
     await blive.finish(f"成功订阅 {args.up_name} 的直播间")
 
 
 async def del_sub(args: Args):
     if res := del_sub_list(args.user_id, args.uid):
         await blive.finish(res)
-    await sync_tasks()
+    asyncio.ensure_future(sync_tasks())
     await blive.finish(f"成功取消订阅 {args.up_name} 的直播间")
 
 
@@ -95,7 +90,7 @@ async def list_sub(args: Args):
 
 async def clear_sub(args: Args):
     clear_sub_list(args.user_id)
-    await sync_tasks()
+    asyncio.ensure_future(sync_tasks())
     await blive.finish("订阅列表已清空")
 
 
@@ -114,25 +109,15 @@ async def dynoff(args: Args):
 async def recon(args: Args):
     if res := open_record(args.user_id, args.uid):
         await blive.finish(res)
-    await sync_tasks()
+    asyncio.ensure_future(sync_tasks())
     await blive.finish(f"{args.up_name} 自动录播已打开")
 
 
 async def recoff(args: Args):
     if res := close_record(args.user_id, args.uid):
         await blive.finish(res)
-    await sync_tasks()
+    asyncio.ensure_future(sync_tasks())
     await blive.finish(f"{args.up_name} 自动录播已关闭")
-
-
-async def cuton(args: Args):
-    if res := await cut_start(args.user_id, args.uid, float(args.offset)):
-        await blive.finish(res)
-
-
-async def cutoff(args: Args):
-    if res := await cut_stop(args.user_id, args.uid, float(args.offset)):
-        await blive.finish(res)
 
 
 blive_parser = ArgumentParser("blive")
@@ -168,16 +153,6 @@ recon_parser.set_defaults(func=recon)
 recoff_parser = blive_subparsers.add_parser("recoff", aliases=("关闭录播"))
 recoff_parser.add_argument("name")
 recoff_parser.set_defaults(func=recoff)
-
-cuton_parser = blive_subparsers.add_parser("cuton", aliases=("开始切片"))
-cuton_parser.add_argument("name")
-cuton_parser.add_argument("offset", type=float, nargs="?", default=0)
-cuton_parser.set_defaults(func=cuton)
-
-cutoff_parser = blive_subparsers.add_parser("cutoff", aliases=("结束切片"))
-cutoff_parser.add_argument("name")
-cutoff_parser.add_argument("offset", type=float, nargs="?", default=0)
-cutoff_parser.set_defaults(func=cutoff)
 
 
 blive = on_shell_command(
@@ -222,8 +197,5 @@ async def _(ns: Namespace = ShellCommandArgs(), user_id: str = Depends(get_id)):
                 args.room_id = str(info["room_id"])
             else:
                 await blive.finish("获取直播间信息失败，请检查名称或稍后再试")
-
-    if hasattr(ns, "offset"):
-        args.offset = ns.offset
 
     await args.func(args)
