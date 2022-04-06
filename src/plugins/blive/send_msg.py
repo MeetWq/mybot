@@ -1,4 +1,5 @@
 import re
+import asyncio
 from typing import Union
 import nonebot
 from nonebot.log import logger
@@ -11,18 +12,21 @@ async def send_live_msg(uid: str, msg: Union[str, Message]):
     users = get_sub_users(uid)
     for user_id in users:
         await send_bot_msg(user_id, msg)
+        await asyncio.sleep(2)
 
 
 async def send_dynamic_msg(uid: str, msg: Union[str, Message]):
     users = get_dynamic_users(uid)
     for user_id in users:
         await send_bot_msg(user_id, msg)
+        await asyncio.sleep(2)
 
 
 async def send_record_msg(uid: str, msg: Union[str, Message]):
     users = get_record_users(uid)
     for user_id in users:
         await send_bot_msg(user_id, msg)
+        await asyncio.sleep(2)
 
 
 async def send_bot_msg(user_id: str, msg: Union[str, Message]):
