@@ -59,7 +59,7 @@ async def blrec_handler(
 @app.post("/blive/blrec/error")
 async def blrec_error_handler(event: ErrorEvent):
     logger.info(str(event))
-    await send_superuser_msg(f"blrec error: {event.data.detail}")
+    await send_superuser_msg(f"blrec error: {event.data.detail[:100]}")
 
 
 @app.post("/blive/uploader")
