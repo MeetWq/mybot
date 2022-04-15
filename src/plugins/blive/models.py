@@ -184,13 +184,6 @@ class TaskStatus(BaseModel, extra=Extra.ignore):
     monitor_enabled: bool
     recorder_enabled: bool
     running_status: RunningStatus
-    elapsed: float  # time elapsed
-    data_count: int  # Number of Bytes in total
-    data_rate: float  # Number of Bytes per second
-    danmu_count: int  # Number of Danmu in total
-    danmu_rate: float  # Number of Danmu per minutes
-    real_quality_number: QualityNumber
-    recording_path: Optional[Path] = None
 
 
 class TaskInfo(BaseModel, extra=Extra.ignore):

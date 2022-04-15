@@ -30,8 +30,7 @@ async def get_nbnhhsh(keyword: str) -> Tuple[str, str]:
 
 
 async def get_jiki(keyword: str) -> Tuple[str, Union[str, Message]]:
-    keyword = quote(keyword)
-    search_url = "https://jikipedia.com/search?phrase={}".format(keyword)
+    search_url = "https://jikipedia.com/search?phrase={}".format(quote(keyword))
     async with httpx.AsyncClient() as client:
         resp = await client.get(url=search_url)
         result = resp.text

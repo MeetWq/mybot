@@ -29,8 +29,8 @@ def manager_rule(bot: Bot, event: MessageEvent) -> bool:
     )
 
 
-block = on_command("block", aliases={"禁用"}, block=True, rule=Rule(manager_rule))
-unblock = on_command("unblock", aliases={"启用"}, block=True, rule=Rule(manager_rule))
+block = on_command("禁用", block=True, rule=Rule(manager_rule))
+unblock = on_command("启用", block=True, rule=Rule(manager_rule))
 
 Conv = Dict[str, List[int]]
 
