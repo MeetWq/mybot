@@ -21,7 +21,5 @@
 ```bash
 pip install poetry
 poetry install
-python -m playwright install
-sudo apt install ffmpeg imagemagick translate-shell
-sudo apt install texlive-latex-extra poppler-utils
+sudo apt install ffmpeg imagemagick texlive-full poppler-utils
 ```

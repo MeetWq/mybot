@@ -1,10 +1,11 @@
+import asyncio
 from typing import Type
 from nonebot import on_command
 from nonebot.rule import to_me
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg
 from nonebot.permission import SUPERUSER
-from nonebot.adapters.onebot.v11 import Message, MessageSegment
+from nonebot.adapters.onebot.v11 import Bot, Message, MessageSegment
 
 from .data_source import get_setu
 
@@ -25,16 +26,16 @@ setu_ = on_command("r18", permission=SUPERUSER, rule=to_me(), block=True, priori
 
 
 @setu.handle()
-async def _(msg: Message = CommandArg()):
-    await handle(setu, msg)
+async def _(bot: Bot, msg: Message = CommandArg()):
+    await handle(bot, setu, msg)
 
 
 @setu_.handle()
-async def _(msg: Message = CommandArg()):
-    await handle(setu_, msg, r18=True)
+async def _(bot: Bot, msg: Message = CommandArg()):
+    await handle(bot, setu_, msg, r18=True)
 
 
-async def handle(matcher: Type[Matcher], msg: Message, r18=False):
+async def handle(bot: Bot, matcher: Type[Matcher], msg: Message, r18=False):
     keyword = msg.extract_plain_text().strip()
     res = await get_setu(keyword=keyword, r18=r18)
     if not res:
@@ -42,4 +43,7 @@ async def handle(matcher: Type[Matcher], msg: Message, r18=False):
     if isinstance(res, str):
         await matcher.finish(res)
     else:
-        await matcher.finish(MessageSegment.image(res))
+        result = await matcher.send(MessageSegment.image(res))
+        msg_id = result["message_id"]
+        loop = asyncio.get_running_loop()
+        loop.call_later(100, lambda: asyncio.ensure_future(bot.delete_msg(message_id=msg_id)))

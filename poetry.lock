@@ -603,26 +603,29 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "imageio"
-version = "2.16.2"
+version = "2.17.0"
 description = "Library for reading and writing a wide range of image, video, scientific, and volumetric data formats."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 
 [package.dependencies]
-numpy = ">=1.20.0"
+numpy = "*"
 pillow = ">=8.3.2"
 
 [package.extras]
+all-plugins = ["astropy", "av", "imageio-ffmpeg", "psutil", "tifffile"]
+all-plugins-pypy = ["av", "imageio-ffmpeg", "psutil", "tifffile"]
 build = ["wheel"]
 dev = ["invoke", "pytest", "pytest-cov", "fsspec", "black", "flake8"]
 docs = ["sphinx", "numpydoc", "pydata-sphinx-theme"]
 ffmpeg = ["imageio-ffmpeg", "psutil"]
 fits = ["astropy"]
-full = ["astropy", "black", "flake8", "fsspec", "gdal", "imageio-ffmpeg", "invoke", "itk", "numpydoc", "psutil", "pydata-sphinx-theme", "pytest", "pytest-cov", "sphinx", "tifffile", "wheel"]
+full = ["astropy", "av", "black", "flake8", "fsspec", "gdal", "imageio-ffmpeg", "invoke", "itk", "numpydoc", "psutil", "pydata-sphinx-theme", "pytest", "pytest-cov", "sphinx", "tifffile", "wheel"]
 gdal = ["gdal"]
 itk = ["itk"]
 linting = ["black", "flake8"]
+pyav = ["av"]
 test = ["invoke", "pytest", "pytest-cov", "fsspec"]
 tifffile = ["tifffile"]
 
@@ -907,6 +910,19 @@ nonebot-plugin-htmlrender = ">=0.0.1"
 nonebot2 = ">=2.0.0-beta.1,<3.0.0"
 
 [[package]]
+name = "nonebot-plugin-cchess"
+version = "0.1.0"
+description = "Nonebot2 象棋插件"
+category = "main"
+optional = false
+python-versions = ">=3.7.3,<4.0.0"
+
+[package.dependencies]
+nonebot-adapter-onebot = ">=2.0.0-beta.1,<3.0.0"
+nonebot2 = ">=2.0.0-beta.1,<3.0.0"
+Pillow = ">=8.0.0"
+
+[[package]]
 name = "nonebot-plugin-chatrecorder"
 version = "0.1.5"
 description = "适用于 Nonebot2 的聊天记录插件"
@@ -950,7 +966,7 @@ sqlmodel = ">=0.0.6,<0.0.7"
 
 [[package]]
 name = "nonebot-plugin-ddcheck"
-version = "0.1.2"
+version = "0.1.3"
 description = "Nonebot2 成分姬插件"
 category = "main"
 optional = false
@@ -1122,7 +1138,7 @@ Pillow = ">=8.2.0"
 
 [[package]]
 name = "nonebot-plugin-minesweeper"
-version = "0.1.2"
+version = "0.1.3"
 description = "Nonebot2 扫雷插件"
 category = "main"
 optional = false
@@ -1135,7 +1151,7 @@ Pillow = ">=8.0.0"
 
 [[package]]
 name = "nonebot-plugin-petpet"
-version = "0.2.14"
+version = "0.2.15"
 description = "Nonebot2 plugin for making fun pictures"
 category = "main"
 optional = false
@@ -1225,7 +1241,7 @@ nonebot2 = ">=2.0.0-beta.1,<=2.0.0-beta.2"
 
 [[package]]
 name = "nonebot-plugin-wordcloud"
-version = "0.1.0"
+version = "0.1.1"
 description = "适用于 NoneBot2 的词云插件"
 category = "main"
 optional = false
@@ -1349,19 +1365,19 @@ deprecated = "*"
 
 [[package]]
 name = "platformdirs"
-version = "2.5.1"
+version = "2.5.2"
 description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 
 [package.extras]
-docs = ["Sphinx (>=4)", "furo (>=2021.7.5b38)", "proselint (>=0.10.2)", "sphinx-autodoc-typehints (>=1.12)"]
-test = ["appdirs (==1.4.4)", "pytest (>=6)", "pytest-cov (>=2.7)", "pytest-mock (>=3.6)"]
+docs = ["furo (>=2021.7.5b38)", "proselint (>=0.10.2)", "sphinx-autodoc-typehints (>=1.12)", "sphinx (>=4)"]
+test = ["appdirs (==1.4.4)", "pytest-cov (>=2.7)", "pytest-mock (>=3.6)", "pytest (>=6)"]
 
 [[package]]
 name = "playwright"
-version = "1.20.1"
+version = "1.21.0"
 description = "A high-level API to automate web browsers"
 category = "main"
 optional = false
@@ -1701,7 +1717,7 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "soupsieve"
-version = "2.3.2"
+version = "2.3.2.post1"
 description = "A modern CSS selector implementation for Beautiful Soup."
 category = "main"
 optional = false
@@ -1779,7 +1795,7 @@ full = ["itsdangerous", "jinja2", "python-multipart", "pyyaml", "requests"]
 
 [[package]]
 name = "tencentcloud-sdk-python"
-version = "3.0.617"
+version = "3.0.622"
 description = "Tencent Cloud SDK for Python"
 category = "main"
 optional = false
@@ -1833,11 +1849,11 @@ python-versions = ">=3.6,<4.0"
 
 [[package]]
 name = "typing-extensions"
-version = "4.1.1"
-description = "Backported and Experimental Type Hints for Python 3.6+"
+version = "4.2.0"
+description = "Backported and Experimental Type Hints for Python 3.7+"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [[package]]
 name = "tzdata"
@@ -2040,7 +2056,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "e53500e84db1acb9ccaa3a01059286db047f5c8d92fe0aeba53983b239ba114e"
+content-hash = "e0a189a8af228a1e97c5814216f07563431b4df30249071fc6bc222ec5c12f31"
 
 [metadata.files]
 aiocache = [
@@ -2462,8 +2478,8 @@ idna = [
     {file = "idna-3.3.tar.gz", hash = "sha256:9d643ff0a55b762d5cdb124b8eaa99c66322e2157b69160bc32796e824360e6d"},
 ]
 imageio = [
-    {file = "imageio-2.16.2-py3-none-any.whl", hash = "sha256:4757b5bc41158feb89529721bc14b738c3a0e17284dbdfc3f09ac4ad9dc00a08"},
-    {file = "imageio-2.16.2.tar.gz", hash = "sha256:8fea761d51a53c150cabd82ed36011252c17580c752216b8222f078630dfb9ba"},
+    {file = "imageio-2.17.0-py3-none-any.whl", hash = "sha256:6b81600e20d90dcfba752c341f86188d09db75b7945ad15dec11ba1af0d40c26"},
+    {file = "imageio-2.17.0.tar.gz", hash = "sha256:b21f009e52eb22b02b839f3bf2ae5374aaf0886317313c1358c6014e5383b539"},
 ]
 importlib-metadata = [
     {file = "importlib_metadata-4.11.3-py3-none-any.whl", hash = "sha256:1208431ca90a8cca1a6b8af391bb53c1a2db74e5d1cef6ddced95d4b2062edc6"},
@@ -2779,6 +2795,10 @@ nonebot-plugin-caiyunai = [
     {file = "nonebot_plugin_caiyunai-0.2.2-py3-none-any.whl", hash = "sha256:a3599b319e4ef1eef3bd4dce83a3d095a66ca8d65e2ba0a572e208f88b1c44c8"},
     {file = "nonebot_plugin_caiyunai-0.2.2.tar.gz", hash = "sha256:2f23b1a1e8c6aaba7883b73690dd96dfd4c1021e7b288a90313b752c18c55de3"},
 ]
+nonebot-plugin-cchess = [
+    {file = "nonebot_plugin-cchess-0.1.0.tar.gz", hash = "sha256:a6cad5bac12122290ec389b10c3717d3c9b340559c0291b3be48a780e2320cd8"},
+    {file = "nonebot_plugin_cchess-0.1.0-py3-none-any.whl", hash = "sha256:6ceab5ba26e9811b5f15e70fa698519491e0009d78763226dc85d8de4debd1b1"},
+]
 nonebot-plugin-chatrecorder = [
     {file = "nonebot_plugin_chatrecorder-0.1.5-py3-none-any.whl", hash = "sha256:4d1089506a8826a33445b8213e43ab39df6cab11660ab2b1f47d82167701e82f"},
     {file = "nonebot_plugin_chatrecorder-0.1.5.tar.gz", hash = "sha256:82e9b870756c4c5b0d33a11f932340e369cd28d35cf25ac364c8f886be4fbfa0"},
@@ -2792,8 +2812,8 @@ nonebot-plugin-datastore = [
     {file = "nonebot_plugin_datastore-0.3.0-py3-none-any.whl", hash = "sha256:fe423c0c0edfc9a8cdfd84b1ae037e9fa7e3266e9286dd81d18c3d2e9c6cf41a"},
 ]
 nonebot-plugin-ddcheck = [
-    {file = "nonebot_plugin_ddcheck-0.1.2-py3-none-any.whl", hash = "sha256:f7cbd61634c8486c74d7b24cf0da78ea1ad7ee2d9d6a4e5c032cb28724e50042"},
-    {file = "nonebot_plugin_ddcheck-0.1.2.tar.gz", hash = "sha256:e9cc43b674ea1f2f57668b590a51c6281a5c3bf9ce34ffad4ad87737eb63a19f"},
+    {file = "nonebot_plugin_ddcheck-0.1.3-py3-none-any.whl", hash = "sha256:5605d5f38e7dd2a3831275ba06644dad90b481ea241ddd3faf2adf6d6441d455"},
+    {file = "nonebot_plugin_ddcheck-0.1.3.tar.gz", hash = "sha256:47ce1767d2c63064f8f893b1f6b49428a6e2611f66ae7df73a561031121122dd"},
 ]
 nonebot-plugin-emojimix = [
     {file = "nonebot_plugin_emojimix-0.1.4-py3-none-any.whl", hash = "sha256:fdea5c09216c89bc6a5cbaed020af3291a0be424cc46664263025824758e6759"},
@@ -2836,12 +2856,12 @@ nonebot-plugin-memes = [
     {file = "nonebot_plugin_memes-0.2.3.1.tar.gz", hash = "sha256:58737ee0422db4ad3c00f780a4d4c21acb6b1a10dcf29caaab7dafa5b579331b"},
 ]
 nonebot-plugin-minesweeper = [
-    {file = "nonebot_plugin_minesweeper-0.1.2-py3-none-any.whl", hash = "sha256:fc9a1edf15ea9676188a29bf30475f28a40872b0653874fbb5bec7fceca969ff"},
-    {file = "nonebot_plugin_minesweeper-0.1.2.tar.gz", hash = "sha256:b8f393312781aa93155c7c52659bc97b1fa64e95b630193db4b82320914261fd"},
+    {file = "nonebot_plugin_minesweeper-0.1.3-py3-none-any.whl", hash = "sha256:f65c36d0a438661d4e84c75e58289bfc2b4251194bafc57df36b01bd1f199079"},
+    {file = "nonebot_plugin_minesweeper-0.1.3.tar.gz", hash = "sha256:75404a63dfd16554e4d4732cce1813a11986c418b6bc3e3c8406e0f33f6d83a9"},
 ]
 nonebot-plugin-petpet = [
-    {file = "nonebot_plugin_petpet-0.2.14-py3-none-any.whl", hash = "sha256:161651108592fde6b00447b0c444773d8e974bcf4181753f26a0d3552f59a922"},
-    {file = "nonebot_plugin_petpet-0.2.14.tar.gz", hash = "sha256:a50dab9ce840702c60ccb5070a8040bf64a43930656fd5914a5c4ec40ddd9d86"},
+    {file = "nonebot_plugin_petpet-0.2.15-py3-none-any.whl", hash = "sha256:b0a804ed934a47cdda47c61fd03196fd60704efe34ade3ba4b7e757bee23bd8f"},
+    {file = "nonebot_plugin_petpet-0.2.15.tar.gz", hash = "sha256:d344ec4b22e8ae3ae5fe75ec5373b892e3805d29a1b5dc3e4d082cc327d4d8ca"},
 ]
 nonebot-plugin-remake = [
     {file = "nonebot_plugin_remake-0.2.4-py3-none-any.whl", hash = "sha256:28a1b6ce7a41a78cb125b96ccfb929bdc0ff4c389590201b1c1c8c7a9708183b"},
@@ -2864,8 +2884,8 @@ nonebot-plugin-word-bank2 = [
     {file = "nonebot_plugin_word_bank2-0.1.4.1-py3-none-any.whl", hash = "sha256:2bdfc89a4469ecb7f184c5b8867527caf528c75c7e46cbd9055147686f0c1f6a"},
 ]
 nonebot-plugin-wordcloud = [
-    {file = "nonebot-plugin-wordcloud-0.1.0.tar.gz", hash = "sha256:56fefd9c59671921a2d6a66b4e5ef629f60ff1878d324792613acd4889711622"},
-    {file = "nonebot_plugin_wordcloud-0.1.0-py3-none-any.whl", hash = "sha256:deb7a518bd925f19fe81106cfc49557a929d292a431bcd1e2e16089292711c74"},
+    {file = "nonebot-plugin-wordcloud-0.1.1.tar.gz", hash = "sha256:4ec0db58d087a3eb782271f03310de57ff82f0afd6f472fcb570c15f4d8567de"},
+    {file = "nonebot_plugin_wordcloud-0.1.1-py3-none-any.whl", hash = "sha256:8127f710e5814780b0cee3a452d113916ac60689e512d9ac904abcbd12a56a8d"},
 ]
 nonebot-plugin-wordle = [
     {file = "nonebot_plugin_wordle-0.1.6-py3-none-any.whl", hash = "sha256:77251b9eeea9958190c4be283e8250b440e2adeb3d9bcd518bd820964ee33234"},
@@ -2962,17 +2982,17 @@ pixivpy-async = [
     {file = "PixivPy_Async-1.2.14-py3-none-any.whl", hash = "sha256:44377cd929af53a66d36c2ea1abd6bf5f5398233b1af945d7802f802f112a7d7"},
 ]
 platformdirs = [
-    {file = "platformdirs-2.5.1-py3-none-any.whl", hash = "sha256:bcae7cab893c2d310a711b70b24efb93334febe65f8de776ee320b517471e227"},
-    {file = "platformdirs-2.5.1.tar.gz", hash = "sha256:7535e70dfa32e84d4b34996ea99c5e432fa29a708d0f4e394bbcb2a8faa4f16d"},
+    {file = "platformdirs-2.5.2-py3-none-any.whl", hash = "sha256:027d8e83a2d7de06bbac4e5ef7e023c02b863d7ea5d079477e722bb41ab25788"},
+    {file = "platformdirs-2.5.2.tar.gz", hash = "sha256:58c8abb07dcb441e6ee4b11d8df0ac856038f944ab98b7be6b27b2a3c7feef19"},
 ]
 playwright = [
-    {file = "playwright-1.20.1-py3-none-macosx_10_13_x86_64.whl", hash = "sha256:7c9422d7d654123cb988fadde0cd46a2eeaaa7e1ce6ac6587aabb0a27b52e17c"},
-    {file = "playwright-1.20.1-py3-none-macosx_11_0_arm64.whl", hash = "sha256:5c2735cba76ef992ea5129eead9da315e45f2a40858fb43dabd1b80fb0fa6749"},
-    {file = "playwright-1.20.1-py3-none-macosx_11_0_universal2.whl", hash = "sha256:220a84b0f35639a9d017d3e82df2e5590b4ad89c93b9d74dbfa90d0d690516fe"},
-    {file = "playwright-1.20.1-py3-none-manylinux1_x86_64.whl", hash = "sha256:0af0632e201fb4327ea7bfc5bf12ad18afd3468b1ee76ca163145bc96ea42be7"},
-    {file = "playwright-1.20.1-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a5ba030f5382a5fa2901173fed5e821fc2c8452810b123c2bf0dfa43251544a8"},
-    {file = "playwright-1.20.1-py3-none-win32.whl", hash = "sha256:4d093488729768b3bf288b5959eb2ad6d5603be5e39a59be1d014e7b2703e90a"},
-    {file = "playwright-1.20.1-py3-none-win_amd64.whl", hash = "sha256:fac22d79d9f3af9a0fdededaae5a95c652ac98ffc7f4afb042c7a6b0f854337e"},
+    {file = "playwright-1.21.0-py3-none-macosx_10_13_x86_64.whl", hash = "sha256:f2d99c802f320db89ff92680c9ac9060203bc64bab880e5097d5c9a8b2cc7d3f"},
+    {file = "playwright-1.21.0-py3-none-macosx_11_0_arm64.whl", hash = "sha256:f0faf02c17912f734bc97ca95809f445c01779df94d2a01b4363ea66ff27ecff"},
+    {file = "playwright-1.21.0-py3-none-macosx_11_0_universal2.whl", hash = "sha256:de392a2cb2bddd5a6d075e4020dfadee0fbb6a77c102fd56d8eadeae3e68d127"},
+    {file = "playwright-1.21.0-py3-none-manylinux1_x86_64.whl", hash = "sha256:f5cebb2502874b3a1137b48855ea25ebd6dda8c7d8905cb7c948c5627a907167"},
+    {file = "playwright-1.21.0-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b0263963c1035ef02d553ec2aa01464956a14b85824c6845ebf5d51fd7b1b9ee"},
+    {file = "playwright-1.21.0-py3-none-win32.whl", hash = "sha256:368d2f9702c79becb34ad5f9b3f94c73ef46265372a1006a78dfd53c562c6248"},
+    {file = "playwright-1.21.0-py3-none-win_amd64.whl", hash = "sha256:0cdd82d4d2ce176b596e960825a4be7b03b7637e9cb243e634e896d787160535"},
 ]
 poyo = [
     {file = "poyo-0.5.0-py2.py3-none-any.whl", hash = "sha256:3e2ca8e33fdc3c411cd101ca395668395dd5dc7ac775b8e809e3def9f9fe041a"},
@@ -3333,8 +3353,8 @@ sniffio = [
     {file = "sniffio-1.2.0.tar.gz", hash = "sha256:c4666eecec1d3f50960c6bdf61ab7bc350648da6c126e3cf6898d8cd4ddcd3de"},
 ]
 soupsieve = [
-    {file = "soupsieve-2.3.2-py3-none-any.whl", hash = "sha256:a714129d3021ec17ce5be346b1007300558b378332c289a1a20e7d4de6ff18a5"},
-    {file = "soupsieve-2.3.2.tar.gz", hash = "sha256:0bcc6d7432153063e3df09c3ac9442af3eba488715bfcad6a4c38ccb2a523124"},
+    {file = "soupsieve-2.3.2.post1-py3-none-any.whl", hash = "sha256:3b2503d3c7084a42b1ebd08116e5f81aadfaea95863628c80a3b774a11b7c759"},
+    {file = "soupsieve-2.3.2.post1.tar.gz", hash = "sha256:fc53893b3da2c33de295667a0e19f078c14bf86544af307354de5fcf12a3f30d"},
 ]
 sqlalchemy = [
     {file = "SQLAlchemy-1.4.35-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:093b3109c2747d5dc0fa4314b1caf4c7ca336d5c8c831e3cfbec06a7e861e1e6"},
@@ -3387,8 +3407,8 @@ starlette = [
     {file = "starlette-0.17.1.tar.gz", hash = "sha256:57eab3cc975a28af62f6faec94d355a410634940f10b30d68d31cb5ec1b44ae8"},
 ]
 tencentcloud-sdk-python = [
-    {file = "tencentcloud-sdk-python-3.0.617.tar.gz", hash = "sha256:8d9f9b7388d0b787b9a18507f1f26513e75c5006becba22dbcb6b1b219784d60"},
-    {file = "tencentcloud_sdk_python-3.0.617-py2.py3-none-any.whl", hash = "sha256:ee5464eeaaf582d7441854de4455fde1d57ac206decf893325686fccab7e3393"},
+    {file = "tencentcloud-sdk-python-3.0.622.tar.gz", hash = "sha256:c8fd99f5efa6c4f436e728cb3d3edead09fd1493bdd507b0b397d7b154d886a7"},
+    {file = "tencentcloud_sdk_python-3.0.622-py2.py3-none-any.whl", hash = "sha256:91bb85e718ea79b8177f39fddb8a7f48021a631ca88ea6d58b6bc33fbeb51ccd"},
 ]
 text-unidecode = [
     {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
@@ -3411,8 +3431,8 @@ tomlkit = [
     {file = "tomlkit-0.9.2.tar.gz", hash = "sha256:ebd982d61446af95a1e082b103e250cb9e6d152eae2581d4a07d31a70b34ab0f"},
 ]
 typing-extensions = [
-    {file = "typing_extensions-4.1.1-py3-none-any.whl", hash = "sha256:21c85e0fe4b9a155d0799430b0ad741cdce7e359660ccbd8b530613e8df88ce2"},
-    {file = "typing_extensions-4.1.1.tar.gz", hash = "sha256:1a9462dcc3347a79b1f1c0271fbe79e844580bb598bafa1ed208b94da3cdcd42"},
+    {file = "typing_extensions-4.2.0-py3-none-any.whl", hash = "sha256:6657594ee297170d19f67d55c05852a874e7eb634f4f753dbd667855e07c1708"},
+    {file = "typing_extensions-4.2.0.tar.gz", hash = "sha256:f1c24655a0da0d1b67f07e17a5e6b2a105894e6824b92096378bb3668ef02376"},
 ]
 tzdata = [
     {file = "tzdata-2021.5-py2.py3-none-any.whl", hash = "sha256:3eee491e22ebfe1e5cfcc97a4137cd70f092ce59144d81f8924a844de05ba8f5"},

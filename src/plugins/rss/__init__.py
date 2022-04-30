@@ -26,8 +26,8 @@ __cmd__ = """
 清空订阅：rss clear
 """.strip()
 __example__ = """
-rss add /bilibili/user/dynamic/282994
-rss add https://rsshub.app/bilibili/user/dynamic/282994
+rss add 订阅1 /bilibili/user/dynamic/282994
+rss add 订阅2 https://rsshub.app/bilibili/user/dynamic/282994
 """.strip()
 __usage__ = f"{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}"
 
