@@ -9,22 +9,20 @@ __cmd__ = """
 单张塔罗牌
 """.strip()
 __short_cmd__ = __cmd__
-__notice__ = """
-生成的图片为幻影坦克图，手机端或黑色背景下才能显示
-""".strip()
-__usage__ = f"{__des__}\nUsage:\n{__cmd__}\nNotice:\n{__notice__}"
+__usage__ = f"{__des__}\nUsage:\n{__cmd__}"
 
 
-tarot = on_command("tarot", aliases={"单张塔罗牌", "塔罗牌占卜"}, block=True, priority=13)
+tarot = on_command("塔罗牌", aliases={"单张塔罗牌", "塔罗牌占卜", "draw 单张塔罗牌", "draw 塔罗牌"}, block=True, priority=13)
 
 
 @tarot.handle()
 async def _(event: MessageEvent):
     username = event.sender.card or event.sender.nickname
     message = Message(f"来看看 {username} 抽到了什么：")
-    img = await get_tarot()
-    if img:
-        message.append(MessageSegment.image(img))
-        await tarot.finish(message)
-    else:
+    try:
+        img, meaning = await get_tarot()
+    except:
         await tarot.finish("出错了，请稍后再试")
+    message.append(MessageSegment.image(img))
+    message.append(meaning)
+    await tarot.finish(message)
