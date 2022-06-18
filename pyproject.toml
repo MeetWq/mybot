@@ -35,7 +35,7 @@ nonebot-plugin-alias = "^0.3.0"
 nonebot-plugin-withdraw = "^0.2.0"
 nonebot-plugin-petpet = "^0.3.0"
 nonebot-plugin-logo = "^0.2.0"
-nonebot-plugin-memes = "^0.2.0"
+nonebot-plugin-memes = "^0.3.0"
 nonebot-plugin-asoulcnki = "^0.2.0"
 nonebot-plugin-shindan = "^0.2.0"
 nonebot-plugin-remake = "^0.2.0"
@@ -43,7 +43,7 @@ nonebot-plugin-caiyunai = "^0.2.0"
 nonebot-plugin-emojimix = "^0.1.0"
 nonebot-plugin-wordcloud = "^0.1.0"
 nonebot-plugin-word-bank2 = "^0.1.0"
-# nonebot-plugin-gamedraw = "^0.3.0"
+nonebot-plugin-gamedraw = "^0.3.0"
 nonebot-plugin-heweather = "^0.5.2"
 nonebot-plugin-ddcheck = "^0.1.0"
 nonebot-plugin-simplemusic = "^0.1.0"
@@ -68,7 +68,7 @@ plugins = [
     "nonebot_plugin_chatrecorder",
     "nonebot_plugin_alias",
     "nonebot_plugin_withdraw",
-    # "nonebot_plugin_petpet",
+    "nonebot_plugin_petpet",
     "nonebot_plugin_logo",
     "nonebot_plugin_memes",
     "nonebot_plugin_asoulcnki",
@@ -78,7 +78,7 @@ plugins = [
     "nonebot_plugin_emojimix",
     "nonebot_plugin_wordcloud",
     "nonebot_plugin_word_bank2",
-    # "nonebot_plugin_gamedraw",
+    "nonebot_plugin_gamedraw",
     "nonebot_plugin_heweather",
     "nonebot_plugin_ddcheck",
     "nonebot_plugin_simplemusic",

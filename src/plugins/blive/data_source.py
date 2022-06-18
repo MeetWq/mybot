@@ -91,11 +91,10 @@ async def get_user_dynamics(uid: str) -> list:
 async def get_dynamic_screenshot(url: str) -> Optional[bytes]:
     try:
         async with get_new_page(
-            viewport={"width": 392, "height": 30},
-            user_agent="Mozilla/5.0 (Linux; Android 11; Redmi K20 Pro Premium Edition) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/96.0.4664.55 Mobile Safari/537.36 EdgA/96.0.1054.41",
-            device_scale_factor=2.75,
+            viewport={"width": 360, "height": 780},
+            user_agent="Mozilla/5.0 (Linux; Android 10; RMX1911) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/100.0.4896.127 Mobile Safari/537.36",
+            device_scale_factor=2,
         ) as page:
             await page.goto(url, wait_until="networkidle", timeout=10000)
             content = await page.content()
@@ -105,14 +104,27 @@ async def get_dynamic_screenshot(url: str) -> Optional[bytes]:
                 '<span class="dyn-header__following__icon"></span>'
                 '<span class="dyn-header__following__text">关注</span></div></div>',
                 "",
+            )  # 去掉关注按钮
+            content = content.replace(
+                '<div class="dyn-card">',
+                '<div class="dyn-card" '
+                'style="font-family: sans-serif; overflow-wrap: break-word;">',
             )
+            # 1. 字体问题：.dyn-class里font-family是PingFangSC-Regular，使用行内CSS覆盖掉它
+            # 2. 换行问题：遇到太长的内容（长单词、某些长链接等）允许强制换行，防止溢出
+            content = content.replace(
+                '<div class="launch-app-btn dynamic-float-openapp">'
+                '<div class="m-dynamic-float-openapp">'
+                "<span>打开APP，查看更多精彩内容</span></div> <!----></div>",
+                "",
+            )  # 去掉打开APP的按钮，防止遮挡较长的动态
             await page.set_content(content)
             card = await page.query_selector(".dyn-card")
-            if card:
-                clip = await card.bounding_box()
-                if clip:
-                    img = await page.screenshot(clip=clip, full_page=True)
-                    return img
+            assert card
+            clip = await card.bounding_box()
+            assert clip
+            img = await page.screenshot(clip=clip, full_page=True)
+            return img
     except Exception as e:
         logger.warning(f"Error in get_dynamic_screenshot({url}): {e}")
         return None

@@ -1,5 +1,7 @@
+import re
 from nonebot import on_regex
 from nonebot.params import RegexDict
+from nonebot.adapters.onebot.v11 import unescape
 
 from .data_source import legal_language, network_compile
 
@@ -24,6 +26,7 @@ __usage__ = (
 
 compiler = on_regex(
     r"^lang\s+(?P<language>[^;；\s]+)[;；\s]+(?P<code>[^;；\s]+.*)",
+    flags=re.S,
     block=True,
     priority=13,
 )
@@ -32,7 +35,7 @@ compiler = on_regex(
 @compiler.handle()
 async def _(msg: dict = RegexDict()):
     language = str(msg["language"]).strip()
-    code = str(msg["code"]).strip()
+    code = unescape(unescape(str(msg["code"]))).strip()
     if language not in legal_language:
         await compiler.finish(f"支持的语言：{', '.join(list(legal_language.keys()))}")
 
