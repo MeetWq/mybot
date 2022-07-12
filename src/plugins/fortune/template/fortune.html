@@ -47,7 +47,10 @@
       </div>
       <div class="box">
         <div class="content">
-          <p><b>{{username}}</b> 的今日运势: <span class={{"good" if luck > 0 else "bad"}}><b>{{fortune}}</b></span></p>
+          <p>
+            <b>{{username}}</b> 的今日运势:
+            <span class="{{type}}"><b>{{fortune}}</b></span>
+          </p>
           <p>{{content}}</p>
         </div>
       </div>
