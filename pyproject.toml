@@ -31,7 +31,6 @@ nonebot-plugin-apscheduler = "^0.1.2"
 nonebot-plugin-manager = "^0.5.7"
 nonebot-plugin-htmlrender = ">=0.0.4.1"
 nonebot-plugin-chatrecorder = "^0.1.5"
-nonebot-plugin-alias = "^0.3.0"
 nonebot-plugin-withdraw = "^0.2.0"
 nonebot-plugin-petpet = "^0.3.0"
 nonebot-plugin-logo = "^0.2.0"
@@ -66,7 +65,6 @@ plugins = [
     "nonebot_plugin_manager",
     "nonebot_plugin_htmlrender",
     "nonebot_plugin_chatrecorder",
-    "nonebot_plugin_alias",
     "nonebot_plugin_withdraw",
     "nonebot_plugin_petpet",
     "nonebot_plugin_logo",

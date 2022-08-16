@@ -7,15 +7,13 @@ from .models import TaskInfo
 from .uid_list import get_record_users, get_sub_info_by_uid, get_sub_uids
 
 global_config = get_driver().config
-httpx_proxy = str(global_config.http_proxy)
-
 blive_config = Config.parse_obj(global_config.dict())
 BLREC_API = f"{blive_config.blrec_address}/api/v1"
 
 
 async def get_tasks() -> List[TaskInfo]:
     url = f"{BLREC_API}/tasks/data?select=all"
-    async with httpx.AsyncClient(proxies=httpx_proxy) as client:
+    async with httpx.AsyncClient() as client:
         resp = await client.get(url, timeout=20)
         result = resp.json()
     result = result or []
@@ -25,7 +23,7 @@ async def get_tasks() -> List[TaskInfo]:
 
 async def get_task(room_id: str) -> Optional[TaskInfo]:
     url = f"{BLREC_API}/tasks/{room_id}/data"
-    async with httpx.AsyncClient(proxies=httpx_proxy) as client:
+    async with httpx.AsyncClient() as client:
         resp = await client.get(url, timeout=20)
         result = resp.json()
     return TaskInfo.parse_obj(result) if result else None
@@ -33,7 +31,7 @@ async def get_task(room_id: str) -> Optional[TaskInfo]:
 
 async def add_task(room_id: str) -> bool:
     url = f"{BLREC_API}/tasks/{room_id}"
-    async with httpx.AsyncClient(proxies=httpx_proxy) as client:
+    async with httpx.AsyncClient() as client:
         resp = await client.post(url, timeout=20)
         result = resp.json()
     return result and result.get("code", -1) == 0
@@ -41,7 +39,7 @@ async def add_task(room_id: str) -> bool:
 
 async def delete_task(room_id: str) -> bool:
     url = f"{BLREC_API}/tasks/{room_id}"
-    async with httpx.AsyncClient(proxies=httpx_proxy) as client:
+    async with httpx.AsyncClient() as client:
         resp = await client.delete(url, timeout=20)
         result = resp.json()
     return result and result.get("code", -1) == 0
@@ -49,7 +47,7 @@ async def delete_task(room_id: str) -> bool:
 
 async def enable_recorder(room_id: str) -> bool:
     url = f"{BLREC_API}/tasks/{room_id}/recorder/enable"
-    async with httpx.AsyncClient(proxies=httpx_proxy) as client:
+    async with httpx.AsyncClient() as client:
         resp = await client.post(url, timeout=20)
         result = resp.json()
     return result and result.get("code", -1) == 0
@@ -57,7 +55,7 @@ async def enable_recorder(room_id: str) -> bool:
 
 async def disable_recorder(room_id: str) -> bool:
     url = f"{BLREC_API}/tasks/{room_id}/recorder/disable"
-    async with httpx.AsyncClient(proxies=httpx_proxy) as client:
+    async with httpx.AsyncClient() as client:
         resp = await client.post(url, timeout=20)
         result = resp.json()
     return result and result.get("code", -1) == 0
