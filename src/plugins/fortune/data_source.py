@@ -2,6 +2,7 @@ import json
 import jinja2
 import random
 from pathlib import Path
+from typing import Optional
 from datetime import datetime
 
 from nonebot import get_driver
@@ -18,25 +19,28 @@ env = jinja2.Environment(
     loader=jinja2.FileSystemLoader(template_path), enable_async=True
 )
 
-copywritings = []
-with (resource_path / "copywriting.json").open("r", encoding="utf-8") as f:
-    data = json.load(f)
-for rank in data["copywriting"]:
-    for content in rank["content"]:
-        copywritings.append(
-            {"fortune": rank["fortune"], "rank": rank["rank"], "content": content}
-        )
 
-
-async def get_fortune(user_id: int, username: str) -> bytes:
+async def get_fortune(user_id: int, username: str) -> Optional[bytes]:
+    with (resource_path / "copywriting.json").open("r", encoding="utf-8") as f:
+        data = json.load(f)
     date = datetime.now().strftime("%Y%m%d")
-    random.seed(f"{date}-{user_id}")
-    copywriting = random.choice(copywritings)
-    fortune = copywriting["fortune"]
-    rank = copywriting["rank"]
-    content = copywriting["content"]
-    face = get_face(rank)
-    return await create_image(username, rank, fortune, content, face)
+    seed = f"{date}-{user_id}"
+
+    random.seed(seed)
+    # fmt: off
+    rank = random.choices(
+        [27, 26, 25, 24, 23, 21, 20, 10, 9, 8, 7, 6, 5, 4, -6, -7, -8, -9, -10],
+        weights=[18, 18, 18, 18, 18, 18, 18, 38, 46, 55, 46, 38, 31, 25, 20, 16, 13, 11, 10],
+    )[0]
+    # fmt: on
+
+    for info in data["copywriting"]:
+        if info["rank"] == rank:
+            fortune = info["fortune"]
+            random.seed(seed)
+            content = random.choice(info["content"])
+            face = get_face(rank)
+            return await create_image(username, rank, fortune, content, face)
 
 
 def get_face(rank: int) -> str:

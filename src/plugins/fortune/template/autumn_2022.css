@@ -1,0 +1,17 @@
+.image {
+  background-image: url("./autumn_2022.jpg");
+  background-position: left -1280px center;
+}
+.face {
+  float: right;
+}
+.box {
+  background-color: rgba(231, 164, 90, 0.8);
+  margin: 30px 0px 30px 320px;
+}
+.good {
+  color: #d02090;
+}
+.bad {
+  color: #228b22;
+}

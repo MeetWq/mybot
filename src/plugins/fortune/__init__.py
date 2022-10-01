@@ -19,10 +19,14 @@ jrrp = on_command("jrrp", aliases={"今日运势", "今日人品"}, block=True, 
 async def _(event: MessageEvent):
     user_id = event.user_id
     username = event.sender.card or event.sender.nickname or ""
+
+    res = None
     try:
         res = await get_fortune(user_id, username)
     except:
         logger.warning(traceback.format_exc())
+
+    if not res:
         await jrrp.finish("出错了，请稍后再试")
 
     await jrrp.finish(MessageSegment.image(res))

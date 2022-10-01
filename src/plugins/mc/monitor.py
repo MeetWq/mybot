@@ -83,7 +83,7 @@ async def update_dynmap():
 async def dynmap_monitor():
     await update_dynmap()
     for user_id, recorder in chat_recorders.items():
-        if recorder.count < 30:
+        if recorder.count < 6:
             continue
         else:
             recorder.count = 0

@@ -1,7 +1,12 @@
 import httpx
 from typing import Optional
+from nonebot import get_driver
 from nonebot.log import logger
 from nonebot_plugin_htmlrender import get_new_page
+
+from .config import Config
+
+blive_config = Config.parse_obj(get_driver().config.dict())
 
 
 async def get_live_info(uid: str = "", up_name: str = "") -> dict:
@@ -45,7 +50,9 @@ async def get_user_info_by_name(up_name: str) -> dict:
     try:
         url = "http://api.bilibili.com/x/web-interface/search/type"
         params = {"search_type": "bili_user", "keyword": up_name}
+        headers = {"cookie": blive_config.bilibili_cookie}
         async with httpx.AsyncClient() as client:
+            await client.get("https://www.bilibili.com", headers=headers)
             resp = await client.get(url, params=params)
             result = resp.json()
         if not result or result["code"] != 0:

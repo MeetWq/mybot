@@ -23,7 +23,7 @@ env = jinja2.Environment(
 async def get_mc_uuid(username: str) -> str:
     url = f"https://api.mojang.com/users/profiles/minecraft/{username}"
     try:
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=10) as client:
             resp = await client.get(url)
             result = resp.json()
         if not result:
@@ -49,7 +49,7 @@ async def get_crafatar(type: str, uuid: str) -> Optional[bytes]:
     url = f"https://crafatar.com/{path}/{uuid}?overlay"
 
     try:
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=10) as client:
             resp = await client.get(url)
             result = resp.content
         return result
