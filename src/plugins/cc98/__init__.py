@@ -6,7 +6,7 @@ from nonebot.rule import to_me
 from nonebot.matcher import Matcher
 from nonebot import on_regex, on_command
 from nonebot.typing import T_Handler, T_State
-from nonebot.params import CommandArg, ArgPlainText, EventPlainText, State
+from nonebot.params import CommandArg, ArgPlainText, EventPlainText
 from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent, Message, MessageSegment
 from nonebot.log import logger
 
@@ -61,7 +61,7 @@ async def _(matcher: Matcher, msg: Message = CommandArg()):
 
 
 @cc98.got("keyword")
-async def _(matcher: Matcher, keyword: str = ArgPlainText(), state: T_State = State()):
+async def _(matcher: Matcher, state: T_State, keyword: str = ArgPlainText()):
     try:
         res = await get_board_name(keyword)
     except:
@@ -81,7 +81,7 @@ async def _(matcher: Matcher, keyword: str = ArgPlainText(), state: T_State = St
 async def _(
     bot: Bot,
     event: GroupMessageEvent,
-    state: T_State = State(),
+    state: T_State,
     confirm: str = ArgPlainText(),
 ):
     board_name: str = state.get("board_name", "")
@@ -110,7 +110,7 @@ async def _(matcher: Matcher, msg: Message = CommandArg()):
 async def _(
     bot: Bot,
     event: GroupMessageEvent,
-    state: T_State = State(),
+    state: T_State,
     topic_id: str = ArgPlainText(),
 ):
     page = 1
@@ -131,7 +131,7 @@ async def _(
 async def _(
     bot: Bot,
     event: GroupMessageEvent,
-    state: T_State = State(),
+    state: T_State,
     reply: str = ArgPlainText(),
 ):
     topic: dict = state.get("topic", {})

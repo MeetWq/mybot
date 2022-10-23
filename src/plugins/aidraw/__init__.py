@@ -19,7 +19,7 @@ from .data_source import txt2img, img2img
 DEFUALT_PROMPT = (
     "((sfw)), masterpiece, best quality, extremely detailed CG unity 8k wallpaper, "
 )
-DEFUALT_NEGATIVE_PROMPT = "lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, "
+DEFUALT_NEGATIVE_PROMPT = "nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, "
 
 cooldown = Cooldown(
     cooldown=aidraw_config.aidraw_cd,

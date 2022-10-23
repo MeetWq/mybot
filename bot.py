@@ -3,9 +3,13 @@
 
 import nonebot
 from pathlib import Path
-from nonebot.adapters.onebot.v11 import Adapter as OneBot_V11_Adapter
+from typing import TYPE_CHECKING
 
-from nonebot.log import logger, Filter, default_format
+from nonebot.adapters.onebot.v11 import Adapter as OneBot_V11_Adapter
+from nonebot.log import logger, default_format
+
+if TYPE_CHECKING:
+    from loguru import Record
 
 log_name = 'nonebot.log'
 log_dir = Path('log')
@@ -13,8 +17,12 @@ if not log_dir.exists():
     log_dir.mkdir()
 log_path = log_dir / log_name
 
-filter = Filter()
-filter.level = 'INFO'
+def filter(record: "Record"):
+    """默认的日志过滤器，根据 `config.log_level` 配置改变日志等级。"""
+    log_level = "DEBUG"
+    levelno = logger.level(log_level).no if isinstance(log_level, str) else log_level
+    return record["level"].no >= levelno
+
 logger.add(str(log_path),
            rotation='00:00',
            diagnose=False,
@@ -37,5 +45,5 @@ nonebot.load_from_toml("pyproject.toml")
 # do something...
 
 if __name__ == '__main__':
-    nonebot.logger.warning("Always use `nb run` to start the bot instead of manually running!")
+    logger.warning("Always use `nb run` to start the bot instead of manually running!")
     nonebot.run(app="__mp_main__:app")
