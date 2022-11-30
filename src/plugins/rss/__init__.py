@@ -3,11 +3,13 @@ from argparse import Namespace
 from nonebot.matcher import Matcher
 from nonebot import on_shell_command
 from nonebot.rule import ArgumentParser
+from nonebot.plugin import PluginMetadata
 from nonebot.params import ShellCommandArgs, Depends
 from nonebot.adapters.onebot.v11 import MessageEvent, GroupMessageEvent
 
 from .monitor import *
 from .rss_class import RSS
+from .config import Config
 from .data_source import update_rss_info
 from .rss_list import (
     get_rss_list,
@@ -17,19 +19,20 @@ from .rss_list import (
     DupeError,
 )
 
-
-__des__ = "RSS订阅"
-__cmd__ = """
-添加订阅：rss add {订阅名} {RSSHub路径/完整URL}
-取消订阅：rss del {订阅名}
-订阅列表：rss list
-清空订阅：rss clear
-""".strip()
-__example__ = """
-rss add 订阅1 /bilibili/user/dynamic/282994
-rss add 订阅2 https://rsshub.app/bilibili/user/dynamic/282994
-""".strip()
-__usage__ = f"{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}"
+__plugin_meta__ = PluginMetadata(
+    name="RSS订阅",
+    description="订阅rss链接并以图片形式发出",
+    usage=(
+        "添加订阅：rss add {订阅名} {RSSHub路径/完整URL}\n"
+        "取消订阅：rss del {订阅名}\n"
+        "订阅列表：rss list\n"
+        "清空订阅：rss clear"
+    ),
+    config=Config,
+    extra={
+        "example": "rss add 订阅1 /bilibili/user/dynamic/282994",
+    },
+)
 
 
 async def add_rss(matcher: Matcher, user_id: str, name: str, url: str, **kwargs):

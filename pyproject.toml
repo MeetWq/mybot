@@ -12,7 +12,6 @@ cachetools = "^5.0.0"
 cos-python-sdk-v5 = "^1.9.0"
 feedparser = "^6.0.0"
 httpx = ">=0.19.0"
-imageio = "^2.13.0"
 Jinja2 = "^3.0.0"
 langid = "^1.1.0"
 lxml = "^4.7.0"
@@ -30,18 +29,15 @@ nonebot-adapter-onebot = "^2.1.1"
 nonebot-plugin-apscheduler = "^0.2.0"
 nonebot-plugin-manager = "^0.5.7"
 nonebot-plugin-htmlrender = ">=0.0.4.1"
-nonebot-plugin-chatrecorder = "^0.1.5"
 nonebot-plugin-withdraw = "^0.2.0"
 nonebot-plugin-petpet = "^0.3.0"
-nonebot-plugin-logo = "^0.2.0"
 nonebot-plugin-memes = "^0.3.0"
-nonebot-plugin-asoulcnki = "^0.2.0"
 nonebot-plugin-shindan = "^0.2.0"
 nonebot-plugin-remake = "^0.2.0"
 nonebot-plugin-caiyunai = "^0.2.0"
 nonebot-plugin-emojimix = "^0.1.0"
 nonebot-plugin-wordcloud = "^0.1.0"
-# nonebot-plugin-word-bank2 = "^0.1.0"
+nonebot-plugin-word-bank2 = "^0.1.0"
 # nonebot-plugin-gamedraw = "^0.3.0"
 nonebot-plugin-heweather = "^0.5.2"
 nonebot-plugin-ddcheck = "^0.1.0"
@@ -54,6 +50,8 @@ nonebot-plugin-boardgame = "^0.1.0"
 nonebot-plugin-chess = "^0.2.0"
 nonebot-plugin-cchess = "^0.1.0"
 nonebot-plugin-imagetools = "^0.1.0"
+nonebot-plugin-oddtext = "^0.1.0"
+nonebot-plugin-random = "^0.0.7"
 
 [tool.poetry.dev-dependencies]
 nb-cli = "^0.6.0"
@@ -64,18 +62,15 @@ plugins = [
     "nonebot_plugin_apscheduler",
     "nonebot_plugin_manager",
     "nonebot_plugin_htmlrender",
-    "nonebot_plugin_chatrecorder",
     "nonebot_plugin_withdraw",
     "nonebot_plugin_petpet",
-    "nonebot_plugin_logo",
     "nonebot_plugin_memes",
-    "nonebot_plugin_asoulcnki",
     "nonebot_plugin_shindan",
     "nonebot_plugin_remake",
     "nonebot_plugin_caiyunai",
     "nonebot_plugin_emojimix",
     "nonebot_plugin_wordcloud",
-    # "nonebot_plugin_word_bank2",
+    "nonebot_plugin_word_bank2",
     # "nonebot_plugin_gamedraw",
     "nonebot_plugin_heweather",
     "nonebot_plugin_ddcheck",
@@ -87,7 +82,9 @@ plugins = [
     "nonebot_plugin_boardgame",
     "nonebot_plugin_chess",
     "nonebot_plugin_cchess",
-    "nonebot_plugin_imagetools"
+    "nonebot_plugin_imagetools",
+    "nonebot_plugin_oddtext",
+    "nonebot_plugin_random",
 ]
 plugin_dirs = ["src/plugins"]
 

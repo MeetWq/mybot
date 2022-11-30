@@ -19,7 +19,7 @@ log_path = log_dir / log_name
 
 def filter(record: "Record"):
     """默认的日志过滤器，根据 `config.log_level` 配置改变日志等级。"""
-    log_level = "DEBUG"
+    log_level = "INFO"
     levelno = logger.level(log_level).no if isinstance(log_level, str) else log_level
     return record["level"].no >= levelno
 

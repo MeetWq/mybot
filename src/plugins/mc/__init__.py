@@ -1,6 +1,7 @@
 from typing import Type
 from argparse import Namespace
 from nonebot.matcher import Matcher
+from nonebot.plugin import PluginMetadata
 from nonebot.rule import Rule, ArgumentParser
 from nonebot import on_command, on_shell_command, on_notice
 from nonebot.params import CommandArg, ShellCommandArgs, Depends
@@ -14,21 +15,24 @@ from nonebot.adapters.onebot.v11 import (
 
 from .monitor import *
 from .dynmap_list import *
+from .config import Config
 from .dynmap_source import get_status, send_message
 from .data_source import get_mcstatus, get_mc_uuid, get_crafatar, get_mcmodel
 
 
-__des__ = "Minecraft相关功能"
-__cmd__ = """
-1、mcstatus {url}，MC服务器状态查询
-2、mc avatar/head/body/skin/cape/model {id}，获取MC用户的 头像/头/身体/皮肤/披风/全身动图
-3、dynmap bind {url}，动态地图相关功能
-""".strip()
-__example__ = """
-mcstatus mczju.tpddns.cn
-mcskin hsds
-""".strip()
-__usage__ = f"{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}"
+__plugin_meta__ = PluginMetadata(
+    name="Minecraft",
+    description="Minecraft相关功能",
+    usage=(
+        "1、mcstatus {url}，MC服务器状态查询\n"
+        "2、mc avatar/head/body/skin/cape/model {id}，获取MC用户的 头像/头/身体/皮肤/披风/全身动图\n"
+        "3、dynmap bind {url}，动态地图相关功能"
+    ),
+    config=Config,
+    extra={
+        "example": "mcstatus mczju.tpddns.cn\nmcskin hsds",
+    },
+)
 
 
 mc = on_command("mc", block=True, priority=12)

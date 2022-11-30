@@ -1,20 +1,22 @@
 import re
 from nonebot import on_command
 from nonebot.params import CommandArg
+from nonebot.plugin import PluginMetadata
 from nonebot.adapters.onebot.v11 import Message
 
+from .config import Config
 from .data_source import get_wolframalpha_simple, get_wolframalpha_text
 
 
-__des__ = "WolframAlpha计算引擎"
-__cmd__ = """
-wolfram {text}
-""".strip()
-__short_cmd__ = __cmd__
-__example__ = """
-wolfram int x
-""".strip()
-__usage__ = f"{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}"
+__plugin_meta__ = PluginMetadata(
+    name="WolframAlpha",
+    description="WolframAlpha计算知识引擎",
+    usage="wolfram {text}",
+    config=Config,
+    extra={
+        "example": "wolfram int x",
+    },
+)
 
 
 wolfram = on_command("wolfram", aliases={"wolframalpha"}, block=True, priority=12)

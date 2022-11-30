@@ -1,14 +1,15 @@
-from typing import Optional
 import httpx
 import base64
 import jinja2
 import asyncio
-import imageio
 import traceback
 from PIL import Image
 from io import BytesIO
 from pathlib import Path
+from typing import List, Optional
+from PIL.Image import Image as IMG
 from mcstatus import MinecraftServer
+
 from nonebot_plugin_htmlrender import get_new_page
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot.log import logger
@@ -81,7 +82,7 @@ async def get_mcmodel(uuid: str) -> Optional[BytesIO]:
         template = env.get_template("skin.html")
         html = await template.render_async(skin=skin, cape=cape)
 
-        images = []
+        images: List[IMG] = []
         async with get_new_page(viewport={"width": 200, "height": 400}) as page:
             await page.set_content(html)
             await asyncio.sleep(0.1)
@@ -90,7 +91,16 @@ async def get_mcmodel(uuid: str) -> Optional[BytesIO]:
                 images.append(Image.open(BytesIO(image)))
 
         output = BytesIO()
-        imageio.mimsave(output, images, format="gif", duration=0.05)
+        images[0].save(
+            output,
+            format="GIF",
+            save_all=True,
+            append_images=images[1:],
+            duration=0.05 * 1000,
+            loop=0,
+            disposal=2,
+            optimize=False,
+        )
         return output
     except:
         logger.warning(traceback.format_exc())

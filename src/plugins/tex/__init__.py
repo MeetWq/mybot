@@ -1,21 +1,18 @@
 from nonebot import on_command
 from nonebot.params import CommandArg
+from nonebot.plugin import PluginMetadata
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 
 from .data_source import tex2pic
 
-
-__des__ = "LaTeX公式"
-__cmd__ = """
-tex {equation}
-支持行内公式和少量行间公式
-""".strip()
-__short_cmd__ = "tex {equation}"
-__example__ = """
-tex a + b = c
-tex \\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix}
-""".strip()
-__usage__ = f"{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}"
+__plugin_meta__ = PluginMetadata(
+    name="LaTeX公式",
+    description="支持行内公式和少量行间公式",
+    usage="tex {equation}",
+    extra={
+        "example": "tex a + b = c\ntex \\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix}",
+    },
+)
 
 
 tex = on_command("tex", block=True, priority=12)

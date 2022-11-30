@@ -1,19 +1,16 @@
 import httpx
 import feedparser
-from urllib.parse import quote
 from typing import List
-from nonebot import get_driver
+from urllib.parse import quote
+
 from nonebot.log import logger
 
 from .rss_class import RSS
 
-global_config = get_driver().config
-httpx_proxy = str(global_config.http_proxy)
-
 
 async def get_rss_info(url: str) -> dict:
     try:
-        async with httpx.AsyncClient(proxies=httpx_proxy) as client:
+        async with httpx.AsyncClient() as client:
             resp = await client.get(url, timeout=20)
             result = resp.text
         return feedparser.parse(result)

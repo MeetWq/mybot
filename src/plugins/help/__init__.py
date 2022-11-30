@@ -7,21 +7,20 @@ from nonebot.adapters.onebot.v11 import (
     Message,
     MessageSegment,
 )
+from nonebot.plugin import PluginMetadata
 
-from .data_source import get_help_img, get_plugin_img
 from .plugin import get_plugins
+from .data_source import get_help_img, get_plugin_img
 
 
-__des__ = "插件帮助"
-__cmd__ = """
-@我 help/帮助 查看全部可用插件
-help {plugin} 查看插件详情
-""".strip()
-__short_cmd__ = "help {plugin}"
-__example__ = """
-help logo
-""".strip()
-__usage__ = f"{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}"
+__plugin_meta__ = PluginMetadata(
+    name="帮助",
+    description="查看插件帮助",
+    usage='@我 发送 "help/帮助" 查看已加载插件\n发送 "help {plugin}" 查看插件详情',
+    extra={
+        "example": "help help",
+    },
+)
 
 
 help = on_command("help", aliases={"帮助", "功能"}, block=True)
@@ -53,7 +52,11 @@ async def get_help_msg(
         return MessageSegment.image(img) if img else "出错了，请稍后再试"
     else:
         for p in plugins:
-            if plugin_name.lower() in (p.name.lower(), p.short_name.lower()):
+            if plugin_name.lower() in (
+                p.package_name.lower(),
+                p.name.lower(),
+                p.extra.get("unique_name", "_").lower(),
+            ):
                 img = await get_plugin_img(p)
                 return MessageSegment.image(img) if img else "出错了，请稍后再试"
         return None

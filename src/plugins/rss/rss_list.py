@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import List, Dict, Union
+from typing import List, Dict
 
 from .rss_class import RSS
 
@@ -46,8 +46,8 @@ def get_user_ids() -> List[str]:
     return list(_rss_list.keys())
 
 
-def get_rss_list(user_id: str) -> Union[List[RSS], dict]:
-    return _rss_list.get(user_id, {}).copy()
+def get_rss_list(user_id: str) -> List[RSS]:
+    return _rss_list.get(user_id, []).copy()
 
 
 def add_rss_list(user_id: str, new_rss: RSS):

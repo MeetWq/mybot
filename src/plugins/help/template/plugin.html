@@ -58,26 +58,26 @@
   <body>
     <div class="image">
         <div class="title">
-          <span class="name">{{plugin.short_name or plugin.name}}</span>
-          <span class="description">{{plugin.description}}</span>
+          <span class="name">{{ plugin.name }}</span>
+          <span class="description">{{ plugin.description }}</span>
         </div>
         <div class="content">
-          {% if plugin.command %}
+          {% if plugin.usage %}
           <div class="section">
             <div class="section-name">Usage:</div>
-            <div class="section-block">{{plugin.command}}</div>
+            <div class="section-block">{{ plugin.usage }}</div>
           </div>
           {% endif %}
-          {% if plugin.example %}
+          {% if plugin.extra.get("example") %}
           <div class="section">
             <div class="section-name">Examples:</div>
-            <div class="section-block">{{plugin.example}}</div>
+            <div class="section-block">{{ plugin.extra["example"] }}</div>
           </div>
           {% endif %}
-          {% if plugin.notice %}
+          {% if plugin.extra.get("notice") %}
           <div class="section">
             <div class="section-name">Notice:</div>
-            <div class="section-block">{{plugin.notice}}</div>
+            <div class="section-block">{{ plugin.extra["notice"] }}</div>
           </div>
           {% endif %}
         </div>

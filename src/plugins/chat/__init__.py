@@ -12,6 +12,7 @@ from nonebot.adapters.onebot.v11 import (
     GroupMessageEvent,
     PrivateMessageEvent,
 )
+from nonebot.plugin import PluginMetadata
 
 from .data_source import chat_bot, get_anime_thesaurus
 from .config import Config
@@ -19,12 +20,12 @@ from .config import Config
 chat_config = Config.parse_obj(get_driver().config.dict())
 
 
-__des__ = "人工智障聊天"
-__cmd__ = f"""
-@我 进入连续对话模式，若{chat_config.chat_expire_time}s内无响应则结束对话，也可以发送“停、再见、闭嘴”结束对话
-""".strip()
-__short_cmd__ = "@我 聊天即可"
-__usage__ = f"{__des__}\nUsage:\n{__cmd__}"
+__plugin_meta__ = PluginMetadata(
+    name="闲聊",
+    description="人工智障聊天",
+    usage=f"@我 对话即可\n聊天为连续对话模式，若{chat_config.chat_expire_time}s内无响应则结束对话，也可以发送“停、再见、闭嘴”等结束对话",
+    config=Config,
+)
 
 
 null_reply = ["怎么了？", "唔...怎么了？", "你好呀", "我在的"]

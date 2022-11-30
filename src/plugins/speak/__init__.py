@@ -1,19 +1,21 @@
 from nonebot import on_command
 from nonebot.rule import to_me
 from nonebot.params import CommandArg
+from nonebot.plugin import PluginMetadata
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 
+from .config import Config
 from .data_source import get_voice
 
-__des__ = "文字转语音"
-__cmd__ = """
-@我 说 {text}
-""".strip()
-__short_cmd__ = __cmd__
-__example__ = """
-@小Q 说你是猪
-""".strip()
-__usage__ = f"{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}"
+__plugin_meta__ = PluginMetadata(
+    name="语音合成",
+    description="文字转语音，支持中文/日文",
+    usage="@我 说 {text}",
+    config=Config,
+    extra={
+        "example": "@小Q 说你是猪",
+    },
+)
 
 
 speak = on_command("speak", aliases={"说"}, block=True, rule=to_me(), priority=11)

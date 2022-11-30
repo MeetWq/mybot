@@ -197,13 +197,12 @@ class Dynamic:
         self.dynamic = dynamic
         self.type = dynamic["desc"]["type"]
         self.id = dynamic["desc"]["dynamic_id"]
-        self.url = f"https://m.bilibili.com/dynamic/{self.id}"
         self.time = dynamic["desc"]["timestamp"]
         self.uid = dynamic["desc"]["user_profile"]["info"]["uid"]
         self.name = dynamic["desc"]["user_profile"]["info"].get("uname")
 
     async def format_msg(self) -> Optional[Message]:
-        img = await get_dynamic_screenshot(self.url)
+        img = await get_dynamic_screenshot(self.id)
         if not img:
             return None
         type_msg = {

@@ -9,18 +9,19 @@ from nonebot.adapters.onebot.v11 import (
     MessageSegment,
     unescape,
 )
+from nonebot.plugin import PluginMetadata
 
 from .config import Config
 
 repeat_config = Config.parse_obj(get_driver().config.dict())
 
 
-__des__ = "复读机"
-__cmd__ = """
-重复两次的内容会被复读；只能复读文本和图片；指令及其回复不会被复读
-""".strip()
-__short_cmd__ = "无"
-__usage__ = f"{__des__}\nUsage:\n{__cmd__}"
+__plugin_meta__ = PluginMetadata(
+    name="复读",
+    description="复读机",
+    usage="重复两次的内容会被复读；只能复读文本和图片；指令及其回复不会被复读",
+    config=Config,
+)
 
 
 class Counter:

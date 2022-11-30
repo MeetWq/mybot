@@ -5,14 +5,10 @@ import jinja2
 import mimetypes
 from pathlib import Path
 from typing import Optional
-from nonebot import get_driver
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot_plugin_htmlrender import html_to_pic
 
 from .rss_class import RSS
-
-global_config = get_driver().config
-httpx_proxy = str(global_config.http_proxy)
 
 dir_path = Path(__file__).parent
 template_path = dir_path / "template"
@@ -66,7 +62,7 @@ async def url_to_b64(url: str) -> str:
 
 async def download_img(url: str) -> Optional[bytes]:
     try:
-        async with httpx.AsyncClient(proxies=httpx_proxy) as client:
+        async with httpx.AsyncClient() as client:
             resp = await client.get(url, timeout=20)
             result = resp.read()
         return result

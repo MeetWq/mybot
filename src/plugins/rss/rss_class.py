@@ -1,9 +1,9 @@
 import re
 import time
-from datetime import datetime
-from typing import Union
 import pytz
+from typing import Union
 from pytz import timezone
+from datetime import datetime
 
 TZ = timezone("Asia/Shanghai")
 RSSHUB_PREFIX = "https://rsshub.app"
@@ -19,7 +19,7 @@ class RSS:
         logo: str = "",
         rights: str = "",
         style: str = "main",
-        last_update: Union[datetime, time.struct_time, str] = None,
+        last_update: Union[datetime, time.struct_time, str] = "",
     ):
         self.name = name
         self.url = self.parse_url(url, RSSHUB_PREFIX) if url else ""

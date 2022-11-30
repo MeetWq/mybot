@@ -3,8 +3,9 @@ import httpx
 from lxml import etree
 from thefuzz import fuzz
 from baike import getBaike
-from typing import List, Tuple, Union
 from urllib.parse import quote
+from typing import List, Tuple, Union
+
 from nonebot.log import logger
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 

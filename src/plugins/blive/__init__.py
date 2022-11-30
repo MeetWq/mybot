@@ -2,11 +2,14 @@ import asyncio
 from typing import Protocol
 from argparse import Namespace
 from dataclasses import dataclass
+
 from nonebot import on_shell_command
 from nonebot.rule import ArgumentParser
+from nonebot.plugin import PluginMetadata
 from nonebot.params import ShellCommandArgs, Depends
 from nonebot.adapters.onebot.v11 import MessageEvent, GroupMessageEvent
 
+from .config import Config
 from .monitor import scheduler
 from .data_source import get_live_info
 from .sub_list import (
@@ -24,25 +27,24 @@ from .uid_list import get_sub_info_by_uid, get_sub_info_by_name
 from .server import blrec_handler, blrec_error_handler, uploader_handler
 
 
-__des__ = "B站直播、动态订阅"
-__cmd__ = """
-添加订阅：blive d {用户名/UID}
-取消订阅：blive td {用户名/UID}
-订阅列表：blive list
-清空订阅：blive clear
-开启动态：blive dynon {用户名/UID}
-关闭动态：blive dynoff {用户名/UID}
-开启录播：blive recon {用户名/UID}
-关闭录播：blive recoff {用户名/UID}
-""".strip()
-__example__ = """
-blive d 282994
-blive d 泠鸢yousa
-blive recon 泠鸢yousa
-""".strip()
-__notice__ = "注意是UID不是房间号"
-__usage__ = (
-    f"{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}\nNotice:\n{__notice__}"
+__plugin_meta__ = PluginMetadata(
+    name="B站直播间订阅",
+    description="B站直播、动态订阅，自动录播",
+    usage=(
+        "添加订阅：blive d {用户名/UID}\n"
+        "取消订阅：blive td {用户名/UID}\n"
+        "订阅列表：blive list\n"
+        "清空订阅：blive clear\n"
+        "开启动态：blive dynon {用户名/UID}\n"
+        "关闭动态：blive dynoff {用户名/UID}\n"
+        "开启录播：blive recon {用户名/UID}\n"
+        "关闭录播：blive recoff {用户名/UID}"
+    ),
+    config=Config,
+    extra={
+        "example": "blive d 小南莓Official\nblive recon 小南莓Official",
+        "notice": "注意是UID不是房间号",
+    },
 )
 
 

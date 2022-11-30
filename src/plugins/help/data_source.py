@@ -18,7 +18,10 @@ async def get_help_img(event_type: str, plugins: List[PluginInfo]) -> Optional[b
         template = env.get_template("help.html")
         content = await template.render_async(type=event_type, plugins=plugins)
         return await html_to_pic(
-            content, wait=0, viewport={"width": 100, "height": 100}
+            content,
+            wait=0,
+            viewport={"width": 100, "height": 100},
+            template_path=f"file://{template_path.absolute()}",
         )
     except Exception as e:
         logger.warning(f"Error in get_help_img: {e}")
@@ -30,8 +33,11 @@ async def get_plugin_img(plugin: PluginInfo) -> Optional[bytes]:
         template = env.get_template("plugin.html")
         content = await template.render_async(plugin=plugin)
         return await html_to_pic(
-            content, wait=0, viewport={"width": 500, "height": 100}
+            content,
+            wait=0,
+            viewport={"width": 500, "height": 100},
+            template_path=f"file://{template_path.absolute()}",
         )
     except Exception as e:
-        logger.warning(f"Error in get_plugin_img({plugin.name}): {e}")
+        logger.warning(f"Error in get_plugin_img({plugin.package_name}): {e}")
         return None

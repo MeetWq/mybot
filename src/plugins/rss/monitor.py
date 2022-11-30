@@ -3,8 +3,8 @@ from nonebot import get_bot, get_driver
 from nonebot.adapters.onebot.v11 import Bot
 from nonebot_plugin_apscheduler import scheduler
 
-from .data_source import update_rss
 from .render import rss_to_msg
+from .data_source import update_rss
 from .rss_list import get_rss_list, get_user_ids, dump_rss_list
 
 from .config import Config

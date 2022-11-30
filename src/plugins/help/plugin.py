@@ -1,7 +1,8 @@
 import json
 from pathlib import Path
-from typing import List
+from typing import List, Dict, Any
 from pydantic import BaseModel, ValidationError
+
 from nonebot import get_driver
 from nonebot.plugin import Plugin, get_loaded_plugins
 from nonebot.adapters.onebot.v11 import MessageEvent, GroupMessageEvent
@@ -9,26 +10,23 @@ from nonebot.adapters.onebot.v11 import MessageEvent, GroupMessageEvent
 from nonebot_plugin_manager import PluginManager
 
 
-info_path = Path("data/help/info.json")
+info_path = Path("data/plugin_info.json")
 
 
 class PluginInfo(BaseModel):
-    name: str
-    short_name: str = ""
+    package_name: str
+    name: str = ""
     description: str = ""
-    command: str = ""
-    short_command: str = ""
-    example: str = ""
-    notice: str = ""
     usage: str = ""
-    status: bool = True
+    extra: Dict[Any, Any] = {}
+    enabled: bool = True
     locked: bool = False
 
     def __eq__(self, other: "PluginInfo"):
-        return self.name == other.name
+        return self.package_name == other.package_name
 
     def __hash__(self):
-        return hash(self.name)
+        return hash(self.package_name)
 
 
 def load_plugin_info() -> List[PluginInfo]:
@@ -42,13 +40,13 @@ def load_plugin_info() -> List[PluginInfo]:
             infos.append(PluginInfo.parse_obj(p))
         except ValidationError:
             pass
-    return sorted(infos, key=lambda i: i.short_name or i.name)
+    return sorted(infos, key=lambda i: i.package_name)
 
 
 def dump_plugin_info(infos: List[PluginInfo]):
     info_path.parent.mkdir(parents=True, exist_ok=True)
     infos_dict = {
-        "plugins": [info.dict(exclude={"status", "locked"}) for info in infos]
+        "plugins": [info.dict(exclude={"enabled", "locked"}) for info in infos]
     }
     with info_path.open("w", encoding="utf8") as fp:
         json.dump(
@@ -67,19 +65,24 @@ def update_plugin_info():
     plugins = get_loaded_plugins()
     infos: List[PluginInfo] = []
     for p in plugins:
-        infos.append(
-            PluginInfo(
-                name=p.name,
-                short_name=get_plugin_attr(p, "__help__plugin_name__"),
-                description=get_plugin_attr(p, "__des__"),
-                command=get_plugin_attr(p, "__cmd__"),
-                short_command=get_plugin_attr(p, "__short_cmd__"),
-                example=get_plugin_attr(p, "__example__"),
-                notice=get_plugin_attr(p, "__notice__"),
-                usage=get_plugin_attr(p, "__usage__"),
-            )
-        )
-    infos = [info for info in infos if info.name and info.usage]
+        info = PluginInfo(package_name=p.name)
+        if metadata := p.metadata:
+            info.name = metadata.name
+            info.description = metadata.description
+            info.usage = metadata.usage
+            info.extra = metadata.extra
+        else:
+            info.name = get_plugin_attr(p, "__help__plugin_name__") or p.name.replace(
+                "nonebot_plugin_", ""
+            ).replace("nonebot_", "")
+            info.description = get_plugin_attr(p, "__des__")
+            info.usage = get_plugin_attr(p, "__usage__")
+            info.extra = {
+                "example": get_plugin_attr(p, "__example__"),
+                "notice": get_plugin_attr(p, "__notice__"),
+            }
+        if info.usage:
+            infos.append(info)
     infos_set = set(infos)
     for info in load_plugin_info():
         infos_set.add(info)
@@ -103,12 +106,10 @@ def get_plugins(event: MessageEvent) -> List[PluginInfo]:
     plugins_read = plugin_manager.get_plugin(conv, 4)
     plugins_write = plugin_manager.get_plugin(conv, 2)
     plugins_exec = plugin_manager.get_plugin(conv, 1)
-    plugins = []
+    plugins: List[PluginInfo] = []
     for info in infos:
-        if plugins_read.get(info.name, False):
-            info.status = plugins_exec.get(info.name, False)
-            info.locked = not plugins_write.get(info.name, False)
-            if not info.short_command:
-                info.short_command = f"发送 help {info.short_name or info.name} 查看详情"
+        if plugins_read.get(info.package_name, False):
+            info.enabled = plugins_exec.get(info.package_name, False)
+            info.locked = not plugins_write.get(info.package_name, False)
             plugins.append(info)
     return plugins

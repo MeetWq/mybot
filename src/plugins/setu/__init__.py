@@ -5,20 +5,20 @@ from nonebot.rule import to_me
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg
 from nonebot.permission import SUPERUSER
+from nonebot.plugin import PluginMetadata
 from nonebot.adapters.onebot.v11 import Bot, Message, MessageSegment
 
 from .data_source import get_setu
 
 
-__des__ = "随机涩图"
-__cmd__ = """
-@我 setu [keyword]
-""".strip()
-__short_cmd__ = __cmd__
-__example__ = """
-@小Q setu 伊蕾娜
-""".strip()
-__usage__ = f"{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}"
+__plugin_meta__ = PluginMetadata(
+    name="涩图",
+    description="随机涩图",
+    usage="@我 setu [keyword]",
+    extra={
+        "example": "@小Q setu 伊蕾娜",
+    },
+)
 
 
 setu = on_command("setu", aliases={"涩图", "色图"}, rule=to_me(), block=True, priority=14)
@@ -46,4 +46,6 @@ async def handle(bot: Bot, matcher: Type[Matcher], msg: Message, r18=False):
         result = await matcher.send(MessageSegment.image(res))
         msg_id = result["message_id"]
         loop = asyncio.get_running_loop()
-        loop.call_later(100, lambda: asyncio.ensure_future(bot.delete_msg(message_id=msg_id)))
+        loop.call_later(
+            100, lambda: asyncio.ensure_future(bot.delete_msg(message_id=msg_id))
+        )

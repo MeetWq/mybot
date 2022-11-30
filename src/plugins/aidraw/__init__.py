@@ -9,16 +9,26 @@ from nonebot import on_command
 from nonebot.log import logger
 from nonebot.rule import ArgumentParser
 from nonebot.exception import ParserExit
+from nonebot.plugin import PluginMetadata
 from nonebot.params import CommandArg, Depends
 from nonebot.adapters.onebot.v11 import MessageEvent, Message, MessageSegment
 from nonebot.adapters.onebot.v11.helpers import Cooldown, CooldownIsolateLevel
 
-from .config import aidraw_config
+from .config import aidraw_config, Config
 from .data_source import txt2img, img2img
 
-DEFUALT_PROMPT = (
-    "((sfw)), masterpiece, best quality, extremely detailed CG unity 8k wallpaper, "
+__plugin_meta__ = PluginMetadata(
+    name="AI绘图",
+    description="AI关键词绘图、图生图",
+    usage="aidraw 关键词 [图片]\n包含图片时为以图绘图，否则为以文本绘图",
+    config=Config,
+    extra={
+        "example": "aidraw 1girl",
+        "notice": "本插件用的是作者本地部署的服务，不保证可用性",
+    },
 )
+
+DEFUALT_PROMPT = "((sfw)), masterpiece, best quality, "
 DEFUALT_NEGATIVE_PROMPT = "nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, "
 
 cooldown = Cooldown(

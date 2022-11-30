@@ -1,24 +1,23 @@
 import re
+from nonebot.plugin import PluginMetadata
 from nonebot import on_keyword, on_command
 from nonebot.params import CommandArg, EventPlainText, EventToMe
 from nonebot.adapters.onebot.v11 import Message
 
 from .data_source import get_content
 
-
-__des__ = "缩写查询、梗百科"
-__cmd__ = """
-1. 百科 {keyword}，来源为nbnhhsh、小鸡词典、百度百科
-2. {keyword} 是啥/是什么，来源为nbnhhsh、小鸡词典
-3. 缩写 {keyword}，来源为nbnhhsh
-""".strip()
-__short_cmd__ = "xxx是啥、百科xxx、缩写xxx"
-__example__ = """
-缩写 xswl
-xswl 是啥
-百科 洛天依
-""".strip()
-__usage__ = f"{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}"
+__plugin_meta__ = PluginMetadata(
+    name="百科",
+    description="缩写查询、梗百科",
+    usage=(
+        "1. 百科 {keyword}，来源为nbnhhsh、小鸡词典、百度百科\n"
+        "2. {keyword} 是啥/是什么，来源为nbnhhsh、小鸡词典\n"
+        "3. 缩写 {keyword}，来源为nbnhhsh"
+    ),
+    extra={
+        "example": "缩写 xswl\nxswl 是啥\n百科 洛天依",
+    },
+)
 
 
 commands = {"是啥", "是什么", "是谁"}

@@ -4,22 +4,21 @@ from nonebot import on_command
 from nonebot.matcher import Matcher
 from nonebot.typing import T_Handler
 from nonebot.params import CommandArg
+from nonebot.plugin import PluginMetadata
 from nonebot.adapters.onebot.v11 import Message
 
 from .data_source import commands, get_essay
 
-__des__ = "CP文等多种短文生成"
-cmd = "\n".join([f"{i}. {c['help']}" for i, c in enumerate(commands.values(), start=1)])
-__cmd__ = f"""
-{cmd}
-""".strip()
-__short_cmd__ = "CP文、毒鸡汤、藏头诗 等"
-__example__ = """
-苏联笑话 996 马云 修福报 程序员 公司
-CP文 攻 受
-营销号 1+1 等于3 两个1加一起等于3
-""".strip()
-__usage__ = f"{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}"
+__plugin_meta__ = PluginMetadata(
+    name="短文生成器",
+    description="CP文、毒鸡汤等多种短文生成",
+    usage="\n".join(
+        [f"{i}. {c['help']}" for i, c in enumerate(commands.values(), start=1)]
+    ),
+    extra={
+        "example": "CP文 攻 受\n",
+    },
+)
 
 
 async def handle(matcher: Type[Matcher], type: str, text: str):

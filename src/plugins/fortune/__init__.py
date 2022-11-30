@@ -1,15 +1,19 @@
 import traceback
 from nonebot import on_command
+from nonebot.plugin import PluginMetadata
 from nonebot.adapters.onebot.v11 import MessageEvent, MessageSegment
 from nonebot.log import logger
 
+from .config import Config
 from .data_source import get_fortune
 
 
-__des__ = "今日运势"
-__cmd__ = "今日运势/今日人品/jrrp"
-__short_cmd__ = __cmd__
-__usage__ = f"{__des__}\nUsage:\n{__cmd__}"
+__plugin_meta__ = PluginMetadata(
+    name="运势",
+    description="测试你的今日运势",
+    usage="今日运势/今日人品/jrrp",
+    config=Config,
+)
 
 
 jrrp = on_command("jrrp", aliases={"今日运势", "今日人品"}, block=True, priority=13)

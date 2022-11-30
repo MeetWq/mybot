@@ -1,10 +1,11 @@
 import httpx
 import random
-from typing import Optional, Union
+from typing import Union
 from pixivpy_async import PixivClient, AppPixivAPI
+
 from nonebot import get_driver
-from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot.log import logger
+from nonebot.adapters.onebot.v11 import Message, MessageSegment
 
 from .config import Config
 
@@ -88,62 +89,3 @@ async def get_by_id(work_id):
         await aapi.login(refresh_token=pixiv_config.pixiv_token)
         illust = await aapi.illust_detail(work_id)
         return illust
-
-
-async def search_by_image(img_url) -> Optional[Union[str, Message]]:
-    url = "https://saucenao.com/search.php"
-    params = {
-        "url": img_url,
-        "numres": 1,
-        "testmode": 1,
-        "db": 5,
-        "output_type": 2,
-        "api_key": pixiv_config.saucenao_apikey,
-    }
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36",
-        "Sec-Fetch-Dest": "document",
-        "Sec-Fetch-Mode": "navigate",
-        "Sec-Fetch-Site": "none",
-        "Sec-Fetch-User": "?1",
-        "Referer": url,
-        "Origin": "https://saucenao.com",
-        "Host": "saucenao.com",
-    }
-    try:
-        async with httpx.AsyncClient() as client:
-            resp = await client.post(url, params=params, headers=headers, timeout=20)
-            result = resp.json()
-
-        if result["header"]["status"] == -1:
-            logger.warning(f"post saucenao failed：{result['header']['message']}")
-            return None
-
-        if result["header"]["status"] == -2:
-            return "24小时内搜索次数到达上限！"
-
-        if "results" not in result or not result["results"]:
-            return "找不到相似的图片"
-
-        res = result["results"][0]
-        header = res["header"]
-        data = res["data"]
-        thumb_url = header["thumbnail"]
-
-        msg = (
-            f"搜索到如下结果：\n"
-            f"相似度：{header['similarity']}%\n"
-            f"题目：{data['title']}\n"
-            f"pixiv id：{data['pixiv_id']}\n"
-            f"作者：{data['member_name']}\n"
-            f"作者id：{data['member_id']}\n"
-            f"链接：{', '.join(data['ext_urls'])}"
-        )
-    except Exception as e:
-        logger.warning(f"Error in search_by_image({url}): {e}")
-        return None
-
-    msgs = Message()
-    msgs.append(msg)
-    msgs.append(MessageSegment.image(thumb_url))
-    return msgs

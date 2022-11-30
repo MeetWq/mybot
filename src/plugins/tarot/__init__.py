@@ -1,18 +1,20 @@
 from nonebot import on_command
+from nonebot.plugin import PluginMetadata
 from nonebot.adapters.onebot.v11 import MessageEvent, Message, MessageSegment
 
 from .data_source import get_tarot
 
 
-__des__ = "塔罗牌占卜"
-__cmd__ = """
-单张塔罗牌
-""".strip()
-__short_cmd__ = __cmd__
-__usage__ = f"{__des__}\nUsage:\n{__cmd__}"
+__plugin_meta__ = PluginMetadata(
+    name="塔罗牌",
+    description="塔罗牌占卜",
+    usage="单张塔罗牌",
+)
 
 
-tarot = on_command("塔罗牌", aliases={"单张塔罗牌", "塔罗牌占卜", "draw 单张塔罗牌", "draw 塔罗牌"}, block=True, priority=13)
+tarot = on_command(
+    "塔罗牌", aliases={"单张塔罗牌", "塔罗牌占卜", "draw 单张塔罗牌", "draw 塔罗牌"}, block=True, priority=13
+)
 
 
 @tarot.handle()

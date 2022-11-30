@@ -1,24 +1,23 @@
 from typing import Dict, List
-from nonebot import on_command
+
 from nonebot.rule import Rule
+from nonebot import on_command
 from nonebot.params import CommandArg
+from nonebot.plugin import PluginMetadata
 from nonebot.adapters.onebot.v11 import Bot, MessageEvent, GroupMessageEvent, Message
 
 from nonebot_plugin_manager import PluginManager
+
 from ..help.plugin import get_plugins
 
-
-__des__ = "插件管理"
-__cmd__ = """
-启用/禁用 {plugin}
-""".strip()
-__short_cmd__ = __cmd__
-__example__ = """
-禁用 setu
-""".strip()
-__notice__ = "此功能仅群管理员或超级用户可用"
-__usage__ = (
-    f"{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}\nNotice:\n{__notice__}"
+__plugin_meta__ = PluginMetadata(
+    name="插件管理",
+    description="启用/禁用插件",
+    usage="启用插件/插件 插件名",
+    extra={
+        "example": "禁用插件 setu",
+        "notice": "仅群管理员或超级用户可用",
+    },
 )
 
 
@@ -29,8 +28,8 @@ def manager_rule(bot: Bot, event: MessageEvent) -> bool:
     )
 
 
-block = on_command("禁用", block=True, rule=Rule(manager_rule))
-unblock = on_command("启用", block=True, rule=Rule(manager_rule))
+block = on_command("禁用插件", block=True, rule=Rule(manager_rule))
+unblock = on_command("启用插件", block=True, rule=Rule(manager_rule))
 
 Conv = Dict[str, List[int]]
 
@@ -43,7 +42,7 @@ def get_conv(event: MessageEvent) -> Conv:
 
 
 @block.handle()
-async def _(event: MessageEvent, msg: Message = CommandArg()):
+async def _(bot: Bot, event: MessageEvent, msg: Message = CommandArg()):
     keyword = msg.extract_plain_text().strip()
     if not keyword:
         return
@@ -51,7 +50,11 @@ async def _(event: MessageEvent, msg: Message = CommandArg()):
     plugins = get_plugins(event)
     plugin = None
     for p in plugins[::-1]:
-        if keyword.lower() in (p.name.lower(), p.short_name.lower()):
+        if keyword.lower() in (
+            p.package_name.lower(),
+            p.name.lower(),
+            p.extra.get("unique_name", "_").lower(),
+        ):
             plugin = p
             break
     if not plugin:
@@ -59,18 +62,25 @@ async def _(event: MessageEvent, msg: Message = CommandArg()):
 
     plugin_manager = PluginManager()
     conv: Conv = get_conv(event)
+    if str(event.user_id) in bot.config.superusers:
+        plugins_write = plugin_manager.get_plugin(perm=2)
+    else:
+        plugins_write = plugin_manager.get_plugin(conv, 2)
+    if plugin.package_name not in plugins_write:
+        await block.finish(f"插件 {plugin.name} 已关闭编辑权限！")
+
     if conv["group"]:
         conv["user"] = []
     result = plugin_manager.block_plugin([plugin.name], conv)
     if result.get(plugin.name, False):
-        res = f"插件 {plugin.short_name or plugin.name} 禁用成功"
+        res = f"插件 {plugin.name} 禁用成功"
     else:
-        res = f"插件 {plugin.short_name or plugin.name} 不存在或已关闭编辑权限！"
+        res = f"插件 {plugin.name} 不存在或已关闭编辑权限！"
     await block.finish(res)
 
 
 @unblock.handle()
-async def _(event: MessageEvent, msg: Message = CommandArg()):
+async def _(bot: Bot, event: MessageEvent, msg: Message = CommandArg()):
     keyword = msg.extract_plain_text().strip()
     if not keyword:
         return
@@ -78,7 +88,11 @@ async def _(event: MessageEvent, msg: Message = CommandArg()):
     plugins = get_plugins(event)
     plugin = None
     for p in plugins[::-1]:
-        if keyword.lower() in (p.name.lower(), p.short_name.lower()):
+        if keyword.lower() in (
+            p.package_name.lower(),
+            p.name.lower(),
+            p.extra.get("unique_name", "_").lower(),
+        ):
             plugin = p
             break
     if not plugin:
@@ -86,11 +100,18 @@ async def _(event: MessageEvent, msg: Message = CommandArg()):
 
     plugin_manager = PluginManager()
     conv: Conv = get_conv(event)
+    if str(event.user_id) in bot.config.superusers:
+        plugins_write = plugin_manager.get_plugin(perm=2)
+    else:
+        plugins_write = plugin_manager.get_plugin(conv, 2)
+    if plugin.package_name not in plugins_write:
+        await unblock.finish(f"插件 {plugin.name} 已关闭编辑权限！")
+
     if conv["group"]:
         conv["user"] = []
     result = plugin_manager.unblock_plugin([plugin.name], conv)
     if result.get(plugin.name, False):
-        res = f"插件 {plugin.short_name or plugin.name} 启用成功"
+        res = f"插件 {plugin.name} 启用成功"
     else:
-        res = f"插件 {plugin.short_name or plugin.name} 不存在或已关闭编辑权限！"
+        res = f"插件 {plugin.name} 不存在或已关闭编辑权限！"
     await unblock.finish(res)

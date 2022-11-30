@@ -1,26 +1,20 @@
 import re
 from nonebot import on_regex
 from nonebot.params import RegexDict
+from nonebot.plugin import PluginMetadata
 from nonebot.adapters.onebot.v11 import unescape
 
 from .data_source import legal_language, network_compile
 
 
-__des__ = "网络编译器"
-__cmd__ = f"""
-lang {{language}};
-{{code}}
-
-支持的语言：{', '.join(list(legal_language.keys()))}
-""".strip()
-__short_cmd__ = "lang {language}; {code}"
-__example__ = """
-lang py3;
-print('hello')
-""".strip()
-__notice__ = "来源为菜鸟教程的网络编译器，不要试图搞事情"
-__usage__ = (
-    f"{__des__}\nUsage:\n{__cmd__}\nExample:\n{__example__}\nNotice:\n{__notice__}"
+__plugin_meta__ = PluginMetadata(
+    name="网络编译器",
+    description="在线运行代码",
+    usage=f"lang {{language}};\n{{code}}\n\n支持的语言：{', '.join(list(legal_language.keys()))}",
+    extra={
+        "example": "lang py3;\nprint('hello')",
+        "notice": "来源为菜鸟教程的网络编译器，不要试图搞事情",
+    },
 )
 
 
