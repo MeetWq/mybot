@@ -71,8 +71,8 @@ async def _(bot: Bot, event: MessageEvent, msg: Message = CommandArg()):
 
     if conv["group"]:
         conv["user"] = []
-    result = plugin_manager.block_plugin([plugin.name], conv)
-    if result.get(plugin.name, False):
+    result = plugin_manager.block_plugin([plugin.package_name], conv)
+    if result.get(plugin.package_name, False):
         res = f"插件 {plugin.name} 禁用成功"
     else:
         res = f"插件 {plugin.name} 不存在或已关闭编辑权限！"
@@ -109,8 +109,8 @@ async def _(bot: Bot, event: MessageEvent, msg: Message = CommandArg()):
 
     if conv["group"]:
         conv["user"] = []
-    result = plugin_manager.unblock_plugin([plugin.name], conv)
-    if result.get(plugin.name, False):
+    result = plugin_manager.unblock_plugin([plugin.package_name], conv)
+    if result.get(plugin.package_name, False):
         res = f"插件 {plugin.name} 启用成功"
     else:
         res = f"插件 {plugin.name} 不存在或已关闭编辑权限！"

@@ -71,7 +71,7 @@ plugins = [
     "nonebot_plugin_emojimix",
     "nonebot_plugin_wordcloud",
     "nonebot_plugin_word_bank2",
-    # "nonebot_plugin_gamedraw",
+    "nonebot_plugin_gamedraw",
     "nonebot_plugin_heweather",
     "nonebot_plugin_ddcheck",
     "nonebot_plugin_simplemusic",
@@ -84,7 +84,7 @@ plugins = [
     "nonebot_plugin_cchess",
     "nonebot_plugin_imagetools",
     "nonebot_plugin_oddtext",
-    "nonebot_plugin_random",
+    "nonebot-plugin-random",
 ]
 plugin_dirs = ["src/plugins"]
 
