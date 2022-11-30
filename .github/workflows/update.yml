@@ -3,7 +3,7 @@ name: Update poetry.lock
 on:
   push:
     branches:
-      - "main"
+      - "master"
 
 jobs:
   update-and-push:
@@ -26,4 +26,4 @@ jobs:
         uses: actions-js/push@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: "main"
+          branch: "master"
