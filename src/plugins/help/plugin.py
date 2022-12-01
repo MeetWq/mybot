@@ -66,22 +66,24 @@ def update_plugin_info():
     infos: List[PluginInfo] = []
     for p in plugins:
         info = PluginInfo(package_name=p.name)
+        info.extra["unique_name"] = (
+            p.name.replace("nonebot_plugin_", "")
+            .replace("nonebot-plugin-", "")
+            .replace("nonebot_", "")
+            .replace("nonebot-", "")
+        )
         if metadata := p.metadata:
             info.name = metadata.name
             info.description = metadata.description
             info.usage = metadata.usage
-            info.extra = metadata.extra
+            info.extra.update(metadata.extra)
         else:
-            info.name = get_plugin_attr(p, "__help__plugin_name__") or p.name.replace(
-                "nonebot_plugin_", ""
-            ).replace("nonebot_", "")
+            info.name = get_plugin_attr(p, "__help__plugin_name__") or p.name
             info.description = get_plugin_attr(p, "__des__")
             info.usage = get_plugin_attr(p, "__usage__")
-            info.extra = {
-                "example": get_plugin_attr(p, "__example__"),
-                "notice": get_plugin_attr(p, "__notice__"),
-            }
-        if info.usage:
+            info.extra["example"] = get_plugin_attr(p, "__example__")
+            info.extra["notice"] = get_plugin_attr(p, "__notice__")
+        if info.name and info.usage and info.description:
             infos.append(info)
     infos_set = set(infos)
     for info in load_plugin_info():

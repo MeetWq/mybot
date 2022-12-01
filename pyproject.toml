@@ -6,7 +6,7 @@ authors = ["meetwq <meetwq@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
 baike = "^1.5.0"
 cachetools = "^5.0.0"
 cos-python-sdk-v5 = "^1.9.0"
@@ -52,6 +52,7 @@ nonebot-plugin-cchess = "^0.1.0"
 nonebot-plugin-imagetools = "^0.1.0"
 nonebot-plugin-oddtext = "^0.1.0"
 nonebot-plugin-random = "^0.0.7"
+nonebot-bison = "^0.6.0"
 
 [tool.poetry.dev-dependencies]
 nb-cli = "^0.6.0"
@@ -62,6 +63,7 @@ plugins = [
     "nonebot_plugin_apscheduler",
     "nonebot_plugin_manager",
     "nonebot_plugin_htmlrender",
+    "nonebot_plugin_datastore",
     "nonebot_plugin_withdraw",
     "nonebot_plugin_petpet",
     "nonebot_plugin_memes",
@@ -85,6 +87,7 @@ plugins = [
     "nonebot_plugin_imagetools",
     "nonebot_plugin_oddtext",
     "nonebot-plugin-random",
+    "nonebot_bison",
 ]
 plugin_dirs = ["src/plugins"]
 
