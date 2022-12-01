@@ -53,6 +53,7 @@ nonebot-plugin-imagetools = "^0.1.0"
 nonebot-plugin-oddtext = "^0.1.0"
 nonebot-plugin-random = "^0.0.7"
 nonebot-bison = "^0.6.0"
+nonebot-plugin-cocdicer = "^0.4.0"
 
 [tool.poetry.dev-dependencies]
 nb-cli = "^0.6.0"
@@ -88,6 +89,7 @@ plugins = [
     "nonebot_plugin_oddtext",
     "nonebot-plugin-random",
     "nonebot_bison",
+    "nonebot_plugin_cocdicer",
 ]
 plugin_dirs = ["src/plugins"]
 

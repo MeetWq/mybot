@@ -88,7 +88,9 @@ def update_plugin_info():
     infos_set = set(infos)
     for info in load_plugin_info():
         infos_set.add(info)
-    dump_plugin_info(list(infos_set))
+    infos = list(infos_set)
+    infos = sorted(infos, key=lambda i: i.package_name)
+    dump_plugin_info(infos)
 
 
 def get_plugin_attr(plugin: Plugin, attr: str):
