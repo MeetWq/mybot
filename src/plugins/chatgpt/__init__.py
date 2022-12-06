@@ -43,7 +43,7 @@ async def _(matcher: Matcher, event: MessageEvent, arg: Message = CommandArg()):
         img = await md_to_pic(reply, width=800)
         res = MessageSegment.image(img)
     else:
-        res = msg
+        res = reply
 
     await matcher.finish(res, reply_message=True)
 
