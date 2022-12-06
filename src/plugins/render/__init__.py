@@ -1,9 +1,11 @@
-from nonebot import on_command
 from nonebot.params import CommandArg
+from nonebot import on_command, require
 from nonebot.plugin import PluginMetadata
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 
 from .data_source import t2p, m2p
+
+require("nonebot_plugin_htmlrender")
 
 __plugin_meta__ = PluginMetadata(
     name="文本渲染",

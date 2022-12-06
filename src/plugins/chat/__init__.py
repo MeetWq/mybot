@@ -1,28 +1,24 @@
 import re
 import random
 from datetime import datetime, timedelta
+
 from nonebot.matcher import Matcher
 from nonebot.rule import to_me, Rule
 from nonebot.permission import Permission
 from nonebot.params import EventPlainText
-from nonebot import get_driver, on_message, require
+from nonebot.plugin import PluginMetadata
+from nonebot import get_driver, on_message
 from nonebot.adapters.onebot.v11 import (
     Bot,
     MessageEvent,
     GroupMessageEvent,
     PrivateMessageEvent,
 )
-from nonebot.plugin import PluginMetadata
 
-require("nonebot_plugin_apscheduler")
-
-from nonebot_plugin_apscheduler import scheduler
-
-from .data_source import chat_bot, get_anime_thesaurus
 from .config import Config
+from .data_source import chat_bot, get_anime_thesaurus
 
 chat_config = Config.parse_obj(get_driver().config.dict())
-
 
 __plugin_meta__ = PluginMetadata(
     name="闲聊",
@@ -91,6 +87,7 @@ async def continue_receive(
 async def handle_reply(matcher: Matcher, reply: str, event: MessageEvent):
     if not reply:
         await matcher.finish()
+
     if isinstance(event, PrivateMessageEvent):
         await matcher.finish(reply)
     else:
@@ -132,16 +129,11 @@ async def get_reply(msg: str, event: MessageEvent) -> str:
     event_id = get_event_id(event)
     username = event.sender.card or event.sender.nickname or ""
 
-    # reply = await get_anime_thesaurus(msg)
-    # if reply:
-    #     return reply
+    reply = await get_anime_thesaurus(msg)
+    if reply:
+        return reply
 
-    return await chat_bot.get_reply(msg, event_id, user_id)
-    # if reply:
-    #     return reply.replace("<USER-NAME>", username)
-    # return ""
-
-
-@scheduler.scheduled_job("interval", minutes=30)
-async def refresh_session() -> None:
-    await chat_bot.refresh_token()
+    reply = await chat_bot.get_reply(msg, event_id, user_id)
+    if reply:
+        return reply.replace("<USER-NAME>", username)
+    return ""
