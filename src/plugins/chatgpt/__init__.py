@@ -18,14 +18,14 @@ chat_config = Config.parse_obj(get_driver().config.dict())
 __plugin_meta__ = PluginMetadata(
     name="ChatGPT",
     description="ChatGPT AI对话",
-    usage="以“#”为前缀发送消息即可",
+    usage="chat xxx",
     config=Config,
     extra={
-        "example": "#你好",
+        "example": "chat 你好",
     },
 )
 
-chatgpt = on_command("#", block=True, priority=15)
+chatgpt = on_command("chat", aliases={"chatgpt"}, block=True, priority=15)
 
 
 @chatgpt.handle()
