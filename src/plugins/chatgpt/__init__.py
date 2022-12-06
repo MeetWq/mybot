@@ -1,7 +1,7 @@
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg
+from nonebot import on_command, require
 from nonebot.plugin import PluginMetadata
-from nonebot import get_driver, on_command, require
 from nonebot.adapters.onebot.v11 import Message, MessageEvent, MessageSegment
 
 require("nonebot_plugin_apscheduler")
@@ -12,8 +12,6 @@ from nonebot_plugin_apscheduler import scheduler
 
 from .data_source import chat_bot
 from .config import Config
-
-chat_config = Config.parse_obj(get_driver().config.dict())
 
 __plugin_meta__ = PluginMetadata(
     name="ChatGPT",

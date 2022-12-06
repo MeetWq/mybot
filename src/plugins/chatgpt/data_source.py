@@ -10,7 +10,6 @@ from nonebot.log import logger
 from .config import Config
 
 chatgpt_config = Config.parse_obj(get_driver().config.dict())
-proxies = chatgpt_config.http_proxy
 
 
 class ChatGPT:
@@ -34,7 +33,7 @@ class ChatGPT:
     async def refresh_token(self):
         SESSION_TOKEN = "__Secure-next-auth.session-token"
         cookies = {SESSION_TOKEN: self.session_token}
-        async with httpx.AsyncClient(proxies=proxies) as client:
+        async with httpx.AsyncClient() as client:
             resp = await client.get(
                 "https://chat.openai.com/api/auth/session",
                 headers=self.headers,
@@ -74,7 +73,7 @@ class ChatGPT:
             "model": "text-davinci-002-render",
         }
 
-        async with httpx.AsyncClient(proxies=proxies) as client:
+        async with httpx.AsyncClient() as client:
             resp = await client.post(
                 "https://chat.openai.com/backend-api/conversation",
                 json=data,
