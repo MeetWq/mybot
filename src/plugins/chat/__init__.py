@@ -5,7 +5,7 @@ from nonebot.matcher import Matcher
 from nonebot.rule import to_me, Rule
 from nonebot.permission import Permission
 from nonebot.params import EventPlainText
-from nonebot import get_driver, on_message
+from nonebot import get_driver, on_message, require
 from nonebot.adapters.onebot.v11 import (
     Bot,
     MessageEvent,
@@ -13,6 +13,10 @@ from nonebot.adapters.onebot.v11 import (
     PrivateMessageEvent,
 )
 from nonebot.plugin import PluginMetadata
+
+require("nonebot_plugin_apscheduler")
+
+from nonebot_plugin_apscheduler import scheduler
 
 from .data_source import chat_bot, get_anime_thesaurus
 from .config import Config
@@ -128,11 +132,16 @@ async def get_reply(msg: str, event: MessageEvent) -> str:
     event_id = get_event_id(event)
     username = event.sender.card or event.sender.nickname or ""
 
-    reply = await get_anime_thesaurus(msg)
-    if reply:
-        return reply
+    # reply = await get_anime_thesaurus(msg)
+    # if reply:
+    #     return reply
 
-    reply = await chat_bot.get_reply(msg, event_id, user_id)
-    if reply:
-        return reply.replace("<USER-NAME>", username)
-    return ""
+    return await chat_bot.get_reply(msg, event_id, user_id)
+    # if reply:
+    #     return reply.replace("<USER-NAME>", username)
+    # return ""
+
+
+@scheduler.scheduled_job("interval", minutes=30)
+async def refresh_session() -> None:
+    await chat_bot.refresh_token()
