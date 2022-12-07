@@ -6,9 +6,9 @@
 
 本项目是自用bot项目，并不是开箱即用的，但可以提供某些插件功能上的思路，有问题也可以提issue。
 
-
-![](https://s2.loli.net/2022/01/29/Gqah5eknBpYQ2rc.png)
-
+<div align="left">
+  <img src="https://s2.loli.net/2022/12/07/1AjdhNVYqRQ3pyD.png" width="500" />
+</div>
 
 ### install
 
