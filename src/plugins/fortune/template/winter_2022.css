@@ -1,0 +1,17 @@
+.image {
+  background-image: url("./winter_2022.jpg");
+  background-position: left -1450px center;
+}
+.face {
+  float: right;
+}
+.box {
+  background-color: rgba(181, 127, 163, 0.8);
+  margin: 30px 0px 30px 300px;
+}
+.good {
+  color: #C71585;
+}
+.bad {
+  color: #32CD32;
+}

@@ -84,9 +84,9 @@ class ChatGPT:
         try:
             result = resp.text.splitlines()[-4]
             result = result[6:]
-        except:
+        except Exception as e:
             logger.warning(f"Abnormal response content: {resp.text}")
-            return ""
+            raise e
         result = json.loads(result)
         session = {
             "conversation_id": result["conversation_id"],
