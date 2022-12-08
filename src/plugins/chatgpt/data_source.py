@@ -95,5 +95,8 @@ class ChatGPT:
         self.sessions[session_id] = session
         return result["message"]["content"]["parts"][0]
 
+    def refresh_session(self, session_id: str):
+        self.sessions[session_id] = {}
+
 
 chat_bot = ChatGPT()
