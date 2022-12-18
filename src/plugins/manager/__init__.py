@@ -63,10 +63,10 @@ async def _(bot: Bot, event: MessageEvent, msg: Message = CommandArg()):
     plugin_manager = PluginManager()
     conv: Conv = get_conv(event)
     if str(event.user_id) in bot.config.superusers:
-        plugins_write = plugin_manager.get_plugin(perm=2)
+        plugins_write = plugin_manager.get_plugin(perm=6)
     else:
-        plugins_write = plugin_manager.get_plugin(conv, 2)
-    if plugin.package_name not in plugins_write:
+        plugins_write = plugin_manager.get_plugin(conv, 6)
+    if not plugins_write.get(plugin.package_name, False):
         await block.finish(f"插件 {plugin.name} 已关闭编辑权限！")
 
     if conv["group"]:
@@ -101,10 +101,10 @@ async def _(bot: Bot, event: MessageEvent, msg: Message = CommandArg()):
     plugin_manager = PluginManager()
     conv: Conv = get_conv(event)
     if str(event.user_id) in bot.config.superusers:
-        plugins_write = plugin_manager.get_plugin(perm=2)
+        plugins_write = plugin_manager.get_plugin(perm=6)
     else:
-        plugins_write = plugin_manager.get_plugin(conv, 2)
-    if plugin.package_name not in plugins_write:
+        plugins_write = plugin_manager.get_plugin(conv, 6)
+    if not plugins_write.get(plugin.package_name, False):
         await unblock.finish(f"插件 {plugin.name} 已关闭编辑权限！")
 
     if conv["group"]:

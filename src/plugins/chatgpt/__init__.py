@@ -1,3 +1,4 @@
+import re
 from nonebot.rule import to_me
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg
@@ -33,12 +34,21 @@ async def _(matcher: Matcher, event: MessageEvent, arg: Message = CommandArg()):
     if not msg:
         matcher.stop_propagation()
         await matcher.finish()
+
+    plaintext = False
+    pattern = [r"-t +.*?", r".*? +-t", r"--text +.*?", r".*? +--text"]
+    for p in pattern:
+        if re.fullmatch(p, msg):
+            plaintext = True
+            break
+    msg = msg.replace("-t", "").replace("--text", "").strip()
+
     try:
         reply = await chat_bot.get_reply(msg, event.get_session_id())
     except:
         await matcher.finish("出错了，请稍后再试")
 
-    if len(reply) > 150 or "```" in reply:
+    if not plaintext and (len(reply) > 150 or "```" in reply):
         if reply.count("```") % 2 != 0:
             reply += "\n```"
         img = await md_to_pic(reply, width=600)

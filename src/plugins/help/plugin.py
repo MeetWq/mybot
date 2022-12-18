@@ -108,7 +108,7 @@ def get_plugins(event: MessageEvent) -> List[PluginInfo]:
     }
     plugin_manager = PluginManager()
     plugins_read = plugin_manager.get_plugin(conv, 4)
-    plugins_write = plugin_manager.get_plugin(conv, 2)
+    plugins_write = plugin_manager.get_plugin(conv, 6)
     plugins_exec = plugin_manager.get_plugin(conv, 1)
     plugins: List[PluginInfo] = []
     for info in infos:
