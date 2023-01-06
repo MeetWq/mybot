@@ -1,12 +1,13 @@
 from typing import Dict, List
 
 from nonebot.rule import Rule
-from nonebot import on_command
 from nonebot.params import CommandArg
+from nonebot import on_command, require
 from nonebot.plugin import PluginMetadata
 from nonebot.adapters.onebot.v11 import Bot, MessageEvent, GroupMessageEvent, Message
 
-from nonebot_plugin_manager import PluginManager
+require("nonebot_plugin_manager")
+from nonebot_plugin_manager.manager import PluginManager
 
 from ..help.plugin import get_plugins
 

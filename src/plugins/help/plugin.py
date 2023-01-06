@@ -3,11 +3,12 @@ from pathlib import Path
 from typing import List, Dict, Any
 from pydantic import BaseModel, ValidationError
 
-from nonebot import get_driver
+from nonebot import get_driver, require
 from nonebot.plugin import Plugin, get_loaded_plugins
 from nonebot.adapters.onebot.v11 import MessageEvent, GroupMessageEvent
 
-from nonebot_plugin_manager import PluginManager
+require("nonebot_plugin_manager")
+from nonebot_plugin_manager.manager import PluginManager
 
 
 info_path = Path("data/plugin_info.json")
