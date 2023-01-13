@@ -7,7 +7,7 @@ async def get_dynmap_updates(url: str):
     try:
         stamp = (datetime.now() - timedelta(minutes=2)).timestamp()
         url += "/" + str(int(stamp * 1000))
-        async with httpx.AsyncClient(timeout=10) as client:
+        async with httpx.AsyncClient(timeout=20) as client:
             resp = await client.get(url)
             result = resp.json()
         return result
@@ -43,7 +43,7 @@ async def send_message(config, msg):
         send_url = config["url"] + "/up/sendmessage"
         info = {"j_username": config["username"], "j_password": config["password"]}
         data = {"name": "", "message": msg}
-        async with httpx.AsyncClient(timeout=10) as client:
+        async with httpx.AsyncClient(timeout=20) as client:
             await client.post(login_url, data=info)
             await client.post(send_url, json=data)
         return True
