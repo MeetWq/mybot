@@ -1,0 +1,17 @@
+.image {
+  background-image: url("./spring_2023.jpg");
+  background-position: right -1050px center;
+}
+.face {
+  float: left;
+}
+.box {
+  background-color: rgba(171, 195, 73, 0.8);
+  margin: 30px 350px 30px 0px;
+}
+.good {
+  color: #d43a9c;
+}
+.bad {
+  color: #228b22;
+}
