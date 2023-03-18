@@ -89,6 +89,7 @@ plugins = [
     "nonebot-plugin-random",
     # "nonebot_bison",
     "nonebot_plugin_cocdicer",
+    "nonebot_plugin_bracket",
 ]
 plugin_dirs = ["src/plugins"]
 
