@@ -143,6 +143,9 @@ dmypy.json
 # pycharm
 .idea/
 
+# vscode
+.vscode/
+
 # tmp files
 *cache/
 

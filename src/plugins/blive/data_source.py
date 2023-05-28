@@ -1,5 +1,7 @@
-import httpx
+from pathlib import Path
 from typing import Optional
+
+import httpx
 from nonebot import get_driver
 from nonebot.log import logger
 from nonebot_plugin_htmlrender import get_new_page
@@ -7,6 +9,10 @@ from nonebot_plugin_htmlrender import get_new_page
 from .config import Config
 
 blive_config = Config.parse_obj(get_driver().config.dict())
+headers = {
+    "cookie": blive_config.bilibili_cookie,
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.35",
+}
 
 
 async def get_live_info(uid: str = "", up_name: str = "") -> dict:
@@ -29,7 +35,7 @@ async def get_live_info_by_uids(uids: list) -> dict:
     try:
         url = "https://api.live.bilibili.com/room/v1/Room/get_status_info_by_uids"
         async with httpx.AsyncClient() as client:
-            resp = await client.post(url, json={"uids": uids})
+            resp = await client.post(url, json={"uids": uids}, headers=headers)
             result = resp.json()
         if not result or result["code"] != 0:
             return {}
@@ -50,7 +56,6 @@ async def get_user_info_by_name(up_name: str) -> dict:
     try:
         url = "http://api.bilibili.com/x/web-interface/search/type"
         params = {"search_type": "bili_user", "keyword": up_name}
-        headers = {"cookie": blive_config.bilibili_cookie}
         async with httpx.AsyncClient() as client:
             await client.get("https://www.bilibili.com", headers=headers)
             resp = await client.get(url, params=params)
@@ -72,7 +77,7 @@ async def get_play_url(room_id: str) -> str:
         url = "http://api.live.bilibili.com/room/v1/Room/playUrl"
         params = {"cid": int(room_id), "platform": "web", "qn": 10000}
         async with httpx.AsyncClient() as client:
-            resp = await client.get(url, params=params)
+            resp = await client.get(url, params=params, headers=headers)
             result = resp.json()
         if not result or result["code"] != 0:
             return ""
@@ -87,7 +92,7 @@ async def get_user_dynamics(uid: str) -> list:
         # need_top: {1: 带置顶, 0: 不带置顶}
         url = f"https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/space_history?host_uid={uid}&offset_dynamic_id=0&need_top=0"
         async with httpx.AsyncClient() as client:
-            resp = await client.get(url)
+            resp = await client.get(url, headers=headers)
             result = resp.json()
         return result["data"]["cards"]
     except Exception as e:
