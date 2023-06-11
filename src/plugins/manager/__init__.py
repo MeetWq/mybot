@@ -7,7 +7,7 @@ from nonebot.plugin import PluginMetadata
 from nonebot.adapters.onebot.v11 import Bot, MessageEvent, GroupMessageEvent, Message
 
 require("nonebot_plugin_manager")
-from nonebot_plugin_manager.manager import PluginManager
+from nonebot_plugin_manager.manager import plugin_manager
 
 from ..help.plugin import get_plugins
 
@@ -61,7 +61,6 @@ async def _(bot: Bot, event: MessageEvent, msg: Message = CommandArg()):
     if not plugin:
         await block.finish(f"插件 {keyword} 不存在！")
 
-    plugin_manager = PluginManager()
     conv: Conv = get_conv(event)
     if str(event.user_id) in bot.config.superusers:
         plugins_write = plugin_manager.get_plugin(perm=6)
@@ -99,7 +98,6 @@ async def _(bot: Bot, event: MessageEvent, msg: Message = CommandArg()):
     if not plugin:
         await unblock.finish(f"插件 {keyword} 不存在！")
 
-    plugin_manager = PluginManager()
     conv: Conv = get_conv(event)
     if str(event.user_id) in bot.config.superusers:
         plugins_write = plugin_manager.get_plugin(perm=6)

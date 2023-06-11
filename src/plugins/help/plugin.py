@@ -8,7 +8,7 @@ from nonebot.plugin import Plugin, get_loaded_plugins
 from nonebot.adapters.onebot.v11 import MessageEvent, GroupMessageEvent
 
 require("nonebot_plugin_manager")
-from nonebot_plugin_manager.manager import PluginManager
+from nonebot_plugin_manager.manager import plugin_manager
 
 
 info_path = Path("data/plugin_info.json")
@@ -107,7 +107,6 @@ def get_plugins(event: MessageEvent) -> List[PluginInfo]:
         "user": [event.user_id],
         "group": [event.group_id] if isinstance(event, GroupMessageEvent) else [],
     }
-    plugin_manager = PluginManager()
     plugins_read = plugin_manager.get_plugin(conv, 4)
     plugins_write = plugin_manager.get_plugin(conv, 6)
     plugins_exec = plugin_manager.get_plugin(conv, 1)
