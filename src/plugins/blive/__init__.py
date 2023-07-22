@@ -1,45 +1,54 @@
-import asyncio
-from typing import Protocol
 from argparse import Namespace
-from dataclasses import dataclass
+from typing import Union
 
-from nonebot import on_shell_command
-from nonebot.rule import ArgumentParser
+from nonebot import on_shell_command, require
+from nonebot.adapters import Event
+from nonebot.exception import ParserExit
+from nonebot.params import ShellCommandArgs
 from nonebot.plugin import PluginMetadata
-from nonebot.params import ShellCommandArgs, Depends
-from nonebot.adapters.onebot.v11 import MessageEvent, GroupMessageEvent
+from nonebot.rule import ArgumentParser
 
+require("nonebot_plugin_saa")
+require("nonebot_plugin_datastore")
+require("nonebot_plugin_htmlrender")
+require("nonebot_plugin_apscheduler")
+
+from nonebot_plugin_saa import PlatformTarget, enable_auto_select_bot, extract_target
+
+enable_auto_select_bot()
+
+from .blrec import server
+from .blrec.task import sync_tasks
 from .config import Config
-from .monitor import scheduler
-from .data_source import get_live_info
-from .sub_list import (
-    get_sub_list,
-    clear_sub_list,
-    add_sub_list,
-    del_sub_list,
-    open_record,
-    close_record,
-    open_dynamic,
-    close_dynamic,
+from .database.db import (
+    add_sub,
+    del_sub,
+    get_sub,
+    get_subs,
+    get_user,
+    get_users,
+    update_sub_options,
 )
-from .blrec import sync_tasks
-from .uid_list import get_sub_info_by_uid, get_sub_info_by_name
-from .server import blrec_handler, blrec_error_handler, uploader_handler
+from .models import BiliUser, Subscription, SubscriptionOptions
+from .pusher import dynamic_pusher, live_pusher
+from .utils import get_user_info_by_name, get_uset_info_by_uid
 
+usage = (
+    "添加订阅：blive d 用户名/UID\n"
+    "取消订阅：blive td 用户名/UID\n"
+    "订阅列表：blive list\n"
+    "开启直播：blive liveon 用户名/UID\n"
+    "关闭直播：blive liveoff 用户名/UID\n"
+    "开启动态：blive dynon 用户名/UID\n"
+    "关闭动态：blive dynoff 用户名/UID\n"
+    "开启录播：blive recon 用户名/UID\n"
+    "关闭录播：blive recoff 用户名/UID"
+)
 
 __plugin_meta__ = PluginMetadata(
-    name="B站直播间订阅",
-    description="B站直播、动态订阅，自动录播",
-    usage=(
-        "添加订阅：blive d {用户名/UID}\n"
-        "取消订阅：blive td {用户名/UID}\n"
-        "订阅列表：blive list\n"
-        "清空订阅：blive clear\n"
-        "开启动态：blive dynon {用户名/UID}\n"
-        "关闭动态：blive dynoff {用户名/UID}\n"
-        "开启录播：blive recon {用户名/UID}\n"
-        "关闭录播：blive recoff {用户名/UID}"
-    ),
+    name="B站用户订阅",
+    description="B站用户直播、动态订阅，自动录播",
+    usage=usage,
     config=Config,
     extra={
         "example": "blive d 小南莓Official\nblive recon 小南莓Official",
@@ -48,78 +57,108 @@ __plugin_meta__ = PluginMetadata(
 )
 
 
-class Func(Protocol):
-    async def __call__(self, args: "Args"):
-        ...
+async def add_sub_func(target: PlatformTarget, user: BiliUser):
+    if await get_sub(target, user.uid):
+        await blive.finish(f"{user.name} 已经订阅过了")
+
+    await add_sub(Subscription(target=target, user=user, options=SubscriptionOptions()))
+
+    await blive.finish(f"成功添加订阅 {user.name}")
 
 
-@dataclass
-class Args:
-    user_id: str
-    func: Func
-    uid: str = ""
-    up_name: str = ""
-    room_id: str = ""
+async def del_sub_func(target: PlatformTarget, user: BiliUser):
+    if not await get_sub(target, user.uid):
+        await blive.finish(f"{user.name} 还没有订阅过")
+
+    await del_sub(target, user.uid)
+
+    await blive.finish(f"成功取消订阅 {user.name}")
 
 
-async def add_sub(args: Args):
-    if res := add_sub_list(args.user_id, args.uid, args.up_name, args.room_id):
-        await blive.finish(res)
-    asyncio.ensure_future(sync_tasks())
-    await blive.finish(f"成功订阅 {args.up_name} 的直播间")
-
-
-async def del_sub(args: Args):
-    if res := del_sub_list(args.user_id, args.uid):
-        await blive.finish(res)
-    asyncio.ensure_future(sync_tasks())
-    await blive.finish(f"成功取消订阅 {args.up_name} 的直播间")
-
-
-async def list_sub(args: Args):
-    sub_list = get_sub_list(args.user_id)
-    if not sub_list:
+async def list_sub_func(target: PlatformTarget, _):
+    subs = await get_subs(target)
+    if not subs:
         await blive.finish("目前还没有任何订阅")
-    msg = "已订阅以下直播间:\n"
-    for _, info in sub_list.items():
-        record = info.get("record", False)
-        dynamic = info.get("dynamic", False)
+
+    msg = "已订阅以下用户:\n"
+    for sub in subs:
+        user = sub.user
+        options = sub.options
         msg += (
-            f"\n{info['up_name']}{'（动态）' if dynamic else ''}{'（录播）' if record else ''}"
+            f"\n{user.name} "
+            f"{'(直播)' if user.room_id and options.live else ''}"
+            f"{'(动态)' if options.dynamic else ''}"
+            f"{'(录播)' if user.room_id and options.record else ''}"
         )
     await blive.finish(msg)
 
 
-async def clear_sub(args: Args):
-    clear_sub_list(args.user_id)
-    asyncio.ensure_future(sync_tasks())
-    await blive.finish("订阅列表已清空")
+async def liveon_func(target: PlatformTarget, user: BiliUser):
+    if not (sub := await get_sub(target, user.uid)):
+        await blive.finish(f"{user.name} 还没有订阅过")
+
+    options = sub.options
+    options.live = True
+    await update_sub_options(target, user.uid, options)
+
+    await blive.finish(f"{user.name} 直播推送已打开")
 
 
-async def dynon(args: Args):
-    if res := open_dynamic(args.user_id, args.uid):
-        await blive.finish(res)
-    await blive.finish(f"{args.up_name} 动态推送已打开")
+async def liveoff_func(target: PlatformTarget, user: BiliUser):
+    if not (sub := await get_sub(target, user.uid)):
+        await blive.finish(f"{user.name} 还没有订阅过")
+
+    options = sub.options
+    options.live = False
+    await update_sub_options(target, user.uid, options)
+
+    await blive.finish(f"{user.name} 直播推送已关闭")
 
 
-async def dynoff(args: Args):
-    if res := close_dynamic(args.user_id, args.uid):
-        await blive.finish(res)
-    await blive.finish(f"{args.up_name} 动态推送已关闭")
+async def dynon_func(target: PlatformTarget, user: BiliUser):
+    if not (sub := await get_sub(target, user.uid)):
+        await blive.finish(f"{user.name} 还没有订阅过")
+
+    options = sub.options
+    options.dynamic = True
+    await update_sub_options(target, user.uid, options)
+
+    await blive.finish(f"{user.name} 动态推送已打开")
 
 
-async def recon(args: Args):
-    if res := open_record(args.user_id, args.uid):
-        await blive.finish(res)
-    asyncio.ensure_future(sync_tasks())
-    await blive.finish(f"{args.up_name} 自动录播已打开")
+async def dynoff_func(target: PlatformTarget, user: BiliUser):
+    if not (sub := await get_sub(target, user.uid)):
+        await blive.finish(f"{user.name} 还没有订阅过")
+
+    options = sub.options
+    options.dynamic = False
+    await update_sub_options(target, user.uid, options)
+
+    await blive.finish(f"{user.name} 动态推送已关闭")
 
 
-async def recoff(args: Args):
-    if res := close_record(args.user_id, args.uid):
-        await blive.finish(res)
-    asyncio.ensure_future(sync_tasks())
-    await blive.finish(f"{args.up_name} 自动录播已关闭")
+async def recon_func(target: PlatformTarget, user: BiliUser):
+    if not (sub := await get_sub(target, user.uid)):
+        await blive.finish(f"{user.name} 还没有订阅过")
+
+    options = sub.options
+    options.record = True
+    await update_sub_options(target, user.uid, options)
+
+    await blive.send(f"{user.name} 自动录播已打开")
+    await sync_tasks()
+
+
+async def recoff_func(target: PlatformTarget, user: BiliUser):
+    if not (sub := await get_sub(target, user.uid)):
+        await blive.finish(f"{user.name} 还没有订阅过")
+
+    options = sub.options
+    options.record = False
+    await update_sub_options(target, user.uid, options)
+
+    await blive.send(f"{user.name} 自动录播已关闭")
+    await sync_tasks()
 
 
 blive_parser = ArgumentParser("blive")
@@ -128,33 +167,38 @@ blive_subparsers = blive_parser.add_subparsers()
 
 add_parser = blive_subparsers.add_parser("add", aliases=("d", "添加", "添加订阅"))
 add_parser.add_argument("name")
-add_parser.set_defaults(func=add_sub)
+add_parser.set_defaults(func=add_sub_func)
 
 del_parser = blive_subparsers.add_parser("del", aliases=("td", "删除", "取消订阅"))
 del_parser.add_argument("name")
-del_parser.set_defaults(func=del_sub)
+del_parser.set_defaults(func=del_sub_func)
 
 list_parser = blive_subparsers.add_parser("list", aliases=("列表", "订阅列表"))
-list_parser.set_defaults(func=list_sub)
+list_parser.set_defaults(func=list_sub_func)
 
-clear_parser = blive_subparsers.add_parser("clear", aliases=("清空", "清空订阅"))
-clear_parser.set_defaults(func=clear_sub)
+liveon_parser = blive_subparsers.add_parser("liveon", aliases=("开启直播"))
+liveon_parser.add_argument("name")
+liveon_parser.set_defaults(func=liveon_func)
+
+liveoff_parser = blive_subparsers.add_parser("liveoff", aliases=("关闭直播"))
+liveoff_parser.add_argument("name")
+liveoff_parser.set_defaults(func=liveoff_func)
 
 dynon_parser = blive_subparsers.add_parser("dynon", aliases=("开启动态"))
 dynon_parser.add_argument("name")
-dynon_parser.set_defaults(func=dynon)
+dynon_parser.set_defaults(func=dynon_func)
 
 dynoff_parser = blive_subparsers.add_parser("dynoff", aliases=("关闭动态"))
 dynoff_parser.add_argument("name")
-dynoff_parser.set_defaults(func=dynoff)
+dynoff_parser.set_defaults(func=dynoff_func)
 
 recon_parser = blive_subparsers.add_parser("recon", aliases=("开启录播"))
 recon_parser.add_argument("name")
-recon_parser.set_defaults(func=recon)
+recon_parser.set_defaults(func=recon_func)
 
 recoff_parser = blive_subparsers.add_parser("recoff", aliases=("关闭录播"))
 recoff_parser.add_argument("name")
-recoff_parser.set_defaults(func=recoff)
+recoff_parser.set_defaults(func=recoff_func)
 
 
 blive = on_shell_command(
@@ -166,38 +210,36 @@ blive = on_shell_command(
 )
 
 
-def get_id(event: MessageEvent):
-    if isinstance(event, GroupMessageEvent):
-        return "group_" + str(event.group_id)
-    else:
-        return "private_" + str(event.user_id)
-
-
 @blive.handle()
-async def _(ns: Namespace = ShellCommandArgs(), user_id: str = Depends(get_id)):
-    args = Args(user_id, ns.func)
+async def _(event: Event, ns: Union[Namespace, ParserExit] = ShellCommandArgs()):
+    if isinstance(ns, ParserExit):
+        if ns.status == 0:
+            await blive.finish(f"B站用户直播、动态订阅\nusage:\n{usage}")
+        return
 
+    try:
+        target = extract_target(event)
+    except RuntimeError:
+        return
+
+    user = None
     if hasattr(ns, "name"):
         name = str(ns.name)
         if name.isdigit():
-            args.uid = name
-            if info := get_sub_info_by_uid(name):
-                args.up_name = info["up_name"]
-                args.room_id = info["room_id"]
-            elif info := await get_live_info(uid=name):
-                args.up_name = info["uname"]
-                args.room_id = str(info["room_id"])
-            else:
-                await blive.finish("获取直播间信息失败，请检查名称或稍后再试")
+            uid = name
+            user = await get_user(uid)
+            if not user:
+                user = await get_uset_info_by_uid(uid)
         else:
-            args.up_name = name
-            if info := get_sub_info_by_name(name):
-                args.uid = info["uid"]
-                args.room_id = info["room_id"]
-            elif info := await get_live_info(up_name=name):
-                args.uid = str(info["uid"])
-                args.room_id = str(info["room_id"])
-            else:
-                await blive.finish("获取直播间信息失败，请检查名称或稍后再试")
+            users = await get_users()
+            for sub_user in users:
+                if sub_user.name == name:
+                    user = sub_user
+            if not user:
+                user = await get_user_info_by_name(name)
 
-    await args.func(args)
+        if not user:
+            await blive.finish("获取用户信息失败，请检查名称或稍后再试")
+
+    if hasattr(ns, "func"):
+        await ns.func(target, user)
