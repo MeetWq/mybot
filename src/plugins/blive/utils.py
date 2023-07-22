@@ -31,7 +31,9 @@ async def get_user_info_by_name(name: str) -> Optional[BiliUser]:
         for data in res["result"]:
             if data["uname"] == name:
                 return BiliUser(
-                    uid=data["mid"], name=data["uname"], room_id=data["room_id"]
+                    uid=data["mid"],
+                    name=data["uname"],
+                    room_id=data["room_id"] if data["room_id"] else None,
                 )
 
 
