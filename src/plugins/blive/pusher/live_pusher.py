@@ -1,3 +1,5 @@
+import time
+
 from bilireq.live import get_rooms_info_by_uids
 from nonebot.log import logger
 from nonebot_plugin_apscheduler import scheduler
@@ -43,13 +45,15 @@ async def _():
         room_id = info["short_id"] or info["room_id"]
 
         if status == 1:
+            live_time = time.strftime(
+                "%Y-%m-%d %H:%M:%S", time.localtime(info["live_time"])
+            )
             title = info["title"]
             url = f"https://live.bilibili.com/{room_id}"
             cover = info["cover_from_user"] or info["keyframe"]
-
-            msg.append(f"{name} 开播啦！\n标题：{title}\n")
+            msg.append(f"{live_time}\n{name} 开播啦！\n{title}\n")
             msg.append(Image(cover))
-            msg.append(f"链接：{url}")
+            msg.append(f"{url}")
 
         elif status == 0:
             msg.append(f"{name} 下播了")
