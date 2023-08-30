@@ -1,18 +1,29 @@
 import traceback
 from typing import Optional
 
+import httpx
 from bilireq.user import get_user_info
-from bilireq.utils import get
+from bilireq.utils import DEFAULT_HEADERS, get
 from nonebot.log import logger
 from nonebot_plugin_htmlrender import get_new_page
 
+from .config import blive_config
 from .models import BiliUser
+
+USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.35"
+)
 
 
 async def search_user(keyword: str):
     url = "https://api.bilibili.com/x/web-interface/search/type"
     data = {"keyword": keyword, "search_type": "bili_user"}
-    return await get(url, params=data)
+    headers = {"user-agent": USER_AGENT, "Cookie": blive_config.bilibili_cookie}
+    async with httpx.AsyncClient(timeout=10) as client:
+        await client.get("https://www.bilibili.com", headers=headers)
+        resp = await client.get(url, params=data)
+        return resp.json()["data"]
 
 
 async def get_uset_info_by_uid(uid: str) -> Optional[BiliUser]:
@@ -37,13 +48,26 @@ async def get_user_info_by_name(name: str) -> Optional[BiliUser]:
                 )
 
 
+async def get_user_dynamics(uid: int):
+    url = "https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/space"
+    data = {"host_mid": uid}
+    headers = {
+        **DEFAULT_HEADERS,
+        **{
+            "Origin": "https://space.bilibili.com",
+            "Referer": f"https://space.bilibili.com/{uid}/dynamic",
+            "Cookie": blive_config.bilibili_cookie,
+        },
+    }
+    return await get(url, params=data, headers=headers, timeout=20)
+
+
 async def get_dynamic_screenshot(dynamic_id: int) -> Optional[bytes]:
     url = f"https://t.bilibili.com/{dynamic_id}"
     try:
         async with get_new_page(
             viewport={"width": 2000, "height": 1000},
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-            "(KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.82",
+            user_agent=USER_AGENT,
             device_scale_factor=3,
         ) as page:
             await page.goto(url, wait_until="networkidle")
