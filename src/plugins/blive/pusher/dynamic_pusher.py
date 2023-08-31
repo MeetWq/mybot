@@ -59,6 +59,15 @@ async def _():
         logger.info(f"检测到新动态：{dynamic_id}")
         dynamic_offset[uid] = dynamic_id
 
+        if dyn_type in [
+            "DYNAMIC_TYPE_LIVE_RCMD",
+            "DYNAMIC_TYPE_LIVE",
+            "DYNAMIC_TYPE_AD",
+            "DYNAMIC_TYPE_BANNER",
+        ]:
+            logger.info(f"无需推送的动态 {dyn_type}，已跳过：{dynamic_id}")
+            return
+
         if not (image := await get_dynamic_screenshot(dynamic_id)):
             logger.warning(f"获取动态截图失败：{dynamic_id}")
             return
