@@ -1,11 +1,12 @@
 import re
-from nonebot import on_regex
-from nonebot.params import RegexDict
+
+from nonebot import on_command
+from nonebot.adapters import Message
+from nonebot.matcher import Matcher
+from nonebot.params import CommandArg
 from nonebot.plugin import PluginMetadata
-from nonebot.adapters.onebot.v11 import unescape
 
 from .data_source import legal_language, network_compile
-
 
 __plugin_meta__ = PluginMetadata(
     name="网络编译器",
@@ -17,26 +18,26 @@ __plugin_meta__ = PluginMetadata(
     },
 )
 
-
-compiler = on_regex(
-    r"^lang\s+(?P<language>[^;；\s]+)[;；\s]+(?P<code>[^;；\s]+.*)",
-    flags=re.S,
-    block=True,
-    priority=13,
-)
+compiler = on_command("lang", force_whitespace=True, block=True, priority=13)
 
 
 @compiler.handle()
-async def _(msg: dict = RegexDict()):
-    language = str(msg["language"]).strip()
-    code = unescape(unescape(str(msg["code"]))).strip()
+async def _(matcher: Matcher, msg: Message = CommandArg()):
+    text = msg.extract_plain_text().lstrip()
+    if not text:
+        await matcher.finish()
+    matched = re.match(r"^(?P<language>[^;；\s]+)[;；\s]+(?P<code>[^;；\s]+.*)", text)
+    if not matched:
+        await matcher.finish()
+
+    args = matched.groupdict()
+    language = str(args["language"]).strip()
+    code = str(args["code"]).strip()
     if language not in legal_language:
-        await compiler.finish(f"支持的语言：{', '.join(list(legal_language.keys()))}")
+        await matcher.finish(f"支持的语言：{', '.join(list(legal_language.keys()))}")
 
     result = await network_compile(language, code)
     if not result:
-        await compiler.finish("出错了，请稍后再试")
+        await matcher.finish("出错了，请稍后再试")
     else:
-        await compiler.finish(
-            result["output"] if result["output"] else result["errors"]
-        )
+        await matcher.finish(result["output"] if result["output"] else result["errors"])

@@ -1,11 +1,14 @@
-from nonebot.params import CommandArg
 from nonebot import on_command, require
+from nonebot.adapters import Message
+from nonebot.params import CommandArg
 from nonebot.plugin import PluginMetadata
-from nonebot.adapters.onebot.v11 import Message, MessageSegment
 
-from .data_source import t2p, m2p
+from .data_source import m2p, t2p
 
+require("nonebot_plugin_saa")
 require("nonebot_plugin_htmlrender")
+
+from nonebot_plugin_saa import Image, MessageFactory
 
 __plugin_meta__ = PluginMetadata(
     name="文本渲染",
@@ -29,7 +32,7 @@ async def _(msg: Message = CommandArg()):
 
     img = await t2p(text)
     if img:
-        await text2pic.finish(MessageSegment.image(img))
+        await MessageFactory([Image(img)]).send()
 
 
 @md2pic.handle()
@@ -40,4 +43,4 @@ async def _(msg: Message = CommandArg()):
 
     img = await m2p(text)
     if img:
-        await md2pic.finish(MessageSegment.image(img))
+        await MessageFactory([Image(img)]).send()

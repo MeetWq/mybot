@@ -1,18 +1,17 @@
-import httpx
-import base64
-import jinja2
 import asyncio
+import base64
 import traceback
-from PIL import Image
 from io import BytesIO
 from pathlib import Path
-from typing import List, Optional
-from PIL.Image import Image as IMG
-from mcstatus import MinecraftServer
+from typing import List, Optional, Tuple
 
-from nonebot_plugin_htmlrender import get_new_page
-from nonebot.adapters.onebot.v11 import Message, MessageSegment
+import httpx
+import jinja2
+from mcstatus import MinecraftServer
 from nonebot.log import logger
+from nonebot_plugin_htmlrender import get_new_page
+from PIL import Image
+from PIL.Image import Image as IMG
 
 dir_path = Path(__file__).parent
 template_path = dir_path / "template"
@@ -59,7 +58,7 @@ async def get_crafatar(type: str, uuid: str) -> Optional[bytes]:
 
 
 def load_file(name):
-    with (template_path / name).open("r", encoding="utf-8") as f:
+    with open(template_path / name, "r", encoding="utf-8") as f:
         return f.read()
 
 
@@ -107,7 +106,7 @@ async def get_mcmodel(uuid: str) -> Optional[BytesIO]:
         return None
 
 
-async def get_mcstatus(addr: str) -> Optional[Message]:
+async def get_mcstatus(addr: str) -> Optional[Tuple[Optional[bytes], str]]:
     try:
         server = MinecraftServer.lookup(addr)
         status = await server.async_status()
@@ -124,14 +123,11 @@ async def get_mcstatus(addr: str) -> Optional[Message]:
         logger.warning(traceback.format_exc())
         return None
 
-    msg = Message()
+    image = None
     if favicon:
-        msg.append(
-            MessageSegment.image(
-                "base64://" + favicon.replace("data:image/png;base64,", "")
-            )
-        )
-    msg.append(
+        image = base64.b64decode(favicon.replace("data:image/png;base64,", "").encode())
+
+    msg = (
         f"服务端版本：{version}\n"
         f"协议版本：{protocol}\n"
         f"当前人数：{players_online}/{players_max}\n"
@@ -139,4 +135,4 @@ async def get_mcstatus(addr: str) -> Optional[Message]:
         f"描述文本：{description}\n"
         f"游戏延迟：{latency}ms"
     )
-    return msg
+    return image, msg

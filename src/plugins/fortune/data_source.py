@@ -1,10 +1,10 @@
 import json
-import jinja2
 import random
+from datetime import datetime
 from pathlib import Path
 from typing import Optional
-from datetime import datetime
 
+import jinja2
 from nonebot import get_driver
 from nonebot_plugin_htmlrender import html_to_pic
 
@@ -20,7 +20,7 @@ env = jinja2.Environment(
 )
 
 
-async def get_fortune(user_id: int, username: str) -> Optional[bytes]:
+async def get_fortune(user_id: str, username: str) -> Optional[bytes]:
     with (resource_path / "copywriting.json").open("r", encoding="utf-8") as f:
         data = json.load(f)
     date = datetime.now().strftime("%Y%m%d")

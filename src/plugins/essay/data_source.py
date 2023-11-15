@@ -1,10 +1,9 @@
-import re
 import json
-import httpx
 import random
 import traceback
-from typing import List
 from pathlib import Path
+from typing import List
+
 from nonebot.log import logger
 
 dir_path = Path(__file__).parent

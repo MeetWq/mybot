@@ -8,8 +8,8 @@ from nonebot.params import ShellCommandArgs
 from nonebot.plugin import PluginMetadata
 from nonebot.rule import ArgumentParser
 
+require("nonebot_plugin_orm")
 require("nonebot_plugin_saa")
-require("nonebot_plugin_datastore")
 require("nonebot_plugin_htmlrender")
 require("nonebot_plugin_apscheduler")
 
@@ -17,6 +17,7 @@ from nonebot_plugin_saa import PlatformTarget, enable_auto_select_bot, extract_t
 
 enable_auto_select_bot()
 
+from . import migrations
 from .blrec import server
 from .blrec.task import sync_tasks
 from .config import Config
@@ -53,6 +54,7 @@ __plugin_meta__ = PluginMetadata(
     extra={
         "example": "blive d 小南莓Official\nblive recon 小南莓Official",
         "notice": "注意是UID不是房间号",
+        "orm_version_location": migrations,
     },
 )
 

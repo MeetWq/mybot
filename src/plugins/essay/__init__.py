@@ -1,11 +1,12 @@
 import shlex
 from typing import Type
+
 from nonebot import on_command
+from nonebot.adapters import Message
 from nonebot.matcher import Matcher
-from nonebot.typing import T_Handler
 from nonebot.params import CommandArg
 from nonebot.plugin import PluginMetadata
-from nonebot.adapters.onebot.v11 import Message
+from nonebot.typing import T_Handler
 
 from .data_source import commands, get_essay
 
