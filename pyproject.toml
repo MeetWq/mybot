@@ -37,14 +37,14 @@ nonebot-plugin-session = "^0.2.0"
 nonebot-plugin-userinfo = "^0.1.0"
 # nonebot-plugin-manager = "^0.5.16"
 # nonebot-plugin-withdraw = "^0.2.0"
-# nonebot-plugin-memes = "^0.4.7"
+nonebot-plugin-memes = "^0.5.0"
 nonebot-plugin-shindan = "^0.5.0"
 nonebot-plugin-remake = "^0.3.0"
 nonebot-plugin-emojimix = "^0.3.0"
 nonebot-plugin-wordcloud = "^0.6.0"
 # nonebot-plugin-word-bank2 = "^0.1.8"
 # nonebot-plugin-gamedraw = "^0.4.3"
-# nonebot-plugin-heweather = "^0.6.9"
+nonebot-plugin-heweather = "^0.7.0"
 nonebot-plugin-ddcheck = "^0.3.0"
 # nonebot-plugin-simplemusic = "^0.1.0"
 # nonebot-plugin-hikarisearch = "^0.1.0"
@@ -54,7 +54,7 @@ nonebot-plugin-minesweeper = "^0.3.0"
 nonebot-plugin-boardgame = "^0.3.0"
 nonebot-plugin-chess = "^0.4.1"
 nonebot-plugin-cchess = "^0.3.0"
-# nonebot-plugin-imagetools = "^0.2.0"
+nonebot-plugin-imagetools = "^0.3.0"
 nonebot-plugin-oddtext = "^0.2.0"
 # nonebot-plugin-random = "^0.0.9"
 # nonebot-bison = "^0.8.0"
@@ -70,14 +70,14 @@ plugins = [
     "nonebot_plugin_chatrecorder",
     # "nonebot_plugin_manager",
     # "nonebot_plugin_withdraw",
-    # "nonebot_plugin_memes",
+    "nonebot_plugin_memes",
     "nonebot_plugin_shindan",
     "nonebot_plugin_remake",
     "nonebot_plugin_emojimix",
     "nonebot_plugin_wordcloud",
     # "nonebot_plugin_word_bank2",
     # "nonebot_plugin_gamedraw",
-    # "nonebot_plugin_heweather",
+    "nonebot_plugin_heweather",
     "nonebot_plugin_ddcheck",
     # "nonebot_plugin_simplemusic",
     # "nonebot_plugin_hikarisearch",
@@ -87,7 +87,7 @@ plugins = [
     "nonebot_plugin_boardgame",
     "nonebot_plugin_chess",
     "nonebot_plugin_cchess",
-    # "nonebot_plugin_imagetools",
+    "nonebot_plugin_imagetools",
     "nonebot_plugin_oddtext",
     # "nonebot-plugin-random",
     # "nonebot_bison",
@@ -96,7 +96,8 @@ plugins = [
 ]
 plugin_dirs = ["src/plugins"]
 adapters = [
-    { name = "RedProtocol", module_name = "nonebot.adapters.red" },
+    { name = "OneBot V11", module_name = "nonebot.adapters.onebot.v11" },
+    # { name = "RedProtocol", module_name = "nonebot.adapters.red" },
 ]
 
 [build-system]
