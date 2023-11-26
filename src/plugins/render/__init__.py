@@ -3,12 +3,12 @@ from nonebot.adapters import Message
 from nonebot.params import CommandArg
 from nonebot.plugin import PluginMetadata
 
-from .data_source import m2p, t2p
-
 require("nonebot_plugin_saa")
 require("nonebot_plugin_htmlrender")
 
 from nonebot_plugin_saa import Image, MessageFactory
+
+from .data_source import m2p, t2p
 
 __plugin_meta__ = PluginMetadata(
     name="文本渲染",
