@@ -64,6 +64,7 @@ async def get_help_msg(user_id: str, keyword: str = "") -> Optional[Union[str, b
                 plugin_infos.append(info)
         if not plugin_infos:
             return "暂时没有可用的功能"
+        plugin_infos = sorted(plugin_infos, key=lambda i: i.package_name)
         img = await get_help_img(plugin_infos)
         return img if img else "出错了，请稍后再试"
     else:
