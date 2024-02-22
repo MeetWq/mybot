@@ -34,8 +34,6 @@ class UserInfo(BaseModel, extra=Extra.ignore):
     gender: str
     face: str
     uid: int
-    level: int
-    sign: str
 
 
 class BlrecEvent(BaseModel, extra=Extra.ignore):

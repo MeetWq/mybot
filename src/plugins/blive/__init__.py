@@ -1,9 +1,11 @@
+import traceback
 from argparse import Namespace
 from typing import Union
 
 from nonebot import on_shell_command, require
 from nonebot.adapters import Event
 from nonebot.exception import ParserExit
+from nonebot.log import logger
 from nonebot.params import ShellCommandArgs
 from nonebot.plugin import PluginMetadata
 from nonebot.rule import ArgumentParser
@@ -32,7 +34,7 @@ from .database.db import (
 )
 from .models import BiliUser, Subscription, SubscriptionOptions
 from .pusher import dynamic_pusher, live_pusher
-from .utils import get_user_info_by_name, get_uset_info_by_uid
+from .utils import get_user_info_by_name, get_user_info_by_uid
 
 usage = (
     "添加订阅：blive d 用户名/UID\n"
@@ -231,14 +233,20 @@ async def _(event: Event, ns: Union[Namespace, ParserExit] = ShellCommandArgs())
             uid = name
             user = await get_user(uid)
             if not user:
-                user = await get_uset_info_by_uid(uid)
+                try:
+                    user = await get_user_info_by_uid(uid)
+                except:
+                    logger.warning(traceback.format_exc())
         else:
             users = await get_users()
             for sub_user in users:
                 if sub_user.name == name:
                     user = sub_user
             if not user:
-                user = await get_user_info_by_name(name)
+                try:
+                    user = await get_user_info_by_name(name)
+                except:
+                    logger.warning(traceback.format_exc())
 
         if not user:
             await blive.finish("获取用户信息失败，请检查名称或稍后再试")

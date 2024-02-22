@@ -26,7 +26,7 @@ async def search_user(keyword: str):
         return resp.json()["data"]
 
 
-async def get_uset_info_by_uid(uid: str) -> Optional[BiliUser]:
+async def get_user_info_by_uid(uid: str) -> Optional[BiliUser]:
     res = await get_user_info(uid, reqtype="web")
     if res:
         return BiliUser(
