@@ -12,7 +12,7 @@ from nonebot_plugin_saa import Image, MessageFactory
 from .data_source import get_crafatar, get_mc_uuid, get_mcmodel, get_mcstatus
 
 __plugin_meta__ = PluginMetadata(
-    name="Minecraft",
+    name="MC工具",
     description="Minecraft相关功能",
     usage=(
         "1、mcstatus {url}，MC服务器状态查询\n"

@@ -1,0 +1,86 @@
+<html>
+  <head>
+    <style>
+      body {
+        background-color: rgba(243, 244, 246, 1);
+      }
+      .image {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        border-radius: 5px;
+        border-color: rgba(229, 231, 235, 1);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        background-color: rgba(249, 250, 251, 1);
+      }
+      .title {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        font-weight: bold;
+        border-radius: 5px;
+      }
+      .name {
+        font-size: large;
+        border-radius: 15px;
+        padding: 3px;
+        margin-left: 5px;
+        padding-left: 25px;
+        padding-right: 25px;
+        text-align: center;
+        box-shadow: 0 0 2px grey;
+	background-color: white;
+      }
+      .description {
+        margin-left: 10px;
+        font-size: large;
+      }
+      .section-name {
+        padding-top: 10px;
+        padding-bottom: 5px;
+        padding-left: 5px;
+        font-weight: bold;
+      }
+      .section-block {
+        display: flex;
+        flex-direction: row;
+        margin-left: 12px;
+        margin-right: 12px;
+        padding: 8px;
+        border-radius: 5px;
+        line-height: 1.625;
+        background-color: rgba(229, 231, 235, 1);
+        word-break: break-all;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="image">
+        <div class="title">
+          <span class="name">{{ plugin.name }}</span>
+          <span class="description">{{ plugin.description }}</span>
+        </div>
+        <div class="content">
+          {% if plugin.usage %}
+          <div class="section">
+            <div class="section-name">Usage:</div>
+            <div class="section-block">{{ plugin.usage }}</div>
+          </div>
+          {% endif %}
+          {% if plugin.extra.get("example") %}
+          <div class="section">
+            <div class="section-name">Examples:</div>
+            <div class="section-block">{{ plugin.extra["example"] }}</div>
+          </div>
+          {% endif %}
+          {% if plugin.extra.get("notice") %}
+          <div class="section">
+            <div class="section-name">Notice:</div>
+            <div class="section-block">{{ plugin.extra["notice"] }}</div>
+          </div>
+          {% endif %}
+        </div>
+    </div>
+  </body>
+</html>

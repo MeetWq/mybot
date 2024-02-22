@@ -7,7 +7,7 @@ from typing import List, Optional, Tuple
 
 import httpx
 import jinja2
-from mcstatus import MinecraftServer
+from mcstatus import JavaServer
 from nonebot.log import logger
 from nonebot_plugin_htmlrender import get_new_page
 from PIL import Image
@@ -108,7 +108,7 @@ async def get_mcmodel(uuid: str) -> Optional[BytesIO]:
 
 async def get_mcstatus(addr: str) -> Optional[Tuple[Optional[bytes], str]]:
     try:
-        server = MinecraftServer.lookup(addr)
+        server = JavaServer.lookup(addr)
         status = await server.async_status()
         version = status.version.name
         protocol = status.version.protocol
