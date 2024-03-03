@@ -10,14 +10,14 @@ from .model import BiliUserRecord, SubscriptionRecord
 
 
 async def get_user_record(
-    db_session: AsyncSession, uid: str
+    db_session: AsyncSession, uid: int
 ) -> Optional[BiliUserRecord]:
     statement = select(BiliUserRecord).where(BiliUserRecord.uid == uid)
     return await db_session.scalar(statement)
 
 
 async def get_sub_record(
-    db_session: AsyncSession, target: PlatformTarget, uid: str
+    db_session: AsyncSession, target: PlatformTarget, uid: int
 ) -> Optional[SubscriptionRecord]:
     if user_record := await get_user_record(db_session, uid):
         statement = select(SubscriptionRecord).where(
@@ -27,7 +27,7 @@ async def get_sub_record(
         return await db_session.scalar(statement)
 
 
-async def get_user(uid: str) -> Optional[BiliUser]:
+async def get_user(uid: int) -> Optional[BiliUser]:
     async with get_session() as session:
         if user_record := await get_user_record(session, uid):
             return user_record.bili_user
@@ -51,7 +51,7 @@ async def add_user(user: BiliUser):
             await session.commit()
 
 
-async def del_user(uid: str):
+async def del_user(uid: int):
     async with get_session() as session:
         if user_record := await get_user_record(session, uid):
             if not await user_record.get_subscription_records():
@@ -59,7 +59,7 @@ async def del_user(uid: str):
                 await session.commit()
 
 
-async def get_sub(target: PlatformTarget, uid: str) -> Optional[Subscription]:
+async def get_sub(target: PlatformTarget, uid: int) -> Optional[Subscription]:
     async with get_session() as session:
         if sub_record := await get_sub_record(session, target, uid):
             return await sub_record.subscription()
@@ -100,7 +100,7 @@ async def add_sub(subscription: Subscription):
         await session.commit()
 
 
-async def del_sub(target: PlatformTarget, uid: str):
+async def del_sub(target: PlatformTarget, uid: int):
     async with get_session() as session:
         if sub_record := await get_sub_record(session, target, uid):
             await session.delete(sub_record)
@@ -115,14 +115,14 @@ async def update_user(user: BiliUser):
     async with get_session() as session:
         if user_record := await get_user_record(session, user.uid):
             user_record.name = user.name
-            if user.room_id != None:
+            if user.room_id is not None:
                 user_record.room_id = user.room_id
             session.add(user_record)
             await session.commit()
 
 
 async def update_sub_options(
-    target: PlatformTarget, uid: str, options: SubscriptionOptions
+    target: PlatformTarget, uid: int, options: SubscriptionOptions
 ):
     async with get_session() as session:
         if sub_record := await get_sub_record(session, target, uid):
@@ -133,13 +133,13 @@ async def update_sub_options(
             await session.commit()
 
 
-async def get_uids() -> List[str]:
+async def get_uids() -> List[int]:
     statement = select(BiliUserRecord.uid)
     async with get_session() as session:
         return list((await session.scalars(statement)).all())
 
 
-async def get_targets(uid: str) -> List[PlatformTarget]:
+async def get_targets(uid: int) -> List[PlatformTarget]:
     async with get_session() as session:
         if user_record := await get_user_record(session, uid):
             return [
@@ -149,22 +149,20 @@ async def get_targets(uid: str) -> List[PlatformTarget]:
         return []
 
 
-async def get_live_uids() -> List[str]:
+async def get_live_uids() -> List[int]:
     async with get_session() as session:
         user_records = (await session.scalars(select(BiliUserRecord))).all()
         return [
             user_record.uid
             for user_record in user_records
             if any(
-                (
-                    sub_record.live
-                    for sub_record in await user_record.get_subscription_records()
-                )
+                sub_record.live
+                for sub_record in await user_record.get_subscription_records()
             )
         ]
 
 
-async def get_live_targets(uid: str) -> List[PlatformTarget]:
+async def get_live_targets(uid: int) -> List[PlatformTarget]:
     async with get_session() as session:
         if user_record := await get_user_record(session, uid):
             return [
@@ -175,22 +173,20 @@ async def get_live_targets(uid: str) -> List[PlatformTarget]:
         return []
 
 
-async def get_dynamic_uids() -> List[str]:
+async def get_dynamic_uids() -> List[int]:
     async with get_session() as session:
         user_records = (await session.scalars(select(BiliUserRecord))).all()
         return [
             user_record.uid
             for user_record in user_records
             if any(
-                (
-                    sub_record.dynamic
-                    for sub_record in await user_record.get_subscription_records()
-                )
+                sub_record.dynamic
+                for sub_record in await user_record.get_subscription_records()
             )
         ]
 
 
-async def get_dynamic_targets(uid: str) -> List[PlatformTarget]:
+async def get_dynamic_targets(uid: int) -> List[PlatformTarget]:
     async with get_session() as session:
         if user_record := await get_user_record(session, uid):
             return [
@@ -201,22 +197,20 @@ async def get_dynamic_targets(uid: str) -> List[PlatformTarget]:
         return []
 
 
-async def get_record_uids() -> List[str]:
+async def get_record_uids() -> List[int]:
     async with get_session() as session:
         user_records = (await session.scalars(select(BiliUserRecord))).all()
         return [
             user_record.uid
             for user_record in user_records
             if any(
-                (
-                    sub_record.record
-                    for sub_record in await user_record.get_subscription_records()
-                )
+                sub_record.record
+                for sub_record in await user_record.get_subscription_records()
             )
         ]
 
 
-async def get_record_targets(uid: str) -> List[PlatformTarget]:
+async def get_record_targets(uid: int) -> List[PlatformTarget]:
     async with get_session() as session:
         if user_record := await get_user_record(session, uid):
             return [

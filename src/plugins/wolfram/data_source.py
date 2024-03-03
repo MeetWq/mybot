@@ -4,19 +4,16 @@ from typing import Optional
 
 import httpx
 import wolframalpha
-from nonebot import get_driver
 from nonebot.log import logger
 
-from .config import Config
-
-wolframalpha_config = Config.parse_obj(get_driver().config.dict())
+from .config import wolframalpha_config
 
 
 async def get_wolframalpha_simple(input, params=(), **kwargs) -> Optional[bytes]:
-    data = dict(
-        input=input,
-        appid=wolframalpha_config.wolframalpha_appid,
-    )
+    data = {
+        "input": input,
+        "appid": wolframalpha_config.wolframalpha_appid,
+    }
     data = itertools.chain(params, data.items(), kwargs.items())
     query = urllib.parse.urlencode(tuple(data))
     url = "https://api.wolframalpha.com/v2/simple?" + query

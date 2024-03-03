@@ -5,11 +5,11 @@ from nonebot.adapters import Event, Message
 from nonebot.params import CommandArg
 from nonebot.plugin import PluginMetadata, get_loaded_plugins
 
-require("nonebot_plugin_saa")
+require("nonebot_plugin_alconna")
 require("nonebot_plugin_session")
 require("nonebot_plugin_htmlrender")
 
-from nonebot_plugin_saa import Image, MessageFactory
+from nonebot_plugin_alconna import UniMessage
 from nonebot_plugin_session import SessionId, SessionIdType
 
 from src.utils.plugin_manager import plugin_manager
@@ -43,7 +43,7 @@ async def _(event: Event, user_id: UserId, msg: Message = CommandArg()):
         if isinstance(help_msg, str):
             await help.finish(help_msg)
         else:
-            await MessageFactory([Image(help_msg)]).send()
+            await UniMessage.image(raw=help_msg).send()
 
 
 async def get_help_msg(user_id: str, keyword: str = "") -> Optional[Union[str, bytes]]:

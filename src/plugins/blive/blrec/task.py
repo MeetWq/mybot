@@ -30,35 +30,35 @@ async def delete(url: str):
 async def get_tasks() -> List[TaskInfo]:
     url = f"{BLREC_API}/tasks/data?select=all"
     if result := await get(url):
-        return [TaskInfo.parse_obj(info) for info in result if info]
+        return [TaskInfo.model_validate(info) for info in result if info]
     return []
 
 
-async def get_task(room_id: str) -> Optional[TaskInfo]:
+async def get_task(room_id: int) -> Optional[TaskInfo]:
     url = f"{BLREC_API}/tasks/{room_id}/data"
     if result := await get(url):
-        return TaskInfo.parse_obj(result)
+        return TaskInfo.model_validate(result)
 
 
-async def add_task(room_id: str) -> bool:
+async def add_task(room_id: int) -> bool:
     url = f"{BLREC_API}/tasks/{room_id}"
     result = await post(url)
     return result and result.get("code", -1) == 0
 
 
-async def delete_task(room_id: str) -> bool:
+async def delete_task(room_id: int) -> bool:
     url = f"{BLREC_API}/tasks/{room_id}"
     result = await delete(url)
     return result and result.get("code", -1) == 0
 
 
-async def enable_recorder(room_id: str) -> bool:
+async def enable_recorder(room_id: int) -> bool:
     url = f"{BLREC_API}/tasks/{room_id}/recorder/enable"
     result = await post(url)
     return result and result.get("code", -1) == 0
 
 
-async def disable_recorder(room_id: str) -> bool:
+async def disable_recorder(room_id: int) -> bool:
     url = f"{BLREC_API}/tasks/{room_id}/recorder/disable"
     result = await post(url)
     return result and result.get("code", -1) == 0
@@ -66,7 +66,7 @@ async def disable_recorder(room_id: str) -> bool:
 
 async def sync_tasks():
     tasks = await get_tasks()
-    task_uids = [str(task.user_info.uid) for task in tasks]
+    task_uids = [task.user_info.uid for task in tasks]
 
     record_users = [await get_user(uid) for uid in await get_record_uids()]
     record_users = [user for user in record_users if user and user.room_id]
@@ -74,7 +74,7 @@ async def sync_tasks():
 
     for task in tasks:
         if str(task.user_info.uid) not in record_uids:
-            await delete_task(str(task.room_info.room_id))
+            await delete_task(task.room_info.room_id)
 
     for user in record_users:
         uid = user.uid

@@ -8,9 +8,9 @@ from nonebot.permission import SUPERUSER
 from nonebot.plugin import PluginMetadata
 from nonebot.rule import to_me
 
-require("nonebot_plugin_saa")
+require("nonebot_plugin_alconna")
 
-from nonebot_plugin_saa import Image, MessageFactory
+from nonebot_plugin_alconna import UniMessage
 
 from .data_source import get_setu
 
@@ -48,5 +48,4 @@ async def handle(matcher: Type[Matcher], msg: Message, r18=False):
     if isinstance(res, str):
         await matcher.finish(res)
     else:
-        message = MessageFactory([Image(res)])
-        await message.send()
+        await UniMessage.image(raw=res).send()

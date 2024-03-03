@@ -6,11 +6,11 @@ from nonebot.log import logger
 from nonebot.matcher import Matcher
 from nonebot.plugin import PluginMetadata
 
-require("nonebot_plugin_saa")
+require("nonebot_plugin_alconna")
 require("nonebot_plugin_userinfo")
 require("nonebot_plugin_htmlrender")
 
-from nonebot_plugin_saa import Image, MessageFactory
+from nonebot_plugin_alconna import UniMessage
 from nonebot_plugin_userinfo import EventUserInfo, UserInfo
 
 from .config import Config
@@ -35,10 +35,10 @@ async def _(matcher: Matcher, event: Event, userinfo: UserInfo = EventUserInfo()
     res = None
     try:
         res = await get_fortune(user_id, username)
-    except:
+    except Exception:
         logger.warning(traceback.format_exc())
 
     if not res:
         await matcher.finish("出错了，请稍后再试")
 
-    await MessageFactory([Image(res)]).send()
+    await UniMessage.image(raw=res).send()

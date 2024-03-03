@@ -4,10 +4,10 @@ from nonebot.matcher import Matcher
 from nonebot.params import CommandArg
 from nonebot.plugin import PluginMetadata
 
-require("nonebot_plugin_saa")
+require("nonebot_plugin_alconna")
 require("nonebot_plugin_htmlrender")
 
-from nonebot_plugin_saa import Image, MessageFactory
+from nonebot_plugin_alconna import Image, UniMessage
 
 from .data_source import get_crafatar, get_mc_uuid, get_mcmodel, get_mcstatus
 
@@ -16,7 +16,8 @@ __plugin_meta__ = PluginMetadata(
     description="Minecraft相关功能",
     usage=(
         "1、mcstatus {url}，MC服务器状态查询\n"
-        "2、mc avatar/head/body/skin/cape/model {id}，获取MC用户的 头像/头/身体/皮肤/披风/全身动图\n"
+        "2、mc avatar/head/body/skin/cape/model {id}，"
+        "获取MC用户的 头像/头/身体/皮肤/披风/全身动图\n"
     ),
     extra={
         "example": "mcstatus mczju.tpddns.cn\nmcskin hsds",
@@ -38,10 +39,10 @@ async def _(matcher: Matcher, arg: Message = CommandArg()):
             result = await get_mcstatus(addr)
             if result:
                 icon, status = result
-                message = MessageFactory([])
+                message = UniMessage()
                 if icon:
-                    message.append(Image(icon))
-                message.append(status)
+                    message += Image(raw=icon)
+                message += status
                 await message.send()
             else:
                 await matcher.finish("出错了，请稍后再试")
@@ -62,7 +63,7 @@ async def _(matcher: Matcher, arg: Message = CommandArg()):
                     else:
                         result = await get_crafatar(t, uuid)
                     if result:
-                        await MessageFactory([Image(result)]).send()
+                        await UniMessage.image(raw=result).send()
                     else:
                         await matcher.finish("出错了，请稍后再试")
     await matcher.finish()

@@ -1,10 +1,11 @@
 """init_db
 
 迁移 ID: 5dc8350e81c9
-父迁移: 
+父迁移:
 创建时间: 2023-11-15 13:32:06.312216
 
 """
+
 from __future__ import annotations
 
 from collections.abc import Sequence

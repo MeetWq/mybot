@@ -8,10 +8,12 @@ from nonebot.plugin import PluginMetadata
 
 from .data_source import legal_language, network_compile
 
+language = ", ".join(list(legal_language.keys()))
+
 __plugin_meta__ = PluginMetadata(
     name="网络编译器",
     description="在线运行代码",
-    usage=f"lang {{language}};\n{{code}}\n\n支持的语言：{', '.join(list(legal_language.keys()))}",
+    usage=f"lang {{language}};\n{{code}}\n\n支持的语言：{language}",
     extra={
         "example": "lang py3;\nprint('hello')",
         "notice": "来源为菜鸟教程的网络编译器，不要试图搞事情",
@@ -34,7 +36,7 @@ async def _(matcher: Matcher, msg: Message = CommandArg()):
     language = str(args["language"]).strip()
     code = str(args["code"]).strip()
     if language not in legal_language:
-        await matcher.finish(f"支持的语言：{', '.join(list(legal_language.keys()))}")
+        await matcher.finish(f"支持的语言：{language}")
 
     result = await network_compile(language, code)
     if not result:

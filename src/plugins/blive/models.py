@@ -5,11 +5,11 @@ from pydantic import BaseModel
 
 
 class BiliUser(BaseModel):
-    uid: str
+    uid: int
     """ B站用户uid """
     name: str
     """ B站用户名 """
-    room_id: Optional[str] = None
+    room_id: Optional[int] = None
     """ B站直播间id """
 
 

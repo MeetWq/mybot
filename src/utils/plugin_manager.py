@@ -114,14 +114,14 @@ class PluginManager:
             with self.__path.open("r", encoding="utf-8") as f:
                 try:
                     raw_list = yaml.safe_load(f)
-                except:
+                except Exception:
                     logger.warning("插件列表解析失败，将重新生成")
         try:
             plugin_list = {
                 name: PluginConfig.parse_obj(config)
                 for name, config in raw_list.items()
             }
-        except:
+        except Exception:
             plugin_list = {}
             logger.warning("插件列表解析失败，将重新生成")
 

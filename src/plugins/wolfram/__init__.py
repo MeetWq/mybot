@@ -6,9 +6,9 @@ from nonebot.matcher import Matcher
 from nonebot.params import CommandArg
 from nonebot.plugin import PluginMetadata
 
-require("nonebot_plugin_saa")
+require("nonebot_plugin_alconna")
 
-from nonebot_plugin_saa import Image, MessageFactory
+from nonebot_plugin_alconna import UniMessage
 
 from .config import Config
 from .data_source import get_wolframalpha_simple, get_wolframalpha_text
@@ -52,4 +52,4 @@ async def _(matcher: Matcher, msg: Message = CommandArg()):
     if isinstance(res, str):
         await matcher.finish(res)
     else:
-        await MessageFactory([Image(res)]).send()
+        await UniMessage.image(raw=res).send()

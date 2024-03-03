@@ -16,7 +16,7 @@ env = jinja2.Environment(
 
 async def rss_to_image(rss: NHDRSSEntry) -> Optional[bytes]:
     try:
-        template = env.get_template(f"nhd.html")
+        template = env.get_template("nhd.html")
         html = await template.render_async(rss=rss)
         return await html_to_pic(
             html,

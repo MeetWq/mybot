@@ -1,4 +1,5 @@
 import time
+from typing import Dict
 
 from bilireq.live import get_rooms_info_by_uids
 from nonebot.log import logger
@@ -9,7 +10,7 @@ from ..config import blive_config
 from ..database.db import get_live_targets, get_live_uids, update_user
 from ..models import BiliUser
 
-live_status = {}
+live_status: Dict[int, int] = {}
 
 
 def is_live(status: int) -> bool:
@@ -28,9 +29,10 @@ async def _():
     if not res:
         return
 
-    for uid, info in res.items():
+    for uid_str, info in res.items():
         status = info["live_status"]
-        if uid not in live_status:
+        uid = int(uid_str)
+        if uid_str not in live_status:
             live_status[uid] = status
             continue
 

@@ -3,10 +3,10 @@ from nonebot.adapters import Message
 from nonebot.params import CommandArg
 from nonebot.plugin import PluginMetadata
 
-require("nonebot_plugin_saa")
+require("nonebot_plugin_alconna")
 require("nonebot_plugin_htmlrender")
 
-from nonebot_plugin_saa import Image, MessageFactory
+from nonebot_plugin_alconna import UniMessage
 
 from .data_source import m2p, t2p
 
@@ -32,7 +32,7 @@ async def _(msg: Message = CommandArg()):
 
     img = await t2p(text)
     if img:
-        await MessageFactory([Image(img)]).send()
+        await UniMessage.image(raw=img).send()
 
 
 @md2pic.handle()
@@ -43,4 +43,4 @@ async def _(msg: Message = CommandArg()):
 
     img = await m2p(text)
     if img:
-        await MessageFactory([Image(img)]).send()
+        await UniMessage.image(raw=img).send()

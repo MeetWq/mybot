@@ -29,7 +29,7 @@ async def get_mc_uuid(username: str) -> str:
         if not result:
             return "none"
         return result.get("id", "none")
-    except:
+    except Exception:
         return ""
 
 
@@ -53,12 +53,12 @@ async def get_crafatar(type: str, uuid: str) -> Optional[bytes]:
             resp = await client.get(url)
             result = resp.content
         return result
-    except:
+    except Exception:
         return None
 
 
 def load_file(name):
-    with open(template_path / name, "r", encoding="utf-8") as f:
+    with open(template_path / name, encoding="utf-8") as f:
         return f.read()
 
 
@@ -101,7 +101,7 @@ async def get_mcmodel(uuid: str) -> Optional[BytesIO]:
             optimize=False,
         )
         return output
-    except:
+    except Exception:
         logger.warning(traceback.format_exc())
         return None
 
@@ -119,7 +119,7 @@ async def get_mcstatus(addr: str) -> Optional[Tuple[Optional[bytes], str]]:
         description = status.description
         latency = status.latency
         favicon = status.favicon
-    except:
+    except Exception:
         logger.warning(traceback.format_exc())
         return None
 

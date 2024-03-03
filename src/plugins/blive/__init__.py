@@ -20,7 +20,7 @@ from nonebot_plugin_saa import PlatformTarget, enable_auto_select_bot, extract_t
 enable_auto_select_bot()
 
 from . import migrations
-from .blrec import server
+from .blrec import server  # noqa
 from .blrec.task import sync_tasks
 from .config import Config
 from .database.db import (
@@ -33,7 +33,7 @@ from .database.db import (
     update_sub_options,
 )
 from .models import BiliUser, Subscription, SubscriptionOptions
-from .pusher import dynamic_pusher, live_pusher
+from .pusher import dynamic_pusher, live_pusher  # noqa
 from .utils import get_user_info_by_name, get_user_info_by_uid
 
 usage = (
@@ -230,12 +230,12 @@ async def _(event: Event, ns: Union[Namespace, ParserExit] = ShellCommandArgs())
     if hasattr(ns, "name"):
         name = str(ns.name)
         if name.isdigit():
-            uid = name
+            uid = int(name)
             user = await get_user(uid)
             if not user:
                 try:
                     user = await get_user_info_by_uid(uid)
-                except:
+                except Exception:
                     logger.warning(traceback.format_exc())
         else:
             users = await get_users()
@@ -245,7 +245,7 @@ async def _(event: Event, ns: Union[Namespace, ParserExit] = ShellCommandArgs())
             if not user:
                 try:
                     user = await get_user_info_by_name(name)
-                except:
+                except Exception:
                     logger.warning(traceback.format_exc())
 
         if not user:

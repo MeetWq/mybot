@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from nonebot_plugin_orm import Model, get_session
 from nonebot_plugin_saa import PlatformTarget
-from sqlalchemy import JSON, Boolean, String, Text, select
+from sqlalchemy import JSON, Boolean, Text, select
 from sqlalchemy.orm import Mapped, mapped_column
 
 from ..models import BiliUser, Subscription, SubscriptionOptions
@@ -10,11 +10,11 @@ from ..models import BiliUser, Subscription, SubscriptionOptions
 
 class BiliUserRecord(Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    uid: Mapped[str] = mapped_column(String(64))
+    uid: Mapped[int]
     """ B站用户uid """
     name: Mapped[str] = mapped_column(Text)
     """ B站用户名 """
-    room_id: Mapped[Optional[str]] = mapped_column(String(64))
+    room_id: Mapped[Optional[int]]
     """ B站直播间id """
 
     @property

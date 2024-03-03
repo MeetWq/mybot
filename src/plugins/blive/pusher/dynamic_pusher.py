@@ -1,5 +1,5 @@
 import traceback
-from typing import Dict
+from typing import Dict, List
 
 from nonebot.log import logger
 from nonebot_plugin_apscheduler import scheduler
@@ -10,11 +10,11 @@ from ..database.db import get_dynamic_targets, get_dynamic_uids, update_user
 from ..models import BiliUser
 from ..utils import get_dynamic_screenshot, get_user_dynamics
 
-dynamic_offset: Dict[str, int] = {}
+dynamic_offset: Dict[int, int] = {}
 updated_uids = set()
 
 
-def next_uid(uids) -> str:
+def next_uid(uids: List[int]) -> int:
     for uid in uids:
         if uid not in updated_uids:
             updated_uids.add(uid)
@@ -35,7 +35,7 @@ async def _():
 
     try:
         dynamics = (await get_user_dynamics(int(uid)))["items"]
-    except:
+    except Exception:
         logger.warning(f"爬取动态失败：{uid}\n{traceback.format_exc()}")
         return
 

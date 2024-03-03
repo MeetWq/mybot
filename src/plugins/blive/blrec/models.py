@@ -3,7 +3,7 @@ from enum import Enum, IntEnum
 from pathlib import Path
 from typing import Any, Dict, Literal
 
-from pydantic import BaseModel, Extra
+from pydantic import BaseModel
 
 
 class LiveStatus(IntEnum):
@@ -12,7 +12,7 @@ class LiveStatus(IntEnum):
     ROUND = 2
 
 
-class RoomInfo(BaseModel, extra=Extra.ignore):
+class RoomInfo(BaseModel):
     uid: int
     room_id: int
     short_room_id: int
@@ -29,14 +29,14 @@ class RoomInfo(BaseModel, extra=Extra.ignore):
     description: str
 
 
-class UserInfo(BaseModel, extra=Extra.ignore):
+class UserInfo(BaseModel):
     name: str
     gender: str
     face: str
     uid: int
 
 
-class BlrecEvent(BaseModel, extra=Extra.ignore):
+class BlrecEvent(BaseModel):
     id: str
     date: datetime
     type: Literal[
@@ -59,7 +59,7 @@ class BlrecEvent(BaseModel, extra=Extra.ignore):
     data: Dict[str, Any]
 
 
-class LiveBeganEventData(BaseModel, extra=Extra.ignore):
+class LiveBeganEventData(BaseModel):
     user_info: UserInfo
     room_info: RoomInfo
 
@@ -78,7 +78,7 @@ class LiveEndedEvent(BlrecEvent):
     data: LiveEndedEventData
 
 
-class RoomChangeEventData(BaseModel, extra=Extra.ignore):
+class RoomChangeEventData(BaseModel):
     room_info: RoomInfo
 
 
@@ -87,7 +87,7 @@ class RoomChangeEvent(BlrecEvent):
     data: RoomChangeEventData
 
 
-class RecordingStartedEventData(BaseModel, extra=Extra.ignore):
+class RecordingStartedEventData(BaseModel):
     room_info: RoomInfo
 
 
@@ -114,13 +114,13 @@ class RecordingCancelledEvent(BlrecEvent):
     data: RecordingCancelledEventData
 
 
-class DiskUsage(BaseModel, extra=Extra.ignore):
+class DiskUsage(BaseModel):
     total: int
     used: int
     free: int
 
 
-class SpaceNoEnoughEventData(BaseModel, extra=Extra.ignore):
+class SpaceNoEnoughEventData(BaseModel):
     path: str
     threshold: int
     usage: DiskUsage
@@ -131,7 +131,7 @@ class SpaceNoEnoughEvent(BlrecEvent):
     data: SpaceNoEnoughEventData
 
 
-class ErrorData(BaseModel, extra=Extra.ignore):
+class ErrorData(BaseModel):
     name: str
     detail: str
 
@@ -141,7 +141,7 @@ class ErrorEvent(BlrecEvent):
     data: ErrorData
 
 
-class UploaderEventData(BaseModel, extra=Extra.ignore):
+class UploaderEventData(BaseModel):
     room_id: int
     file_path: Path
     upload_dir: str
@@ -149,7 +149,7 @@ class UploaderEventData(BaseModel, extra=Extra.ignore):
     err_msg: str
 
 
-class UploaderEvent(BaseModel, extra=Extra.ignore):
+class UploaderEvent(BaseModel):
     id: str
     date: datetime
     type: Literal["UploadCompleted"]
@@ -175,13 +175,13 @@ QualityNumber = Literal[
 ]
 
 
-class TaskStatus(BaseModel, extra=Extra.ignore):
+class TaskStatus(BaseModel):
     monitor_enabled: bool
     recorder_enabled: bool
     running_status: RunningStatus
 
 
-class TaskInfo(BaseModel, extra=Extra.ignore):
+class TaskInfo(BaseModel):
     user_info: UserInfo
     room_info: RoomInfo
     task_status: TaskStatus

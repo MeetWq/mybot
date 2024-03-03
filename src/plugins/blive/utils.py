@@ -26,13 +26,13 @@ async def search_user(keyword: str):
         return resp.json()["data"]
 
 
-async def get_user_info_by_uid(uid: str) -> Optional[BiliUser]:
+async def get_user_info_by_uid(uid: int) -> Optional[BiliUser]:
     res = await get_user_info(uid, reqtype="web")
     if res:
         return BiliUser(
-            uid=res["mid"],
+            uid=int(res["mid"]),
             name=res["name"],
-            room_id=res["live_room"]["roomid"] if res["live_room"] else None,
+            room_id=int(res["live_room"]["roomid"]) if res["live_room"] else None,
         )
 
 
@@ -42,9 +42,9 @@ async def get_user_info_by_name(name: str) -> Optional[BiliUser]:
         for data in res["result"]:
             if data["uname"] == name:
                 return BiliUser(
-                    uid=data["mid"],
+                    uid=int(data["mid"]),
                     name=data["uname"],
-                    room_id=data["room_id"] if data["room_id"] else None,
+                    room_id=int(data["room_id"]) if data["room_id"] else None,
                 )
 
 
@@ -85,7 +85,7 @@ async def get_dynamic_screenshot(dynamic_id: int) -> Optional[bytes]:
             assert bar_bound
             clip["height"] = bar_bound["y"] - clip["y"]
             return await page.screenshot(clip=clip, full_page=True)
-    except:
+    except Exception:
         logger.warning(
             f"Error in get_dynamic_screenshot({url}): {traceback.format_exc()}"
         )

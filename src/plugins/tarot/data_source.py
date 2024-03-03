@@ -1,9 +1,10 @@
 import json
 import random
-from PIL import Image
 from io import BytesIO
 from pathlib import Path
 from typing import Tuple
+
+from PIL import Image
 
 dir_path = Path(__file__).parent
 tarot_path = dir_path / "resources"
