@@ -1500,13 +1500,13 @@ typing-extensions = ">=4.5.0"
 
 [[package]]
 name = "nonebot-adapter-onebot"
-version = "2.4.1"
+version = "2.4.2"
 description = "OneBot(CQHTTP) adapter for nonebot2"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "nonebot_adapter_onebot-2.4.1-py3-none-any.whl", hash = "sha256:67fb0ebaec0265708cc1005a5f45a3408fa8d7b78c835d70d97bd0831d5d5a44"},
-    {file = "nonebot_adapter_onebot-2.4.1.tar.gz", hash = "sha256:632e5ea84ba0553d54773a1a6283985d028647eadb07ff8940ea32e8aebe79bc"},
+    {file = "nonebot_adapter_onebot-2.4.2-py3-none-any.whl", hash = "sha256:7e97a08300c7dc0a9ba2c7fb4b7dda8b0038fa4e73f5c730932da5d12c4972be"},
+    {file = "nonebot_adapter_onebot-2.4.2.tar.gz", hash = "sha256:7ef7eca7b3eaf60f503c7e4f8df8ab0c58506645bbcca8297a9b93159ce98033"},
 ]
 
 [package.dependencies]
@@ -1735,21 +1735,20 @@ pypinyin = ">=0.40.0,<1.0.0"
 
 [[package]]
 name = "nonebot-plugin-heweather"
-version = "0.8.0"
+version = "0.8.1"
 description = "Get Heweather information and convert to pictures"
 optional = false
 python-versions = "<4.0,>=3.8"
 files = [
-    {file = "nonebot_plugin_heweather-0.8.0-py3-none-any.whl", hash = "sha256:5d7cfd8d9f4b26f69381dde97474f60448f79dd61538da944102cd614a9aec44"},
-    {file = "nonebot_plugin_heweather-0.8.0.tar.gz", hash = "sha256:ef9875943209ddf9c667fc8bbad9be39f7dfdedad6dc61b7547ceee08e71f863"},
+    {file = "nonebot_plugin_heweather-0.8.1-py3-none-any.whl", hash = "sha256:b9482eaa7fc087202437e123b91d63f9faa8e0813e20bb2f2677e18bf43b9468"},
+    {file = "nonebot_plugin_heweather-0.8.1.tar.gz", hash = "sha256:9df434853dba15cce3fc49617fa12f6f21f8da44fc446f79c39de5764c71dcc5"},
 ]
 
 [package.dependencies]
 httpx = ">=0.18.0,<1.0.0"
+nonebot-plugin-alconna = ">=0.38.0"
 nonebot-plugin-htmlrender = ">=0.0.4.3"
-nonebot-plugin-send-anything-anywhere = ">=0.3.0"
-nonebot2 = {version = ">=2.2.0", extras = ["fastapi"]}
-pydantic = ">=1.5.0"
+nonebot2 = ">=2.2.0"
 
 [[package]]
 name = "nonebot-plugin-htmlrender"
@@ -3539,4 +3538,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "522a54fb3f472d05edfb104bd0ad70ba4898135c85cfc5b109ba3883ed9aabfa"
+content-hash = "6c80e68af9de99f55b86301fdf7dc4b3d9c6994951382d46b092b4a2fe845744"
