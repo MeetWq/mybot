@@ -6,7 +6,7 @@ import yaml
 from nonebot import get_driver
 from nonebot.log import logger
 from nonebot.plugin import Plugin, get_loaded_plugins
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 config_path = Path("data/plugin_manager.yml")
 
@@ -17,13 +17,12 @@ class ManageType(IntEnum):
 
 
 class PluginConfig(BaseModel):
+    model_config = ConfigDict(use_enum_values=True, validate_default=True)
+
     mode: int = 7
     manage_type: ManageType = ManageType.BLACK
     white_list: List[str] = []
     black_list: List[str] = []
-
-    class Config:
-        use_enum_values = True
 
 
 class PluginManager:
@@ -115,15 +114,16 @@ class PluginManager:
                 try:
                     raw_list = yaml.safe_load(f)
                 except Exception:
-                    logger.warning("插件列表解析失败，将重新生成")
+                    logger.warning("插件列表解析失败")
+                    raise
         try:
             plugin_list = {
-                name: PluginConfig.parse_obj(config)
+                name: PluginConfig.model_validate(config)
                 for name, config in raw_list.items()
             }
         except Exception:
-            plugin_list = {}
-            logger.warning("插件列表解析失败，将重新生成")
+            logger.warning("插件列表解析失败")
+            raise
 
         self.__plugins = list(get_loaded_plugins())
         for plugin in self.__plugins:
