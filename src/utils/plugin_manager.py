@@ -6,7 +6,7 @@ import yaml
 from nonebot import get_driver
 from nonebot.log import logger
 from nonebot.plugin import Plugin, get_loaded_plugins
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, field_serializer
 
 config_path = Path("data/plugin_manager.yml")
 
@@ -17,12 +17,14 @@ class ManageType(IntEnum):
 
 
 class PluginConfig(BaseModel):
-    model_config = ConfigDict(use_enum_values=True, validate_default=True)
-
     mode: int = 7
     manage_type: ManageType = ManageType.BLACK
     white_list: List[str] = []
     black_list: List[str] = []
+
+    @field_serializer("manage_type")
+    def get_eunm_value(self, v: ManageType, info) -> int:
+        return v.value
 
 
 class PluginManager:
@@ -138,7 +140,7 @@ class PluginManager:
     def __dump(self):
         self.__path.parent.mkdir(parents=True, exist_ok=True)
         plugin_list = {
-            name: config.dict() for name, config in self.__plugin_list.items()
+            name: config.model_dump() for name, config in self.__plugin_list.items()
         }
         with self.__path.open("w", encoding="utf-8") as f:
             yaml.dump(plugin_list, f, allow_unicode=True)
