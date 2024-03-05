@@ -25,7 +25,7 @@ async def _():
     if not uids:
         return
 
-    res = await get_rooms_info_by_uids(list(uids), reqtype="web")
+    res = await get_rooms_info_by_uids(list(uids))
     if not res:
         return
 

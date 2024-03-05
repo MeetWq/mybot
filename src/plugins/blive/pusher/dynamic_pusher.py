@@ -23,9 +23,9 @@ def next_uid(uids: List[int]) -> int:
     return next_uid(uids)
 
 
-# @scheduler.scheduled_job(
-#     "interval", seconds=blive_config.blive_dynamic_interval, id="blive_dynamic_schedule"
-# )
+@scheduler.scheduled_job(
+    "interval", seconds=blive_config.blive_dynamic_interval, id="blive_dynamic_schedule"
+)
 async def _():
     uids = await get_dynamic_uids()
     if not uids:

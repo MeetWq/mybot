@@ -7,7 +7,7 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-bilireq = "^0.2.6"
+bilireq = { version="^0.2.6", extras=["qrcode"] }
 cachetools = "^5.0.0"
 dateparser = "^1.1.8"
 httpx = ">=0.20.0"
