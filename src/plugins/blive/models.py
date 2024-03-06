@@ -16,7 +16,7 @@ class BiliUser(BaseModel):
 class SubscriptionOptions(BaseModel):
     live: bool = True
     """ 是否推送直播 """
-    dynamic: bool = True
+    dynamic: bool = False
     """ 是否推送动态 """
     record: bool = False
     """ 是否录播 """
