@@ -1,6 +1,7 @@
-import jinja2
 from pathlib import Path
-from nonebot_plugin_htmlrender import text_to_pic, md_to_pic
+
+import jinja2
+from nonebot_plugin_htmlrender import md_to_pic, text_to_pic
 
 dir_path = Path(__file__).parent
 tpl_path = dir_path / "template"

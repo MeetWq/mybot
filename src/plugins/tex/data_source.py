@@ -1,9 +1,10 @@
 import os
-import jinja2
-import tempfile
 import subprocess
+import tempfile
 from pathlib import Path
 from typing import Optional
+
+import jinja2
 from nonebot.log import logger
 
 dir_path = Path(__file__).parent / "template"
@@ -51,7 +52,7 @@ async def tex2pic(equation, fmt="png", border=2, resolution=1000) -> Optional[by
                 "ppm": "",
             }
             if fmt in formats.keys():
-                convert_cmd = f"pdftoppm -r %d -%s %s > %s" % (
+                convert_cmd = "pdftoppm -r %d -%s %s > %s" % (
                     resolution,
                     formats[fmt],
                     tmp_pdf,

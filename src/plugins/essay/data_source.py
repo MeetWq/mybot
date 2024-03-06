@@ -1,10 +1,9 @@
-import re
 import json
-import httpx
 import random
 import traceback
-from typing import List
 from pathlib import Path
+from typing import List
+
 from nonebot.log import logger
 
 dir_path = Path(__file__).parent
@@ -47,7 +46,9 @@ commands = {
     "ussrjoke": {
         "aliases": {"苏联笑话"},
         "func": get_ussrjoke,
-        "help": "苏联笑话 {要讽刺的事} {谁提出来的} {有助于什么} {针对的是谁} {起作用范围}",
+        "help": (
+            "苏联笑话 {要讽刺的事} {谁提出来的} {有助于什么} {针对的是谁} {起作用范围}"
+        ),
         "arg_num": 5,
     },
     "cpstory": {
@@ -75,6 +76,6 @@ async def get_essay(type: str, texts: List[str]) -> str:
     try:
         func = commands[type]["func"]
         return await func(*texts)
-    except:
+    except Exception:
         logger.warning(traceback.format_exc())
         return "出错了，请稍后再试"

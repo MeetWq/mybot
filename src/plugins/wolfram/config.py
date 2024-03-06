@@ -1,5 +1,9 @@
-from pydantic import BaseModel, Extra
+from nonebot import get_plugin_config
+from pydantic import BaseModel
 
 
-class Config(BaseModel, extra=Extra.ignore):
-    wolframalpha_appid = ""
+class Config(BaseModel):
+    wolframalpha_appid: str = ""
+
+
+wolframalpha_config = get_plugin_config(Config)

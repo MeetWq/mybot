@@ -1,0 +1,127 @@
+<html>
+  <head>
+    <style>
+      body {
+        margin: 10pt;
+      }
+      .image {
+        overflow: scroll;
+        display: flex;
+        flex-direction: column;
+        width: max-content;
+        max-width: 600pt;
+      }
+      .head {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        color: gray;
+        margin-bottom: 5pt;
+      }
+      .head p {
+        margin: 0;
+      }
+      .avatar {
+        margin: 2pt;
+      }
+      .avatar img {
+        width: 20px;
+        height: 20px;
+      }
+      .name {
+        margin-left: 10pt;
+        margin-right: 10pt;
+      }
+      .time {
+        margin-left: 10pt;
+      }
+      .info {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        border: 1px solid;
+        border-color: lightgray;
+        margin-right: 10pt;
+      }
+      .category {
+        padding: 5pt;
+      }
+      .category img {
+        width: 45px;
+        height: 46px;
+      }
+      .title {
+        margin-left: 2pt;
+        margin-right: 5pt;
+      }
+      .title p {
+        margin: 3pt;
+      }
+      .maintitle {
+        font-weight: bold;
+      }
+      .size {
+        text-align: center;
+        width: max-content;
+        white-space: nowrap;
+        margin-left: 5pt;
+        margin-right: 5pt;
+      }
+      .size p {
+        margin: 0;
+      }
+      .author {
+        width: max-content;
+        white-space: nowrap;
+        margin-left: 5pt;
+        margin-right: 5pt;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="image">
+      <div class="head">
+        <div class="avatar">
+          <img src="./rss_logo.jpg" />
+        </div>
+        <div class="name">
+          <p>
+            <a>NHD新种</a>
+          </p>
+        </div>
+        <div class="time">
+          <p>
+            <a>{{ rss.pubDate.strftime("%Y-%m-%d %H:%M:%S") }}</a>
+          </p>
+        </div>
+      </div>
+      <div class="info">
+        <div class="category">
+          <img src="./catsprites/{{ rss.category }}.png" />
+        </div>
+        <div class="title">
+          <p class="maintitle">
+            <a>{{ rss.title }}</a>
+          </p>
+          <p class="subtitle">
+            <a>{{ rss.subtitle }}</a>
+          </p>
+        </div>
+        {% set size_num, size_unit = rss.size.split(' ') %}
+        <div class="size">
+          <p class="size_num">
+            <a>{{ size_num }}</a>
+          </p>
+          <p class="size_unit">
+            <a>{{ size_unit }}</a>
+          </p>
+        </div>
+        {% set author = rss.author %}
+        {% if author == 'anonymous' %} {% set author = '<i>匿名</i>' %} {% else %} {% set author = '<b>' + author + '</b>' %} {% endif %}
+        <div class="author">
+          <a>{{ author }}</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

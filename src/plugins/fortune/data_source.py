@@ -1,16 +1,13 @@
 import json
-import jinja2
 import random
+from datetime import datetime
 from pathlib import Path
 from typing import Optional
-from datetime import datetime
 
-from nonebot import get_driver
+import jinja2
 from nonebot_plugin_htmlrender import html_to_pic
 
-from .config import Config
-
-fortune_config = Config.parse_obj(get_driver().config.dict())
+from .config import fortune_config
 
 dir_path = Path(__file__).parent
 resource_path = dir_path / "resources"
@@ -20,7 +17,7 @@ env = jinja2.Environment(
 )
 
 
-async def get_fortune(user_id: int, username: str) -> Optional[bytes]:
+async def get_fortune(user_id: str, username: str) -> Optional[bytes]:
     with (resource_path / "copywriting.json").open("r", encoding="utf-8") as f:
         data = json.load(f)
     date = datetime.now().strftime("%Y%m%d")
@@ -30,7 +27,9 @@ async def get_fortune(user_id: int, username: str) -> Optional[bytes]:
     # fmt: off
     rank = random.choices(
         [27, 26, 25, 24, 23, 21, 20, 10, 9, 8, 7, 6, 5, 4, -6, -7, -8, -9, -10],
-        weights=[18, 18, 18, 18, 18, 18, 18, 38, 46, 55, 46, 38, 31, 25, 20, 16, 13, 11, 10],
+        weights=[
+            18, 18, 18, 18, 18, 18, 18, 38, 46, 55, 46, 38, 31, 25, 20, 16, 13, 11, 10
+        ],
     )[0]
     # fmt: on
 

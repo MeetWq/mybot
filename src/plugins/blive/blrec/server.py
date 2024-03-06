@@ -17,7 +17,7 @@ uid_cache = TTLCache(maxsize=100, ttl=60 * 5)
 async def blrec_handler(event: RecordingStartedEvent):
     logger.info(str(event))
     room_info = event.data.room_info
-    uid = str(room_info.uid)
+    uid = room_info.uid
 
     if uid in uid_cache:
         logger.warning(f"skip send msg for {uid}")
@@ -47,7 +47,7 @@ async def uploader_handler(event: UploaderEvent):
     if not event.data.share_url:
         return
 
-    room_id = str(event.data.room_id)
+    room_id = event.data.room_id
     users = await get_users()
     for user in users:
         if user.room_id == room_id:
