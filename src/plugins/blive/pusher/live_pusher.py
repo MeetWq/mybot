@@ -32,7 +32,7 @@ async def _():
     for uid_str, info in res.items():
         status = info["live_status"]
         uid = int(uid_str)
-        if uid_str not in live_status:
+        if uid not in live_status:
             live_status[uid] = status
             continue
 
