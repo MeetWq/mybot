@@ -1,8 +1,10 @@
 import traceback
+from typing import Annotated
 
 from nonebot import require
 from nonebot.log import logger
 from nonebot.matcher import Matcher
+from nonebot.params import Depends
 from nonebot.plugin import PluginMetadata
 
 require("nonebot_plugin_orm")
@@ -111,28 +113,27 @@ async def find_user(matcher: Matcher, name: str) -> BiliUser:
     return user
 
 
-@blive.assign("add")
-async def _(matcher: Matcher, target: SaaTarget, name: str):
-    user = await find_user(matcher, name)
+User = Annotated[BiliUser, Depends(find_user)]
 
+
+@blive.assign("add")
+async def _(matcher: Matcher, target: SaaTarget, user: User):
     if await get_sub(target, user.uid):
-        await blive.finish(f"{user.name} 已经订阅过了")
+        await matcher.finish(f"{user.name} 已经订阅过了")
 
     await add_sub(Subscription(target=target, user=user, options=SubscriptionOptions()))
 
-    await blive.finish(f"成功添加订阅 {user.name}")
+    await matcher.finish(f"成功添加订阅 {user.name}")
 
 
 @blive.assign("del")
-async def _(matcher: Matcher, target: SaaTarget, name: str):
-    user = await find_user(matcher, name)
-
+async def _(matcher: Matcher, target: SaaTarget, user: User):
     if not await get_sub(target, user.uid):
-        await blive.finish(f"{user.name} 还没有订阅过")
+        await matcher.finish(f"{user.name} 还没有订阅过")
 
     await del_sub(target, user.uid)
 
-    await blive.finish(f"成功取消订阅 {user.name}")
+    await matcher.finish(f"成功取消订阅 {user.name}")
 
 
 @blive.assign("list")
@@ -155,9 +156,7 @@ async def _(matcher: Matcher, target: SaaTarget):
 
 
 @blive.assign("liveon")
-async def _(matcher: Matcher, target: SaaTarget, name: str):
-    user = await find_user(matcher, name)
-
+async def _(matcher: Matcher, target: SaaTarget, user: User):
     if not (sub := await get_sub(target, user.uid)):
         await matcher.finish(f"{user.name} 还没有订阅过")
 
@@ -169,9 +168,7 @@ async def _(matcher: Matcher, target: SaaTarget, name: str):
 
 
 @blive.assign("liveoff")
-async def _(matcher: Matcher, target: SaaTarget, name: str):
-    user = await find_user(matcher, name)
-
+async def _(matcher: Matcher, target: SaaTarget, user: User):
     if not (sub := await get_sub(target, user.uid)):
         await matcher.finish(f"{user.name} 还没有订阅过")
 
@@ -183,9 +180,7 @@ async def _(matcher: Matcher, target: SaaTarget, name: str):
 
 
 @blive.assign("dynon")
-async def _(matcher: Matcher, target: SaaTarget, name: str):
-    user = await find_user(matcher, name)
-
+async def _(matcher: Matcher, target: SaaTarget, user: User):
     if not (sub := await get_sub(target, user.uid)):
         await matcher.finish(f"{user.name} 还没有订阅过")
 
@@ -197,9 +192,7 @@ async def _(matcher: Matcher, target: SaaTarget, name: str):
 
 
 @blive.assign("dynoff")
-async def _(matcher: Matcher, target: SaaTarget, name: str):
-    user = await find_user(matcher, name)
-
+async def _(matcher: Matcher, target: SaaTarget, user: User):
     if not (sub := await get_sub(target, user.uid)):
         await matcher.finish(f"{user.name} 还没有订阅过")
 
@@ -211,9 +204,7 @@ async def _(matcher: Matcher, target: SaaTarget, name: str):
 
 
 @blive.assign("recon")
-async def _(matcher: Matcher, target: SaaTarget, name: str):
-    user = await find_user(matcher, name)
-
+async def _(matcher: Matcher, target: SaaTarget, user: User):
     if not (sub := await get_sub(target, user.uid)):
         await matcher.finish(f"{user.name} 还没有订阅过")
 
@@ -226,9 +217,7 @@ async def _(matcher: Matcher, target: SaaTarget, name: str):
 
 
 @blive.assign("recoff")
-async def _(matcher: Matcher, target: SaaTarget, name: str):
-    user = await find_user(matcher, name)
-
+async def _(matcher: Matcher, target: SaaTarget, user: User):
     if not (sub := await get_sub(target, user.uid)):
         await matcher.finish(f"{user.name} 还没有订阅过")
 
