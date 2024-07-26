@@ -1,5 +1,4 @@
 import time
-from io import BytesIO
 
 from bilireq.login import Login
 from nonebot.log import logger
@@ -7,7 +6,6 @@ from nonebot.matcher import Matcher
 from nonebot.permission import SUPERUSER
 from nonebot_plugin_alconna import Alconna, Args, on_alconna
 from nonebot_plugin_saa import Image, MessageFactory
-from png import Image as PNGImage
 
 from .auth import AuthManager
 from .utils import calc_time_total
@@ -41,10 +39,10 @@ async def _(matcher: Matcher):
     login = Login()
     qr_url = await login.get_qrcode_url()
     logger.debug(f"qrcode login url: {qr_url}")
-    img: PNGImage = await login.get_qrcode(qr_url)  # type: ignore
-    output = BytesIO()
-    img.save(output)
-    await MessageFactory(Image(output)).send()
+    img = await login.get_qrcode(qr_url)
+    if not img:
+        await matcher.finish("获取二维码失败")
+    await MessageFactory(Image(img)).send()
     try:
         auth = await login.qrcode_login(interval=5)
         assert auth, "登录失败，返回数据为空"
