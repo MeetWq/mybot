@@ -4,9 +4,13 @@ from typing import Any, Dict, List, Optional
 
 import yaml
 from nonebot import get_driver
+from nonebot.compat import PYDANTIC_V2, model_dump, type_validate_python
 from nonebot.log import logger
 from nonebot.plugin import Plugin, get_loaded_plugins
-from pydantic import BaseModel, field_serializer
+from pydantic import BaseModel
+
+if PYDANTIC_V2:
+    from pydantic import field_serializer
 
 config_path = Path("data/plugin_manager.yml")
 
@@ -22,9 +26,15 @@ class PluginConfig(BaseModel):
     white_list: List[str] = []
     black_list: List[str] = []
 
-    @field_serializer("manage_type")
-    def get_eunm_value(self, v: ManageType, info) -> int:
-        return v.value
+    if PYDANTIC_V2:
+
+        @field_serializer("manage_type")
+        def get_eunm_value(self, v: ManageType, info) -> int:
+            return v.value
+    else:
+
+        class Config:
+            use_enum_values = True
 
 
 class PluginManager:
@@ -120,7 +130,7 @@ class PluginManager:
                     raise
         try:
             plugin_list = {
-                name: PluginConfig.model_validate(config)
+                name: type_validate_python(PluginConfig, config)
                 for name, config in raw_list.items()
             }
         except Exception:
@@ -140,7 +150,7 @@ class PluginManager:
     def __dump(self):
         self.__path.parent.mkdir(parents=True, exist_ok=True)
         plugin_list = {
-            name: config.model_dump() for name, config in self.__plugin_list.items()
+            name: model_dump(config) for name, config in self.__plugin_list.items()
         }
         with self.__path.open("w", encoding="utf-8") as f:
             yaml.dump(plugin_list, f, allow_unicode=True)
