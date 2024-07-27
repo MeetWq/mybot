@@ -1,5 +1,6 @@
-from nonebot import on_command, require
+from nonebot import on_command, on_notice, require
 from nonebot.matcher import Matcher
+from nonebot.rule import to_me
 
 require("nonebot_plugin_orm")
 require("nonebot_plugin_saa")
@@ -20,9 +21,11 @@ async def in_dynmap_targets(target: SaaTarget):
 
 
 status = on_command("status", rule=in_dynmap_targets, priority=14, block=True)
+poke_status = on_notice(to_me() & in_dynmap_targets, priority=15, block=False)
 
 
 @status.handle()
+@poke_status.handle()
 async def _(matcher: Matcher):
     status = await get_dynmap_status()
     if not status:
