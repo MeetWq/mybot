@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 import httpx
+from nonebot.compat import type_validate_python
 
 from ..config import blive_config
 from ..database.db import get_record_uids, get_user
@@ -30,14 +31,14 @@ async def delete(url: str):
 async def get_tasks() -> List[TaskInfo]:
     url = f"{BLREC_API}/tasks/data?select=all"
     if result := await get(url):
-        return [TaskInfo.model_validate(info) for info in result if info]
+        return [type_validate_python(TaskInfo, info) for info in result if info]
     return []
 
 
 async def get_task(room_id: int) -> Optional[TaskInfo]:
     url = f"{BLREC_API}/tasks/{room_id}/data"
     if result := await get(url):
-        return TaskInfo.model_validate(result)
+        return type_validate_python(TaskInfo, result)
 
 
 async def add_task(room_id: int) -> bool:
