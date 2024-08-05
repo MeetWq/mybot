@@ -32,7 +32,7 @@ async def tex2pic(equation, fmt="png", border=2, resolution=1000) -> Optional[by
 
             stdout = open(os.devnull, "w")
             p_open = subprocess.Popen(
-                "pdflatex -interaction=nonstopmode -pdf %s" % tmp_tex,
+                f"pdflatex -interaction=nonstopmode -pdf {tmp_tex}",
                 shell=True,
                 cwd=str(tmp_dir),
                 stdout=stdout,

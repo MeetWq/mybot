@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import jinja2
 from nonebot import get_plugin
@@ -22,7 +22,7 @@ class PluginInfo:
     name: str = ""
     description: str = ""
     usage: str = ""
-    extra: Dict[Any, Any] = field(default_factory=dict)
+    extra: dict[Any, Any] = field(default_factory=dict)
     enabled: bool = True
     locked: bool = False
 
@@ -43,7 +43,7 @@ def get_plugin_info(user_id: str, plugin_name: str) -> Optional[PluginInfo]:
     return info
 
 
-async def get_help_img(plugins: List[PluginInfo]) -> Optional[bytes]:
+async def get_help_img(plugins: list[PluginInfo]) -> Optional[bytes]:
     try:
         template = env.get_template("help.html")
         content = await template.render_async(plugins=plugins)

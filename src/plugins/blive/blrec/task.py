@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 import httpx
 from nonebot.compat import type_validate_python
@@ -28,7 +28,7 @@ async def delete(url: str):
         return resp.json()
 
 
-async def get_tasks() -> List[TaskInfo]:
+async def get_tasks() -> list[TaskInfo]:
     url = f"{BLREC_API}/tasks/data?select=all"
     if result := await get(url):
         return [type_validate_python(TaskInfo, info) for info in result if info]

@@ -2,7 +2,6 @@ import json
 import random
 import traceback
 from pathlib import Path
-from typing import List
 
 from nonebot.log import logger
 
@@ -72,7 +71,7 @@ commands = {
 }
 
 
-async def get_essay(type: str, texts: List[str]) -> str:
+async def get_essay(type: str, texts: list[str]) -> str:
     try:
         func = commands[type]["func"]
         return await func(*texts)

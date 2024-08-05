@@ -1,6 +1,5 @@
 import random
 import re
-from typing import Dict, List
 
 from nonebot import on_message, require
 from nonebot.matcher import Matcher
@@ -12,7 +11,7 @@ require("nonebot_plugin_userinfo")
 
 from nonebot_plugin_userinfo import EventUserInfo, UserInfo
 
-entries: Dict[str, List[str]] = {
+entries: dict[str, list[str]] = {
     r"[Nn][Hh][Dd]娘[ ,，]*求交往": [
         "你是个好人，这张好人卡请收下吧~",
     ],

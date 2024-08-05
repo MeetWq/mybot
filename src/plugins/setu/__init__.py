@@ -1,5 +1,3 @@
-from typing import Type
-
 from nonebot import on_command, require
 from nonebot.adapters import Message
 from nonebot.matcher import Matcher
@@ -40,7 +38,7 @@ async def _(msg: Message = CommandArg()):
     await handle(setu_, msg, r18=True)
 
 
-async def handle(matcher: Type[Matcher], msg: Message, r18=False):
+async def handle(matcher: type[Matcher], msg: Message, r18=False):
     keyword = msg.extract_plain_text().strip()
     res = await get_setu(keyword=keyword, r18=r18)
     if not res:

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from nonebot_plugin_orm import Model, get_session
 from nonebot_plugin_saa import PlatformTarget
@@ -21,7 +21,7 @@ class BiliUserRecord(Model):
     def bili_user(self) -> BiliUser:
         return BiliUser(uid=self.uid, name=self.name, room_id=self.room_id)
 
-    async def get_subscription_records(self) -> List["SubscriptionRecord"]:
+    async def get_subscription_records(self) -> list["SubscriptionRecord"]:
         statement = select(SubscriptionRecord).where(
             SubscriptionRecord.user_id == self.id
         )

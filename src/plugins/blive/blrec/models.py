@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import Enum, IntEnum
 from pathlib import Path
-from typing import Any, Dict, Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel
 
@@ -56,7 +56,7 @@ class BlrecEvent(BaseModel):
         "SpaceNoEnoughEvent",
         "Error",
     ]
-    data: Dict[str, Any]
+    data: dict[str, Any]
 
 
 class LiveBeganEventData(BaseModel):

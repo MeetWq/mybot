@@ -1,7 +1,6 @@
 import re
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List
 
 import dateparser
 import httpx
@@ -21,7 +20,7 @@ class NHDRSSEntry:
     pubDate: datetime
 
 
-async def get_rss_entries() -> List[NHDRSSEntry]:
+async def get_rss_entries() -> list[NHDRSSEntry]:
     try:
         async with httpx.AsyncClient() as client:
             resp = await client.get(rss_config.nhd_rss_url, timeout=20)

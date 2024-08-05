@@ -2,7 +2,6 @@ import json
 import random
 from io import BytesIO
 from pathlib import Path
-from typing import Tuple
 
 from PIL import Image
 
@@ -11,7 +10,7 @@ tarot_path = dir_path / "resources"
 image_path = tarot_path / "images"
 
 
-async def get_tarot() -> Tuple[BytesIO, str]:
+async def get_tarot() -> tuple[BytesIO, str]:
     card = get_random_tarot()
     reverse = random.choice([False, True])
     filename = "{}{:02d}.jpg".format(card["type"], card["num"])

@@ -1,5 +1,4 @@
 import shlex
-from typing import Type
 
 from nonebot import on_command
 from nonebot.adapters import Message
@@ -22,7 +21,7 @@ __plugin_meta__ = PluginMetadata(
 )
 
 
-async def handle(matcher: Type[Matcher], type: str, text: str):
+async def handle(matcher: type[Matcher], type: str, text: str):
     arg_num = commands[type].get("arg_num", 1)
     texts = shlex.split(text) if arg_num > 1 else [text]
     if not arg_num:

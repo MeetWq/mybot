@@ -1,6 +1,6 @@
 import json
 import random
-from typing import Dict, List, Union
+from typing import Union
 
 from bilireq.auth import Auth
 from nonebot import get_driver
@@ -13,11 +13,11 @@ auth_file.touch()
 
 
 class AuthManager:
-    grpc_auths: List[Auth] = []
+    grpc_auths: list[Auth] = []
 
     @classmethod
     async def load_auths(cls) -> None:
-        data: Union[List[Dict], Dict] = json.loads(auth_file.read_bytes() or "[]")
+        data: Union[list[dict], dict] = json.loads(auth_file.read_bytes() or "[]")
         data = data if isinstance(data, list) else [data]
         cls.grpc_auths.clear()
         for raw_auth in data:
@@ -40,7 +40,7 @@ class AuthManager:
         )
 
     @classmethod
-    def get_cookies(cls) -> Dict[str, str]:
+    def get_cookies(cls) -> dict[str, str]:
         if auths := cls.grpc_auths.copy():
             random.shuffle(auths)
             for auth in auths:

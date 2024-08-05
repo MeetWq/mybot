@@ -1,5 +1,4 @@
 import traceback
-from typing import Dict, List
 
 from nonebot.log import logger
 from nonebot_plugin_apscheduler import scheduler
@@ -10,11 +9,11 @@ from ..database.db import get_dynamic_targets, get_dynamic_uids, update_user
 from ..models import BiliUser
 from ..utils import get_dynamic_screenshot, get_user_dynamics
 
-dynamic_offset: Dict[int, int] = {}
+dynamic_offset: dict[int, int] = {}
 updated_uids = set()
 
 
-def next_uid(uids: List[int]) -> int:
+def next_uid(uids: list[int]) -> int:
     for uid in uids:
         if uid not in updated_uids:
             updated_uids.add(uid)

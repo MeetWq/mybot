@@ -1,6 +1,6 @@
 from enum import IntEnum
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import yaml
 from nonebot import get_driver
@@ -23,8 +23,8 @@ class ManageType(IntEnum):
 class PluginConfig(BaseModel):
     mode: int = 7
     manage_type: ManageType = ManageType.BLACK
-    white_list: List[str] = []
-    black_list: List[str] = []
+    white_list: list[str] = []
+    black_list: list[str] = []
 
     if PYDANTIC_V2:
 
@@ -40,8 +40,8 @@ class PluginConfig(BaseModel):
 class PluginManager:
     def __init__(self, path: Path = config_path):
         self.__path = path
-        self.__plugin_list: Dict[str, PluginConfig] = {}
-        self.__plugins: List[Plugin] = []
+        self.__plugin_list: dict[str, PluginConfig] = {}
+        self.__plugins: list[Plugin] = []
 
     def block(self, plugin_name: str, user_id: str) -> bool:
         if plugin_name not in self.__plugin_list:
@@ -120,7 +120,7 @@ class PluginManager:
                 return p.name
 
     def init(self):
-        raw_list: Dict[str, Any] = {}
+        raw_list: dict[str, Any] = {}
         if self.__path.exists():
             with self.__path.open("r", encoding="utf-8") as f:
                 try:

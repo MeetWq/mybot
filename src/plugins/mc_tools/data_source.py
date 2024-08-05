@@ -3,7 +3,7 @@ import base64
 import traceback
 from io import BytesIO
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Optional
 
 import httpx
 import jinja2
@@ -81,7 +81,7 @@ async def get_mcmodel(uuid: str) -> Optional[BytesIO]:
         template = env.get_template("skin.html")
         html = await template.render_async(skin=skin, cape=cape)
 
-        images: List[IMG] = []
+        images: list[IMG] = []
         async with get_new_page(viewport={"width": 200, "height": 400}) as page:
             await page.set_content(html)
             await asyncio.sleep(0.1)
@@ -106,7 +106,7 @@ async def get_mcmodel(uuid: str) -> Optional[BytesIO]:
         return None
 
 
-async def get_mcstatus(addr: str) -> Optional[Tuple[Optional[bytes], str]]:
+async def get_mcstatus(addr: str) -> Optional[tuple[Optional[bytes], str]]:
     try:
         server = JavaServer.lookup(addr)
         status = await server.async_status()
