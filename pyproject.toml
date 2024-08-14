@@ -31,7 +31,7 @@ nonebot-plugin-handle = "^0.4.1"
 nonebot-plugin-heweather = "^0.8.1"
 nonebot-plugin-htmlrender = "^0.3.0"
 nonebot-plugin-imagetools = "^0.4.0"
-nonebot-plugin-memes = "^0.6.0"
+nonebot-plugin-memes = "^0.7.0"
 nonebot-plugin-minesweeper = "^0.4.0"
 nonebot-plugin-oddtext = "^0.2.0"
 nonebot-plugin-orm = { version = ">=0.7.0,<1.0.0", extras = ["default"] }
