@@ -886,18 +886,18 @@ test = ["flufl.flake8", "importlib-resources (>=1.3)", "jaraco.test (>=5.4)", "p
 
 [[package]]
 name = "importlib-resources"
-version = "6.4.0"
+version = "6.4.2"
 description = "Read resources from Python packages"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "importlib_resources-6.4.0-py3-none-any.whl", hash = "sha256:50d10f043df931902d4194ea07ec57960f66a80449ff867bfe782b4c486ba78c"},
-    {file = "importlib_resources-6.4.0.tar.gz", hash = "sha256:cdb2b453b8046ca4e3798eb1d84f3cce1446a0e8e7b5ef4efb600f19fc398145"},
+    {file = "importlib_resources-6.4.2-py3-none-any.whl", hash = "sha256:8bba8c54a8a3afaa1419910845fa26ebd706dc716dd208d9b158b4b6966f5c5c"},
+    {file = "importlib_resources-6.4.2.tar.gz", hash = "sha256:6cbfbefc449cc6e2095dd184691b7a12a04f40bc75dd4c55d31c34f174cdf57a"},
 ]
 
 [package.extras]
-docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (<7.2.5)", "sphinx (>=3.5)", "sphinx-lint"]
-testing = ["jaraco.test (>=5.4)", "pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy", "pytest-ruff (>=0.2.1)", "zipp (>=3.17)"]
+doc = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
+test = ["jaraco.test (>=5.4)", "pytest (>=6,!=8.1.*)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy", "pytest-ruff (>=0.2.1)", "zipp (>=3.17)"]
 
 [[package]]
 name = "jaraco-context"
@@ -1447,13 +1447,13 @@ files = [
 
 [[package]]
 name = "meme-generator"
-version = "0.1.0"
+version = "0.1.1"
 description = "Python package for making fun pictures"
 optional = false
 python-versions = "<4.0,>=3.9"
 files = [
-    {file = "meme_generator-0.1.0-py3-none-any.whl", hash = "sha256:d827b5ae8dfd218d2d12a785b6f51ef618f5d2d09ed8a61ca4e143bc976309c9"},
-    {file = "meme_generator-0.1.0.tar.gz", hash = "sha256:a1ac4ffb8b6e655e1e05baa946affdcb8ad2138242005799ff944e7b3403acd5"},
+    {file = "meme_generator-0.1.1-py3-none-any.whl", hash = "sha256:97423aa03fbd8aadd1ed780223dd6e0c74d4d6b27cf95baaaf87a123d2069c70"},
+    {file = "meme_generator-0.1.1.tar.gz", hash = "sha256:0d2a8c61bb082924ba23feb8adaa92ab1f2d5707b49058408e49f73b5f8930ef"},
 ]
 
 [package.dependencies]
@@ -1967,19 +1967,19 @@ typing-extensions = ">=4.0.0,<5.0.0"
 
 [[package]]
 name = "nonebot-plugin-memes"
-version = "0.7.5"
+version = "0.7.7"
 description = "Nonebot2 plugin for making memes"
 optional = false
 python-versions = "<4.0,>=3.9"
 files = [
-    {file = "nonebot_plugin_memes-0.7.5-py3-none-any.whl", hash = "sha256:af8cc8e08e2e2ad85862a3b58bbbd4d5082a1e239b10dfbd562221d3fc6381e8"},
-    {file = "nonebot_plugin_memes-0.7.5.tar.gz", hash = "sha256:483468bde15766f2f39f3188c4b645794b49fdc721be008c50e8b404ba9dbaa1"},
+    {file = "nonebot_plugin_memes-0.7.7-py3-none-any.whl", hash = "sha256:660be51e52ce2e14fa1c2b14be729f2cbf5ca0b66560b8179edaf56f6f635406"},
+    {file = "nonebot_plugin_memes-0.7.7.tar.gz", hash = "sha256:bc7fe8d07c350822e7a672984fc1a16c0db244e1577bf1221f17cff51cdb5bae"},
 ]
 
 [package.dependencies]
 httpx = ">=0.20.0,<1.0.0"
 matplotlib = ">=3.7.0,<4.0.0"
-meme-generator = ">=0.1.0,<0.2.0"
+meme-generator = ">=0.1.1,<0.2.0"
 nonebot-plugin-alconna = ">=0.46.3,<1.0.0"
 nonebot-plugin-localstore = ">=0.6.0,<1.0.0"
 nonebot-plugin-orm = ">=0.7.0,<1.0.0"
