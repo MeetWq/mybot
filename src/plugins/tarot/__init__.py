@@ -3,10 +3,10 @@ from nonebot.matcher import Matcher
 from nonebot.plugin import PluginMetadata
 
 require("nonebot_plugin_alconna")
-require("nonebot_plugin_userinfo")
+require("nonebot_plugin_uninfo")
 
 from nonebot_plugin_alconna import Image, UniMessage
-from nonebot_plugin_userinfo import EventUserInfo, UserInfo
+from nonebot_plugin_uninfo import Uninfo
 
 from .data_source import get_tarot
 
@@ -26,8 +26,10 @@ tarot = on_command(
 
 
 @tarot.handle()
-async def _(matcher: Matcher, userinfo: UserInfo = EventUserInfo()):
-    username = userinfo.user_displayname or userinfo.user_name
+async def _(matcher: Matcher, session: Uninfo):
+    username = session.user.nick or session.user.name or ""
+    if session.member and session.member.nick:
+        username = session.member.nick
     msg = UniMessage(f"来看看 {username} 抽到了什么：")
     try:
         img, meaning = await get_tarot()

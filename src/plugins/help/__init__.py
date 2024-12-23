@@ -2,15 +2,15 @@ from typing import Annotated, Optional, Union
 
 from nonebot import on_command, require
 from nonebot.adapters import Event, Message
-from nonebot.params import CommandArg
+from nonebot.params import CommandArg, Depends
 from nonebot.plugin import PluginMetadata, get_loaded_plugins
 
 require("nonebot_plugin_alconna")
-require("nonebot_plugin_session")
+require("nonebot_plugin_uninfo")
 require("nonebot_plugin_htmlrender")
 
 from nonebot_plugin_alconna import UniMessage
-from nonebot_plugin_session import SessionId, SessionIdType
+from nonebot_plugin_uninfo import Uninfo
 
 from src.utils.plugin_manager import plugin_manager
 
@@ -25,7 +25,12 @@ __plugin_meta__ = PluginMetadata(
     },
 )
 
-UserId = Annotated[str, SessionId(SessionIdType.GROUP, include_bot_type=False)]
+
+def get_user_id(uninfo: Uninfo) -> str:
+    return f"{uninfo.scope}_{uninfo.self_id}_{uninfo.scene_path}"
+
+
+UserId = Annotated[str, Depends(get_user_id)]
 
 help = on_command("help", aliases={"帮助", "功能"}, block=True)
 

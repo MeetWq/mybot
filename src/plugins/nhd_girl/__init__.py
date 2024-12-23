@@ -7,9 +7,9 @@ from nonebot.params import EventPlainText
 from nonebot.rule import Rule
 from nonebot.typing import T_State
 
-require("nonebot_plugin_userinfo")
+require("nonebot_plugin_uninfo")
 
-from nonebot_plugin_userinfo import EventUserInfo, UserInfo
+from nonebot_plugin_uninfo import Uninfo
 
 entries: dict[str, list[str]] = {
     r"[Nn][Hh][Dd]娘[ ,，]*求交往": [
@@ -54,8 +54,10 @@ nhd_girl = on_message(nhd_girl_rule(), block=True, priority=15)
 
 
 @nhd_girl.handle()
-async def _(matcher: Matcher, state: T_State, user_info: UserInfo = EventUserInfo()):
+async def _(matcher: Matcher, state: T_State, session: Uninfo):
     reply: str = state["reply"]
-    user_name = user_info.user_name
-    reply = reply.format(nickname=user_name)
+    username = session.user.nick or session.user.name or ""
+    if session.member and session.member.nick:
+        username = session.member.nick
+    reply = reply.format(nickname=username)
     await matcher.finish(reply)

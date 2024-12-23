@@ -10,9 +10,9 @@ from nonebot.params import CommandArg, Depends
 from nonebot.permission import SUPERUSER, Permission
 from nonebot.plugin import PluginMetadata
 
-require("nonebot_plugin_session")
+require("nonebot_plugin_uninfo")
 
-from nonebot_plugin_session import EventSession, SessionId, SessionIdType, SessionLevel
+from nonebot_plugin_uninfo import Uninfo
 
 from src.utils.plugin_manager import ManageType, plugin_manager
 
@@ -27,20 +27,14 @@ __plugin_meta__ = PluginMetadata(
 )
 
 
-def _is_private(session: EventSession) -> bool:
-    return session.level == SessionLevel.LEVEL1
+def _uninfo_role(session: Uninfo) -> bool:
+    return session.scene.is_private or bool(
+        session.member and session.member.role and session.member.role.level > 1
+    )
 
 
-PERM_EDIT = SUPERUSER | Permission(_is_private)
+PERM_EDIT = SUPERUSER | Permission(_uninfo_role)
 PERM_GLOBAL = SUPERUSER
-
-
-try:
-    from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN, GROUP_OWNER
-
-    PERM_EDIT |= GROUP_ADMIN | GROUP_OWNER
-except ImportError:
-    pass
 
 
 block = on_command("禁用插件", block=True, priority=11, permission=PERM_EDIT)
@@ -50,7 +44,11 @@ unblock_gl = on_command("全局启用插件", block=True, priority=11, permissio
 set_mode = on_command("设置插件模式", block=True, priority=11, permission=PERM_GLOBAL)
 
 
-UserId = Annotated[str, SessionId(SessionIdType.GROUP, include_bot_type=False)]
+def get_user_id(uninfo: Uninfo) -> str:
+    return f"{uninfo.scope}_{uninfo.self_id}_{uninfo.scene_path}"
+
+
+UserId = Annotated[str, Depends(get_user_id)]
 
 
 @run_preprocessor

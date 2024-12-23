@@ -7,11 +7,11 @@ from nonebot.matcher import Matcher
 from nonebot.plugin import PluginMetadata
 
 require("nonebot_plugin_alconna")
-require("nonebot_plugin_userinfo")
+require("nonebot_plugin_uninfo")
 require("nonebot_plugin_htmlrender")
 
 from nonebot_plugin_alconna import UniMessage
-from nonebot_plugin_userinfo import EventUserInfo, UserInfo
+from nonebot_plugin_uninfo import Uninfo
 
 from .config import Config
 from .data_source import get_fortune
@@ -28,9 +28,11 @@ jrrp = on_command("jrrp", aliases={"今日运势", "今日人品"}, block=True, 
 
 
 @jrrp.handle()
-async def _(matcher: Matcher, event: Event, userinfo: UserInfo = EventUserInfo()):
+async def _(matcher: Matcher, event: Event, session: Uninfo):
     user_id = event.get_user_id()
-    username = userinfo.user_displayname or userinfo.user_name
+    username = session.user.nick or session.user.name or ""
+    if session.member and session.member.nick:
+        username = session.member.nick
 
     res = None
     try:
