@@ -1,0 +1,17 @@
+.image {
+  background-image: url("./spring_festival_2025.jpg");
+  background-position: right -850px center;
+}
+.face {
+  float: left;
+}
+.box {
+  background-color: rgba(251, 128, 113, 0.8);
+  margin: 30px 450px 30px 0px;
+}
+.good {
+  color: #C71585;
+}
+.bad {
+  color: #228b22;
+}

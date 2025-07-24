@@ -31,17 +31,17 @@ nonebot-plugin-handle = "^0.4.1"
 nonebot-plugin-heweather = "^0.8.1"
 nonebot-plugin-htmlrender = "^0.4.0"
 nonebot-plugin-imagetools = "^0.5.0"
-nonebot-plugin-memes = "^0.7.0"
+nonebot-plugin-memes = "^0.8.1"
 nonebot-plugin-minesweeper = "^0.4.0"
 nonebot-plugin-mystool = "^2.7.0"
 nonebot-plugin-oddtext = "^0.2.0"
 nonebot-plugin-orm = { version = ">=0.7.0,<1.0.0", extras = ["default"] }
 nonebot-plugin-remake = "^0.4.0"
-nonebot-plugin-send-anything-anywhere = "^0.6.0"
+nonebot-plugin-send-anything-anywhere = "^0.7.0"
 nonebot-plugin-sentry = "^1.1.0"
 nonebot-plugin-shindan = "^0.6.0"
 nonebot-plugin-withdraw = "^0.4.0"
-# nonebot-plugin-wordcloud = "^0.7.0"
+nonebot-plugin-wordcloud = "^0.9.0"
 nonebot-plugin-wordle = "^0.4.0"
 
 [tool.poetry.group.dev.dependencies]
@@ -58,16 +58,16 @@ plugins = [
     "nonebot_plugin_emojimix",
     "nonebot_plugin_handle",
     "nonebot_plugin_heweather",
-    "nonebot_plugin_imagetools",
+    # "nonebot_plugin_imagetools",
     "nonebot_plugin_memes",
     "nonebot_plugin_minesweeper",
     "nonebot_plugin_mystool",
     "nonebot_plugin_oddtext",
     "nonebot_plugin_remake",
-    "nonebot_plugin_sentry",
+    # "nonebot_plugin_sentry",
     "nonebot_plugin_shindan",
     "nonebot_plugin_withdraw",
-    # "nonebot_plugin_wordcloud",
+    "nonebot_plugin_wordcloud",
     "nonebot_plugin_wordle",
 ]
 plugin_dirs = ["src/plugins"]
